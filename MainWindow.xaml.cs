@@ -221,7 +221,7 @@ namespace CSAuto
                             int X = clickpoint.X;
                             int Y = clickpoint.Y;
                             Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
-                            //LeftMouseClick(X, Y);
+                            LeftMouseClick(X, Y);
                             found = true;
                         }
                     }
