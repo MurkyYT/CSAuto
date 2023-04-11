@@ -42,7 +42,8 @@ namespace CSAuto
         Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
         int frame = 0;
         MenuItem startUpCheck = new MenuItem();
-        MenuItem debugCheck = new MenuItem();
+        MenuItem saveFramesDebug = new MenuItem();
+        MenuItem autoAcceptMatchCheck = new MenuItem();
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -60,6 +61,8 @@ namespace CSAuto
                 killDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 Application.Current.Exit += Current_Exit;
+                MenuItem debugMenu = new MenuItem();
+                debugMenu.Header = "Debug";
                 MenuItem exit = new MenuItem();
                 exit.Header = "Exit";
                 exit.Click += Exit_Click;
@@ -74,13 +77,19 @@ namespace CSAuto
                 startUpCheck.Header = "Start With Windows";
                 startUpCheck.IsCheckable = true;
                 startUpCheck.Click += StartUpCheck_Click;
-                debugCheck.IsChecked = Properties.Settings.Default.saveDebugFrames;
-                debugCheck.Header = "Save Frames";
-                debugCheck.IsCheckable = true;
-                debugCheck.Click += DebugCheck_Click;
+                saveFramesDebug.IsChecked = Properties.Settings.Default.saveDebugFrames;
+                saveFramesDebug.Header = "Save Frames";
+                saveFramesDebug.IsCheckable = true;
+                saveFramesDebug.Click += DebugCheck_Click;
+                autoAcceptMatchCheck.IsChecked = Properties.Settings.Default.autoAcceptMatch;
+                autoAcceptMatchCheck.Header = "Auto Accept Match";
+                autoAcceptMatchCheck.IsCheckable = true;
+                autoAcceptMatchCheck.Click += AutoAcceptMatchCheck_Click;
+                debugMenu.Items.Add(saveFramesDebug);
                 exitcm.Items.Add(about);
+                exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
-                exitcm.Items.Add(debugCheck);
+                exitcm.Items.Add(autoAcceptMatchCheck);
                 exitcm.Items.Add(startUpCheck);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(exit);
@@ -94,9 +103,15 @@ namespace CSAuto
             }
         }
 
+        private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.autoAcceptMatch = autoAcceptMatchCheck.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         private void DebugCheck_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.saveDebugFrames = debugCheck.IsChecked;
+            Properties.Settings.Default.saveDebugFrames = saveFramesDebug.IsChecked;
             Properties.Settings.Default.Save();
         }
 
@@ -166,46 +181,13 @@ namespace CSAuto
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     System.Windows.Point aspectRatio = new System.Windows.Point(
-                        csgoResolution.X / 1400.0, 
+                        csgoResolution.X / 1400.0,
                         csgoResolution.Y / 1050.0);
                     CORRECT_BUTTON_LOCATION = new System.Windows.Point(
-                        ORIGINAL_BUTTON_LOCATION.X * aspectRatio.X, 
+                        ORIGINAL_BUTTON_LOCATION.X * aspectRatio.X,
                         ORIGINAL_BUTTON_LOCATION.Y * aspectRatio.Y);
-                    using (Bitmap bitmap = new Bitmap(218, 86))
-                    {
-                        using (Graphics g = Graphics.FromImage(bitmap))
-                        {
-                            g.CopyFromScreen(new Point((int)CORRECT_BUTTON_LOCATION.X, (int)CORRECT_BUTTON_LOCATION.Y), Point.Empty, new System.Drawing.Size(218, 86));
-                        }
-                        if (Properties.Settings.Default.saveDebugFrames)
-                        {
-                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES");
-                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
-                        }
-                        bool found = false;
-                        for (int y = 0; y < bitmap.Height && !found; y++)
-                        {
-                            for (int x = 0; x < bitmap.Width && !found; x++)
-                            {
-                                Color pixelColor = bitmap.GetPixel(x, y);
-                                if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
-                                {
-                                    var clickpoint = new Point((int)CORRECT_BUTTON_LOCATION.X + x, (int)CORRECT_BUTTON_LOCATION.Y + y);
-                                    int X = clickpoint.X;
-                                    int Y = clickpoint.Y;
-                                    Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
-                                    LeftMouseClick(X, Y);
-                                    found = true;
-                                }
-                            }
-                        }
-                        
-                        
-                    }
-                }
-                else
-                {
-                    csgoResolution = new Point();
+                    if(Properties.Settings.Default.autoAcceptMatch)
+                        AutoAcceptMatch();
                 }
             }
             catch (Exception ex)
@@ -213,6 +195,40 @@ namespace CSAuto
                 Debug.WriteLine($"{ex}");
             }
         }
+
+        private void AutoAcceptMatch()
+        {
+            using (Bitmap bitmap = new Bitmap(218, 86))
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(new Point((int)CORRECT_BUTTON_LOCATION.X, (int)CORRECT_BUTTON_LOCATION.Y), Point.Empty, new System.Drawing.Size(218, 86));
+                }
+                if (Properties.Settings.Default.saveDebugFrames)
+                {
+                    Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES");
+                    bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                }
+                bool found = false;
+                for (int y = 0; y < bitmap.Height && !found; y++)
+                {
+                    for (int x = 0; x < bitmap.Width && !found; x++)
+                    {
+                        Color pixelColor = bitmap.GetPixel(x, y);
+                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                        {
+                            var clickpoint = new Point((int)CORRECT_BUTTON_LOCATION.X + x, (int)CORRECT_BUTTON_LOCATION.Y + y);
+                            int X = clickpoint.X;
+                            int Y = clickpoint.Y;
+                            Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
+                            //LeftMouseClick(X, Y);
+                            found = true;
+                        }
+                    }
+                }
+            }
+        }
+
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             exitcm.IsOpen = true;
@@ -247,7 +263,7 @@ namespace CSAuto
             {
                 Visibility = Visibility.Hidden;
                 this.notifyicon.Icon = Properties.Resources.main;
-                this.notifyicon.Tip = "CSAuto - Auto csgo match acceptor";
+                this.notifyicon.Tip = "CSAuto - CS:GO Automation";
                 this.notifyicon.ShowTip = true;
                 this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
                 this.notifyicon.Update();

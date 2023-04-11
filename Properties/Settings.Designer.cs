@@ -46,5 +46,17 @@ namespace CSAuto.Properties {
                 this["saveDebugFrames"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoAcceptMatch {
+            get {
+                return ((bool)(this["autoAcceptMatch"]));
+            }
+            set {
+                this["autoAcceptMatch"] = value;
+            }
+        }
     }
 }
