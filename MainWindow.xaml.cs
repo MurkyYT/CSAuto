@@ -34,12 +34,12 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.1";
+        const string VER = "1.0.2";
         Point csgoResolution = new Point();
         Point ORIGINAL_BUTTON_LOCATION = new Point(591, 393);
         System.Windows.Point CORRECT_BUTTON_LOCATION = new System.Windows.Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
-        Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 95);
+        Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
         int frame = 0;
         MenuItem startUpCheck = new MenuItem();
         MenuItem debugCheck = new MenuItem();
@@ -121,7 +121,7 @@ namespace CSAuto
             SetCursorPos(xpos, ypos);
             mouse_event(MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
             mouse_event(MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
-            Debug.WriteLine($"Left clicked at ({xpos},{ypos})");
+            Debug.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
         }
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
         {
