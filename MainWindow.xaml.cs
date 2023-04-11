@@ -34,7 +34,7 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.2";
+        const string VER = "1.0.3";
         Point csgoResolution = new Point();
         Point ORIGINAL_BUTTON_LOCATION = new Point(591, 393);
         System.Windows.Point CORRECT_BUTTON_LOCATION = new System.Windows.Point();
@@ -162,14 +162,15 @@ namespace CSAuto
                 string proccesName = activeProcces.ProcessName;
                 if (proccesName == "csgo")
                 {
-                    if (csgoResolution == new Point())
-                    {
-                        csgoResolution = new Point(
+                    csgoResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
-                    }
-                    System.Windows.Point aspectRatio = new System.Windows.Point(csgoResolution.X / 1400.0, csgoResolution.Y / 1050.0);
-                    CORRECT_BUTTON_LOCATION = new System.Windows.Point(ORIGINAL_BUTTON_LOCATION.X * aspectRatio.X, ORIGINAL_BUTTON_LOCATION.Y * aspectRatio.Y);
+                    System.Windows.Point aspectRatio = new System.Windows.Point(
+                        csgoResolution.X / 1400.0, 
+                        csgoResolution.Y / 1050.0);
+                    CORRECT_BUTTON_LOCATION = new System.Windows.Point(
+                        ORIGINAL_BUTTON_LOCATION.X * aspectRatio.X, 
+                        ORIGINAL_BUTTON_LOCATION.Y * aspectRatio.Y);
                     using (Bitmap bitmap = new Bitmap(218, 86))
                     {
                         using (Graphics g = Graphics.FromImage(bitmap))
@@ -181,15 +182,25 @@ namespace CSAuto
                             Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES");
                             bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
                         }
-                        Color pixelColor = bitmap.GetPixel(70, 10);
-                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                        bool found = false;
+                        for (int y = 0; y < bitmap.Height && !found; y++)
                         {
-                            Debug.WriteLine("Found accept button");
-                            var clickpoint = new Point((int)CORRECT_BUTTON_LOCATION.X + 70, (int)CORRECT_BUTTON_LOCATION.Y + 10);
-                            int X = clickpoint.X;
-                            int Y = clickpoint.Y;
-                            LeftMouseClick(X, Y);
+                            for (int x = 0; x < bitmap.Width && !found; x++)
+                            {
+                                Color pixelColor = bitmap.GetPixel(x, y);
+                                if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                                {
+                                    var clickpoint = new Point((int)CORRECT_BUTTON_LOCATION.X + x, (int)CORRECT_BUTTON_LOCATION.Y + y);
+                                    int X = clickpoint.X;
+                                    int Y = clickpoint.Y;
+                                    Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
+                                    LeftMouseClick(X, Y);
+                                    found = true;
+                                }
+                            }
                         }
+                        
+                        
                     }
                 }
                 else
