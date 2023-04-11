@@ -34,10 +34,15 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.0";
+        const string VER = "1.0.1";
         Point csgoResolution = new Point();
+        Point ORIGINAL_BUTTON_LOCATION = new Point(591, 393);
+        System.Windows.Point CORRECT_BUTTON_LOCATION = new System.Windows.Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
+        Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 95);
+        int frame = 0;
         MenuItem startUpCheck = new MenuItem();
+        MenuItem debugCheck = new MenuItem();
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -64,42 +69,37 @@ namespace CSAuto
                 about.Icon = new System.Windows.Controls.Image
                 {
                     Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
-                }; 
+                };
                 startUpCheck.IsChecked = Properties.Settings.Default.runAtStartUp;
                 startUpCheck.Header = "Start With Windows";
                 startUpCheck.IsCheckable = true;
                 startUpCheck.Click += StartUpCheck_Click;
+                debugCheck.IsChecked = Properties.Settings.Default.saveDebugFrames;
+                debugCheck.Header = "Save Frames";
+                debugCheck.IsCheckable = true;
+                debugCheck.Click += DebugCheck_Click;
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(new Separator());
+                exitcm.Items.Add(debugCheck);
                 exitcm.Items.Add(startUpCheck);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(exit);
                 exitcm.StaysOpen = false;
                 Top = -1000;
                 Left = -1000;
-                InitializeComponent();
-                try
-                {
-                    Visibility = Visibility.Hidden;
-                    //this.notifyicon.Icon = Properties.Resources.unlocked;
-                    this.notifyicon.ShowTip = false;
-                    this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
-                    this.notifyicon.Update();
-                    appTimer.Interval = TimeSpan.FromMilliseconds(1000);
-                    appTimer.Tick += new EventHandler(TimerCallback);
-                    appTimer.Start();
-                    System.Windows.Threading.DispatcherTimer timer2 = new System.Windows.Threading.DispatcherTimer();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void DebugCheck_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.saveDebugFrames = debugCheck.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
 
@@ -160,30 +160,41 @@ namespace CSAuto
                 if (activeProcces == null)
                     return;
                 string proccesName = activeProcces.ProcessName;
-                if(proccesName == "csgo")
+                if (proccesName == "csgo")
                 {
-                    if (csgoResolution == new Point()) 
+                    if (csgoResolution == new Point())
                     {
                         csgoResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     }
-                    
+                    System.Windows.Point aspectRatio = new System.Windows.Point(csgoResolution.X / 1400.0, csgoResolution.Y / 1050.0);
+                    CORRECT_BUTTON_LOCATION = new System.Windows.Point(ORIGINAL_BUTTON_LOCATION.X * aspectRatio.X, ORIGINAL_BUTTON_LOCATION.Y * aspectRatio.Y);
                     using (Bitmap bitmap = new Bitmap(218, 86))
                     {
                         using (Graphics g = Graphics.FromImage(bitmap))
                         {
-                            g.CopyFromScreen(new Point(591, 393), Point.Empty, new System.Drawing.Size(218,86));
+                            g.CopyFromScreen(new Point((int)CORRECT_BUTTON_LOCATION.X, (int)CORRECT_BUTTON_LOCATION.Y), Point.Empty, new System.Drawing.Size(218, 86));
                         }
-                        if(bitmap.GetPixel(70,10) == BUTTON_COLOR)
+                        if (Properties.Settings.Default.saveDebugFrames)
+                        {
+                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES");
+                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                        }
+                        Color pixelColor = bitmap.GetPixel(70, 10);
+                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                         {
                             Debug.WriteLine("Found accept button");
-                            var clickpoint = new Point(591 + 70, 393 + 10);
+                            var clickpoint = new Point((int)CORRECT_BUTTON_LOCATION.X + 70, (int)CORRECT_BUTTON_LOCATION.Y + 10);
                             int X = clickpoint.X;
                             int Y = clickpoint.Y;
                             LeftMouseClick(X, Y);
                         }
                     }
+                }
+                else
+                {
+                    csgoResolution = new Point();
                 }
             }
             catch (Exception ex)
@@ -217,6 +228,26 @@ namespace CSAuto
             }
 
             return success;
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e)
+        {
+            try
+            {
+                Visibility = Visibility.Hidden;
+                this.notifyicon.Icon = Properties.Resources.main;
+                this.notifyicon.Tip = "CSAuto - Auto csgo match acceptor";
+                this.notifyicon.ShowTip = true;
+                this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
+                this.notifyicon.Update();
+                appTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                appTimer.Tick += new EventHandler(TimerCallback);
+                appTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

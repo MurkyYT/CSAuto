@@ -34,5 +34,17 @@ namespace CSAuto.Properties {
                 this["runAtStartUp"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool saveDebugFrames {
+            get {
+                return ((bool)(this["saveDebugFrames"]));
+            }
+            set {
+                this["saveDebugFrames"] = value;
+            }
+        }
     }
 }
