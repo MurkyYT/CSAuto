@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
+using Keys = System.Windows.Forms.Keys;
 
 namespace CSAuto
 {
@@ -105,7 +107,7 @@ namespace CSAuto
                 exitcm.StaysOpen = false;
                 Top = -1000;
                 Left = -1000;
-                integrationPath = GetSteamPath() + "\\steamapps\\common\\Counter-Strike Global Offensive\\csgo\\cfg\\gamestate_integration_csauto.cfg";
+                integrationPath = GetCSGODir()+"\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
                 {
                     using (FileStream fs = File.Create(integrationPath))
@@ -220,8 +222,42 @@ namespace CSAuto
             {
                 TryToAutoReload(JSON);
             }
+            //AutoBuyDefuseKit(JSON); - Can't open buy menu, sadly :(
         }
 
+        private void AutoBuyDefuseKit(string JSON)
+        {
+            string matchState = GetMatchState(JSON);
+            string roundState = GetRoundState(JSON);
+            int money = GetMoney(JSON);
+            if(matchState == "live"
+                && roundState == "freezetime"
+                && money >= 400
+                && !HasDefuseKit(JSON))
+            {
+                Debug.WriteLine("Auto buying defuse kit");
+                PressKey(Keys.B);
+                PressKey(Keys.D5);
+                PressKey(Keys.D4);
+                PressKey(Keys.Escape);
+                PressKey(Keys.Escape);
+            }
+        }
+
+        private int GetMoney(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"money\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            return int.Parse(split[1].Split(',')[0]);
+        }
+        private string GetMatchState(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            return split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+        }
         private void TryToAutoReload(string JSON)
         {
             string weapons = GetWeapons(JSON);
@@ -236,10 +272,24 @@ namespace CSAuto
                 Debug.WriteLine("Auto reloading");
             }
         }
-
+        [DllImport("user32.dll")]
+        static extern void keybd_event(byte bVk, byte bScan, uint dwFlags,
+   UIntPtr dwExtraInfo);
+        void PressKey(Keys key)
+        {
+            const int KEYEVENTF_KEYDOWN = 0x0;
+            const int KEYEVENTF_KEYUP = 0x2;
+            // I had some Compile errors until I Casted the final 0 to UIntPtr like this...
+            keybd_event((byte)key, 0x45, KEYEVENTF_KEYDOWN, (UIntPtr)0);
+            keybd_event((byte)key, 0x45, KEYEVENTF_KEYUP, (UIntPtr)0);
+        }
         void PressKey(Key key)
         {
             System.Windows.Forms.SendKeys.SendWait(key.ToString());
+        }
+        void PressKey(string key)
+        {
+            System.Windows.Forms.SendKeys.SendWait(key);
         }
         private int GetBulletAmount(string weapon)
         {
@@ -249,7 +299,20 @@ namespace CSAuto
             int bullets = int.Parse(split[1].Split(',')[0]);
             return bullets;
         }
-
+        string GetRoundState(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            return split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+        }
+        bool HasDefuseKit(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"defusekit\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return false;
+            return bool.Parse(split[1].Split(',')[0]);
+        }
         private string GetWeapons(string jSON)
         {
             string[] splitted = jSON.Split(new string[] { "\"weapons\": {" }, StringSplitOptions.None);
@@ -279,6 +342,43 @@ namespace CSAuto
             string X86 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam", "InstallPath", null);
             string X64 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "InstallPath", null);
             return (X86 == null) ? X64 : X86;
+        }
+        private string GetCSGODir()
+        {
+            string steamPath = GetSteamPath();
+            string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
+
+            if (!File.Exists(pathsFile))
+                return null;
+
+            List<string> libraries = new List<string>();
+            libraries.Add(Path.Combine(steamPath));
+
+            var pathVDF = File.ReadAllLines(pathsFile);
+            // Okay, this is not a full vdf-parser, but it seems to work pretty much, since the 
+            // vdf-grammar is pretty easy. Hopefully it never breaks. I'm too lazy to write a full vdf-parser though. 
+            Regex pathRegex = new Regex(@"\""(([^\""]*):\\([^\""]*))\""");
+            foreach (var line in pathVDF)
+            {
+                if (pathRegex.IsMatch(line))
+                {
+                    string match = pathRegex.Matches(line)[0].Groups[1].Value;
+
+                    // De-Escape vdf. 
+                    libraries.Add(match.Replace("\\\\", "\\"));
+                }
+            }
+
+            foreach (var library in libraries)
+            {
+                string csgoPath = Path.Combine(library, "steamapps\\common\\Counter-Strike Global Offensive\\csgo");
+                if (Directory.Exists(csgoPath))
+                {
+                    return csgoPath;
+                }
+            }
+
+            return null;
         }
         private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
         {
