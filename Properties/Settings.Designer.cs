@@ -58,5 +58,17 @@ namespace CSAuto.Properties {
                 this["autoAcceptMatch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoReload {
+            get {
+                return ((bool)(this["autoReload"]));
+            }
+            set {
+                this["autoReload"] = value;
+            }
+        }
     }
 }
