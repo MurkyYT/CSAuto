@@ -39,7 +39,7 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.5";
+        const string VER = "1.0.6";
         Point csgoResolution = new Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
@@ -222,6 +222,7 @@ namespace CSAuto
             {
                 TryToAutoReload(JSON);
             }
+            //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI");
             //AutoBuyDefuseKit(JSON); - Can't open buy menu, sadly :(
         }
 
@@ -233,7 +234,8 @@ namespace CSAuto
             if(matchState == "live"
                 && roundState == "freezetime"
                 && money >= 400
-                && !HasDefuseKit(JSON))
+                && !HasDefuseKit(JSON)
+                && GetTeam(JSON) == "CT")
             {
                 Debug.WriteLine("Auto buying defuse kit");
                 PressKey(Keys.B);
@@ -243,7 +245,14 @@ namespace CSAuto
                 PressKey(Keys.Escape);
             }
         }
-
+        private string GetTeam(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"team\": \"" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            return split[1].Split('"')[0];
+            
+        }
         private int GetMoney(string JSON)
         {
             string[] split = JSON.Split(new string[] { "\"money\": " }, StringSplitOptions.None);
@@ -260,9 +269,20 @@ namespace CSAuto
         }
         private void TryToAutoReload(string JSON)
         {
-            string weapons = GetWeapons(JSON);
-            string weapon = GetActiveWeapon(weapons);
-            int bullets = GetBulletAmount(weapon);
+            string weapons;
+            string weapon;
+            int bullets;
+            string weaponType;
+            string weaponName;
+            try
+            {
+                weapons = GetWeapons(JSON);
+                weapon = GetActiveWeapon(weapons);
+                bullets = GetBulletAmount(weapon);
+                weaponType = GetWeaponType(weapon);
+                weaponName = GetWeaponName(weapon);
+            }
+            catch { return; }
             if (bullets == 0)
             {
                 mouse_event(MOUSEEVENTF_LEFTUP,
@@ -270,8 +290,28 @@ namespace CSAuto
                     System.Windows.Forms.Cursor.Position.Y,
                     0, 0);
                 Debug.WriteLine("Auto reloading");
+                if ((weaponType == "Rifle"
+                    || weaponType == "Machine Gun"
+                    || weaponType == "Submachine Gun")
+                    && (weaponName != "weapon_sg556"))
+                {
+                    Thread.Sleep(200);
+                    mouse_event(MOUSEEVENTF_LEFTDOWN,
+                        System.Windows.Forms.Cursor.Position.X,
+                        System.Windows.Forms.Cursor.Position.Y,
+                        0, 0);
+                    Debug.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
+                }
+                
             }
         }
+
+        private string GetWeaponName(string weapon)
+        {
+            string type = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1];
+            return type.Split('"')[0];
+        }
+
         [DllImport("user32.dll")]
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags,
    UIntPtr dwExtraInfo);
