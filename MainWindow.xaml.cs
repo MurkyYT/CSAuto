@@ -34,10 +34,9 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.3";
+        const string VER = "1.0.4";
         Point csgoResolution = new Point();
         Point ORIGINAL_BUTTON_LOCATION = new Point(591, 393);
-        System.Windows.Point CORRECT_BUTTON_LOCATION = new System.Windows.Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
         int frame = 0;
@@ -180,12 +179,6 @@ namespace CSAuto
                     csgoResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
-                    System.Windows.Point aspectRatio = new System.Windows.Point(
-                        csgoResolution.X / 1400.0,
-                        csgoResolution.Y / 1050.0);
-                    CORRECT_BUTTON_LOCATION = new System.Windows.Point(
-                        ORIGINAL_BUTTON_LOCATION.X * aspectRatio.X,
-                        ORIGINAL_BUTTON_LOCATION.Y * aspectRatio.Y);
                     if(Properties.Settings.Default.autoAcceptMatch)
                         AutoAcceptMatch();
                 }
@@ -198,11 +191,15 @@ namespace CSAuto
 
         private void AutoAcceptMatch()
         {
-            using (Bitmap bitmap = new Bitmap(218, 86))
+            using (Bitmap bitmap = new Bitmap(1, csgoResolution.Y))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
-                    g.CopyFromScreen(new Point((int)CORRECT_BUTTON_LOCATION.X, (int)CORRECT_BUTTON_LOCATION.Y), Point.Empty, new System.Drawing.Size(218, 86));
+                    g.CopyFromScreen(new Point(
+                        csgoResolution.X/2,
+                        0), 
+                        Point.Empty, 
+                        new System.Drawing.Size(1, csgoResolution.Y));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
@@ -210,20 +207,19 @@ namespace CSAuto
                     bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
                 }
                 bool found = false;
-                for (int y = 0; y < bitmap.Height && !found; y++)
+                for (int y = bitmap.Height-1; y >= 0 && !found; y--)
                 {
-                    for (int x = 0; x < bitmap.Width && !found; x++)
+                    Color pixelColor = bitmap.GetPixel(0, y);
+                    if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
-                        Color pixelColor = bitmap.GetPixel(x, y);
-                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
-                        {
-                            var clickpoint = new Point((int)CORRECT_BUTTON_LOCATION.X + x, (int)CORRECT_BUTTON_LOCATION.Y + y);
-                            int X = clickpoint.X;
-                            int Y = clickpoint.Y;
-                            Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
-                            LeftMouseClick(X, Y);
-                            found = true;
-                        }
+                        var clickpoint = new Point(
+                            csgoResolution.X / 2,
+                            y);
+                        int X = clickpoint.X;
+                        int Y = clickpoint.Y;
+                        Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
+                        LeftMouseClick(X, Y);
+                        found = true;
                     }
                 }
             }
