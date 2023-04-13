@@ -106,5 +106,17 @@ namespace CSAuto.Properties {
                 this["autoBuyArmor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool saveLogs {
+            get {
+                return ((bool)(this["saveLogs"]));
+            }
+            set {
+                this["saveLogs"] = value;
+            }
+        }
     }
 }

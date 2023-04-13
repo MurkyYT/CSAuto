@@ -51,6 +51,7 @@ namespace CSAuto
         MenuItem autoBuyArmor = new MenuItem();
         MenuItem autoBuyDefuseKit = new MenuItem();
         MenuItem preferArmorCheck = new MenuItem();
+        MenuItem saveLogsCheck = new MenuItem();
         string integrationPath = null;
         bool inGame = false;
         bool csgoActive = false;
@@ -70,6 +71,8 @@ namespace CSAuto
             try
             {
                 killDuplicates();
+                Log.saveLogs = Properties.Settings.Default.saveLogs;
+                Log.WriteLine($"CSAuto v{VER} started");
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 Application.Current.Exit += Current_Exit;
                 MenuItem autoBuyMenu = new MenuItem();
@@ -94,6 +97,10 @@ namespace CSAuto
                 saveFramesDebug.Header = "Save Frames";
                 saveFramesDebug.IsCheckable = true;
                 saveFramesDebug.Click += DebugCheck_Click;
+                saveLogsCheck.IsChecked = Properties.Settings.Default.saveLogs;
+                saveLogsCheck.Header = "Save Logs";
+                saveLogsCheck.IsCheckable = true;
+                saveLogsCheck.Click += SaveLogsCheck_Click;
                 autoAcceptMatchCheck.IsChecked = Properties.Settings.Default.autoAcceptMatch;
                 autoAcceptMatchCheck.Header = "Auto Accept Match";
                 autoAcceptMatchCheck.IsCheckable = true;
@@ -115,6 +122,7 @@ namespace CSAuto
                 autoReloadCheck.IsCheckable = true;
                 autoReloadCheck.Click += AutoReloadCheck_Click;
                 debugMenu.Items.Add(saveFramesDebug);
+                debugMenu.Items.Add(saveLogsCheck);
                 autoBuyMenu.Items.Add(preferArmorCheck);
                 autoBuyMenu.Items.Add(autoBuyArmor);
                 autoBuyMenu.Items.Add(autoBuyDefuseKit);
@@ -138,6 +146,7 @@ namespace CSAuto
                         Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
                         fs.Write(title, 0, title.Length);
                     }
+                    Log.WriteLine("CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
                 }
                 else
                 {
@@ -150,6 +159,7 @@ namespace CSAuto
                             Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
                             fs.Write(title, 0, title.Length);
                         }
+                        Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
                     }
                 }
             }
@@ -157,6 +167,13 @@ namespace CSAuto
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void SaveLogsCheck_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.saveLogs = saveLogsCheck.IsChecked;
+            Properties.Settings.Default.Save();
+            Log.saveLogs = Properties.Settings.Default.saveLogs;
         }
 
         private void PreferArmorCheck_Click(object sender, RoutedEventArgs e)
@@ -212,6 +229,8 @@ namespace CSAuto
         /// </summary>
         public void StopGSIServer()
         {
+            if (!ServerRunning)
+                return;
             ServerRunning = false;
             _listener.Close();
             (_listener as IDisposable).Dispose();
@@ -289,7 +308,7 @@ namespace CSAuto
                     AutoBuyArmor(JSON);
                 }
             }
-            //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+            Log.WriteLine($"Got info from GSI\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
         }
         private void AutoBuyArmor(string JSON)
         {
@@ -308,7 +327,7 @@ namespace CSAuto
                 (money >= 1000 && armor <= 85 && !hasHelmet))
                 )
             {
-                Debug.WriteLine("Auto buying armor");
+                Log.WriteLine("Auto buying armor");
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 Thread.Sleep(100);
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_5);
@@ -345,7 +364,7 @@ namespace CSAuto
                 && !hasDefuseKit
                 && GetTeam(JSON) == "CT")
             {
-                Debug.WriteLine("Auto buying defuse kit");
+                Log.WriteLine("Auto buying defuse kit");
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 Thread.Sleep(100);
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_5);
@@ -402,7 +421,7 @@ namespace CSAuto
                     System.Windows.Forms.Cursor.Position.X,
                     System.Windows.Forms.Cursor.Position.Y,
                     0, 0);
-                Debug.WriteLine("Auto reloading");
+                Log.WriteLine("Auto reloading");
                 if ((weaponType == "Rifle"
                     || weaponType == "Machine Gun"
                     || weaponType == "Submachine Gun")
@@ -413,7 +432,7 @@ namespace CSAuto
                         System.Windows.Forms.Cursor.Position.X,
                         System.Windows.Forms.Cursor.Position.Y,
                         0, 0);
-                    Debug.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
+                    Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
                 }
                 
             }
@@ -596,7 +615,7 @@ namespace CSAuto
             SetCursorPos(xpos, ypos);
             mouse_event(MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
             mouse_event(MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
-            Debug.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
+            Log.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
         }
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -631,7 +650,7 @@ namespace CSAuto
         {
             if (!ServerRunning)
             {
-                Debug.WriteLine("Starting GSI Server");
+                Log.WriteLine("Starting GSI Server");
                 StartGSIServer();
             }
             try
@@ -652,7 +671,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{ex}");
+                Log.WriteLine($"{ex}");
             }
         }
 
@@ -670,8 +689,8 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
-                    Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES");
-                    bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                    Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\DEBUG\\FRAMES");
+                    bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString())}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
                 }
                 bool found = false;
                 for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
@@ -684,7 +703,7 @@ namespace CSAuto
                             y);
                         int X = clickpoint.X;
                         int Y = clickpoint.Y;
-                        Debug.WriteLine($"Found accept button at X:{X} Y:{Y}");
+                        Log.WriteLine($"Found accept button at X:{X} Y:{Y}");
                         LeftMouseClick(X, Y);
                         found = true;
                     }
