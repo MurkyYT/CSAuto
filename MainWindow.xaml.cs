@@ -39,7 +39,7 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.7";
+        const string VER = "1.0.8";
         Point csgoResolution = new Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
@@ -54,6 +54,7 @@ namespace CSAuto
         string integrationPath = null;
         bool inGame = false;
         bool csgoActive = false;
+        string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:3000\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -134,8 +135,21 @@ namespace CSAuto
                 {
                     using (FileStream fs = File.Create(integrationPath))
                     {
-                        Byte[] title = new UTF8Encoding(true).GetBytes("\"CSAuto Integration v " + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:3000\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n}\r\n}");
+                        Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
                         fs.Write(title, 0, title.Length);
+                    }
+                }
+                else
+                {
+                    string[] lines = File.ReadAllLines(integrationPath);
+                    string ver = lines[0].Split('v')[1].Split('"')[0].Trim();
+                    if(ver != VER)
+                    {
+                        using (FileStream fs = File.Create(integrationPath))
+                        {
+                            Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                            fs.Write(title, 0, title.Length);
+                        }
                     }
                 }
             }
@@ -258,13 +272,12 @@ namespace CSAuto
                 string activity = splitted[1].Split('"')[0];
                 inGame = activity != "menu";
             }
-            if (csgoActive) 
+            if (csgoActive && !IsSpectating(JSON)) 
             {
                 if (Properties.Settings.Default.autoReload && inGame)
                 {
                     TryToAutoReload(JSON);
                 }
-                //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI");
                 if (Properties.Settings.Default.preferArmor)
                 {
                     AutoBuyArmor(JSON);
@@ -275,7 +288,8 @@ namespace CSAuto
                     AutoBuyDefuseKit(JSON);
                     AutoBuyArmor(JSON);
                 }
-            } 
+            }
+            //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
         }
         private void AutoBuyArmor(string JSON)
         {
@@ -362,8 +376,12 @@ namespace CSAuto
                 return null;
             return split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
         }
+        
         private void TryToAutoReload(string JSON)
         {
+            bool isMousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) & 0x80) != 0;
+            if (!isMousePressed)
+                return;
             string weapons;
             string weapon;
             int bullets;
@@ -400,7 +418,19 @@ namespace CSAuto
                 
             }
         }
+        bool IsSpectating(string JSON)
+        {
+            return GetBombState(JSON) != null;
+        }
+        string GetBombState(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"bomb\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
 
+            string state = split[1].Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1];
+            return state.Split('"')[0];
+        }
         private string GetWeaponName(string weapon)
         {
             string type = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1];
