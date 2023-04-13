@@ -285,13 +285,9 @@ namespace CSAuto
                 response.StatusDescription = "OK";
                 response.Close();
             }
-            string[] splitted = JSON.Split(new string[] { "\"activity\": \"" }, StringSplitOptions.None);
-            if (splitted.Length > 1)
-            {
-                string activity = splitted[1].Split('"')[0];
-                inGame = activity != "menu";
-            }
-            if (csgoActive && !IsSpectating(JSON)) 
+            string activity = GetActivity(JSON);
+            inGame = activity != "menu";
+            if (csgoActive && !IsSpectating(JSON))
             {
                 if (Properties.Settings.Default.autoReload && inGame)
                 {
@@ -308,12 +304,24 @@ namespace CSAuto
                     AutoBuyArmor(JSON);
                 }
             }
-            Log.WriteLine($"Got info from GSI\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+            Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
         }
+
+        private string GetActivity(string JSON)
+        {
+            string[] splitted = JSON.Split(new string[] { "\"activity\": \"" }, StringSplitOptions.None);
+            if (splitted.Length > 1)
+            {
+                return splitted[1].Split('"')[0];
+            }
+            return null;
+        }
+
         private void AutoBuyArmor(string JSON)
         {
             if (!Properties.Settings.Default.autoBuyArmor || !inGame)
                 return;
+            DisableConsole(JSON);
             string matchState = GetMatchState(JSON);
             string roundState = GetRoundState(JSON);
             int money = GetMoney(JSON);
@@ -338,6 +346,13 @@ namespace CSAuto
             }
         }
 
+        private void DisableConsole(string JSON)
+        {
+            string activity = GetActivity(JSON);
+            if(activity == "textinput")
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_GRAVE);
+        }
+
         private bool GetHelmetState(string JSON)
         {
             string[] split = JSON.Split(new string[] { "\"helmet\": " }, StringSplitOptions.None);
@@ -354,6 +369,7 @@ namespace CSAuto
         {
             if (!Properties.Settings.Default.autoBuyDefuseKit || !inGame)
                 return;
+            DisableConsole(JSON);
             string matchState = GetMatchState(JSON);
             string roundState = GetRoundState(JSON);
             bool hasDefuseKit = HasDefuseKit(JSON);
@@ -427,7 +443,7 @@ namespace CSAuto
                     || weaponType == "Submachine Gun")
                     && (weaponName != "weapon_sg556"))
                 {
-                    Thread.Sleep(200);
+                    Thread.Sleep(50);
                     mouse_event(MOUSEEVENTF_LEFTDOWN,
                         System.Windows.Forms.Cursor.Position.X,
                         System.Windows.Forms.Cursor.Position.Y,
