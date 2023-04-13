@@ -53,7 +53,7 @@ namespace CSAuto
         MenuItem preferArmorCheck = new MenuItem();
         string integrationPath = null;
         bool inGame = false;
-        Keyboard kbd = new Keyboard();
+        bool csgoActive = false;
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -258,26 +258,28 @@ namespace CSAuto
                 string activity = splitted[1].Split('"')[0];
                 inGame = activity != "menu";
             }
-            if (Properties.Settings.Default.autoReload && inGame)
+            if (csgoActive) 
             {
-                TryToAutoReload(JSON);
-            }
-            //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI");
-            if(Properties.Settings.Default.preferArmor)
-            {
-                AutoBuyArmor(JSON);
-                AutoBuyDefuseKit(JSON);
-            }
-            else
-            {
-                AutoBuyDefuseKit(JSON);
-                AutoBuyArmor(JSON);
-            }
-            
+                if (Properties.Settings.Default.autoReload && inGame)
+                {
+                    TryToAutoReload(JSON);
+                }
+                //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI");
+                if (Properties.Settings.Default.preferArmor)
+                {
+                    AutoBuyArmor(JSON);
+                    AutoBuyDefuseKit(JSON);
+                }
+                else
+                {
+                    AutoBuyDefuseKit(JSON);
+                    AutoBuyArmor(JSON);
+                }
+            } 
         }
         private void AutoBuyArmor(string JSON)
         {
-            if (!Properties.Settings.Default.autoBuyArmor && !inGame)
+            if (!Properties.Settings.Default.autoBuyArmor || !inGame)
                 return;
             string matchState = GetMatchState(JSON);
             string roundState = GetRoundState(JSON);
@@ -317,7 +319,7 @@ namespace CSAuto
 
         private void AutoBuyDefuseKit(string JSON)
         {
-            if (!Properties.Settings.Default.autoBuyDefuseKit && !inGame)
+            if (!Properties.Settings.Default.autoBuyDefuseKit || !inGame)
                 return;
             string matchState = GetMatchState(JSON);
             string roundState = GetRoundState(JSON);
@@ -608,7 +610,8 @@ namespace CSAuto
                 if (activeProcces == null)
                     return;
                 string proccesName = activeProcces.ProcessName;
-                if (proccesName == "csgo")
+                csgoActive = proccesName == "csgo";
+                if (csgoActive)
                 {
                     csgoResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
