@@ -39,7 +39,7 @@ namespace CSAuto
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.6";
+        const string VER = "1.0.7";
         Point csgoResolution = new Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
@@ -48,8 +48,12 @@ namespace CSAuto
         MenuItem saveFramesDebug = new MenuItem();
         MenuItem autoAcceptMatchCheck = new MenuItem();
         MenuItem autoReloadCheck = new MenuItem();
+        MenuItem autoBuyArmor = new MenuItem();
+        MenuItem autoBuyDefuseKit = new MenuItem();
+        MenuItem preferArmorCheck = new MenuItem();
         string integrationPath = null;
         bool inGame = false;
+        Keyboard kbd = new Keyboard();
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -67,6 +71,8 @@ namespace CSAuto
                 killDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 Application.Current.Exit += Current_Exit;
+                MenuItem autoBuyMenu = new MenuItem();
+                autoBuyMenu.Header = "Auto Buy";
                 MenuItem debugMenu = new MenuItem();
                 debugMenu.Header = "Debug";
                 MenuItem exit = new MenuItem();
@@ -91,14 +97,30 @@ namespace CSAuto
                 autoAcceptMatchCheck.Header = "Auto Accept Match";
                 autoAcceptMatchCheck.IsCheckable = true;
                 autoAcceptMatchCheck.Click += AutoAcceptMatchCheck_Click;
+                autoBuyArmor.IsChecked = Properties.Settings.Default.autoBuyArmor;
+                autoBuyArmor.Header = "Auto Buy Armor";
+                autoBuyArmor.IsCheckable = true;
+                autoBuyArmor.Click += AutoBuyArmor_Click;
+                autoBuyDefuseKit.IsChecked = Properties.Settings.Default.autoBuyDefuseKit;
+                autoBuyDefuseKit.Header = "Auto Buy Defuse Kit";
+                autoBuyDefuseKit.IsCheckable = true;
+                autoBuyDefuseKit.Click += AutoBuyDefuseKit_Click;
+                preferArmorCheck.IsChecked = Properties.Settings.Default.preferArmor;
+                preferArmorCheck.Header = "Prefer armor";
+                preferArmorCheck.IsCheckable = true;
+                preferArmorCheck.Click += PreferArmorCheck_Click;
                 autoReloadCheck.IsChecked = Properties.Settings.Default.autoReload;
                 autoReloadCheck.Header = "Auto Reload";
                 autoReloadCheck.IsCheckable = true;
                 autoReloadCheck.Click += AutoReloadCheck_Click;
                 debugMenu.Items.Add(saveFramesDebug);
+                autoBuyMenu.Items.Add(preferArmorCheck);
+                autoBuyMenu.Items.Add(autoBuyArmor);
+                autoBuyMenu.Items.Add(autoBuyDefuseKit);
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
+                exitcm.Items.Add(autoBuyMenu);
                 exitcm.Items.Add(autoReloadCheck);
                 exitcm.Items.Add(autoAcceptMatchCheck);
                 exitcm.Items.Add(startUpCheck);
@@ -121,6 +143,24 @@ namespace CSAuto
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void PreferArmorCheck_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.preferArmor = preferArmorCheck.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void AutoBuyDefuseKit_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.autoBuyDefuseKit = autoBuyDefuseKit.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void AutoBuyArmor_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.autoBuyArmor = autoBuyArmor.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void AutoReloadCheck_Click(object sender, RoutedEventArgs e)
@@ -223,26 +263,79 @@ namespace CSAuto
                 TryToAutoReload(JSON);
             }
             //Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - Got info from GSI");
-            //AutoBuyDefuseKit(JSON); - Can't open buy menu, sadly :(
+            if(Properties.Settings.Default.preferArmor)
+            {
+                AutoBuyArmor(JSON);
+                AutoBuyDefuseKit(JSON);
+            }
+            else
+            {
+                AutoBuyDefuseKit(JSON);
+                AutoBuyArmor(JSON);
+            }
+            
+        }
+        private void AutoBuyArmor(string JSON)
+        {
+            if (!Properties.Settings.Default.autoBuyArmor && !inGame)
+                return;
+            string matchState = GetMatchState(JSON);
+            string roundState = GetRoundState(JSON);
+            int money = GetMoney(JSON);
+            int armor = GetArmor(JSON);
+            bool hasHelmet = GetHelmetState(JSON);
+            if ((matchState == "live"
+                && roundState == "freezetime")
+                && 
+                ((money >= 650 && armor <= 85)||
+                (money >= 350 && armor == 100 && !hasHelmet)||
+                (money >= 1000 && armor <= 85 && !hasHelmet))
+                )
+            {
+                Debug.WriteLine("Auto buying armor");
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                Thread.Sleep(100);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_5);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_1);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_2);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+            }
+        }
+
+        private bool GetHelmetState(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"helmet\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return false;
+            try
+            {
+                return bool.Parse(split[1].Split(',')[0]);
+            }
+            catch { return false; }
         }
 
         private void AutoBuyDefuseKit(string JSON)
         {
+            if (!Properties.Settings.Default.autoBuyDefuseKit && !inGame)
+                return;
             string matchState = GetMatchState(JSON);
             string roundState = GetRoundState(JSON);
+            bool hasDefuseKit = HasDefuseKit(JSON);
             int money = GetMoney(JSON);
             if(matchState == "live"
                 && roundState == "freezetime"
                 && money >= 400
-                && !HasDefuseKit(JSON)
+                && !hasDefuseKit
                 && GetTeam(JSON) == "CT")
             {
                 Debug.WriteLine("Auto buying defuse kit");
-                PressKey(Keys.B);
-                PressKey(Keys.D5);
-                PressKey(Keys.D4);
-                PressKey(Keys.Escape);
-                PressKey(Keys.Escape);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                Thread.Sleep(100);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_5);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_4);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
             }
         }
         private string GetTeam(string JSON)
@@ -323,6 +416,11 @@ namespace CSAuto
             keybd_event((byte)key, 0x45, KEYEVENTF_KEYDOWN, (UIntPtr)0);
             keybd_event((byte)key, 0x45, KEYEVENTF_KEYUP, (UIntPtr)0);
         }
+        void PressKey(Keyboard.DirectXKeyStrokes key)
+        {
+            Keyboard.SendKey(key, false, Keyboard.InputType.Keyboard);
+            Keyboard.SendKey(key, true, Keyboard.InputType.Keyboard);
+        }
         void PressKey(Key key)
         {
             System.Windows.Forms.SendKeys.SendWait(key.ToString());
@@ -346,12 +444,25 @@ namespace CSAuto
                 return null;
             return split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
         }
+        int GetArmor(string JSON)
+        {
+            string[] split = JSON.Split(new string[] { "\"armor\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            int armor = int.Parse(split[1].Split(',')[0]);
+            return armor;
+        }
         bool HasDefuseKit(string JSON)
         {
-            string[] split = JSON.Split(new string[] { "\"defusekit\": " }, StringSplitOptions.None);
+            string splitStr = JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] split = splitStr.Split(new string[] { "\"defusekit\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return false;
-            return bool.Parse(split[1].Split(',')[0]);
+            try
+            {
+                return bool.Parse(split[1].Split(',')[0]);
+            }
+            catch { return false; }
         }
         private string GetWeapons(string jSON)
         {
