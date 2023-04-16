@@ -140,6 +140,8 @@ namespace CSAuto
                 exitcm.Items.Add(startUpCheck);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(exit);
+                Top = -1000;
+                Left = -1000;
                 exitcm.StaysOpen = false;
                 integrationPath = GetCSGODir()+"\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
@@ -296,16 +298,19 @@ namespace CSAuto
             int money = GetMoney(JSON);
             if (debugWind != null)
                 debugWind.UpdateText(JSON);
-            if (lastActivity != activity)
-                Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity)} -> {(activity == null ? "None" : activity)}");
-            if (currentMatchState != matchState)
-                Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState)} -> {(currentMatchState == null ? "None" : currentMatchState)}");
-            if (currentRoundState != roundState)
-                Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState)} -> {(currentRoundState == null ? "None" : currentRoundState)}");
-            if (round != currentRound)
-                Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
-            //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
-            //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+            if (Properties.Settings.Default.saveLogs)
+            {
+                if (lastActivity != activity)
+                    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity)} -> {(activity == null ? "None" : activity)}");
+                if (currentMatchState != matchState)
+                    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState)} -> {(currentMatchState == null ? "None" : currentMatchState)}");
+                if (currentRoundState != roundState)
+                    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState)} -> {(currentRoundState == null ? "None" : currentRoundState)}");
+                if (round != currentRound)
+                    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
+                //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
+                //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+            }
             lastActivity = activity;
             matchState = currentMatchState;
             roundState = currentRoundState;
@@ -331,6 +336,16 @@ namespace CSAuto
             }
             //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
         }
+        bool IsForegroundProcess(uint pid)
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            if (hwnd == null) return false;
+
+            uint foregroundPid;
+            if (GetWindowThreadProcessId(hwnd,out foregroundPid) == (IntPtr)0) return false;
+
+            return (foregroundPid == pid);
+        }
         private void TimerCallback(object sender, EventArgs e)
         {
             if (!ServerRunning)
@@ -340,11 +355,11 @@ namespace CSAuto
             }
             try
             {
-                Process activeProcces = GetActiveProcess();
-                if (activeProcces == null)
-                    return;
-                string proccesName = activeProcces.ProcessName;
-                csgoActive = proccesName == "csgo";
+                uint pid = 0;
+                Process[] prcs = Process.GetProcessesByName("csgo");
+                if (prcs.Length > 0)
+                    pid = (uint)prcs[0].Id;
+                csgoActive = IsForegroundProcess(pid);
                 if (csgoActive)
                 {
                     csgoResolution = new Point(
@@ -709,16 +724,6 @@ namespace CSAuto
             }
             Properties.Settings.Default.Save();
         }
-        Process GetActiveProcess()
-        {
-            IntPtr hwnd = GetForegroundWindow();
-            if (hwnd == IntPtr.Zero)
-                return null;
-            uint pid;
-            GetWindowThreadProcessId(hwnd, out pid);
-            Process p = Process.GetProcessById((int)pid);
-            return p;
-        }
         private void AutoAcceptMatch()
         {
             using (Bitmap bitmap = new Bitmap(1, csgoResolution.Y))
@@ -785,8 +790,7 @@ namespace CSAuto
         {
             try
             {
-                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                Close();
+                Visibility = Visibility.Hidden;
                 this.notifyicon.Icon = Properties.Resources.main;
                 this.notifyicon.Tip = "CSAuto - CS:GO Automation";
                 this.notifyicon.ShowTip = true;
