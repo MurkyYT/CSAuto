@@ -11,6 +11,7 @@ namespace CSAuto
     class Log
     {
         public static bool saveLogs = false;
+        public static GSIDebugWindow debugWind = null;
         public static void VerifyDir(string path)
         {
             try
@@ -26,6 +27,9 @@ namespace CSAuto
 
         public static void Write(string lines)
         {
+            lines = $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines;
+            if (debugWind != null)
+                debugWind.UpdateDebug(lines);
             if (saveLogs)
             {
                 string path = "DEBUG/logs/";
@@ -35,8 +39,8 @@ namespace CSAuto
                 {
 
                     System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
-                    Debug.Write($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines);
-                    file.Write($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines);
+                    Debug.Write(lines);
+                    file.Write(lines);
                     file.Close();
 
                 }
@@ -45,6 +49,9 @@ namespace CSAuto
         }
         public static void WriteLine(string lines)
         {
+            lines = $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines;
+            if (debugWind != null)
+                debugWind.UpdateDebug(lines);
             if (saveLogs)
             {
                 string path = "DEBUG/logs/";
@@ -54,8 +61,8 @@ namespace CSAuto
                 {
 
                     System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
-                    Debug.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - "+lines);
-                    file.WriteLine($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines);
+                    Debug.WriteLine(lines);
+                    file.WriteLine(lines);
                     file.Close();
 
                 }

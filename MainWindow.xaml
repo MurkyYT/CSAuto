@@ -5,8 +5,5 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CSAuto"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" SourceInitialized="Window_SourceInitialized">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="450" Width="800" SourceInitialized="Window_SourceInitialized" ShowInTaskbar="False" WindowStyle="ToolWindow">
 </Window>

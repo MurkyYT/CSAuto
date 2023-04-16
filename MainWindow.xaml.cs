@@ -36,10 +36,11 @@ namespace CSAuto
     /// </summary>
     public partial class MainWindow : Window
     {
+        public GSIDebugWindow debugWind = null;
         NotifyIconWrapper notifyicon = new NotifyIconWrapper();
         ContextMenu exitcm = new ContextMenu();
         System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.8";
+        const string VER = "1.0.9";
         Point csgoResolution = new Point();
         Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
@@ -79,7 +80,6 @@ namespace CSAuto
                 Log.saveLogs = Properties.Settings.Default.saveLogs;
                 Log.WriteLine($"CSAuto v{VER} started");
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-                Application.Current.Exit += Current_Exit;
                 MenuItem autoBuyMenu = new MenuItem();
                 autoBuyMenu.Header = "Auto Buy";
                 MenuItem debugMenu = new MenuItem();
@@ -141,8 +141,6 @@ namespace CSAuto
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(exit);
                 exitcm.StaysOpen = false;
-                Top = -1000;
-                Left = -1000;
                 integrationPath = GetCSGODir()+"\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
                 {
@@ -296,6 +294,8 @@ namespace CSAuto
             string currentWeapon = GetActiveWeapon(GetWeapons(JSON));
             int currentRound = GetRound(JSON);
             int money = GetMoney(JSON);
+            if (debugWind != null)
+                debugWind.UpdateText(JSON);
             if (lastActivity != activity)
                 Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity)} -> {(activity == null ? "None" : activity)}");
             if (currentMatchState != matchState)
@@ -498,7 +498,7 @@ namespace CSAuto
                         || weaponType == "Submachine Gun")
                         && (weaponName != "weapon_sg556"))
                     {
-                        Thread.Sleep(50);
+                        Thread.Sleep(150);
                         mouse_event(MOUSEEVENTF_LEFTDOWN,
                             System.Windows.Forms.Cursor.Position.X,
                             System.Windows.Forms.Cursor.Position.Y,
@@ -754,7 +754,6 @@ namespace CSAuto
                 }
             }
         }
-
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             exitcm.IsOpen = true;
@@ -763,9 +762,6 @@ namespace CSAuto
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-        }
-        private void Current_Exit(object sender, ExitEventArgs e)
-        {
             this.notifyicon.Close();
             StopGSIServer();
         }
@@ -789,11 +785,13 @@ namespace CSAuto
         {
             try
             {
-                Visibility = Visibility.Hidden;
+                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                Close();
                 this.notifyicon.Icon = Properties.Resources.main;
                 this.notifyicon.Tip = "CSAuto - CS:GO Automation";
                 this.notifyicon.ShowTip = true;
                 this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
+                this.notifyicon.LeftMouseButtonDoubleClick += Notifyicon_LeftMouseButtonDoubleClick;
                 this.notifyicon.Update();
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
@@ -802,6 +800,20 @@ namespace CSAuto
             catch (Exception ex)
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
+        {
+            //open debug menu
+            if (debugWind == null)
+            {
+                debugWind = new GSIDebugWindow(this);
+                Log.debugWind = debugWind;
+                debugWind.Show();
+            }
+            else
+            {
+                debugWind.Show();
             }
         }
     }
