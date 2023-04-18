@@ -36,32 +36,51 @@ namespace CSAuto
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Constants
+        /// </summary>
+        const string VER = "1.1.0";
+        const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:3000\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
+        /// <summary>
+        /// Publics
+        /// </summary>
         public GSIDebugWindow debugWind = null;
-        NotifyIconWrapper notifyicon = new NotifyIconWrapper();
-        ContextMenu exitcm = new ContextMenu();
-        System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
-        const string VER = "1.0.9";
+        /// <summary>
+        /// Readonly
+        /// </summary>
+        readonly NotifyIconWrapper notifyicon = new NotifyIconWrapper();
+        readonly ContextMenu exitcm = new ContextMenu();
+        readonly System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
+        readonly Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
+        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
+        readonly MenuItem startUpCheck = new MenuItem();
+        readonly MenuItem saveFramesDebug = new MenuItem();
+        readonly MenuItem autoAcceptMatchCheck = new MenuItem();
+        readonly MenuItem autoReloadCheck = new MenuItem();
+        readonly MenuItem autoBuyArmor = new MenuItem();
+        readonly MenuItem autoBuyDefuseKit = new MenuItem();
+        readonly MenuItem preferArmorCheck = new MenuItem();
+        readonly MenuItem saveLogsCheck = new MenuItem();
+        readonly string integrationPath = null;
+        /// <summary>
+        /// Privates
+        /// </summary>
+        private readonly AutoResetEvent _waitForConnection = new AutoResetEvent(false);
+        private HttpListener _listener;
+        private bool ServerRunning = false;
+        /// <summary>
+        /// Members
+        /// </summary>
         Point csgoResolution = new Point();
-        Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
-        Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
+        GameState GameState = new GameState(null);
         int frame = 0;
-        MenuItem startUpCheck = new MenuItem();
-        MenuItem saveFramesDebug = new MenuItem();
-        MenuItem autoAcceptMatchCheck = new MenuItem();
-        MenuItem autoReloadCheck = new MenuItem();
-        MenuItem autoBuyArmor = new MenuItem();
-        MenuItem autoBuyDefuseKit = new MenuItem();
-        MenuItem preferArmorCheck = new MenuItem();
-        MenuItem saveLogsCheck = new MenuItem();
-        string integrationPath = null;
         bool inGame = false;
         bool csgoActive = false;
-        string lastActivity;
-        string matchState;
-        string roundState;
-        string weapon;
+        Activity? lastActivity;
+        Phase? matchState;
+        Phase? roundState;
+        Weapon weapon;
         int round = -1;
-        string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:3000\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -76,23 +95,31 @@ namespace CSAuto
             InitializeComponent();
             try
             {
-                killDuplicates();
+                KillDuplicates();
                 Log.saveLogs = Properties.Settings.Default.saveLogs;
                 Log.WriteLine($"CSAuto v{VER} started");
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-                MenuItem autoBuyMenu = new MenuItem();
-                autoBuyMenu.Header = "Auto Buy";
-                MenuItem debugMenu = new MenuItem();
-                debugMenu.Header = "Debug";
-                MenuItem exit = new MenuItem();
-                exit.Header = "Exit";
-                exit.Click += Exit_Click;
-                MenuItem about = new MenuItem();
-                about.Header = $"{typeof(MainWindow).Namespace} - {VER}";
-                about.IsEnabled = false;
-                about.Icon = new System.Windows.Controls.Image
+                MenuItem autoBuyMenu = new MenuItem
                 {
-                    Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
+                    Header = "Auto Buy"
+                };
+                MenuItem debugMenu = new MenuItem
+                {
+                    Header = "Debug"
+                };
+                MenuItem exit = new MenuItem
+                {
+                    Header = "Exit"
+                };
+                exit.Click += Exit_Click;
+                MenuItem about = new MenuItem
+                {
+                    Header = $"{typeof(MainWindow).Namespace} - {VER}",
+                    IsEnabled = false,
+                    Icon = new System.Windows.Controls.Image
+                    {
+                        Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
+                    }
                 };
                 startUpCheck.IsChecked = Properties.Settings.Default.runAtStartUp;
                 startUpCheck.Header = "Start With Windows";
@@ -204,10 +231,6 @@ namespace CSAuto
             Properties.Settings.Default.autoReload = autoReloadCheck.IsChecked;
             Properties.Settings.Default.Save();
         }
-
-        private AutoResetEvent _waitForConnection = new AutoResetEvent(false);
-        private HttpListener _listener;
-        private bool ServerRunning = false;
         public bool StartGSIServer()
         {
             if (ServerRunning)
@@ -290,22 +313,22 @@ namespace CSAuto
                 response.StatusDescription = "OK";
                 response.Close();
             }
-            string activity = GetActivity(JSON);
-            string currentMatchState = GetMatchState(JSON);
-            string currentRoundState = GetRoundState(JSON);
-            string currentWeapon = GetActiveWeapon(GetWeapons(JSON));
-            int currentRound = GetRound(JSON);
-            int money = GetMoney(JSON);
+            GameState = new GameState(JSON);
+            Activity? activity = GameState.Player.CurrentActivity;
+            Phase? currentMatchState = GameState.Match.Phase;
+            Phase? currentRoundState = GameState.Round.Phase;
+            Weapon currentWeapon = GameState.Player.ActiveWeapon;
+            int currentRound = GameState.Round.CurrentRound;
             if (debugWind != null)
                 debugWind.UpdateText(JSON);
             if (Properties.Settings.Default.saveLogs)
             {
                 if (lastActivity != activity)
-                    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity)} -> {(activity == null ? "None" : activity)}");
+                    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
                 if (currentMatchState != matchState)
-                    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState)} -> {(currentMatchState == null ? "None" : currentMatchState)}");
+                    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState.ToString())} -> {(currentMatchState == null ? "None" : currentMatchState.ToString())}");
                 if (currentRoundState != roundState)
-                    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState)} -> {(currentRoundState == null ? "None" : currentRoundState)}");
+                    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState.ToString())} -> {(currentRoundState == null ? "None" : currentRoundState.ToString())}");
                 if (round != currentRound)
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
@@ -316,22 +339,22 @@ namespace CSAuto
             roundState = currentRoundState;
             round = currentRound;
             weapon = currentWeapon;
-            inGame = activity != "menu";
-            if (csgoActive && !IsSpectating(JSON))
+            inGame = activity != Activity.Menu;
+            if (csgoActive && !GameState.Player.IsSpectating)
             {
                 if (Properties.Settings.Default.autoReload && inGame)
                 {
-                    TryToAutoReload(JSON);
+                    TryToAutoReload();
                 }
                 if (Properties.Settings.Default.preferArmor)
                 {
-                    AutoBuyArmor(JSON,money);
-                    AutoBuyDefuseKit(JSON,money);
+                    AutoBuyArmor();
+                    AutoBuyDefuseKit();
                 }
                 else
                 {
-                    AutoBuyDefuseKit(JSON,money);
-                    AutoBuyArmor(JSON,money);
+                    AutoBuyDefuseKit();
+                    AutoBuyArmor();
                 }
             }
             //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
@@ -341,8 +364,7 @@ namespace CSAuto
             IntPtr hwnd = GetForegroundWindow();
             if (hwnd == null) return false;
 
-            uint foregroundPid;
-            if (GetWindowThreadProcessId(hwnd,out foregroundPid) == (IntPtr)0) return false;
+            if (GetWindowThreadProcessId(hwnd, out uint foregroundPid) == (IntPtr)0) return false;
 
             return (foregroundPid == pid);
         }
@@ -375,44 +397,22 @@ namespace CSAuto
             }
             GC.Collect();
         }
-        private int GetRound(string JSON)
-        {
-            string[] splitted = JSON.Split(new string[] { "\"round\": " }, StringSplitOptions.None);
-            if (splitted.Length > 1)
-            {
-                int res;
-                bool succes = int.TryParse(splitted[1].Split(',')[0],out res);
-                if (succes)
-                    return res;
-            }
-            return -1;
-        }
-
-        private string GetActivity(string JSON)
-        {
-            string[] splitted = JSON.Split(new string[] { "\"activity\": \"" }, StringSplitOptions.None);
-            if (splitted.Length > 1)
-            {
-                return splitted[1].Split('"')[0];
-            }
-            return null;
-        }
-
-        private void AutoBuyArmor(string JSON,int money)
+        private void AutoBuyArmor()
         {
             if (!Properties.Settings.Default.autoBuyArmor || !inGame)
                 return;
-            int armor = GetArmor(JSON);
-            bool hasHelmet = GetHelmetState(JSON);
-            if ((matchState == "live"
-                && roundState == "freezetime")
+            int armor = GameState.Player.Armor;
+            bool hasHelmet = GameState.Player.HasHelmet;
+            int money = GameState.Player.Money;
+            if ((matchState == Phase.Live
+                && roundState == Phase.Freezetime)
                 && 
                 ((money >= 650 && armor <= 70)||
                 (money >= 350 && armor == 100 && !hasHelmet)||
                 (money >= 1000 && armor <= 70 && !hasHelmet))
                 )
             {
-                DisableConsole(JSON);
+                DisableConsole();
                 Log.WriteLine("Auto buying armor");
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 Thread.Sleep(100);
@@ -426,18 +426,19 @@ namespace CSAuto
                 });
             }
         }
-        private void AutoBuyDefuseKit(string JSON, int money)
+        private void AutoBuyDefuseKit()
         {
             if (!Properties.Settings.Default.autoBuyDefuseKit || !inGame)
                 return;
-            bool hasDefuseKit = HasDefuseKit(JSON);
-            if (matchState == "live"
-                && roundState == "freezetime"
+            bool hasDefuseKit = GameState.Player.HasDefuseKit;
+            int money = GameState.Player.Money;
+            if (matchState == Phase.Live
+                && roundState == Phase.Freezetime
                 && money >= 400
                 && !hasDefuseKit
-                && GetTeam(JSON) == "CT")
+                && GameState.Player.Team == Team.CT)
             {
-                DisableConsole(JSON);
+                DisableConsole();
                 Log.WriteLine("Auto buying defuse kit");
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 Thread.Sleep(100);
@@ -450,57 +451,22 @@ namespace CSAuto
                 });
             }
         }
-        private void DisableConsole(string JSON)
+        private void DisableConsole()
         {
-            string activity = GetActivity(JSON);
-            if(activity == "textinput")
+            Activity? activity = GameState.Player.CurrentActivity;
+            if(activity == Activity.Textinput)
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_GRAVE);
         }
-
-        private bool GetHelmetState(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"helmet\": " }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return false;
-            try
-            {
-                return bool.Parse(split[1].Split(',')[0]);
-            }
-            catch { return false; }
-        }
-        private string GetTeam(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"team\": \"" }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return null;
-            return split[1].Split('"')[0];
-            
-        }
-        private int GetMoney(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"money\": " }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return -1;
-            return int.Parse(split[1].Split(',')[0]);
-        }
-        private string GetMatchState(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return null;
-            return split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-        }
-        
-        private void TryToAutoReload(string JSON)
+        private void TryToAutoReload()
         {
             bool isMousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) & 0x80) != 0;
-            if (!isMousePressed)
+            if (!isMousePressed || weapon == null)
                 return;
             try
             {
-                int bullets = GetBulletAmount(weapon);
-                string weaponType = GetWeaponType(weapon);
-                string weaponName = GetWeaponName(weapon);
+                int bullets = weapon.Bullets;
+                WeaponType? weaponType = weapon.Type;
+                string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
                     mouse_event(MOUSEEVENTF_LEFTUP,
@@ -508,9 +474,10 @@ namespace CSAuto
                         System.Windows.Forms.Cursor.Position.Y,
                         0, 0);
                     Log.WriteLine("Auto reloading");
-                    if ((weaponType == "Rifle"
-                        || weaponType == "Machine Gun"
-                        || weaponType == "Submachine Gun")
+                    if ((weaponType == WeaponType.Rifle
+                        || weaponType == WeaponType.MachineGun
+                        || weaponType == WeaponType.SubmachineGun
+                        || weaponName == "weapon_cz75a")
                         && (weaponName != "weapon_sg556"))
                     {
                         Thread.Sleep(150);
@@ -525,26 +492,6 @@ namespace CSAuto
             }
             catch { return; }
         }
-        bool IsSpectating(string JSON)
-        {
-            return GetBombState(JSON) != null;
-        }
-        string GetBombState(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"bomb\": {" }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return null;
-
-            string state = split[1].Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1];
-            return state.Split('"')[0];
-        }
-        private string GetWeaponName(string weapon)
-        {
-            if (weapon == null)
-                return null;
-            string type = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1];
-            return type.Split('"')[0];
-        }
         void PressKey(Keyboard.DirectXKeyStrokes key)
         {
             Keyboard.SendKey(key, false, Keyboard.InputType.Keyboard);
@@ -558,80 +505,11 @@ namespace CSAuto
                 Keyboard.SendKey(keys[i], true, Keyboard.InputType.Keyboard);
             }
         }
-        private int GetBulletAmount(string weapon)
-        {
-            if (weapon == null)
-                return -1;
-            string[] split = weapon.Split(new string[] { "\"ammo_clip\":" }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return -1;
-            int bullets = int.Parse(split[1].Split(',')[0]);
-            return bullets;
-        }
-        string GetRoundState(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return null;
-            return split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-        }
-        int GetArmor(string JSON)
-        {
-            string[] split = JSON.Split(new string[] { "\"armor\": " }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return -1;
-            int armor = int.Parse(split[1].Split(',')[0]);
-            return armor;
-        }
-        bool HasDefuseKit(string JSON)
-        {
-            string splitStr = JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
-            string[] split = splitStr.Split(new string[] { "\"defusekit\": " }, StringSplitOptions.None);
-            if (split.Length < 2)
-                return false;
-            try
-            {
-                return bool.Parse(split[1].Split(',')[0]);
-            }
-            catch { return false; }
-        }
-        private string GetWeapons(string jSON)
-        {
-            string[] splitted = jSON.Split(new string[] { "\"weapons\": {" }, StringSplitOptions.None);
-            if (splitted.Length > 1)
-            {
-                string weapons = splitted[1].Split(new string[] { "\"match_stats\": {" }, StringSplitOptions.None)[0];
-                return weapons;
-            }
-            return null;
-        }
-
-        private string GetActiveWeapon(string weapons)
-        {
-            if (weapons == null)
-                return null;
-            string[] splitted = weapons.Split(new string[] { "\"state\": \"" }, StringSplitOptions.None);
-            for (int i = 1; i < splitted.Length; i++)
-            {
-                if (splitted[i].Split('"')[0] == "active")
-                {
-                    return weapons.Split(new string[] { "\"weapon_" + (i - 1) + "\": {" }, StringSplitOptions.None)[1].Split(new string[] { "}" }, StringSplitOptions.None)[0].Replace("\t", "").Trim();
-                }
-            }
-            return null;
-        }
-        private string GetWeaponType(string weapon)
-        {
-            if (weapon == null)
-                return null;
-            string type = weapon.Split(new string[] { "\"type\": \"" }, StringSplitOptions.None)[1];
-            return type.Split('"')[0];
-        }
         string GetSteamPath()
         {
             string X86 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam", "InstallPath", null);
             string X64 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "InstallPath", null);
-            return (X86 == null) ? X64 : X86;
+            return X86 ?? X64;
         }
         private string GetCSGODir()
         {
@@ -641,8 +519,10 @@ namespace CSAuto
             if (!File.Exists(pathsFile))
                 return null;
 
-            List<string> libraries = new List<string>();
-            libraries.Add(Path.Combine(steamPath));
+            List<string> libraries = new List<string>
+            {
+                Path.Combine(steamPath)
+            };
 
             var pathVDF = File.ReadAllLines(pathsFile);
             // Okay, this is not a full vdf-parser, but it seems to work pretty much, since the 
@@ -708,7 +588,7 @@ namespace CSAuto
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
         {
             string appname = Assembly.GetEntryAssembly().GetName().Name;
-            string executablePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            string executablePath = Process.GetCurrentProcess().MainModule.FileName;
             using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
             {
                 if ((bool)startUpCheck.IsChecked)
@@ -734,7 +614,7 @@ namespace CSAuto
                         csgoResolution.X / 2,
                         0),
                         Point.Empty,
-                        new System.Drawing.Size(1, csgoResolution.Y));
+                        new System.Drawing.Size(1, csgoResolution.Y/2));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
@@ -770,7 +650,7 @@ namespace CSAuto
             this.notifyicon.Close();
             StopGSIServer();
         }
-        private bool killDuplicates()
+        private bool KillDuplicates()
         {
             bool success = true;
             var currentProcess = Process.GetCurrentProcess();
@@ -785,7 +665,6 @@ namespace CSAuto
 
             return success;
         }
-
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
             try

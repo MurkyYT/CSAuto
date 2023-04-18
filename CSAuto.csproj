@@ -74,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GameState.cs" />
     <Compile Include="GSIDebugWindow.xaml.cs">
       <DependentUpon>GSIDebugWindow.xaml</DependentUpon>
     </Compile>
