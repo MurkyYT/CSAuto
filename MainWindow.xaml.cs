@@ -39,7 +39,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.1.0";
+        const string VER = "1.1.1";
         const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:3000\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         /// <summary>
         /// Publics
@@ -313,16 +313,16 @@ namespace CSAuto
                 response.StatusDescription = "OK";
                 response.Close();
             }
-            GameState = new GameState(JSON);
-            Activity? activity = GameState.Player.CurrentActivity;
-            Phase? currentMatchState = GameState.Match.Phase;
-            Phase? currentRoundState = GameState.Round.Phase;
-            Weapon currentWeapon = GameState.Player.ActiveWeapon;
-            int currentRound = GameState.Round.CurrentRound;
-            if (debugWind != null)
-                debugWind.UpdateText(JSON);
-            if (Properties.Settings.Default.saveLogs)
+            try
             {
+                GameState = new GameState(JSON);
+                Activity? activity = GameState.Player.CurrentActivity;
+                Phase? currentMatchState = GameState.Match.Phase;
+                Phase? currentRoundState = GameState.Round.Phase;
+                Weapon currentWeapon = GameState.Player.ActiveWeapon;
+                int currentRound = GameState.Round.CurrentRound;
+                if (debugWind != null)
+                    debugWind.UpdateText(JSON);
                 if (lastActivity != activity)
                     Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
                 if (currentMatchState != matchState)
@@ -333,31 +333,36 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+                lastActivity = activity;
+                matchState = currentMatchState;
+                roundState = currentRoundState;
+                round = currentRound;
+                weapon = currentWeapon;
+                inGame = activity != Activity.Menu;
+                if (csgoActive && !GameState.Player.IsSpectating)
+                {
+                    if (Properties.Settings.Default.autoReload && inGame)
+                    {
+                        TryToAutoReload();
+                    }
+                    if (Properties.Settings.Default.preferArmor)
+                    {
+                        AutoBuyArmor();
+                        AutoBuyDefuseKit();
+                    }
+                    else
+                    {
+                        AutoBuyDefuseKit();
+                        AutoBuyArmor();
+                    }
+                }
+                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+
             }
-            lastActivity = activity;
-            matchState = currentMatchState;
-            roundState = currentRoundState;
-            round = currentRound;
-            weapon = currentWeapon;
-            inGame = activity != Activity.Menu;
-            if (csgoActive && !GameState.Player.IsSpectating)
+            catch(Exception ex) 
             {
-                if (Properties.Settings.Default.autoReload && inGame)
-                {
-                    TryToAutoReload();
-                }
-                if (Properties.Settings.Default.preferArmor)
-                {
-                    AutoBuyArmor();
-                    AutoBuyDefuseKit();
-                }
-                else
-                {
-                    AutoBuyDefuseKit();
-                    AutoBuyArmor();
-                }
+                Log.WriteLine("Error happend while getting GSI Info\n"+ex);
             }
-            //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
         }
         bool IsForegroundProcess(uint pid)
         {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.AxHost;
 
 namespace CSAuto
 {
@@ -268,27 +270,40 @@ namespace CSAuto
             string[] splitted = weapons.Split(new string[] { $"\"weapon_{index}\": {{" }, StringSplitOptions.None);
             if(splitted.Length > 1)
             {
-                string weapon = splitted[1].Split('}')[0];
-                string name = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-                string type = weapon.Split(new string[] { "\"type\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-                string state = weapon.Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-                int bullets = GetBullets(weapon);
-                int reserveBullets = GetReserveBullets(weapon);
-                int clipSize = GetClipSize(weapon);
+                try
+                {
+                    string weapon = splitted[1].Split('}')[0];
+                    string name = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+                    string type = weapon.Split(new string[] { "\"type\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+                    string state = weapon.Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+                    int bullets = GetBullets(weapon);
+                    int reserveBullets = GetReserveBullets(weapon);
+                    int clipSize = GetClipSize(weapon);
 
-                Weapon res = new Weapon()
+                    Weapon res = new Weapon()
+                    {
+                        Index = index,
+                        Name = name,
+                        Type = GetTypeOfWeapon(type),
+                        State = GetStateOfWeapon(state),
+                        Bullets = bullets,
+                        ReserveBullets = reserveBullets,
+                        ClipSize = clipSize
+                    };
+                    if (res.State == WeaponState.Active)
+                        ActiveWeapon = res;
+                    return res;
+                }
+                catch { return new Weapon()
                 {
                     Index = index,
-                    Name = name,
-                    Type = GetTypeOfWeapon(type),
-                    State = GetStateOfWeapon(state),
-                    Bullets = bullets,
-                    ReserveBullets = reserveBullets,
-                    ClipSize = clipSize
-                };
-                if (res.State == WeaponState.Active)
-                    ActiveWeapon = res;
-                return res;
+                    Name = "NULL",
+                    Type = null,
+                    State = null,
+                    Bullets = -1,
+                    ReserveBullets = -1,
+                    ClipSize = -1
+                };  }
             }
             throw new IndexOutOfRangeException("Weapon index was out of bounds");
         }
