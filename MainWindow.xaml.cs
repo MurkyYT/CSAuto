@@ -39,8 +39,9 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.1.1";
-        const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:3000\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
+        const string VER = "1.0.0";
+        const string PORT = "11523";
+        const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+"\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         /// <summary>
         /// Publics
         /// </summary>
@@ -61,6 +62,7 @@ namespace CSAuto
         readonly MenuItem autoBuyDefuseKit = new MenuItem();
         readonly MenuItem preferArmorCheck = new MenuItem();
         readonly MenuItem saveLogsCheck = new MenuItem();
+        readonly MenuItem continueSprayingCheck = new MenuItem();
         readonly string integrationPath = null;
         /// <summary>
         /// Privates
@@ -107,6 +109,10 @@ namespace CSAuto
                 {
                     Header = "Debug"
                 };
+                MenuItem autoReloadMenu = new MenuItem
+                {
+                    Header = "Auto Reload"
+                };
                 MenuItem exit = new MenuItem
                 {
                     Header = "Exit"
@@ -125,6 +131,10 @@ namespace CSAuto
                 startUpCheck.Header = "Start With Windows";
                 startUpCheck.IsCheckable = true;
                 startUpCheck.Click += StartUpCheck_Click;
+                continueSprayingCheck.IsChecked = Properties.Settings.Default.ContinueSpraying;
+                continueSprayingCheck.Header = "Continue Spraying (Experimental)";
+                continueSprayingCheck.IsCheckable = true;
+                continueSprayingCheck.Click += ContinueSprayingCheck_Click;
                 saveFramesDebug.IsChecked = Properties.Settings.Default.saveDebugFrames;
                 saveFramesDebug.Header = "Save Frames";
                 saveFramesDebug.IsCheckable = true;
@@ -150,11 +160,18 @@ namespace CSAuto
                 preferArmorCheck.IsCheckable = true;
                 preferArmorCheck.Click += PreferArmorCheck_Click;
                 autoReloadCheck.IsChecked = Properties.Settings.Default.autoReload;
-                autoReloadCheck.Header = "Auto Reload";
+                autoReloadCheck.Header = "Enabled";
                 autoReloadCheck.IsCheckable = true;
                 autoReloadCheck.Click += AutoReloadCheck_Click;
+                MenuItem checkForUpdates = new MenuItem
+                {
+                    Header = "Check for updates"
+                };
+                checkForUpdates.Click += CheckForUpdates_Click;
                 debugMenu.Items.Add(saveFramesDebug);
                 debugMenu.Items.Add(saveLogsCheck);
+                autoReloadMenu.Items.Add(autoReloadCheck);
+                autoReloadMenu.Items.Add(continueSprayingCheck);
                 autoBuyMenu.Items.Add(preferArmorCheck);
                 autoBuyMenu.Items.Add(autoBuyArmor);
                 autoBuyMenu.Items.Add(autoBuyDefuseKit);
@@ -162,15 +179,19 @@ namespace CSAuto
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(autoBuyMenu);
-                exitcm.Items.Add(autoReloadCheck);
+                exitcm.Items.Add(autoReloadMenu);
                 exitcm.Items.Add(autoAcceptMatchCheck);
                 exitcm.Items.Add(startUpCheck);
                 exitcm.Items.Add(new Separator());
+                exitcm.Items.Add(checkForUpdates);
                 exitcm.Items.Add(exit);
                 Top = -1000;
                 Left = -1000;
                 exitcm.StaysOpen = false;
-                integrationPath = GetCSGODir()+"\\cfg\\gamestate_integration_csauto.cfg";
+                string csgoDir = GetCSGODir();
+                if (csgoDir == null)
+                    throw new Exception("Couldn't find CS:GO directory");
+                integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
                 {
                     using (FileStream fs = File.Create(integrationPath))
@@ -201,6 +222,50 @@ namespace CSAuto
             }
         }
 
+        private void ContinueSprayingCheck_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.ContinueSpraying = continueSprayingCheck.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
+        {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            CheckForUpdatesAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        }
+        async Task CheckForUpdatesAsync()
+        {
+            try
+            {
+                System.Net.WebClient client = new System.Net.WebClient() { Encoding = Encoding.UTF8 };
+                client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+                Log.WriteLine("Checking for updates");
+                string webInfo = await client.DownloadStringTaskAsync("https://github.com/MurkyYT/CSAuto/releases/latest");
+                string latestVersion = webInfo.Split(new string[] { "https://github.com/MurkyYT/CSAuto/releases/tag/" }, StringSplitOptions.None)[1].Split('&')[0];
+                Log.WriteLine($"The latest version is {latestVersion}");
+                if (latestVersion == VER)
+                {
+                    Log.WriteLine("Latest version installed");
+                    MessageBox.Show("You have the latest version!", "Check for updates (CSAuto)", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
+                    MessageBoxResult result = MessageBox.Show($"Found newer verison ({latestVersion}) would you like to download it?", "Check for updates (CSAuto)", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        Debug.WriteLine("Downloading latest version");
+                        System.Diagnostics.Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
+                MessageBox.Show($"Couldn't check for updates\n'{ex.Message}'", "Check for updates (CSAuto)", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void SaveLogsCheck_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.saveLogs = saveLogsCheck.IsChecked;
@@ -237,7 +302,7 @@ namespace CSAuto
                 return false;
 
             _listener = new HttpListener();
-            _listener.Prefixes.Add("http://localhost:" + "3000" + "/");
+            _listener.Prefixes.Add("http://localhost:" + PORT + "/");
             Thread ListenerThread = new Thread(new ThreadStart(Run));
             try
             {
@@ -483,9 +548,10 @@ namespace CSAuto
                         || weaponType == WeaponType.MachineGun
                         || weaponType == WeaponType.SubmachineGun
                         || weaponName == "weapon_cz75a")
-                        && (weaponName != "weapon_sg556"))
+                        && (weaponName != "weapon_sg556") 
+                        && Properties.Settings.Default.ContinueSpraying)
                     {
-                        Thread.Sleep(150);
+                        Thread.Sleep(100);
                         mouse_event(MOUSEEVENTF_LEFTDOWN,
                             System.Windows.Forms.Cursor.Position.X,
                             System.Windows.Forms.Cursor.Position.Y,

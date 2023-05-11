@@ -48,7 +48,7 @@ namespace CSAuto
         public Player Player { get; internal set; }
         public Match Match { get; internal set; }
         public Round Round { get; internal set; }
-        private string JSON;
+        private readonly string JSON;
         public GameState(string JSON)
         {
             if (JSON == null)
@@ -180,8 +180,7 @@ namespace CSAuto
             string[] splitted = JSON.Split(new string[] { "\"round\": " }, StringSplitOptions.None);
             if (splitted.Length > 1)
             {
-                int res;
-                bool succes = int.TryParse(splitted[1].Split(',')[0], out res);
+                bool succes = int.TryParse(splitted[1].Split(',')[0], out int res);
                 if (succes)
                     return res;
             }
