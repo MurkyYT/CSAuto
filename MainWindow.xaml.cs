@@ -516,6 +516,7 @@ namespace CSAuto
             string X64 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "InstallPath", null);
             return X86 ?? X64;
         }
+        // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
         private string GetCSGODir()
         {
             string steamPath = GetSteamPath();
@@ -684,6 +685,7 @@ namespace CSAuto
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
+                Log.saveLogs = Properties.Settings.Default.saveLogs;
             }
             catch (Exception ex)
             {
