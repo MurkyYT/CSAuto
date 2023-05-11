@@ -3,11 +3,13 @@
   <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release" alt="Latest Release">
   <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version" alt="Latest Version">
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads" alt="Total Downloads">
+  <br>
+  <br>
+  <a href="https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe"><b>Download Latest Release</b></a>
+  <br>
 </p>
 
-### [Open Latest Release](https://github.com/MurkyYT/CSAuto/releases/latest).
-### [Download Latest Release](https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe).
-## Description
+<h1 align="center">Description</h1>
 Have you ever started searching for a game in CS:GO went for a bit, and see that you missed the accept button?  
 frustrating isn't it?  
 Or have you ever forgot to buy armor or defuse kit as ct?  
