@@ -118,5 +118,17 @@ namespace CSAuto.Properties {
                 this["saveLogs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ContinueSpraying {
+            get {
+                return ((bool)(this["ContinueSpraying"]));
+            }
+            set {
+                this["ContinueSpraying"] = value;
+            }
+        }
     }
 }
