@@ -5,14 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CSAuto
 {
     class Log
     {
-        public static bool saveLogs = false;
         public static GSIDebugWindow debugWind = null;
-        public static void VerifyDir(string path)
+        static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        static string path = strWorkPath + "/DEBUG/LOGS/";
+        public static void VerifyDir()
         {
             try
             {
@@ -22,7 +24,7 @@ namespace CSAuto
                     dir.Create();
                 }
             }
-            catch { }
+            catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
         }
 
         public static void Write(string lines)
@@ -30,21 +32,19 @@ namespace CSAuto
             lines = $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines;
             if (debugWind != null)
                 debugWind.UpdateDebug(lines);
-            if (saveLogs)
+            if (Properties.Settings.Default.saveLogs)
             {
-                string path = "DEBUG/logs/";
-                VerifyDir(path);
+                VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                 try
                 {
-
                     System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
                     Debug.Write(lines);
                     file.Write(lines);
                     file.Close();
 
                 }
-                catch (Exception) { }
+                catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
             }
         }
         public static void WriteLine(string lines)
@@ -52,21 +52,19 @@ namespace CSAuto
             lines = $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines;
             if (debugWind != null)
                 debugWind.UpdateDebug(lines);
-            if (saveLogs)
+            if (Properties.Settings.Default.saveLogs)
             {
-                string path = "DEBUG/logs/";
-                VerifyDir(path);
+                VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                 try
                 {
-
                     System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
                     Debug.WriteLine(lines);
                     file.WriteLine(lines);
                     file.Close();
 
                 }
-                catch (Exception) { }
+                catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
             }
         }
     }
