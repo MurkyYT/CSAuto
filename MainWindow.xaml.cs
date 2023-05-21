@@ -547,16 +547,11 @@ namespace CSAuto
                 Keyboard.SendKey(keys[i], true, Keyboard.InputType.Keyboard);
             }
         }
-        string GetSteamPath()
-        {
-            string X86 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam", "InstallPath", null);
-            string X64 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "InstallPath", null);
-            return X86 ?? X64;
-        }
+        
         // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
         private string GetCSGODir()
         {
-            string steamPath = GetSteamPath();
+            string steamPath = Utils.Steam.GetSteamPath();
             if (steamPath == null)
                 throw new Exception("Couldn't find Steam Path");
             string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
@@ -716,7 +711,7 @@ namespace CSAuto
             {
                 Visibility = Visibility.Hidden;
                 this.notifyicon.Icon = Properties.Resources.main;
-                this.notifyicon.Tip = "CSAuto - CS:GO Automation";
+                this.notifyicon.Tip = "CSAuto - CS2 Automation";
                 this.notifyicon.ShowTip = true;
                 this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
                 this.notifyicon.LeftMouseButtonDoubleClick += Notifyicon_LeftMouseButtonDoubleClick;
@@ -752,11 +747,19 @@ namespace CSAuto
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
                     }
                 }
+                Utils.Steam.GetLaunchOptions(730, out string launchOpt);
+                if (launchOpt != null && !HasGSILaunchOption(launchOpt))
+                    Utils.Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
+                else if(launchOpt == null)
+                    throw new Exception("Couldn't add -gamestateintegration to launch options\n" +
+                    "please refer the the FAQ at the git hub page");
             }
             catch (Exception ex)
             {
                 if (ex.Message == "Couldn't find Steam Path"
-                    || ex.Message == "Couldn't find CS:GO directory")
+                    || ex.Message == "Couldn't find CS:GO directory"
+                    || ex.Message == "Couldn't add -gamestateintegration to launch options\n" +
+                    "please refer the the FAQ at the git hub page")
                 {
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
@@ -764,6 +767,18 @@ namespace CSAuto
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private bool HasGSILaunchOption(string launchOpt)
+        {
+            string[] split = launchOpt.Split(' ');
+            for (int i = 0; i < split.Length; i++)
+            {
+                if (split[i].Trim() == "-gamestateintegration")
+                    return true;
+            }
+            return false;
+        }
+
         private void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             //open debug menu
