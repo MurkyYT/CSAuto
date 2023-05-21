@@ -10,16 +10,16 @@
 </p>
 
 <h1 align="center">Description</h1>
-Have you ever started searching for a game in CS:GO went for a bit, and see that you missed the accept button?  
+Have you ever started searching for a game in CS2 went for a bit, and see that you missed the accept button?  
 frustrating isn't it?  
 Or have you ever forgot to buy armor or defuse kit as ct?  
   
 *Dont Worry!*  
 **CSAuto** is the software for you, CSAuto can:
 * Auto accept matches for you
-* Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)
-* Auto buy armor for you or auto refill it when you have less then 70 left!
-* Auto buy defuse kit for you as a CT
+* ~~Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)~~ (GSI might not be enalbed in cs2)
+* ~~Auto buy armor for you or auto refill it when you have less then 70 left!~~ (GSI might not be enalbed in cs2)
+* ~~Auto buy defuse kit for you as a CT~~ (GSI might not be enalbed in cs2)
 
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
