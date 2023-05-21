@@ -39,7 +39,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.0";
+        const string VER = "1.0.1";
         const string PORT = "11523";
         const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+"\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         /// <summary>
@@ -63,11 +63,19 @@ namespace CSAuto
         readonly MenuItem preferArmorCheck = new MenuItem();
         readonly MenuItem saveLogsCheck = new MenuItem();
         readonly MenuItem continueSprayingCheck = new MenuItem();
-        readonly string integrationPath = null;
+        readonly MenuItem autoBuyMenu = new MenuItem
+        {
+            Header = "Auto Buy"
+        };
+        readonly MenuItem autoReloadMenu = new MenuItem
+        {
+            Header = "Auto Reload"
+        };
         /// <summary>
         /// Privates
         /// </summary>
         private readonly AutoResetEvent _waitForConnection = new AutoResetEvent(false);
+        private string integrationPath = null;
         private HttpListener _listener;
         private bool ServerRunning = false;
         /// <summary>
@@ -98,20 +106,11 @@ namespace CSAuto
             try
             {
                 KillDuplicates();
-                Log.saveLogs = Properties.Settings.Default.saveLogs;
-                Log.WriteLine($"CSAuto v{VER} started");
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-                MenuItem autoBuyMenu = new MenuItem
-                {
-                    Header = "Auto Buy"
-                };
+               
                 MenuItem debugMenu = new MenuItem
                 {
                     Header = "Debug"
-                };
-                MenuItem autoReloadMenu = new MenuItem
-                {
-                    Header = "Auto Reload"
                 };
                 MenuItem exit = new MenuItem
                 {
@@ -188,33 +187,6 @@ namespace CSAuto
                 Top = -1000;
                 Left = -1000;
                 exitcm.StaysOpen = false;
-                string csgoDir = GetCSGODir();
-                if (csgoDir == null)
-                    throw new Exception("Couldn't find CS:GO directory");
-                integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
-                if (!File.Exists(integrationPath))
-                {
-                    using (FileStream fs = File.Create(integrationPath))
-                    {
-                        Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
-                        fs.Write(title, 0, title.Length);
-                    }
-                    Log.WriteLine("CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
-                }
-                else
-                {
-                    string[] lines = File.ReadAllLines(integrationPath);
-                    string ver = lines[0].Split('v')[1].Split('"')[0].Trim();
-                    if(ver != VER)
-                    {
-                        using (FileStream fs = File.Create(integrationPath))
-                        {
-                            Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
-                            fs.Write(title, 0, title.Length);
-                        }
-                        Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -242,7 +214,7 @@ namespace CSAuto
                 client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                 Log.WriteLine("Checking for updates");
                 string webInfo = await client.DownloadStringTaskAsync("https://github.com/MurkyYT/CSAuto/releases/latest");
-                string latestVersion = webInfo.Split(new string[] { "https://github.com/MurkyYT/CSAuto/releases/tag/" }, StringSplitOptions.None)[1].Split('&')[0];
+                string latestVersion = webInfo.Split(new string[] { "https://github.com/MurkyYT/CSAuto/releases/tag/" }, StringSplitOptions.None)[1].Split('&')[0].Trim();
                 Log.WriteLine($"The latest version is {latestVersion}");
                 if (latestVersion == VER)
                 {
@@ -255,7 +227,7 @@ namespace CSAuto
                     MessageBoxResult result = MessageBox.Show($"Found newer verison ({latestVersion}) would you like to download it?", "Check for updates (CSAuto)", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
                     {
-                        Debug.WriteLine("Downloading latest version");
+                        Log.WriteLine("Downloading latest version");
                         System.Diagnostics.Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
                     }
                 }
@@ -270,7 +242,6 @@ namespace CSAuto
         {
             Properties.Settings.Default.saveLogs = saveLogsCheck.IsChecked;
             Properties.Settings.Default.Save();
-            Log.saveLogs = Properties.Settings.Default.saveLogs;
         }
 
         private void PreferArmorCheck_Click(object sender, RoutedEventArgs e)
@@ -586,6 +557,8 @@ namespace CSAuto
         private string GetCSGODir()
         {
             string steamPath = GetSteamPath();
+            if (steamPath == null)
+                throw new Exception("Couldn't find Steam Path");
             string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
 
             if (!File.Exists(pathsFile))
@@ -751,10 +724,43 @@ namespace CSAuto
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
-                Log.saveLogs = Properties.Settings.Default.saveLogs;
+                Log.WriteLine($"CSAuto v{VER} started");
+                string csgoDir = GetCSGODir();
+                if (csgoDir == null)
+                    throw new Exception("Couldn't find CS:GO directory");
+                integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
+                if (!File.Exists(integrationPath))
+                {
+                    using (FileStream fs = File.Create(integrationPath))
+                    {
+                        Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                        fs.Write(title, 0, title.Length);
+                    }
+                    Log.WriteLine("CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
+                }
+                else
+                {
+                    string[] lines = File.ReadAllLines(integrationPath);
+                    string ver = lines[0].Split('v')[1].Split('"')[0].Trim();
+                    if (ver != VER)
+                    {
+                        using (FileStream fs = File.Create(integrationPath))
+                        {
+                            Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                            fs.Write(title, 0, title.Length);
+                        }
+                        Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
+                    }
+                }
             }
             catch (Exception ex)
             {
+                if (ex.Message == "Couldn't find Steam Path"
+                    || ex.Message == "Couldn't find CS:GO directory")
+                {
+                    autoReloadMenu.IsEnabled = false;
+                    autoBuyMenu.IsEnabled = false;
+                }
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
