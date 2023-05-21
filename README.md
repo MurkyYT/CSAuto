@@ -23,6 +23,14 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
+### FAQ
+* The app couldn't set the launch options, what to do?
+  - Follow this instructions
+  - 1. Open steam library
+  - 2. Right click on CS2 and press properties
+  - 3. In the general tab you have launch options at the bottom
+  - 4. Add -gamestateintegration to the launch options
+  - 5. Close and start the game
 ### Suggestions
 *If you have any suggestions you can create an issue with the suggestion in it*  
 **Thanks in advance :)**
