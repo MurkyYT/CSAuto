@@ -81,11 +81,11 @@ namespace CSAuto
         /// <summary>
         /// Members
         /// </summary>
-        Point csgoResolution = new Point();
+        Point cs2Resolution = new Point();
         GameState GameState = new GameState(null);
         int frame = 0;
         bool inGame = false;
-        bool csgoActive = false;
+        bool cs2Active = false;
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
@@ -375,7 +375,7 @@ namespace CSAuto
                 round = currentRound;
                 weapon = currentWeapon;
                 inGame = activity != Activity.Menu;
-                if (csgoActive && !GameState.Player.IsSpectating)
+                if (cs2Active && !GameState.Player.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && inGame)
                     {
@@ -392,7 +392,7 @@ namespace CSAuto
                         AutoBuyArmor();
                     }
                 }
-                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\ncs2Active:{cs2Active}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
             catch(Exception ex) 
@@ -419,13 +419,13 @@ namespace CSAuto
             try
             {
                 uint pid = 0;
-                Process[] prcs = Process.GetProcessesByName("csgo");
+                Process[] prcs = Process.GetProcessesByName("cs2");
                 if (prcs.Length > 0)
                     pid = (uint)prcs[0].Id;
-                csgoActive = IsForegroundProcess(pid);
-                if (csgoActive)
+                cs2Active = IsForegroundProcess(pid);
+                if (cs2Active)
                 {
-                    csgoResolution = new Point(
+                    cs2Resolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     if (Properties.Settings.Default.autoAcceptMatch && !inGame)
@@ -646,15 +646,15 @@ namespace CSAuto
         }
         private void AutoAcceptMatch()
         {
-            using (Bitmap bitmap = new Bitmap(1, csgoResolution.Y))
+            using (Bitmap bitmap = new Bitmap(1, cs2Resolution.Y))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
                     g.CopyFromScreen(new Point(
-                        csgoResolution.X / 2,
+                        cs2Resolution.X / 2,
                         0),
                         Point.Empty,
-                        new System.Drawing.Size(1, csgoResolution.Y/2));
+                        new System.Drawing.Size(1, cs2Resolution.Y/2));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
@@ -668,7 +668,7 @@ namespace CSAuto
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
                         var clickpoint = new Point(
-                            csgoResolution.X / 2,
+                            cs2Resolution.X / 2,
                             y);
                         int X = clickpoint.X;
                         int Y = clickpoint.Y;
