@@ -747,12 +747,19 @@ namespace CSAuto
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
                     }
                 }
-                Utils.Steam.GetLaunchOptions(730, out string launchOpt);
-                if (launchOpt != null && !HasGSILaunchOption(launchOpt))
-                    Utils.Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
-                else if(launchOpt == null)
+                try
+                {
+                    Utils.Steam.GetLaunchOptions(730, out string launchOpt);
+                    if (launchOpt != null && !HasGSILaunchOption(launchOpt))
+                        Utils.Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
+                    else if (launchOpt == null)
+                        Utils.Steam.SetLaunchOptions(730, "-gamestateintegration");
+                }
+                catch
+                {
                     throw new Exception("Couldn't add -gamestateintegration to launch options\n" +
                     "please refer the the FAQ at the git hub page");
+                }
             }
             catch (Exception ex)
             {

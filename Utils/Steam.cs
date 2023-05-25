@@ -55,7 +55,7 @@ namespace CSAuto.Utils
                 return -1;
             string localconfPath = $"{steamPath}\\userdata\\{steamID3}\\config\\localconfig.vdf";
             string[] localconfFile = File.ReadAllLines(localconfPath);
-            index = GetAppIDIndex(appID, index, localconfFile);
+            index = GetAppIDIndex(appID, localconfFile);
             int length = GetAppOptLength(index, localconfFile);
             // skip app id number
             index++;
@@ -71,7 +71,7 @@ namespace CSAuto.Utils
             return -1;
         }
         /// <summary>
-        /// Sets the launch options if they were any before
+        /// Sets the launch options even if there weren't any
         /// </summary>
         /// <param name="appID">The id of the app</param>
         /// <param name="value">The value to set in the launch options</param>
@@ -86,11 +86,30 @@ namespace CSAuto.Utils
                 return false;
             string localconfPath = $"{steamPath}\\userdata\\{steamID3}\\config\\localconfig.vdf";
             string[] localconfFile = File.ReadAllLines(localconfPath);
+            int appIDIndex = GetAppIDIndex(730, localconfFile);
             int launchOptionsIndex = GetLaunchOptions(appID, out string launchOptions);
             if (launchOptionsIndex != -1)
                 localconfFile[launchOptionsIndex] = $"\t\t\t\t\t\t\"LaunchOptions\"\t\t\"{value}\"";
             else
-                return false;
+            {
+                string[] temp = new string[localconfFile.Length];
+                Array.Copy(localconfFile, temp, localconfFile.Length);
+                localconfFile = new string[localconfFile.Length + 1];
+                bool addedOptions = false;
+                for (int i = 0; i < localconfFile.Length; i++)
+                {
+                    if (i == appIDIndex + 2)
+                    {
+                        localconfFile[i] = $"\t\t\t\t\t\t\"LaunchOptions\"\t\t\"{value}\"";
+                        addedOptions = true;
+                    }
+                    else if(!addedOptions)
+                        localconfFile[i] = temp[i];
+                    else if (addedOptions)
+                        localconfFile[i] = temp[i-1];
+                }
+                Log.WriteLine($"No launch options found, adding \'\"LaunchOptions\" \t\t\"{value}\"\' at index {appIDIndex+2}");
+            }
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < localconfFile.Length; i++)
             {
@@ -101,6 +120,7 @@ namespace CSAuto.Utils
                 Byte[] title = new UTF8Encoding(true).GetBytes(builder.ToString());
                 fs.Write(title, 0, title.Length);
             }
+            Log.WriteLine($"Successfuly set LaunchOptions to \'{value}\'");
             return true;
         }
         private static int GetLaunchOptionsIndex (int length, string[] appOpts,out bool succes)
@@ -119,8 +139,9 @@ namespace CSAuto.Utils
             return 0;
         }
 
-        private static int GetAppIDIndex(int appID, int index, string[] localconfFile)
+        private static int GetAppIDIndex(int appID, string[] localconfFile)
         {
+            int index = -1;
             for (int i = 0; i < localconfFile.Length && index == -1; i++)
             {
                 if (localconfFile[i] == $"\t\t\t\t\t\"{appID}\"")

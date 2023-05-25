@@ -29,7 +29,7 @@ namespace CSAuto
 
         public static void Write(string lines)
         {
-            lines = $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines;
+            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
             if (debugWind != null)
                 debugWind.UpdateDebug(lines);
             if (Properties.Settings.Default.saveLogs)
@@ -49,7 +49,7 @@ namespace CSAuto
         }
         public static void WriteLine(string lines)
         {
-            lines = $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second},{DateTime.Now.Millisecond}] - " + lines;
+            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
             if (debugWind != null)
                 debugWind.UpdateDebug(lines);
             if (Properties.Settings.Default.saveLogs)
