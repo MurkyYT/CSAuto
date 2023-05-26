@@ -2,20 +2,75 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace CSAuto.Utils
 {
     public static class Steam
     {
+        /// <summary>
+        /// Tries to get the game folder.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns>Game folder if found,  <see langword="null"/> if wasn't</returns>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
+        public static string GetGameDir(string game)
+        {
+            string steamPath = Steam.GetSteamPath();
+            if (steamPath == null)
+                throw new DirectoryNotFoundException("Couldn't find Steam path");
+            string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
+
+            if (!File.Exists(pathsFile))
+                return null;
+
+            List<string> libraries = new List<string>
+            {
+                Path.Combine(steamPath)
+            };
+
+            var pathVDF = File.ReadAllLines(pathsFile);
+            // Okay, this is not a full vdf-parser, but it seems to work pretty much, since the 
+            // vdf-grammar is pretty easy. Hopefully it never breaks. I'm too lazy to write a full vdf-parser though. 
+            Regex pathRegex = new Regex(@"\""(([^\""]*):\\([^\""]*))\""");
+            foreach (var line in pathVDF)
+            {
+                if (pathRegex.IsMatch(line))
+                {
+                    string match = pathRegex.Matches(line)[0].Groups[1].Value;
+
+                    // De-Escape vdf. 
+                    libraries.Add(match.Replace("\\\\", "\\"));
+                }
+            }
+
+            foreach (var library in libraries)
+            {
+                string gamePatj = Path.Combine(library, $"steamapps\\common\\{game}");
+                if (Directory.Exists(gamePatj))
+                {
+                    return gamePatj;
+                }
+            }
+
+            return null;
+        }
+        /// <summary>
+        /// Tries to get steam path.
+        /// </summary>
+        /// <returns>Steam path if found,  <see langword="null"/> if didnt</returns>
         public static string GetSteamPath()
         {
             string X86 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam", "InstallPath", null);
             string X64 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "InstallPath", null);
             return X86 ?? X64;
         }
+        /// <summary>
+        /// Tries to get the active SteamID3.
+        /// </summary>
+        /// <returns>0 if not found, active SteamID3 if found</returns>
         public static int GetCurrentSteamID3()
         {
             int steamID3 = 0;
@@ -31,22 +86,22 @@ namespace CSAuto.Utils
                         steamID3 = int.Parse(split[1].Split(']')[0]);
                 }
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
+                Log.WriteLine("Couldn't read SteamID3 from log, reading from Registry");
                 steamID3 = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam\\ActiveProcess", "ActiveUser", 0);
             }
             return steamID3;
         }
         /// <summary>
-        /// Returns the index of the line the launch options were found
+        /// Gets the launch options of the app with the id you entered.
         /// </summary>
         /// <param name="appID">The id of the app</param>
         /// <param name="result">Out's the launch options if found any</param>
-        /// <returns></returns>
+        /// <returns>index of the line the options were found,-1 if werent found</returns>
         public static int GetLaunchOptions(int appID,out string result)
         {
             result = null;
-            int index = -1;
             int? steamID3 = GetCurrentSteamID3();
             string steamPath = GetSteamPath();
             if (steamPath == null)
@@ -55,7 +110,9 @@ namespace CSAuto.Utils
                 return -1;
             string localconfPath = $"{steamPath}\\userdata\\{steamID3}\\config\\localconfig.vdf";
             string[] localconfFile = File.ReadAllLines(localconfPath);
-            index = GetAppIDIndex(appID, localconfFile);
+            int index = GetAppIDIndex(appID, localconfFile);
+            if(index == -1)
+                return -1;
             int length = GetAppOptLength(index, localconfFile);
             // skip app id number
             index++;
@@ -71,11 +128,11 @@ namespace CSAuto.Utils
             return -1;
         }
         /// <summary>
-        /// Sets the launch options even if there weren't any
+        /// Sets the launch options even if there weren't any.
         /// </summary>
         /// <param name="appID">The id of the app</param>
         /// <param name="value">The value to set in the launch options</param>
-        /// <returns></returns>
+        /// <returns>returns <see langword="true"/> if succeeded <see langword="false"/> if didn't</returns>
         public static bool SetLaunchOptions(int appID, string value)
         {
             int steamID3 = GetCurrentSteamID3();
@@ -147,7 +204,6 @@ namespace CSAuto.Utils
                 if (localconfFile[i] == $"\t\t\t\t\t\"{appID}\"")
                     index = i;
             }
-
             return index;
         }
 

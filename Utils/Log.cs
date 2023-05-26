@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace CSAuto
+namespace CSAuto.Utils
 {
     class Log
     {

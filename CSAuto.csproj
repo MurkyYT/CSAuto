@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Exceptions\WriteException.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Page Include="GSIDebugWindow.xaml">
       <SubType>Designer</SubType>
@@ -80,7 +81,7 @@
       <DependentUpon>GSIDebugWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Keyboard.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Utils\Log.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

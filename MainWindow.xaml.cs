@@ -10,25 +10,19 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
-using Keys = System.Windows.Forms.Keys;
-
+using CSAuto.Exceptions;
+using CSAuto.Utils;
 namespace CSAuto
 {
     /// <summary>
@@ -551,43 +545,9 @@ namespace CSAuto
         // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
         private string GetCSGODir()
         {
-            string steamPath = Utils.Steam.GetSteamPath();
-            if (steamPath == null)
-                throw new Exception("Couldn't find Steam Path");
-            string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
-
-            if (!File.Exists(pathsFile))
-                return null;
-
-            List<string> libraries = new List<string>
-            {
-                Path.Combine(steamPath)
-            };
-
-            var pathVDF = File.ReadAllLines(pathsFile);
-            // Okay, this is not a full vdf-parser, but it seems to work pretty much, since the 
-            // vdf-grammar is pretty easy. Hopefully it never breaks. I'm too lazy to write a full vdf-parser though. 
-            Regex pathRegex = new Regex(@"\""(([^\""]*):\\([^\""]*))\""");
-            foreach (var line in pathVDF)
-            {
-                if (pathRegex.IsMatch(line))
-                {
-                    string match = pathRegex.Matches(line)[0].Groups[1].Value;
-
-                    // De-Escape vdf. 
-                    libraries.Add(match.Replace("\\\\", "\\"));
-                }
-            }
-
-            foreach (var library in libraries)
-            {
-                string csgoPath = Path.Combine(library, "steamapps\\common\\Counter-Strike Global Offensive\\csgo");
-                if (Directory.Exists(csgoPath))
-                {
-                    return csgoPath;
-                }
-            }
-
+            string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
+            if (csgoDir != null)
+                return $"{csgoDir}\\csgo";
             return null;
         }
         private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
@@ -722,7 +682,7 @@ namespace CSAuto
                 Log.WriteLine($"CSAuto v{VER} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
-                    throw new Exception("Couldn't find CS:GO directory");
+                    throw new DirectoryNotFoundException("Couldn't find CS:GO directory");
                 integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
                 {
@@ -749,24 +709,25 @@ namespace CSAuto
                 }
                 try
                 {
-                    Utils.Steam.GetLaunchOptions(730, out string launchOpt);
+                    Steam.GetLaunchOptions(730, out string launchOpt);
                     if (launchOpt != null && !HasGSILaunchOption(launchOpt))
-                        Utils.Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
+                        Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
                     else if (launchOpt == null)
-                        Utils.Steam.SetLaunchOptions(730, "-gamestateintegration");
+                        Steam.SetLaunchOptions(730, "-gamestateintegration");
+                    else
+                        Log.WriteLine("Already has \'-gamestateintegration\' in launch options.");
                 }
                 catch
                 {
-                    throw new Exception("Couldn't add -gamestateintegration to launch options\n" +
+                    throw new WriteException("Couldn't add -gamestateintegration to launch options\n" +
                     "please refer the the FAQ at the git hub page");
                 }
             }
             catch (Exception ex)
             {
-                if (ex.Message == "Couldn't find Steam Path"
-                    || ex.Message == "Couldn't find CS:GO directory"
-                    || ex.Message == "Couldn't add -gamestateintegration to launch options\n" +
-                    "please refer the the FAQ at the git hub page")
+                Type type = ex.GetType();
+                if (type == typeof(WriteException) ||
+                    type == typeof(DirectoryNotFoundException))
                 {
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
@@ -774,7 +735,6 @@ namespace CSAuto
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
         private bool HasGSILaunchOption(string launchOpt)
         {
             string[] split = launchOpt.Split(' ');
