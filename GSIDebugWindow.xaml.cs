@@ -13,6 +13,11 @@ namespace CSAuto
         {
             InitializeComponent();
             this.main = main;
+            Steam.GetLaunchOptions(730, out string launchOpt);
+            steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
+                $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
+                $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
+                $"CS:GO LaunchOptions: \"{launchOpt}\"";
         }
         public void UpdateText(string data)
         {

@@ -757,7 +757,7 @@ namespace CSAuto
             }
             else
             {
-                debugWind.Show();
+                debugWind.Activate();
             }
         }
     }
