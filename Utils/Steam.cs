@@ -144,6 +144,8 @@ namespace CSAuto.Utils
             string localconfPath = $"{steamPath}\\userdata\\{steamID3}\\config\\localconfig.vdf";
             string[] localconfFile = File.ReadAllLines(localconfPath);
             int appIDIndex = GetAppIDIndex(730, localconfFile);
+            if (appIDIndex == -1)
+                return false;
             int launchOptionsIndex = GetLaunchOptions(appID, out string launchOptions);
             if (launchOptionsIndex != -1)
                 localconfFile[launchOptionsIndex] = $"\t\t\t\t\t\t\"LaunchOptions\"\t\t\"{value}\"";
