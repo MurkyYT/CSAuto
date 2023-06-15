@@ -10,22 +10,18 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
+using CSAuto.Exceptions;
 using CSAuto.Utils;
 namespace CSAuto
 {
@@ -87,11 +83,11 @@ namespace CSAuto
         /// <summary>
         /// Members
         /// </summary>
-        Point csgoResolution = new Point();
+        Point cs2Resolution = new Point();
         GameState GameState = new GameState(null);
         int frame = 0;
         bool inGame = false;
-        bool csgoActive = false;
+        bool cs2Active = false;
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
@@ -381,7 +377,7 @@ namespace CSAuto
                 round = currentRound;
                 weapon = currentWeapon;
                 inGame = activity != Activity.Menu;
-                if (csgoActive && !GameState.Player.IsSpectating)
+                if (cs2Active && !GameState.Player.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && inGame)
                     {
@@ -398,7 +394,7 @@ namespace CSAuto
                         AutoBuyArmor();
                     }
                 }
-                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\ncs2Active:{cs2Active}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
             catch(Exception ex) 
@@ -425,13 +421,13 @@ namespace CSAuto
             try
             {
                 uint pid = 0;
-                Process[] prcs = Process.GetProcessesByName("csgo");
+                Process[] prcs = Process.GetProcessesByName("cs2");
                 if (prcs.Length > 0)
                     pid = (uint)prcs[0].Id;
-                csgoActive = IsForegroundProcess(pid);
-                if (csgoActive)
+                cs2Active = IsForegroundProcess(pid);
+                if (cs2Active)
                 {
-                    csgoResolution = new Point(
+                    cs2Resolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     if (Properties.Settings.Default.autoAcceptMatch && !inGame)
@@ -553,52 +549,13 @@ namespace CSAuto
                 Keyboard.SendKey(keys[i], true, Keyboard.InputType.Keyboard);
             }
         }
-        string GetSteamPath()
-        {
-            string X86 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam", "InstallPath", null);
-            string X64 = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "InstallPath", null);
-            return X86 ?? X64;
-        }
+        
         // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
         private string GetCSGODir()
         {
-            string steamPath = GetSteamPath();
-            if (steamPath == null)
-                throw new Exception("Couldn't find Steam Path");
-            string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
-
-            if (!File.Exists(pathsFile))
-                return null;
-
-            List<string> libraries = new List<string>
-            {
-                Path.Combine(steamPath)
-            };
-
-            var pathVDF = File.ReadAllLines(pathsFile);
-            // Okay, this is not a full vdf-parser, but it seems to work pretty much, since the 
-            // vdf-grammar is pretty easy. Hopefully it never breaks. I'm too lazy to write a full vdf-parser though. 
-            Regex pathRegex = new Regex(@"\""(([^\""]*):\\([^\""]*))\""");
-            foreach (var line in pathVDF)
-            {
-                if (pathRegex.IsMatch(line))
-                {
-                    string match = pathRegex.Matches(line)[0].Groups[1].Value;
-
-                    // De-Escape vdf. 
-                    libraries.Add(match.Replace("\\\\", "\\"));
-                }
-            }
-
-            foreach (var library in libraries)
-            {
-                string csgoPath = Path.Combine(library, "steamapps\\common\\Counter-Strike Global Offensive\\csgo");
-                if (Directory.Exists(csgoPath))
-                {
-                    return csgoPath;
-                }
-            }
-
+            string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
+            if (csgoDir != null)
+                return $"{csgoDir}\\csgo";
             return null;
         }
         private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
@@ -657,15 +614,15 @@ namespace CSAuto
         }
         private void AutoAcceptMatch()
         {
-            using (Bitmap bitmap = new Bitmap(1, csgoResolution.Y))
+            using (Bitmap bitmap = new Bitmap(1, cs2Resolution.Y))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
                     g.CopyFromScreen(new Point(
-                        csgoResolution.X / 2,
+                        cs2Resolution.X / 2,
                         0),
                         Point.Empty,
-                        new System.Drawing.Size(1, csgoResolution.Y/2));
+                        new System.Drawing.Size(1, cs2Resolution.Y/2));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
@@ -679,7 +636,7 @@ namespace CSAuto
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
                         var clickpoint = new Point(
-                            csgoResolution.X / 2,
+                            cs2Resolution.X / 2,
                             y);
                         int X = clickpoint.X;
                         int Y = clickpoint.Y;
@@ -722,7 +679,7 @@ namespace CSAuto
             {
                 Visibility = Visibility.Hidden;
                 this.notifyicon.Icon = Properties.Resources.main;
-                this.notifyicon.Tip = "CSAuto - CS:GO Automation";
+                this.notifyicon.Tip = "CSAuto - CS2 Automation";
                 this.notifyicon.ShowTip = true;
                 this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
                 this.notifyicon.LeftMouseButtonDoubleClick += Notifyicon_LeftMouseButtonDoubleClick;
@@ -733,7 +690,7 @@ namespace CSAuto
                 Log.WriteLine($"CSAuto v{VER} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
-                    throw new Exception("Couldn't find CS:GO directory");
+                    throw new DirectoryNotFoundException("Couldn't find CS:GO directory");
                 integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
                 {
@@ -758,11 +715,27 @@ namespace CSAuto
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
                     }
                 }
+                try
+                {
+                    Steam.GetLaunchOptions(730, out string launchOpt);
+                    if (launchOpt != null && !HasGSILaunchOption(launchOpt))
+                        Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
+                    else if (launchOpt == null)
+                        Steam.SetLaunchOptions(730, "-gamestateintegration");
+                    else
+                        Log.WriteLine("Already has \'-gamestateintegration\' in launch options.");
+                }
+                catch
+                {
+                    throw new WriteException("Couldn't add -gamestateintegration to launch options\n" +
+                    "please refer the the FAQ at the git hub page");
+                }
             }
             catch (Exception ex)
             {
-                if (ex.Message == "Couldn't find Steam Path"
-                    || ex.Message == "Couldn't find CS:GO directory")
+                Type type = ex.GetType();
+                if (type == typeof(WriteException) ||
+                    type == typeof(DirectoryNotFoundException))
                 {
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
@@ -770,6 +743,17 @@ namespace CSAuto
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private bool HasGSILaunchOption(string launchOpt)
+        {
+            string[] split = launchOpt.Split(' ');
+            for (int i = 0; i < split.Length; i++)
+            {
+                if (split[i].Trim() == "-gamestateintegration")
+                    return true;
+            }
+            return false;
+        }
+
         private void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             //open debug menu
@@ -781,7 +765,7 @@ namespace CSAuto
             }
             else
             {
-                debugWind.Show();
+                debugWind.Activate();
             }
         }
     }

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSAuto.Utils
+namespace CSAuto
 {
     /// <summary>
     /// My own question as reference: https://stackoverflow.com/questions/35138778/sending-keys-to-a-directx-game
