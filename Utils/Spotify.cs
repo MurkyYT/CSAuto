@@ -16,12 +16,18 @@ namespace CSAuto.Utils
         public static void Pause()
         {
             if (IsPlaying() && IsRunning())
+            {
                 Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
+                Log.WriteLine("Pausing Spotify");
+            }
         }
         public static void Resume()
         {
             if (!IsPlaying() && IsRunning())
+            {
                 Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
+                Log.WriteLine("Resuming Spotify");
+            }
         }
         public static bool IsRunning()
         {
