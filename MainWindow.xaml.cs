@@ -19,7 +19,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -27,8 +26,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
-using Keys = System.Windows.Forms.Keys;
-
+using CSAuto.Utils;
 namespace CSAuto
 {
     /// <summary>
