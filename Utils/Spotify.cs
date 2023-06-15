@@ -44,6 +44,8 @@ namespace CSAuto.Utils
         public static bool IsPlaying()
         {
             Process main = GetProcess();
+            if (main == null)
+                return false;
             // create a substring which checks if there is Spotify at the start of the main window handle
             return main.MainWindowTitle.Substring(0, "Spotify".Length) != "Spotify";
         }
