@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSAuto
+namespace CSAuto.Utils
 {
     /// <summary>
     /// My own question as reference: https://stackoverflow.com/questions/35138778/sending-keys-to-a-directx-game
@@ -420,6 +420,12 @@ namespace CSAuto
         };
 
             SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+        }
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        public static extern void keybd_event(uint bVk, uint bScan, uint dwFlags, uint dwExtraInfo);
+        public static void PressKey(VirtualKeyStates key)
+        {
+            keybd_event((uint)key, 0, 0, 0);
         }
 
         /// <summary>

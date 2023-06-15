@@ -48,12 +48,14 @@ namespace CSAuto
         public Player Player { get; internal set; }
         public Match Match { get; internal set; }
         public Round Round { get; internal set; }
+        public string MySteamID { get; internal set; }
         private readonly string JSON;
         public GameState(string JSON)
         {
             if (JSON == null)
                 return;
             this.JSON = JSON;
+            MySteamID = GetMySteamID();
             Match = new Match()
             {
                 Phase = GetMatchPhase()
@@ -66,6 +68,7 @@ namespace CSAuto
             Player = new Player()
             {
                 CurrentActivity = GetActivity(),
+                SteamID = GetSteamID(),
                 Team = GetTeam(),
                 Health = GetHealth(),
                 Armor = GetArmor(),
@@ -75,6 +78,24 @@ namespace CSAuto
                 IsSpectating = CheckIfSpectator()
             };
             Player.SetWeapons(JSON);
+        }
+
+        private string GetSteamID()
+        {
+            string splitStr = JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            return split[1].Split('"')[0];
+        }
+
+        private string GetMySteamID()
+        {
+            string splitStr = JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            return split[1].Split('"')[0];
         }
 
         private bool HasDefuseKit()
@@ -254,6 +275,7 @@ namespace CSAuto
         public bool HasHelmet { get; internal set; }
         public bool HasDefuseKit { get; internal set; }
         public bool IsSpectating { get; internal set; }
+        public string SteamID { get; internal set; }
         internal void SetWeapons(string JSON)
         {
             string weapons = GetWeapons(JSON);

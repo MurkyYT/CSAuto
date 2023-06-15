@@ -19,7 +19,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -27,8 +26,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
-using Keys = System.Windows.Forms.Keys;
-
+using CSAuto.Utils;
 namespace CSAuto
 {
     /// <summary>
@@ -39,9 +37,17 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.1";
+        const string VER = "1.0.2";
         const string PORT = "11523";
-        const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+"\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
+        const string TIMEOUT = "5.0";
+        const string BUFFER = "0.1";
+        const string THROTTLE = "0.5";
+        const string HEARTBEAT = "10.0";
+        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+
+            "\"\r\n\"timeout\" \""+ TIMEOUT+"\"\r\n\"" +
+            "buffer\"  \""+ BUFFER+"\"\r\n\"" +
+            "throttle\" \""+THROTTLE+"\"\r\n\"" +
+            "heartbeat\" \""+HEARTBEAT+"\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         /// <summary>
         /// Publics
         /// </summary>
@@ -63,6 +69,7 @@ namespace CSAuto
         readonly MenuItem preferArmorCheck = new MenuItem();
         readonly MenuItem saveLogsCheck = new MenuItem();
         readonly MenuItem continueSprayingCheck = new MenuItem();
+        readonly MenuItem autoPauseResumeSpotify = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = "Auto Buy"
@@ -126,6 +133,10 @@ namespace CSAuto
                         Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
                     }
                 };
+                autoPauseResumeSpotify.IsChecked = Properties.Settings.Default.autoPausePlaySpotify;
+                autoPauseResumeSpotify.Header = "Auto Pause/Resume Spotify";
+                autoPauseResumeSpotify.IsCheckable = true;
+                autoPauseResumeSpotify.Click += AutoPauseResumeSpotify_Click;
                 startUpCheck.IsChecked = Properties.Settings.Default.runAtStartUp;
                 startUpCheck.Header = "Start With Windows";
                 startUpCheck.IsCheckable = true;
@@ -180,6 +191,7 @@ namespace CSAuto
                 exitcm.Items.Add(autoBuyMenu);
                 exitcm.Items.Add(autoReloadMenu);
                 exitcm.Items.Add(autoAcceptMatchCheck);
+                exitcm.Items.Add(autoPauseResumeSpotify);
                 exitcm.Items.Add(startUpCheck);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(checkForUpdates);
@@ -192,6 +204,12 @@ namespace CSAuto
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AutoPauseResumeSpotify_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.autoPausePlaySpotify = autoPauseResumeSpotify.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void ContinueSprayingCheck_Click(object sender, RoutedEventArgs e)
@@ -391,7 +409,12 @@ namespace CSAuto
                         AutoBuyDefuseKit();
                         AutoBuyArmor();
                     }
+                    if (Properties.Settings.Default.autoPausePlaySpotify)
+                    {
+                        AutoPauseResumeSpotify();
+                    }
                 }
+                
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
@@ -400,6 +423,30 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n"+ex);
             }
         }
+
+        private void AutoPauseResumeSpotify()
+        {
+            if(GameState.Player.CurrentActivity == Activity.Playing)
+            {
+                if (GameState.Player.Health > 0 && GameState.Player.SteamID == GameState.MySteamID && Spotify.IsPlaying())
+                {
+                    Spotify.Pause();
+                    Log.WriteLine("Pausing Spotify");
+                }
+                else if (!Spotify.IsPlaying() && GameState.Player.SteamID != GameState.MySteamID)
+                {
+                    Spotify.Resume();
+                    Log.WriteLine("Resuming Spotify");
+                }
+            }
+            else if (!Spotify.IsPlaying() && GameState.Player.CurrentActivity != Activity.Textinput)
+            {
+                Spotify.Resume();
+                Log.WriteLine("Resuming Spotify");
+            }
+
+        }
+
         bool IsForegroundProcess(uint pid)
         {
             IntPtr hwnd = GetForegroundWindow();
@@ -733,7 +780,7 @@ namespace CSAuto
                 {
                     using (FileStream fs = File.Create(integrationPath))
                     {
-                        Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                        Byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                         fs.Write(title, 0, title.Length);
                     }
                     Log.WriteLine("CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
@@ -746,7 +793,7 @@ namespace CSAuto
                     {
                         using (FileStream fs = File.Create(integrationPath))
                         {
-                            Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                            Byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                             fs.Write(title, 0, title.Length);
                         }
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
@@ -760,6 +807,7 @@ namespace CSAuto
                 {
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
+                    autoPauseResumeSpotify.IsEnabled = false;
                 }
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
