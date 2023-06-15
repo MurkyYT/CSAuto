@@ -35,7 +35,15 @@ namespace CSAuto
         /// </summary>
         const string VER = "1.0.1";
         const string PORT = "11523";
-        const string integrationFile = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+"\"\r\n\"timeout\" \"5.0\"\r\n\"buffer\"  \"0.1\"\r\n\"throttle\" \"0.5\"\r\n\"heartbeat\" \"10.0\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
+        const string TIMEOUT = "5.0";
+        const string BUFFER = "0.1";
+        const string THROTTLE = "0.5";
+        const string HEARTBEAT = "10.0";
+        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+
+            "\"\r\n\"timeout\" \""+ TIMEOUT+"\"\r\n\"" +
+            "buffer\"  \""+ BUFFER+"\"\r\n\"" +
+            "throttle\" \""+THROTTLE+"\"\r\n\"" +
+            "heartbeat\" \""+HEARTBEAT+"\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         /// <summary>
         /// Publics
         /// </summary>
@@ -688,7 +696,7 @@ namespace CSAuto
                 {
                     using (FileStream fs = File.Create(integrationPath))
                     {
-                        Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                        Byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                         fs.Write(title, 0, title.Length);
                     }
                     Log.WriteLine("CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
@@ -701,7 +709,7 @@ namespace CSAuto
                     {
                         using (FileStream fs = File.Create(integrationPath))
                         {
-                            Byte[] title = new UTF8Encoding(true).GetBytes(integrationFile);
+                            Byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                             fs.Write(title, 0, title.Length);
                         }
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
