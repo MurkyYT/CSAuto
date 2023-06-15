@@ -20,6 +20,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)
 * Auto buy armor for you or auto refill it when you have less then 70 left!
 * Auto buy defuse kit for you as a CT
+* Auto pause/resume spotify song
 
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
