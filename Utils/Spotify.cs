@@ -15,12 +15,12 @@ namespace CSAuto.Utils
     {
         public static void Pause()
         {
-            if (IsPlaying())
+            if (IsPlaying() && IsRunning())
                 Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
         }
         public static void Resume()
         {
-            if (!IsPlaying())
+            if (!IsPlaying() && IsRunning())
                 Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
         }
         public static bool IsRunning()
@@ -44,6 +44,8 @@ namespace CSAuto.Utils
         public static bool IsPlaying()
         {
             Process main = GetProcess();
+            if (main == null)
+                return false;
             // create a substring which checks if there is Spotify at the start of the main window handle
             return main.MainWindowTitle.Substring(0, "Spotify".Length) != "Spotify";
         }

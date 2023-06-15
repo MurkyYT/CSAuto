@@ -130,5 +130,17 @@ namespace CSAuto.Properties {
                 this["ContinueSpraying"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoPausePlaySpotify {
+            get {
+                return ((bool)(this["autoPausePlaySpotify"]));
+            }
+            set {
+                this["autoPausePlaySpotify"] = value;
+            }
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.1";
+        const string VER = "1.0.2";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -65,6 +65,7 @@ namespace CSAuto
         readonly MenuItem preferArmorCheck = new MenuItem();
         readonly MenuItem saveLogsCheck = new MenuItem();
         readonly MenuItem continueSprayingCheck = new MenuItem();
+        readonly MenuItem autoPauseResumeSpotify = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = "Auto Buy"
@@ -128,6 +129,10 @@ namespace CSAuto
                         Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
                     }
                 };
+                autoPauseResumeSpotify.IsChecked = Properties.Settings.Default.autoPausePlaySpotify;
+                autoPauseResumeSpotify.Header = "Auto Pause/Resume Spotify";
+                autoPauseResumeSpotify.IsCheckable = true;
+                autoPauseResumeSpotify.Click += AutoPauseResumeSpotify_Click;
                 startUpCheck.IsChecked = Properties.Settings.Default.runAtStartUp;
                 startUpCheck.Header = "Start With Windows";
                 startUpCheck.IsCheckable = true;
@@ -182,6 +187,7 @@ namespace CSAuto
                 exitcm.Items.Add(autoBuyMenu);
                 exitcm.Items.Add(autoReloadMenu);
                 exitcm.Items.Add(autoAcceptMatchCheck);
+                exitcm.Items.Add(autoPauseResumeSpotify);
                 exitcm.Items.Add(startUpCheck);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(checkForUpdates);
@@ -194,6 +200,12 @@ namespace CSAuto
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AutoPauseResumeSpotify_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.autoPausePlaySpotify = autoPauseResumeSpotify.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void ContinueSprayingCheck_Click(object sender, RoutedEventArgs e)
@@ -393,8 +405,13 @@ namespace CSAuto
                         AutoBuyDefuseKit();
                         AutoBuyArmor();
                     }
+                    if (Properties.Settings.Default.autoPausePlaySpotify)
+                    {
+                        AutoPauseResumeSpotify();
+                    }
                 }
-                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\ncs2Active:{cs2Active}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+                
+                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
             catch(Exception ex) 
@@ -402,6 +419,30 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n"+ex);
             }
         }
+
+        private void AutoPauseResumeSpotify()
+        {
+            if(GameState.Player.CurrentActivity == Activity.Playing)
+            {
+                if (GameState.Player.Health > 0 && GameState.Player.SteamID == GameState.MySteamID && Spotify.IsPlaying())
+                {
+                    Spotify.Pause();
+                    Log.WriteLine("Pausing Spotify");
+                }
+                else if (!Spotify.IsPlaying() && GameState.Player.SteamID != GameState.MySteamID)
+                {
+                    Spotify.Resume();
+                    Log.WriteLine("Resuming Spotify");
+                }
+            }
+            else if (!Spotify.IsPlaying() && GameState.Player.CurrentActivity != Activity.Textinput)
+            {
+                Spotify.Resume();
+                Log.WriteLine("Resuming Spotify");
+            }
+
+        }
+
         bool IsForegroundProcess(uint pid)
         {
             IntPtr hwnd = GetForegroundWindow();
@@ -739,6 +780,7 @@ namespace CSAuto
                 {
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
+                    autoPauseResumeSpotify.IsEnabled = false;
                 }
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
