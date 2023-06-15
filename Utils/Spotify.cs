@@ -15,12 +15,12 @@ namespace CSAuto.Utils
     {
         public static void Pause()
         {
-            if (IsPlaying())
+            if (IsPlaying() && IsRunning())
                 Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
         }
         public static void Resume()
         {
-            if (!IsPlaying())
+            if (!IsPlaying() && IsRunning())
                 Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
         }
         public static bool IsRunning()
