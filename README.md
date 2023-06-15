@@ -20,6 +20,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * ~~Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)~~ (GSI might not be enabled in cs2)
 * ~~Auto buy armor for you or auto refill it when you have less then 70 left!~~ (GSI might not be enabled in cs2)
 * ~~Auto buy defuse kit for you as a CT~~ (GSI might not be enabled in cs2)
+* ~~Auto pause/resume spotify song~~ (GSI might not be enabled in cs2)
 
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
