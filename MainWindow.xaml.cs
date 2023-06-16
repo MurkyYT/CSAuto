@@ -37,7 +37,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.2";
+        const string VER = "1.0.2a";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -69,6 +69,7 @@ namespace CSAuto
         readonly MenuItem preferArmorCheck = new MenuItem();
         readonly MenuItem saveLogsCheck = new MenuItem();
         readonly MenuItem continueSprayingCheck = new MenuItem();
+        readonly MenuItem autoCheckForUpdates = new MenuItem();
         readonly MenuItem autoPauseResumeSpotify = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
@@ -114,7 +115,6 @@ namespace CSAuto
             {
                 KillDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-               
                 MenuItem debugMenu = new MenuItem
                 {
                     Header = "Debug"
@@ -122,6 +122,14 @@ namespace CSAuto
                 MenuItem exit = new MenuItem
                 {
                     Header = "Exit"
+                };
+                MenuItem automation = new MenuItem
+                {
+                    Header = "Automation"
+                };
+                MenuItem options = new MenuItem
+                {
+                    Header = "Options"
                 };
                 exit.Click += Exit_Click;
                 MenuItem about = new MenuItem
@@ -133,6 +141,20 @@ namespace CSAuto
                         Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
                     }
                 };
+                MenuItem openDebugWindow = new MenuItem
+                {
+                    Header = "Open Debug Window"
+                };
+                openDebugWindow.Click += OpenDebugWindow_Click;
+                MenuItem checkForUpdates = new MenuItem
+                {
+                    Header = "Check for updates"
+                };
+                checkForUpdates.Click += CheckForUpdates_Click;
+                autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
+                autoCheckForUpdates.Header = "Check For Updates On Startup";
+                autoCheckForUpdates.IsCheckable = true;
+                autoCheckForUpdates.Click += AutoCheckForUpdates_Click;
                 autoPauseResumeSpotify.IsChecked = Properties.Settings.Default.autoPausePlaySpotify;
                 autoPauseResumeSpotify.Header = "Auto Pause/Resume Spotify";
                 autoPauseResumeSpotify.IsCheckable = true;
@@ -173,26 +195,25 @@ namespace CSAuto
                 autoReloadCheck.Header = "Enabled";
                 autoReloadCheck.IsCheckable = true;
                 autoReloadCheck.Click += AutoReloadCheck_Click;
-                MenuItem checkForUpdates = new MenuItem
-                {
-                    Header = "Check for updates"
-                };
-                checkForUpdates.Click += CheckForUpdates_Click;
                 debugMenu.Items.Add(saveFramesDebug);
                 debugMenu.Items.Add(saveLogsCheck);
+                debugMenu.Items.Add(openDebugWindow);
                 autoReloadMenu.Items.Add(autoReloadCheck);
                 autoReloadMenu.Items.Add(continueSprayingCheck);
                 autoBuyMenu.Items.Add(preferArmorCheck);
                 autoBuyMenu.Items.Add(autoBuyArmor);
                 autoBuyMenu.Items.Add(autoBuyDefuseKit);
+                automation.Items.Add(autoBuyMenu);
+                automation.Items.Add(autoReloadMenu);
+                automation.Items.Add(autoAcceptMatchCheck);
+                automation.Items.Add(autoPauseResumeSpotify);
+                options.Items.Add(startUpCheck);
+                options.Items.Add(autoCheckForUpdates);
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
-                exitcm.Items.Add(autoBuyMenu);
-                exitcm.Items.Add(autoReloadMenu);
-                exitcm.Items.Add(autoAcceptMatchCheck);
-                exitcm.Items.Add(autoPauseResumeSpotify);
-                exitcm.Items.Add(startUpCheck);
+                exitcm.Items.Add(automation);
+                exitcm.Items.Add(options);
                 exitcm.Items.Add(new Separator());
                 exitcm.Items.Add(checkForUpdates);
                 exitcm.Items.Add(exit);
@@ -204,6 +225,17 @@ namespace CSAuto
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.autoCheckForUpdates = autoCheckForUpdates.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void OpenDebugWindow_Click(object sender, RoutedEventArgs e)
+        {
+            Notifyicon_LeftMouseButtonDoubleClick(null, null);
         }
 
         private void AutoPauseResumeSpotify_Click(object sender, RoutedEventArgs e)
@@ -796,6 +828,8 @@ namespace CSAuto
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
                     }
                 }
+                if (Properties.Settings.Default.autoCheckForUpdates)
+                    AutoCheckUpdate();
             }
             catch (Exception ex)
             {
@@ -809,6 +843,38 @@ namespace CSAuto
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        async Task AutoCheckUpdate()
+        {
+            try
+            {
+                System.Net.WebClient client = new System.Net.WebClient() { Encoding = Encoding.UTF8 };
+                client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+                Log.WriteLine("Auto Checking for Updates");
+                string webInfo = await client.DownloadStringTaskAsync("https://github.com/MurkyYT/CSAuto/releases/latest");
+                string latestVersion = webInfo.Split(new string[] { "https://github.com/MurkyYT/CSAuto/releases/tag/" }, StringSplitOptions.None)[1].Split('&')[0].Trim();
+                Log.WriteLine($"Auto Check Updates - The latest version is {latestVersion}");
+                if (latestVersion == VER)
+                {
+                    Log.WriteLine("Auto Check Updates - Latest version installed");
+                }
+                else
+                {
+                    Log.WriteLine($"Auto Check Updates - Newer version found {VER} --> {latestVersion}");
+                    MessageBoxResult result = MessageBox.Show($"Found newer verison ({latestVersion}) would you like to download it?", "Check for updates (CSAuto)", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        Log.WriteLine("Auto Check Updates - Downloading latest version");
+                        System.Diagnostics.Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine($"Auto Check Updates - Couldn't check for updates - '{ex.Message}'");
+            }
+        }
+
         private void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             //open debug menu
@@ -820,7 +886,7 @@ namespace CSAuto
             }
             else
             {
-                debugWind.Show();
+                debugWind.Activate();
             }
         }
     }

@@ -95,7 +95,7 @@
       <DependentUpon>GSIDebugWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Keyboard.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Utils\Log.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
