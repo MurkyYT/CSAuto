@@ -41,7 +41,7 @@ namespace CSAuto
         private void debugWind_Closed(object sender, EventArgs e)
         {
             main.debugWind = null;
-            Log.debugWind = null;
+            Utils.Log.debugWind = null;
         }
     }
 }
