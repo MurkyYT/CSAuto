@@ -829,7 +829,9 @@ namespace CSAuto
                     }
                 }
                 if (Properties.Settings.Default.autoCheckForUpdates)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     AutoCheckUpdate();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception ex)
             {
