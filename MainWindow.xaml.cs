@@ -801,7 +801,9 @@ namespace CSAuto
                     "please refer the the FAQ at the git hub page");
                 }
                 if (Properties.Settings.Default.autoCheckForUpdates)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     AutoCheckUpdate();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception ex)
             {
@@ -846,8 +848,6 @@ namespace CSAuto
             {
                 Log.WriteLine($"Auto Check Updates - Couldn't check for updates - '{ex.Message}'");
             }
-        }
-
         }
         private bool HasGSILaunchOption(string launchOpt)
         {
