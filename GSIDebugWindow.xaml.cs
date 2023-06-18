@@ -185,5 +185,21 @@ namespace CSAuto
                 ParseGameState(File.ReadAllText(openFileDialog1.FileName));
             }
         }
+
+        private void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + $" - {DateTime.Now.ToString("HH;mm;ss")}.txt";
+            string path = strWorkPath + "/DEBUG/GSI_OUTPUT/"+ fileName;
+            if (outputBox.Text != "None")
+            {
+                Directory.CreateDirectory(strWorkPath + "/DEBUG/GSI_OUTPUT/");
+                using (FileStream fs = File.Create(path))
+                {
+                    Byte[] title = new UTF8Encoding(true).GetBytes(outputBox.Text);
+                    fs.Write(title, 0, title.Length);
+                }
+            }
+        }
     }
 }

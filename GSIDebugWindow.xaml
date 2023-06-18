@@ -17,7 +17,7 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
-                    <MenuItem x:Name="SaveFile" Header="_Save"/>
+                    <MenuItem x:Name="SaveFile" Header="_Save" Click="SaveFile_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>
