@@ -9,11 +9,20 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="0"/>
-        <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="1"/>
-        <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="2"/>
+        <DockPanel Grid.Row ="0">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
+                    <MenuItem x:Name="SaveFile" Header="_Save"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1"/>
+        <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2"/>
+        <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3"/>
     </Grid>
 </Window>
