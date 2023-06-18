@@ -79,6 +79,7 @@
     </ApplicationDefinition>
     <Compile Include="Exceptions\WriteException.cs" />
     <Compile Include="Utils\Spotify.cs" />
+    <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Page Include="GSIDebugWindow.xaml">
       <SubType>Designer</SubType>
