@@ -82,6 +82,8 @@ namespace CSAuto
         /// <summary>
         /// Privates
         /// </summary>
+        private DiscordRpc.EventHandlers handlers;
+        private DiscordRpc.RichPresence presence;
         private readonly AutoResetEvent _waitForConnection = new AutoResetEvent(false);
         private string integrationPath = null;
         private HttpListener _listener;
@@ -92,6 +94,7 @@ namespace CSAuto
         Point csgoResolution = new Point();
         GameState GameState = new GameState(null);
         int frame = 0;
+        bool csgoRunning = false;
         bool inGame = false;
         bool csgoActive = false;
         Activity? lastActivity;
@@ -113,6 +116,7 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                InitializeDiscordRPC();
                 KillDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 MenuItem debugMenu = new MenuItem
@@ -225,6 +229,37 @@ namespace CSAuto
             {
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        
+        private void InitializeDiscordRPC()
+        {
+            string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString());
+            string dllPath = Path.Combine(dirName, "discord-rpc-win32.dll");
+            using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+              "CSAuto.discord-rpc-w32.dll"))
+            {
+                try
+                {
+                    using (Stream outFile = File.Create(dllPath))
+                    {
+                        const int sz = 4096;
+                        byte[] buf = new byte[sz];
+                        while (true)
+                        {
+                            int nRead = stm.Read(buf, 0, sz);
+                            if (nRead < 1)
+                                break;
+                            outFile.Write(buf, 0, nRead);
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    Log.WriteLine(e.ToString());
+                }
+            }
+            this.handlers = default(DiscordRpc.EventHandlers);
+            DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
         }
 
         private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -446,13 +481,40 @@ namespace CSAuto
                         AutoPauseResumeSpotify();
                     }
                 }
-                
+                UpdateDiscordRPC();
+
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
             catch(Exception ex) 
             {
                 Log.WriteLine("Error happend while getting GSI Info\n"+ex);
+            }
+        }
+
+        private void UpdateDiscordRPC()
+        {
+            if (csgoRunning)
+            {
+                presence.details = GameState.Player.CurrentActivity == Activity.Menu ? "In Menu" : $"{GameState.Match.TScore} (T) - {GameState.Match.CTScore} (CT)";
+                presence.state = GameState.Player.CurrentActivity != Activity.Menu ? $"{GameState.Match.Map} ({GameState.Match.Mode}) as {GameState.Player.Team}" : "";
+                presence.largeImageKey = GameState.Player.CurrentActivity == Activity.Menu ? "csgo_icon" : $"map_icon_{GameState.Match.Map}";
+                presence.largeImageText = GameState.Player.CurrentActivity == Activity.Menu ? "Menu" : GameState.Match.Map;
+                if (GameState.Player.CurrentActivity != Activity.Menu)
+                {
+                    presence.smallImageKey = "csgo_icon";
+                    presence.smallImageText = "CS:GO";
+                }
+                else
+                {
+                    presence.smallImageKey = null;
+                    presence.smallImageText = null;
+                }
+                DiscordRpc.UpdatePresence(ref this.presence);
+            }
+            else
+            {
+                DiscordRpc.Shutdown();
             }
         }
 
@@ -496,7 +558,8 @@ namespace CSAuto
             {
                 uint pid = 0;
                 Process[] prcs = Process.GetProcessesByName("csgo");
-                if (prcs.Length > 0)
+                csgoRunning = prcs.Length > 0;
+                if (csgoRunning)
                     pid = (uint)prcs[0].Id;
                 csgoActive = IsForegroundProcess(pid);
                 if (csgoActive)
