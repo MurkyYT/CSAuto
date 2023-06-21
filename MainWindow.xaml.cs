@@ -474,14 +474,14 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (activity != Activity.Menu && lastActivity == Activity.Menu && GameState.Match.Map != null)
+                if (activity != Activity.Menu && lastActivity == Activity.Menu && GameState.Match.Map == null)
                     gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
                 lastActivity = activity;
                 matchState = currentMatchState;
                 roundState = currentRoundState;
                 round = currentRound;
                 weapon = currentWeapon;
-                inGame = activity != Activity.Menu && GameState.Match.Map != null;
+                inGame = GameState.Match.Map != null;
                 
                 if (csgoActive && !GameState.Player.IsSpectating)
                 {
@@ -625,7 +625,7 @@ namespace CSAuto
         }
         private void AutoBuyArmor()
         {
-            if (!Properties.Settings.Default.autoBuyArmor || !inGame)
+            if (!Properties.Settings.Default.autoBuyArmor || lastActivity == Activity.Menu)
                 return;
             int armor = GameState.Player.Armor;
             bool hasHelmet = GameState.Player.HasHelmet;
@@ -654,7 +654,7 @@ namespace CSAuto
         }
         private void AutoBuyDefuseKit()
         {
-            if (!Properties.Settings.Default.autoBuyDefuseKit || !inGame)
+            if (!Properties.Settings.Default.autoBuyDefuseKit || lastActivity == Activity.Menu)
                 return;
             bool hasDefuseKit = GameState.Player.HasDefuseKit;
             int money = GameState.Player.Money;
