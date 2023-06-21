@@ -107,7 +107,7 @@ namespace CSAuto
         Phase? matchState;
         Phase? roundState;
         Weapon weapon;
-        DateTime gameStarted = DateTime.Now;
+        DateTime gameStarted = new DateTime(1970, 1, 1);
         int round = -1;
         public ImageSource ToImageSource(Icon icon)
         {
@@ -474,8 +474,12 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (GameState.Match.Map == null)
+                if (GameState.Match.Map != null && gameStarted == new DateTime(1970, 1, 1))
                     gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
+                else if(GameState.Match.Map == null)
+                {
+                    gameStarted = new DateTime(1970, 1, 1);
+                }
                 lastActivity = activity;
                 matchState = currentMatchState;
                 roundState = currentRoundState;
