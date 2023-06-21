@@ -522,14 +522,14 @@ namespace CSAuto
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             if (csgoRunning)
             {
-                presence.details = GameState.Player.CurrentActivity == Activity.Menu ? "In Menu" : $"{GameState.Match.TScore} (T) - {GameState.Match.CTScore} (CT)";
-                presence.state = GameState.Player.CurrentActivity != Activity.Menu ? $"{GameState.Match.Map} ({GameState.Match.Mode}) as {GameState.Player.Team}" : "";
+                presence.details = GameState.Player.CurrentActivity == Activity.Menu ? $"ID: {GameState.MySteamID}" : $"{GameState.Match.Mode} - {GameState.Match.Map}";
+                presence.state = GameState.Player.CurrentActivity != Activity.Menu ? $"{GameState.Match.TScore} [T] ({GameState.Round.Phase}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
                 presence.largeImageKey = GameState.Player.CurrentActivity == Activity.Menu ? "csgo_icon" : $"map_icon_{GameState.Match.Map}";
                 presence.largeImageText = GameState.Player.CurrentActivity == Activity.Menu ? "Menu" : GameState.Match.Map;
                 if (GameState.Player.CurrentActivity != Activity.Menu)
                 {
-                    presence.smallImageKey = "csgo_icon";
-                    presence.smallImageText = "CS:GO";
+                    presence.smallImageKey = GameState.Player.Team.ToString().ToLower();
+                    presence.smallImageText = GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 }
                 else
                 {
