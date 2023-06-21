@@ -474,7 +474,7 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (activity != Activity.Menu && lastActivity == Activity.Menu && GameState.Match.Map == null)
+                if (GameState.Match.Map == null)
                     gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
                 lastActivity = activity;
                 matchState = currentMatchState;
