@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSAuto.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,13 @@ namespace CSAuto
         Over,
         Freezetime
     }
+    public enum Mode
+    {
+        Competitive,
+        Casual,
+        Deathmatch,
+        Wingman
+    }
     public class GameState
     {
         public Player Player { get; internal set; }
@@ -58,7 +66,11 @@ namespace CSAuto
             MySteamID = GetMySteamID();
             Match = new Match()
             {
-                Phase = GetMatchPhase()
+                Phase = GetMatchPhase(),
+                Mode = GetMode(),
+                TScore = GetTScore(),
+                CTScore = GetCTScore(),
+                Map = GetMap()
             };
             Round = new Round()
             {
@@ -78,6 +90,52 @@ namespace CSAuto
                 IsSpectating = CheckIfSpectator()
             };
             Player.SetWeapons(JSON);
+        }
+
+        private string GetMap()
+        {
+            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            string state = split[1].Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+            return state;
+        }
+
+        private int GetTScore()
+        {
+            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            string splitstr = split[1].Split(new string[] { "\"team_t\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            return int.Parse(splitstr.Split(new string[] { "\"score\":" }, StringSplitOptions.None)[1].Split(',')[0]);
+        }
+        private int GetCTScore()
+        {
+            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            string splitstr = split[1].Split(new string[] { "\"team_ct\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            return int.Parse(splitstr.Split(new string[] { "\"score\":" }, StringSplitOptions.None)[1].Split(',')[0]);
+        }
+        private Mode? GetMode()
+        {
+            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            string state = split[1].Split(new string[] { "\"mode\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+            switch (state)
+            {
+                case "competitive":
+                    return Mode.Competitive;
+                case "deathmatch":
+                    return Mode.Deathmatch;
+                case "casual":
+                    return Mode.Casual;
+                case "scrimcomp2v2":
+                    return Mode.Wingman;
+                default:
+                    return null;
+            }
         }
 
         private string GetSteamID()
@@ -257,6 +315,10 @@ namespace CSAuto
     public class Match
     {
         public Phase? Phase { get; internal set; }
+        public Mode? Mode { get; internal set; }
+        public string Map { get; internal set; }
+        public int TScore { get; internal set; }
+        public int CTScore { get; internal set; }
     }
     public class Round
     {
