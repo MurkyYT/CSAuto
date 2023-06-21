@@ -107,6 +107,7 @@ namespace CSAuto
         Phase? matchState;
         Phase? roundState;
         Weapon weapon;
+        DateTime gameStarted = DateTime.Now;
         int round = -1;
         public ImageSource ToImageSource(Icon icon)
         {
@@ -473,12 +474,15 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+                if (activity != Activity.Menu && lastActivity == Activity.Menu)
+                    gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
                 lastActivity = activity;
                 matchState = currentMatchState;
                 roundState = currentRoundState;
                 round = currentRound;
                 weapon = currentWeapon;
                 inGame = activity != Activity.Menu;
+                
                 if (csgoActive && !GameState.Player.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && inGame)
@@ -515,15 +519,22 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n"+ex);
             }
         }
-
+        private DateTime UnixTimeStampToDateTime(string unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(double.Parse(unixTimeStamp)).ToLocalTime();
+            return dateTime;
+        }
         private void UpdateDiscordRPC()
         {
             if(!discordRPCON)
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             if (csgoRunning)
             {
+                var timeElapsed = DateTime.Now - gameStarted;
                 presence.details = GameState.Player.CurrentActivity == Activity.Menu ? $"ID: {GameState.MySteamID}" : $"{GameState.Match.Mode} - {GameState.Match.Map}";
-                presence.state = GameState.Player.CurrentActivity != Activity.Menu ? $"{GameState.Match.TScore} [T] ({GameState.Round.Phase}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
+                presence.state = GameState.Player.CurrentActivity != Activity.Menu ? $"{GameState.Match.TScore} [T] ({timeElapsed.ToString(@"hh\:mm\:ss")}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
                 presence.largeImageKey = GameState.Player.CurrentActivity == Activity.Menu ? "csgo_icon" : $"map_icon_{GameState.Match.Map}";
                 presence.largeImageText = GameState.Player.CurrentActivity == Activity.Menu ? "Menu" : GameState.Match.Map;
                 if (GameState.Player.CurrentActivity != Activity.Menu)
@@ -587,6 +598,15 @@ namespace CSAuto
                 csgoRunning = prcs.Length > 0;
                 if (csgoRunning)
                     pid = (uint)prcs[0].Id;
+                else
+                {
+                    DiscordRpc.Shutdown();
+                    discordRPCON = false;
+                }
+                if (GameState.Player != null)
+                {
+                    UpdateDiscordRPC();
+                }
                 csgoActive = IsForegroundProcess(pid);
                 if (csgoActive)
                 {
