@@ -533,11 +533,11 @@ namespace CSAuto
             if (csgoRunning)
             {
                 var timeElapsed = DateTime.Now - gameStarted;
-                presence.details = GameState.Player.CurrentActivity == Activity.Menu ? $"ID: {GameState.MySteamID}" : $"{GameState.Match.Mode} - {GameState.Match.Map}";
-                presence.state = GameState.Player.CurrentActivity != Activity.Menu ? $"{GameState.Match.TScore} [T] ({timeElapsed.ToString(@"hh\:mm\:ss")}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
-                presence.largeImageKey = GameState.Player.CurrentActivity == Activity.Menu ? "csgo_icon" : $"map_icon_{GameState.Match.Map}";
-                presence.largeImageText = GameState.Player.CurrentActivity == Activity.Menu ? "Menu" : GameState.Match.Map;
-                if (GameState.Player.CurrentActivity != Activity.Menu)
+                presence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"ID: {GameState.MySteamID}";
+                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({timeElapsed.ToString(@"hh\:mm\:ss")}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
+                presence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
+                presence.largeImageText = inGame ? GameState.Match.Map : "Menu";
+                if (inGame)
                 {
                     presence.smallImageKey = GameState.Player.Team.ToString().ToLower();
                     presence.smallImageText = GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
