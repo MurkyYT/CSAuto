@@ -154,5 +154,17 @@ namespace CSAuto.Properties {
                 this["autoCheckForUpdates"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool enableDiscordRPC {
+            get {
+                return ((bool)(this["enableDiscordRPC"]));
+            }
+            set {
+                this["enableDiscordRPC"] = value;
+            }
+        }
     }
 }

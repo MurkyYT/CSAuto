@@ -71,9 +71,14 @@ namespace CSAuto
         readonly MenuItem continueSprayingCheck = new MenuItem();
         readonly MenuItem autoCheckForUpdates = new MenuItem();
         readonly MenuItem autoPauseResumeSpotify = new MenuItem();
+        readonly MenuItem enableDiscordRPC = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = "Auto Buy"
+        };
+        readonly MenuItem discordMenu = new MenuItem
+        {
+            Header = "Discord"
         };
         readonly MenuItem autoReloadMenu = new MenuItem
         {
@@ -97,6 +102,7 @@ namespace CSAuto
         bool csgoRunning = false;
         bool inGame = false;
         bool csgoActive = false;
+        bool discordRPCON = false;
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
@@ -155,6 +161,10 @@ namespace CSAuto
                     Header = "Check for updates"
                 };
                 checkForUpdates.Click += CheckForUpdates_Click;
+                enableDiscordRPC.IsChecked = Properties.Settings.Default.enableDiscordRPC;
+                enableDiscordRPC.Header = "Discord RPC";
+                enableDiscordRPC.IsCheckable = true;
+                enableDiscordRPC.Click += EnableDiscordRPC_Click;
                 autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
                 autoCheckForUpdates.Header = "Check For Updates On Startup";
                 autoCheckForUpdates.IsCheckable = true;
@@ -213,9 +223,11 @@ namespace CSAuto
                 automation.Items.Add(autoPauseResumeSpotify);
                 options.Items.Add(startUpCheck);
                 options.Items.Add(autoCheckForUpdates);
+                discordMenu.Items.Add(enableDiscordRPC);
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
+                exitcm.Items.Add(discordMenu);
                 exitcm.Items.Add(automation);
                 exitcm.Items.Add(options);
                 exitcm.Items.Add(new Separator());
@@ -230,7 +242,13 @@ namespace CSAuto
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
+
+        private void EnableDiscordRPC_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.enableDiscordRPC = enableDiscordRPC.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         private void InitializeDiscordRPC()
         {
             string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString());
@@ -260,6 +278,7 @@ namespace CSAuto
             }
             this.handlers = default(DiscordRpc.EventHandlers);
             DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
+            discordRPCON = true;
         }
 
         private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -481,8 +500,13 @@ namespace CSAuto
                         AutoPauseResumeSpotify();
                     }
                 }
-                UpdateDiscordRPC();
-
+                if (Properties.Settings.Default.enableDiscordRPC)
+                    UpdateDiscordRPC();
+                else
+                {
+                    DiscordRpc.Shutdown();
+                    discordRPCON = false;
+                }
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
@@ -494,6 +518,8 @@ namespace CSAuto
 
         private void UpdateDiscordRPC()
         {
+            if(!discordRPCON)
+                DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             if (csgoRunning)
             {
                 presence.details = GameState.Player.CurrentActivity == Activity.Menu ? "In Menu" : $"{GameState.Match.TScore} (T) - {GameState.Match.CTScore} (CT)";
@@ -904,6 +930,7 @@ namespace CSAuto
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
                     autoPauseResumeSpotify.IsEnabled = false;
+                    discordMenu.IsEnabled = false;
                 }
                 MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
