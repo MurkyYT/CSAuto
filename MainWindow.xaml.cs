@@ -485,7 +485,7 @@ namespace CSAuto
                 
                 if (csgoActive && !GameState.Player.IsSpectating)
                 {
-                    if (Properties.Settings.Default.autoReload && inGame)
+                    if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
                     {
                         TryToAutoReload();
                     }
