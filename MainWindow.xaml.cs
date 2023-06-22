@@ -33,7 +33,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.3";
+        const string VER = "1.0.4";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -314,8 +314,8 @@ namespace CSAuto
                 System.Net.WebClient client = new System.Net.WebClient() { Encoding = Encoding.UTF8 };
                 client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                 Log.WriteLine("Checking for updates");
-                string webInfo = await client.DownloadStringTaskAsync("https://github.com/MurkyYT/CSAuto/releases/latest");
-                string latestVersion = webInfo.Split(new string[] { "https://github.com/MurkyYT/CSAuto/releases/tag/" }, StringSplitOptions.None)[1].Split('&')[0].Trim();
+                string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
+                string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
                 Log.WriteLine($"The latest version is {latestVersion}");
                 if (latestVersion == VER)
                 {
@@ -940,8 +940,8 @@ namespace CSAuto
                 System.Net.WebClient client = new System.Net.WebClient() { Encoding = Encoding.UTF8 };
                 client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                 Log.WriteLine("Auto Checking for Updates");
-                string webInfo = await client.DownloadStringTaskAsync("https://github.com/MurkyYT/CSAuto/releases/latest");
-                string latestVersion = webInfo.Split(new string[] { "https://github.com/MurkyYT/CSAuto/releases/tag/" }, StringSplitOptions.None)[1].Split('&')[0].Trim();
+                string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
+                string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
                 Log.WriteLine($"Auto Check Updates - The latest version is {latestVersion}");
                 if (latestVersion == VER)
                 {
