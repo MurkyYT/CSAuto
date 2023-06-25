@@ -11,6 +11,12 @@ namespace CSAuto.Utils
 {
     public static class Github
     {
+        public static string GetLatestStringTag(string user, string repository)
+        {
+            string url = $"https://api.github.com/repos/{user}/{repository}/releases/latest";
+            string webInfo = GetWebInfo(url);
+            return webInfo.Split(new string[] { "\"tag_name\":\"" }, StringSplitOptions.None)[1].Split('"')[0];
+        }
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public static async Task<GithubTag> GetLatestTagAsyncBySemver(string user, string repository)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

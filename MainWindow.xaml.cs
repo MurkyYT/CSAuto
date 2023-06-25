@@ -303,18 +303,15 @@ namespace CSAuto
 
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
         {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            CheckForUpdatesAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            CheckForUpdates();
         }
-        async Task CheckForUpdatesAsync()
+        Task CheckForUpdates()
         {
             try
             {
-                System.Net.WebClient client = new System.Net.WebClient() { Encoding = Encoding.UTF8 };
-                client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                 Log.WriteLine("Checking for updates");
-                string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
+                string latestVersion = Github.GetLatestStringTag("murkyyt", "csauto");
+                //string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
                 //string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
                 //string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
                 Log.WriteLine($"The latest version is {latestVersion}");
@@ -330,7 +327,7 @@ namespace CSAuto
                     if (result == MessageBoxResult.Yes)
                     {
                         Log.WriteLine("Downloading latest version");
-                        System.Diagnostics.Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
+                        Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
                     }
                 }
             }
@@ -339,7 +336,10 @@ namespace CSAuto
                 Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
                 MessageBox.Show($"Couldn't check for updates,Try again in an hour\n'{ex.Message}'", "Check for updates (CSAuto)", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            return Task.CompletedTask;
         }
+
         private void SaveLogsCheck_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.saveLogs = saveLogsCheck.IsChecked;
@@ -915,9 +915,7 @@ namespace CSAuto
                     "please refer the the FAQ at the git hub page");
                 }
                 if (Properties.Settings.Default.autoCheckForUpdates)
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     AutoCheckUpdate();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception ex)
             {
@@ -934,14 +932,13 @@ namespace CSAuto
             }
         }
 
-        async Task AutoCheckUpdate()
+        Task AutoCheckUpdate()
         {
             try
             {
-                System.Net.WebClient client = new System.Net.WebClient() { Encoding = Encoding.UTF8 };
-                client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                 Log.WriteLine("Auto Checking for Updates");
-                string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
+                string latestVersion = Github.GetLatestStringTag("murkyyt", "csauto");
+                //string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
                 //string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
                 //string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
                 Log.WriteLine($"Auto Check Updates - The latest version is {latestVersion}");
@@ -956,7 +953,7 @@ namespace CSAuto
                     if (result == MessageBoxResult.Yes)
                     {
                         Log.WriteLine("Auto Check Updates - Downloading latest version");
-                        System.Diagnostics.Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
+                        Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
                     }
                 }
             }
@@ -964,6 +961,8 @@ namespace CSAuto
             {
                 Log.WriteLine($"Auto Check Updates - Couldn't check for updates - '{ex.Message}'");
             }
+
+            return Task.CompletedTask;
         }
         private bool HasGSILaunchOption(string launchOpt)
         {
