@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace CSAuto.Utils
+namespace Murky.Utils
 {
     class Log
     {
-        public static GSIDebugWindow debugWind = null;
+        public static CSAuto.GSIDebugWindow debugWind = null;
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         static string path = strWorkPath + "/DEBUG/LOGS/";
         public static void VerifyDir()
@@ -32,7 +32,7 @@ namespace CSAuto.Utils
             lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
             if (debugWind != null)
                 debugWind.UpdateDebug(lines);
-            if (Properties.Settings.Default.saveLogs)
+            if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
@@ -52,7 +52,7 @@ namespace CSAuto.Utils
             lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
             if (debugWind != null)
                 debugWind.UpdateDebug(lines);
-            if (Properties.Settings.Default.saveLogs)
+            if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";

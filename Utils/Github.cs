@@ -7,7 +7,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSAuto.Utils
+namespace Murky.Utils
 {
     public static class Github
     {
