@@ -550,7 +550,7 @@ namespace CSAuto
                 }
                 DiscordRpc.UpdatePresence(ref this.presence);
             }
-            else
+            else if(!discordRPCON)
             {
                 DiscordRpc.Shutdown();
             }
