@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace CSAuto.Utils
+namespace Murky.Utils
 {
     public static class Spotify
     {

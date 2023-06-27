@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSAuto.Utils
+namespace Murky.Utils
 {
     public static class TypeConvertor
     {

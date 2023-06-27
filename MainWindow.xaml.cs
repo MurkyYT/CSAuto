@@ -22,7 +22,7 @@ using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using CSAuto.Exceptions;
-using CSAuto.Utils;
+using Murky.Utils;
 namespace CSAuto
 {
     /// <summary>
