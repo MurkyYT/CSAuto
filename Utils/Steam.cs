@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CSAuto.Utils
+namespace Murky.Utils
 {
     public static class Steam
     {
