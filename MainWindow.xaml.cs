@@ -254,30 +254,35 @@ namespace CSAuto
         {
             string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString());
             string dllPath = Path.Combine(dirName, "discord-rpc-win32.dll");
-            using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
-              "CSAuto.discord-rpc-w32.dll"))
+            if (!File.Exists(dllPath))
             {
-                try
+                using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                  "CSAuto.discord-rpc-w32.dll"))
                 {
-                    using (Stream outFile = File.Create(dllPath))
+                    try
                     {
-                        const int sz = 4096;
-                        byte[] buf = new byte[sz];
-                        while (true)
+                        using (Stream outFile = File.Create(dllPath))
                         {
-                            int nRead = stm.Read(buf, 0, sz);
-                            if (nRead < 1)
-                                break;
-                            outFile.Write(buf, 0, nRead);
+                            const int sz = 4096;
+                            byte[] buf = new byte[sz];
+                            while (true)
+                            {
+                                int nRead = stm.Read(buf, 0, sz);
+                                if (nRead < 1)
+                                    break;
+                                outFile.Write(buf, 0, nRead);
+                            }
+                            Log.WriteLine("Initialized 'CSAuto.discord-rpc-w32.dll'");
                         }
-                        Log.WriteLine("Initialized CSAuto.discord-rpc-w32.dll");
+                    }
+                    catch (Exception e)
+                    {
+                        Log.WriteLine(e.ToString());
                     }
                 }
-                catch(Exception e)
-                {
-                    Log.WriteLine(e.ToString());
-                }
             }
+            else
+                Log.WriteLine("'CSAuto.discord-rpc-w32.dll' already exists");
             Log.WriteLine("Enabling discord rpc");
             this.handlers = default(DiscordRpc.EventHandlers);
             DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
