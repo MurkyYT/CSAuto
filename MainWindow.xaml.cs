@@ -924,8 +924,8 @@ namespace CSAuto
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
-                InitializeDiscordRPC();
                 Log.WriteLine($"CSAuto v{VER} started");
+                InitializeDiscordRPC();
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
                     throw new Exception("Couldn't find CS:GO directory");
