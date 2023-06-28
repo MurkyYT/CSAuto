@@ -542,8 +542,9 @@ namespace CSAuto
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             if (csgoRunning)
             {
+                string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
                 presence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"ID: {GameState.MySteamID}";
-                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({GameState.Round.Phase}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
+                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
                 presence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                 presence.largeImageText = inGame ? GameState.Match.Map : "Menu";
                 if (inGame)
