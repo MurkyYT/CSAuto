@@ -123,7 +123,6 @@ namespace CSAuto
             InitializeComponent();
             try
             {
-                InitializeDiscordRPC();
                 KillDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 MenuItem debugMenu = new MenuItem
@@ -925,6 +924,7 @@ namespace CSAuto
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
+                InitializeDiscordRPC();
                 Log.WriteLine($"CSAuto v{VER} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
