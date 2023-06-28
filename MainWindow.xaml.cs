@@ -119,7 +119,6 @@ namespace CSAuto
             InitializeComponent();
             try
             {
-                InitializeDiscordRPC();
                 KillDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 MenuItem debugMenu = new MenuItem
@@ -250,29 +249,36 @@ namespace CSAuto
         {
             string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString());
             string dllPath = Path.Combine(dirName, "discord-rpc-win32.dll");
-            using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
-              "CSAuto.discord-rpc-w32.dll"))
+            if (!File.Exists(dllPath))
             {
-                try
+                using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                  "CSAuto.discord-rpc-w32.dll"))
                 {
-                    using (Stream outFile = File.Create(dllPath))
+                    try
                     {
-                        const int sz = 4096;
-                        byte[] buf = new byte[sz];
-                        while (true)
+                        using (Stream outFile = File.Create(dllPath))
                         {
-                            int nRead = stm.Read(buf, 0, sz);
-                            if (nRead < 1)
-                                break;
-                            outFile.Write(buf, 0, nRead);
+                            const int sz = 4096;
+                            byte[] buf = new byte[sz];
+                            while (true)
+                            {
+                                int nRead = stm.Read(buf, 0, sz);
+                                if (nRead < 1)
+                                    break;
+                                outFile.Write(buf, 0, nRead);
+                            }
+                            Log.WriteLine("Initialized 'CSAuto.discord-rpc-w32.dll'");
                         }
                     }
-                }
-                catch(Exception e)
-                {
-                    Log.WriteLine(e.ToString());
+                    catch (Exception e)
+                    {
+                        Log.WriteLine(e.ToString());
+                    }
                 }
             }
+            else
+                Log.WriteLine("'CSAuto.discord-rpc-w32.dll' already exists");
+            Log.WriteLine("Enabling discord rpc");
             this.handlers = default(DiscordRpc.EventHandlers);
             DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             discordRPCON = true;
@@ -471,16 +477,15 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (GameState.Match.Map != null && gameStarted == new DateTime(1970, 1, 1))
+                if (GameState.Match.Map != null)
                 {
-                    gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
                     presence.startTimestamp = ((DateTimeOffset)gameStarted).ToUnixTimeSeconds();
+                    Log.WriteLine($"Player is now in {GameState.Match.Mode} on {GameState.Match.Map}");
                 }
                 else if (GameState.Match.Map == null && presence.state != "Chilling in lobby")
                 {
-                    
-                    gameStarted = new DateTime(1970, 1, 1);
                     presence.startTimestamp = long.Parse(GameState.Timestamp);
+                    Log.WriteLine("Player is now in lobby");
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -512,9 +517,10 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.enableDiscordRPC)
                     UpdateDiscordRPC();
-                else
+                else if(discordRPCON)
                 {
                     DiscordRpc.Shutdown();
+                    Log.WriteLine("Disabling discord rpc");
                     discordRPCON = false;
                 }
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
@@ -534,8 +540,11 @@ namespace CSAuto
         }
         private void UpdateDiscordRPC()
         {
-            if(!discordRPCON)
+            if (!discordRPCON)
+            {
+                Log.WriteLine("Enabling discord rpc");
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
+            }
             if (cs2Running)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
@@ -873,6 +882,7 @@ namespace CSAuto
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
                 Log.WriteLine($"CSAuto v{VER} started");
+                InitializeDiscordRPC();
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException("Couldn't find CS:GO directory");
