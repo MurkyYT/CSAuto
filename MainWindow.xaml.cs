@@ -476,10 +476,19 @@ namespace CSAuto
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
                 if (GameState.Match.Map != null && gameStarted == new DateTime(1970, 1, 1))
-                    gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
-                else if(GameState.Match.Map == null)
                 {
+                    gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
+                    presence.startTimestamp = ((DateTimeOffset)gameStarted).ToUnixTimeSeconds();
+                    presence.partySize = 0;
+                    presence.partyMax = 0;
+                }
+                else if (GameState.Match.Map == null && presence.state != "Chilling in lobby")
+                {
+                    
                     gameStarted = new DateTime(1970, 1, 1);
+                    presence.startTimestamp = long.Parse(GameState.Timestamp);
+                    presence.partySize = 1;
+                    presence.partyMax = 5;
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -537,9 +546,8 @@ namespace CSAuto
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             if (csgoRunning)
             {
-                var timeElapsed = DateTime.Now - gameStarted;
                 presence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"ID: {GameState.MySteamID}";
-                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({timeElapsed.ToString(@"hh\:mm\:ss")}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
+                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({GameState.Round.Phase}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
                 presence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                 presence.largeImageText = inGame ? GameState.Match.Map : "Menu";
                 if (inGame)
@@ -607,10 +615,6 @@ namespace CSAuto
                 {
                     DiscordRpc.Shutdown();
                     discordRPCON = false;
-                }
-                if (GameState.Player != null)
-                {
-                    UpdateDiscordRPC();
                 }
                 csgoActive = IsForegroundProcess(pid);
                 if (csgoActive)
