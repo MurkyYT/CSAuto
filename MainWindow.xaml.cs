@@ -548,6 +548,7 @@ namespace CSAuto
             {
                 Log.WriteLine("Enabling discord rpc");
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
+                discordRPCON = true;
             }
             if (csgoRunning)
             {
