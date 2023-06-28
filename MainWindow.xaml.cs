@@ -479,16 +479,12 @@ namespace CSAuto
                 {
                     gameStarted = UnixTimeStampToDateTime(GameState.Timestamp);
                     presence.startTimestamp = ((DateTimeOffset)gameStarted).ToUnixTimeSeconds();
-                    presence.partySize = 0;
-                    presence.partyMax = 0;
                 }
                 else if (GameState.Match.Map == null && presence.state != "Chilling in lobby")
                 {
                     
                     gameStarted = new DateTime(1970, 1, 1);
                     presence.startTimestamp = long.Parse(GameState.Timestamp);
-                    presence.partySize = 1;
-                    presence.partyMax = 5;
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
