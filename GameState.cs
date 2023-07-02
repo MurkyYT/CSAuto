@@ -56,8 +56,8 @@ namespace CSAuto
         public Player Player { get; internal set; }
         public Match Match { get; internal set; }
         public Round Round { get; internal set; }
+        public long Timestamp { get; internal set; }
         public string MySteamID { get; internal set; }
-        public string Timestamp { get; internal set; }
         private readonly string JSON;
         public GameState(string JSON)
         {
@@ -94,13 +94,13 @@ namespace CSAuto
             Player.SetWeapons(JSON);
         }
 
-        private string GetTimeStamp()
+        private long GetTimeStamp()
         {
             string splitStr = JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"timestamp\": " }, StringSplitOptions.None);
             if (split.Length < 2)
-                return null;
-            return split[1].Trim();
+                return -1;
+            return long.Parse(split[1].Trim());
         }
 
         private string GetMap()

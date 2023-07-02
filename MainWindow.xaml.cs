@@ -33,7 +33,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.5a";
+        const string VER = "1.0.6";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -44,6 +44,7 @@ namespace CSAuto
             "buffer\"  \""+ BUFFER+"\"\r\n\"" +
             "throttle\" \""+THROTTLE+"\"\r\n\"" +
             "heartbeat\" \""+HEARTBEAT+"\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
+        const string IN_LOBBY_STATE = "Chilling in lobby";
         /// <summary>
         /// Publics
         /// </summary>
@@ -103,7 +104,6 @@ namespace CSAuto
         Phase? matchState;
         Phase? roundState;
         Weapon weapon;
-        DateTime gameStarted = new DateTime(1970, 1, 1);
         int round = -1;
         public ImageSource ToImageSource(Icon icon)
         {
@@ -119,6 +119,8 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                CSGOFriendCode.Encode("76561198341800115");
+                InitializeDiscordRPC();
                 KillDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 MenuItem debugMenu = new MenuItem
@@ -235,7 +237,8 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error ocurred\n'{ex.Message}'\nTry to download the latest version from github.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
             }
         }
 
@@ -247,38 +250,6 @@ namespace CSAuto
 
         private void InitializeDiscordRPC()
         {
-            string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.ToString());
-            string dllPath = Path.Combine(dirName, "discord-rpc-win32.dll");
-            if (!File.Exists(dllPath))
-            {
-                using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
-                  "CSAuto.discord-rpc-w32.dll"))
-                {
-                    try
-                    {
-                        using (Stream outFile = File.Create(dllPath))
-                        {
-                            const int sz = 4096;
-                            byte[] buf = new byte[sz];
-                            while (true)
-                            {
-                                int nRead = stm.Read(buf, 0, sz);
-                                if (nRead < 1)
-                                    break;
-                                outFile.Write(buf, 0, nRead);
-                            }
-                            Log.WriteLine("Initialized 'CSAuto.discord-rpc-w32.dll'");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Log.WriteLine(e.ToString());
-                    }
-                }
-            }
-            else
-                Log.WriteLine("'CSAuto.discord-rpc-w32.dll' already exists");
-            Log.WriteLine("Enabling discord rpc");
             this.handlers = default(DiscordRpc.EventHandlers);
             DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
             discordRPCON = true;
@@ -333,7 +304,7 @@ namespace CSAuto
                     if (result == MessageBoxResult.Yes)
                     {
                         Log.WriteLine("Downloading latest version");
-                        Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
+                        Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
                     }
                 }
             }
@@ -477,15 +448,15 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (GameState.Match.Map != null)
+                if (GameState.Match.Map != null && (presence.state == IN_LOBBY_STATE || presence.startTimestamp == 0))
                 {
-                    presence.startTimestamp = ((DateTimeOffset)gameStarted).ToUnixTimeSeconds();
-                    Log.WriteLine($"Player is now in {GameState.Match.Mode} on {GameState.Match.Map}");
+                    Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
+                    presence.startTimestamp = GameState.Timestamp;
                 }
-                else if (GameState.Match.Map == null && presence.state != "Chilling in lobby")
+                else if (GameState.Match.Map == null && presence.state != IN_LOBBY_STATE)
                 {
-                    presence.startTimestamp = long.Parse(GameState.Timestamp);
-                    Log.WriteLine("Player is now in lobby");
+                    Log.WriteLine($"Player is back in main menu");
+                    presence.startTimestamp = GameState.Timestamp;
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -517,10 +488,9 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.enableDiscordRPC)
                     UpdateDiscordRPC();
-                else if(discordRPCON)
+                else
                 {
                     DiscordRpc.Shutdown();
-                    Log.WriteLine("Disabling discord rpc");
                     discordRPCON = false;
                 }
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
@@ -531,25 +501,25 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n"+ex);
             }
         }
-        private DateTime UnixTimeStampToDateTime(string unixTimeStamp)
+        private DateTime UnixTimeStampToDateTime(long unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
             DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(double.Parse(unixTimeStamp)).ToLocalTime();
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dateTime;
         }
         private void UpdateDiscordRPC()
         {
             if (!discordRPCON)
             {
-                Log.WriteLine("Enabling discord rpc");
                 DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
+                discordRPCON = true;
             }
             if (cs2Running)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
-                presence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"ID: {GameState.MySteamID}";
-                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : "Chilling in lobby";
+                presence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
+                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
                 presence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                 presence.largeImageText = inGame ? GameState.Match.Map : "Menu";
                 if (inGame)
@@ -613,7 +583,7 @@ namespace CSAuto
                 cs2Running = prcs.Length > 0;
                 if (cs2Running)
                     pid = (uint)prcs[0].Id;
-                else
+                else if(discordRPCON)
                 {
                     DiscordRpc.Shutdown();
                     discordRPCON = false;
@@ -649,7 +619,7 @@ namespace CSAuto
                 (money >= 1000 && armor <= 70 && !hasHelmet))
                 )
             {
-                DisableConsole();
+                DisableTextinput();
                 Log.WriteLine("Auto buying armor");
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 Thread.Sleep(100);
@@ -675,7 +645,7 @@ namespace CSAuto
                 && !hasDefuseKit
                 && GameState.Player.Team == Team.CT)
             {
-                DisableConsole();
+                DisableTextinput();
                 Log.WriteLine("Auto buying defuse kit");
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 Thread.Sleep(100);
@@ -688,11 +658,14 @@ namespace CSAuto
                 });
             }
         }
-        private void DisableConsole()
+        private void DisableTextinput()
         {
             Activity? activity = GameState.Player.CurrentActivity;
-            if(activity == Activity.Textinput)
-                PressKey(Keyboard.DirectXKeyStrokes.DIK_GRAVE);
+            if (activity == Activity.Textinput)
+            {
+                PressKey(Keyboard.DirectXKeyStrokes.DIK_ESCAPE);
+                Log.WriteLine("Disabling Textinput activity...");
+            }
         }
         private void TryToAutoReload()
         {
@@ -882,7 +855,6 @@ namespace CSAuto
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
                 Log.WriteLine($"CSAuto v{VER} started");
-                InitializeDiscordRPC();
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException("Couldn't find CS:GO directory");
@@ -964,7 +936,7 @@ namespace CSAuto
                     if (result == MessageBoxResult.Yes)
                     {
                         Log.WriteLine("Auto Check Updates - Downloading latest version");
-                        Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe");
+                        Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
                     }
                 }
             }
