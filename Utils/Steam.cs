@@ -9,6 +9,7 @@ namespace Murky.Utils
 {
     public static class Steam
     {
+        const long VALVE_STEAMID64_CONST = 76561197960265728L;
         /// <summary>
         /// Tries to get the game folder.
         /// </summary>
@@ -92,6 +93,15 @@ namespace Murky.Utils
                 steamID3 = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam\\ActiveProcess", "ActiveUser", 0);
             }
             return steamID3;
+        }
+        public static long GetSteamID64() 
+        {
+            int steamid3 = GetCurrentSteamID3();
+            if (steamid3 != 0)
+            {
+                return steamid3 + VALVE_STEAMID64_CONST;
+            }
+            return 0;
         }
         /// <summary>
         /// Gets the launch options of the app with the id you entered.
