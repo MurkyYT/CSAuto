@@ -90,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Utils\CSGOFriendCode.cs" />
     <Compile Include="Utils\DiscordRpc.cs" />
     <Compile Include="Utils\Github.cs" />
