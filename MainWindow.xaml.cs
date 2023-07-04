@@ -580,6 +580,7 @@ namespace CSAuto
                 {
                     DiscordRpc.Shutdown();
                     discordRPCON = false;
+                    discordPresence = default;
                 }
                 cs2Active = IsForegroundProcess(pid);
                 if (cs2Active)
