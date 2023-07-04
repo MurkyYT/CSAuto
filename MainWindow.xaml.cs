@@ -125,7 +125,7 @@ namespace CSAuto
             {
                 CSGOFriendCode.Encode("76561198341800115");
                 InitializeDiscordRPC();
-                KillDuplicates();
+                CheckForDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 MenuItem debugMenu = new MenuItem
                 {
@@ -868,20 +868,16 @@ namespace CSAuto
             this.notifyicon.Close();
             StopGSIServer();
         }
-        private bool KillDuplicates()
+        private void CheckForDuplicates()
         {
-            bool success = true;
             var currentProcess = Process.GetCurrentProcess();
             var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
-
             if (duplicates.Count() > 0)
             {
                 notifyicon.Close();
-                App.Current.Shutdown();
+                Application.Current.Shutdown();
                 Log.WriteLine($"Shutting down, found another CSAuto process");
             }
-
-            return success;
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
