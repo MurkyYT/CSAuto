@@ -43,11 +43,11 @@ namespace CSAuto
         const string BUFFER = "0.1";
         const string THROTTLE = "0.5";
         const string HEARTBEAT = "10.0";
-        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:"+ PORT+
-            "\"\r\n\"timeout\" \""+ TIMEOUT+"\"\r\n\"" +
-            "buffer\"  \""+ BUFFER+"\"\r\n\"" +
-            "throttle\" \""+THROTTLE+"\"\r\n\"" +
-            "heartbeat\" \""+HEARTBEAT+"\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
+        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:" + PORT +
+            "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
+            "buffer\"  \"" + BUFFER + "\"\r\n\"" +
+            "throttle\" \"" + THROTTLE + "\"\r\n\"" +
+            "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         const string IN_LOBBY_STATE = "Chilling in lobby";
         /// <summary>
         /// Publics
@@ -468,7 +468,7 @@ namespace CSAuto
                 round = currentRound;
                 weapon = currentWeapon;
                 inGame = GameState.Match.Map != null;
-                
+
                 if (csgoActive && !GameState.Player.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
@@ -500,9 +500,9 @@ namespace CSAuto
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
-                Log.WriteLine("Error happend while getting GSI Info\n"+ex);
+                Log.WriteLine("Error happend while getting GSI Info\n" + ex);
             }
         }
         private void UpdateDiscordRPC()
@@ -531,7 +531,7 @@ namespace CSAuto
                 }
                 DiscordRpc.UpdatePresence(ref discordPresence);
             }
-            else if(!discordRPCON)
+            else if (!discordRPCON)
             {
                 DiscordRpc.Shutdown();
             }
@@ -539,7 +539,7 @@ namespace CSAuto
 
         private void AutoPauseResumeSpotify()
         {
-            if(GameState.Player.CurrentActivity == Activity.Playing)
+            if (GameState.Player.CurrentActivity == Activity.Playing)
             {
                 if (GameState.Player.Health > 0 && GameState.Player.SteamID == GameState.MySteamID && Spotify.IsPlaying())
                 {
@@ -580,7 +580,7 @@ namespace CSAuto
                 csgoRunning = prcs.Length > 0;
                 if (csgoRunning)
                     pid = (uint)prcs[0].Id;
-                else if(discordRPCON)
+                else if (discordRPCON)
                 {
                     DiscordRpc.Shutdown();
                     discordRPCON = false;
@@ -610,9 +610,9 @@ namespace CSAuto
             int money = GameState.Player.Money;
             if ((matchState == Phase.Live
                 && roundState == Phase.Freezetime)
-                && 
-                ((money >= 650 && armor <= 70)||
-                (money >= 350 && armor == 100 && !hasHelmet)||
+                &&
+                ((money >= 650 && armor <= 70) ||
+                (money >= 350 && armor == 100 && !hasHelmet) ||
                 (money >= 1000 && armor <= 70 && !hasHelmet))
                 )
             {
@@ -685,7 +685,7 @@ namespace CSAuto
                         || weaponType == WeaponType.MachineGun
                         || weaponType == WeaponType.SubmachineGun
                         || weaponName == "weapon_cz75a")
-                        && (weaponName != "weapon_sg556") 
+                        && (weaponName != "weapon_sg556")
                         && Properties.Settings.Default.ContinueSpraying)
                     {
                         Thread.Sleep(100);
@@ -825,7 +825,7 @@ namespace CSAuto
                         csgoResolution.X / 2,
                         0),
                         Point.Empty,
-                        new System.Drawing.Size(1, csgoResolution.Y/2));
+                        new System.Drawing.Size(1, csgoResolution.Y / 2));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
