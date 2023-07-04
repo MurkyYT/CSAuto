@@ -56,7 +56,7 @@ namespace CSAuto
         /// <summary>
         /// Readonly
         /// </summary>
-        readonly NotifyIconWrapper notifyicon = new NotifyIconWrapper();
+        readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
         readonly ContextMenu exitcm = new ContextMenu();
         readonly System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
         readonly Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
@@ -88,8 +88,8 @@ namespace CSAuto
         /// <summary>
         /// Privates
         /// </summary>
-        private DiscordRpc.EventHandlers handlers;
-        private DiscordRpc.RichPresence presence;
+        private DiscordRpc.EventHandlers discordHandlers;
+        private DiscordRpc.RichPresence discordPresence;
         private readonly AutoResetEvent _waitForConnection = new AutoResetEvent(false);
         private string integrationPath = null;
         private HttpListener _listener;
@@ -254,8 +254,8 @@ namespace CSAuto
 
         private void InitializeDiscordRPC()
         {
-            this.handlers = default(DiscordRpc.EventHandlers);
-            DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
+            discordHandlers = default;
+            DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, null);
             discordRPCON = true;
         }
 
@@ -452,15 +452,15 @@ namespace CSAuto
                     Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (GameState.Match.Map != null && (presence.state == IN_LOBBY_STATE || presence.startTimestamp == 0))
+                if (GameState.Match.Map != null && (discordPresence.state == IN_LOBBY_STATE || discordPresence.startTimestamp == 0))
                 {
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
-                    presence.startTimestamp = GameState.Timestamp;
+                    discordPresence.startTimestamp = GameState.Timestamp;
                 }
-                else if (GameState.Match.Map == null && presence.state != IN_LOBBY_STATE)
+                else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
                 {
                     Log.WriteLine($"Player is back in main menu");
-                    presence.startTimestamp = GameState.Timestamp;
+                    discordPresence.startTimestamp = GameState.Timestamp;
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -505,38 +505,31 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n"+ex);
             }
         }
-        private DateTime UnixTimeStampToDateTime(long unixTimeStamp)
-        {
-            // Unix timestamp is seconds past epoch
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTime;
-        }
         private void UpdateDiscordRPC()
         {
             if (!discordRPCON)
             {
-                DiscordRpc.Initialize("1121012657126916157", ref this.handlers, true, null);
+                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, null);
                 discordRPCON = true;
             }
             if (csgoRunning)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
-                presence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
-                presence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
-                presence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
-                presence.largeImageText = inGame ? GameState.Match.Map : "Menu";
+                discordPresence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
+                discordPresence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
+                discordPresence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
+                discordPresence.largeImageText = inGame ? GameState.Match.Map : "Menu";
                 if (inGame)
                 {
-                    presence.smallImageKey = GameState.Player.Team.ToString().ToLower();
-                    presence.smallImageText = GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
+                    discordPresence.smallImageKey = GameState.Player.Team.ToString().ToLower();
+                    discordPresence.smallImageText = GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 }
                 else
                 {
-                    presence.smallImageKey = null;
-                    presence.smallImageText = null;
+                    discordPresence.smallImageKey = null;
+                    discordPresence.smallImageText = null;
                 }
-                DiscordRpc.UpdatePresence(ref this.presence);
+                DiscordRpc.UpdatePresence(ref discordPresence);
             }
             else if(!discordRPCON)
             {
@@ -865,7 +858,7 @@ namespace CSAuto
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-            this.notifyicon.Close();
+            notifyIcon.Close();
             StopGSIServer();
         }
         private void CheckForDuplicates()
@@ -874,7 +867,7 @@ namespace CSAuto
             var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
             if (duplicates.Count() > 0)
             {
-                notifyicon.Close();
+                notifyIcon.Close();
                 Application.Current.Shutdown();
                 Log.WriteLine($"Shutting down, found another CSAuto process");
             }
@@ -884,12 +877,12 @@ namespace CSAuto
             try
             {
                 Visibility = Visibility.Hidden;
-                this.notifyicon.Icon = Properties.Resources.main;
-                this.notifyicon.Tip = "CSAuto - CS:GO Automation";
-                this.notifyicon.ShowTip = true;
-                this.notifyicon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
-                this.notifyicon.LeftMouseButtonDoubleClick += Notifyicon_LeftMouseButtonDoubleClick;
-                this.notifyicon.Update();
+                notifyIcon.Icon = Properties.Resources.main;
+                notifyIcon.Tip = "CSAuto - CS:GO Automation";
+                notifyIcon.ShowTip = true;
+                notifyIcon.RightMouseButtonClick += Notifyicon_RightMouseButtonClick;
+                notifyIcon.LeftMouseButtonDoubleClick += Notifyicon_LeftMouseButtonDoubleClick;
+                notifyIcon.Update();
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
@@ -915,7 +908,7 @@ namespace CSAuto
                     {
                         using (FileStream fs = File.Create(integrationPath))
                         {
-                            Byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
+                            byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                             fs.Write(title, 0, title.Length);
                         }
                         Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
