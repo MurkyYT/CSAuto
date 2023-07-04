@@ -5,5 +5,5 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CSAuto"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" SourceInitialized="Window_SourceInitialized" ShowInTaskbar="False" WindowStyle="ToolWindow">
+        Title="MainWindow" Height="0" Width="0" ShowActivated="False" SourceInitialized="Window_SourceInitialized" Focusable="False" ShowInTaskbar="False" WindowStyle="ToolWindow">
 </Window>
