@@ -57,13 +57,7 @@ namespace Murky.Utils
         }
         private static Process GetProcess()
         {
-            Process[] spotifyProcs = Process.GetProcessesByName("Spotify");
-            Process spotifyProc = null;
-            for (int i = 0; i < spotifyProcs.Length && spotifyProc == null; i++)
-            {
-                if (spotifyProcs[i].MainWindowTitle != "")
-                    spotifyProc = spotifyProcs[i];
-            }
+            Process spotifyProc = Process.GetProcessesByName("Spotify").Where(p => p.MainWindowTitle != "").ToArray()[0];
             return spotifyProc;
         }
     }

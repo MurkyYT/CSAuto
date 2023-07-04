@@ -27,11 +27,11 @@ namespace Murky.Utils
             catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
         }
 
-        public static void Write(string lines)
+        public static void Write(object lines)
         {
-            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
+            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines.ToString();
             if (debugWind != null)
-                debugWind.UpdateDebug(lines);
+                debugWind.UpdateDebug(lines.ToString());
             if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
@@ -47,11 +47,11 @@ namespace Murky.Utils
                 catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
             }
         }
-        public static void WriteLine(string lines)
+        public static void WriteLine(object lines)
         {
-            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
+            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines.ToString();
             if (debugWind != null)
-                debugWind.UpdateDebug(lines);
+                debugWind.UpdateDebug(lines.ToString());
             if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
