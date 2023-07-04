@@ -255,8 +255,11 @@ namespace CSAuto
         private void InitializeDiscordRPC()
         {
             discordHandlers = default;
-            DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, null);
-            discordRPCON = true;
+            if (Properties.Settings.Default.enableDiscordRPC)
+            {
+                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, null);
+                discordRPCON = true;
+            }
         }
 
         private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
