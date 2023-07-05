@@ -27,8 +27,7 @@ namespace CSAuto
         public GSIDebugWindow(MainWindow main)
         {
             InitializeComponent();
-            this.main = main;
-            debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
+            this.main = main;  
         }
         public void UpdateText(string data)
         {
@@ -207,6 +206,19 @@ namespace CSAuto
                     Byte[] title = new UTF8Encoding(true).GetBytes(outputBox.Text);
                     fs.Write(title, 0, title.Length);
                 }
+            }
+        }
+
+        private void debugWind_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
+            }
+            catch { }
+            finally
+            {
+                debugBox.ScrollToEnd();
             }
         }
     }
