@@ -172,7 +172,7 @@ namespace CSAuto
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog
             {
-                InitialDirectory = @"D:\",
+                InitialDirectory = @"C:\",
                 Title = "Browse Text Files",
 
                 CheckFileExists = true,
