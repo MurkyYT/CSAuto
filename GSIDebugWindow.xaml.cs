@@ -28,6 +28,7 @@ namespace CSAuto
         {
             InitializeComponent();
             this.main = main;
+            debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
         }
         public void UpdateText(string data)
         {
