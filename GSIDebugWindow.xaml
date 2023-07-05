@@ -26,8 +26,8 @@
             </Menu>
         </DockPanel>
         <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
         <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,0"/>
     </Grid>
 </Window>
