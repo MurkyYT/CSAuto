@@ -27,7 +27,6 @@ namespace CSAuto
                 $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
                 $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
-            debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
         }
         public void UpdateText(string data)
         {
@@ -172,7 +171,7 @@ namespace CSAuto
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog
             {
-                InitialDirectory = @"D:\",
+                InitialDirectory = @"C:\",
                 Title = "Browse Text Files",
 
                 CheckFileExists = true,
@@ -206,6 +205,19 @@ namespace CSAuto
                     Byte[] title = new UTF8Encoding(true).GetBytes(outputBox.Text);
                     fs.Write(title, 0, title.Length);
                 }
+            }
+        }
+
+        private void debugWind_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
+            }
+            catch { }
+            finally
+            {
+                debugBox.ScrollToEnd();
             }
         }
     }

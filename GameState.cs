@@ -53,11 +53,11 @@ namespace CSAuto
     }
     public class GameState
     {
-        public Player Player { get; internal set; }
-        public Match Match { get; internal set; }
-        public Round Round { get; internal set; }
-        public long Timestamp { get; internal set; }
-        public string MySteamID { get; internal set; }
+        public Player Player { get; private set; }
+        public Match Match { get; private set; }
+        public Round Round { get; private set; }
+        public long Timestamp { get; private set; }
+        public string MySteamID { get; private set; }
         private readonly string JSON;
         public GameState(string JSON)
         {
