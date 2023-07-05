@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,10 +27,11 @@ namespace Murky.Utils
             }
             catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
         }
-
-        public static void Write(object lines)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Write(object lines, string level = "Info")
         {
-            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines.ToString();
+            StackFrame frm = new StackFrame(1, false);
+            lines = $"[{level}: {DateTime.Now.ToString("HH:mm:ss")}: {frm.GetMethod().Name}] " + lines.ToString();
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
             if (CSAuto.Properties.Settings.Default.saveLogs)
@@ -47,9 +49,11 @@ namespace Murky.Utils
                 catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
             }
         }
-        public static void WriteLine(object lines)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteLine(object lines,string level = "Info")
         {
-            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines.ToString();
+            StackFrame frm = new StackFrame(1, false);
+            lines = $"[{level}: {DateTime.Now.ToString("HH:mm:ss")}: {frm.GetMethod().Name}] " + lines.ToString();
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
             if (CSAuto.Properties.Settings.Default.saveLogs)

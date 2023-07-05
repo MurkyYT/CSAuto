@@ -917,25 +917,25 @@ namespace CSAuto
                 //string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
                 //string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
                 //string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
-                Log.WriteLine($"Auto Check Updates - The latest version is {latestVersion}");
+                Log.WriteLine($"The latest version is {latestVersion}");
                 if (latestVersion == VER)
                 {
-                    Log.WriteLine("Auto Check Updates - Latest version installed");
+                    Log.WriteLine("Latest version installed");
                 }
                 else
                 {
-                    Log.WriteLine($"Auto Check Updates - Newer version found {VER} --> {latestVersion}");
+                    Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
                     MessageBoxResult result = MessageBox.Show($"Found newer verison ({latestVersion}) would you like to download it?", "Check for updates (CSAuto)", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
                     {
-                        Log.WriteLine("Auto Check Updates - Downloading latest version");
+                        Log.WriteLine("Downloading latest version");
                         Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.WriteLine($"Auto Check Updates - Couldn't check for updates - '{ex.Message}'");
+                Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
             }
 
             return Task.CompletedTask;
