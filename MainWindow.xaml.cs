@@ -253,7 +253,8 @@ namespace CSAuto
             discordHandlers = default;
             if (Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, null);
+                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
+                Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
         }
@@ -494,6 +495,7 @@ namespace CSAuto
                 else
                 {
                     DiscordRpc.Shutdown();
+                    Log.WriteLine("DiscordRpc.Shutdown();");
                     discordRPCON = false;
                 }
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
@@ -508,7 +510,8 @@ namespace CSAuto
         {
             if (!discordRPCON)
             {
-                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, null);
+                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
+                Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
             if (cs2Running)
@@ -518,6 +521,12 @@ namespace CSAuto
                 discordPresence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
                 discordPresence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                 discordPresence.largeImageText = inGame ? GameState.Match.Map : "Menu";
+                /* maybe add in the feature join lobby
+                discordPresence.joinSecret = "dsadasdsad";
+                discordPresence.partyMax = 5;
+                discordPresence.partyId = "37123098213021";
+                discordPresence.partySize = 1;
+                */
                 if (inGame)
                 {
                     discordPresence.smallImageKey = GameState.Player.Team.ToString().ToLower();
@@ -533,6 +542,7 @@ namespace CSAuto
             else if (!discordRPCON)
             {
                 DiscordRpc.Shutdown();
+                Log.WriteLine("DiscordRpc.Shutdown();");
             }
         }
 
@@ -582,6 +592,7 @@ namespace CSAuto
                 else if (discordRPCON)
                 {
                     DiscordRpc.Shutdown();
+                    Log.WriteLine("DiscordRpc.Shutdown();");
                     discordRPCON = false;
                     discordPresence = default;
                 }
