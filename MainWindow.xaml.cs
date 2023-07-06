@@ -45,6 +45,7 @@ namespace CSAuto
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         const string IN_LOBBY_STATE = "Chilling in lobby";
+        const float ACCEPT_BUTTON_DELAY = 20;
         /// <summary>
         /// Publics
         /// </summary>
@@ -105,6 +106,7 @@ namespace CSAuto
         Phase? roundState;
         Weapon weapon;
         int round = -1;
+        bool acceptedGame = false;
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -602,8 +604,10 @@ namespace CSAuto
                     cs2Resolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
-                    if (Properties.Settings.Default.autoAcceptMatch && !inGame)
-                        AutoAcceptMatch();
+                    if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        AutoAcceptMatchAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
             }
             catch (Exception ex)
@@ -787,7 +791,7 @@ namespace CSAuto
             }
             Properties.Settings.Default.Save();
         }
-        private void AutoAcceptMatch()
+        private async Task AutoAcceptMatchAsync()
         {
             using (Bitmap bitmap = new Bitmap(1, cs2Resolution.Y))
             {
@@ -818,9 +822,16 @@ namespace CSAuto
                         Log.WriteLine($"Found accept button at X:{X} Y:{Y}");
                         LeftMouseClick(X, Y);
                         found = true;
+                        acceptedGame = true;
+                        acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                     }
                 }
             }
+        }
+        async Task<bool> MakeFalse(float afterSeconds)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(afterSeconds));
+            return false;
         }
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
