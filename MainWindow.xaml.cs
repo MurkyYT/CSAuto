@@ -583,7 +583,6 @@ namespace CSAuto
         }
         private void TimerCallback(object sender, EventArgs e)
         {
-            Log.WriteLine(acceptedGame);
             if (!ServerRunning)
             {
                 Log.WriteLine("Starting GSI Server");
