@@ -11,6 +11,22 @@ namespace Murky.Utils
 {
     public static class Github
     {
+        public static long GetTotalDownloads(string user,string repository)
+        {
+            string url = $"https://api.github.com/repos/{user}/{repository}/releases";
+            string webInfo = GetWebInfo(url);
+            return InternalTotalDownloads(webInfo);
+        }
+        static long InternalTotalDownloads(string webinfo)
+        {
+            long res = 0;
+            string[] split = webinfo.Split(new string[] { "\"download_count\":" }, StringSplitOptions.RemoveEmptyEntries);
+            if (split.Length < 2)
+                return -1;
+            for (int i = 1; i < split.Length; i++)
+                res += long.Parse(split[i].Split(',')[0]);
+            return res;
+        }
         public static string GetLatestStringTag(string user, string repository)
         {
             string url = $"https://api.github.com/repos/{user}/{repository}/releases/latest";
@@ -75,14 +91,18 @@ namespace Murky.Utils
 
         private static string GetWebInfo(string url)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-            req.UserAgent = "[any words that is more than 5 characters]";
-            HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-            using (var reader = new StreamReader(response.GetResponseStream()))
+            try
             {
-                string webInfo = reader.ReadToEnd();
-                return webInfo;
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                req.UserAgent = "[any words that is more than 5 characters]";
+                HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    string webInfo = reader.ReadToEnd();
+                    return webInfo;
+                }
             }
+            catch { return ""; }
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
