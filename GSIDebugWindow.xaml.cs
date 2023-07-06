@@ -27,7 +27,7 @@ namespace CSAuto
         public GSIDebugWindow(MainWindow main)
         {
             InitializeComponent();
-            this.main = main;
+            this.main = main;  
         }
         public void UpdateText(string data)
         {
@@ -55,30 +55,37 @@ namespace CSAuto
         }
         void ParseGameState(string JSON)
         {
-            GameState gs = new GameState(JSON);
-            Log.WriteLine("-----------------------------");
-            foreach (PropertyInfo pi in gs.GetType().GetProperties())
+            try
             {
-                Log.WriteLine(
-                    string.Format("{0} | {1}",
-                            pi.Name,
-                            pi.GetValue(gs, null)
-                        )
-                );
-                Type type = pi.PropertyType;
-                switch (type.ToString())
-                {
-                    case "CSAuto.Player":
-                        ParsePlayerGSI(gs, pi);
-                        break;
-                    case "CSAuto.Match":
-                        ParseMatchGSI(gs, pi);
-                        break;
-                    case "CSAuto.Round":
-                        ParseRoundGSI(gs, pi);
-                        break;
-                }
+                GameState gs = new GameState(JSON);
                 Log.WriteLine("-----------------------------");
+                foreach (PropertyInfo pi in gs.GetType().GetProperties())
+                {
+                    Log.WriteLine(
+                        string.Format("{0} | {1}",
+                                pi.Name,
+                                pi.GetValue(gs, null)
+                            )
+                    );
+                    Type type = pi.PropertyType;
+                    switch (type.ToString())
+                    {
+                        case "CSAuto.Player":
+                            ParsePlayerGSI(gs, pi);
+                            break;
+                        case "CSAuto.Match":
+                            ParseMatchGSI(gs, pi);
+                            break;
+                        case "CSAuto.Round":
+                            ParseRoundGSI(gs, pi);
+                            break;
+                    }
+                    Log.WriteLine("-----------------------------");
+                }
+            }
+            catch
+            {
+                Log.WriteLine("There was an error while parsing the GSI file, check if the file is correct");
             }
         }
 
@@ -165,7 +172,7 @@ namespace CSAuto
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog
             {
-                InitialDirectory = @"D:\",
+                InitialDirectory = @"C:\",
                 Title = "Browse Text Files",
 
                 CheckFileExists = true,
@@ -199,6 +206,19 @@ namespace CSAuto
                     Byte[] title = new UTF8Encoding(true).GetBytes(outputBox.Text);
                     fs.Write(title, 0, title.Length);
                 }
+            }
+        }
+
+        private void debugWind_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
+            }
+            catch { }
+            finally
+            {
+                debugBox.ScrollToEnd();
             }
         }
     }

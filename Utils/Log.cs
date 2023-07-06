@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +15,8 @@ namespace Murky.Utils
         public static CSAuto.GSIDebugWindow debugWind = null;
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         static string path = strWorkPath + "/DEBUG/LOGS/";
+        static string lineTemplate = "[%date%] (%caller%) - %message%";
+        public static string Path { get { return path; } }
         public static void VerifyDir()
         {
             try
@@ -26,12 +29,16 @@ namespace Murky.Utils
             }
             catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
         }
-
-        public static void Write(string lines)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Write(object lines, string level = "Info")
         {
-            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
+            StackFrame frm = new StackFrame(1, false);
+            lines = lineTemplate.Replace("%date%", DateTime.Now.ToString("HH:mm:ss")).
+                Replace("%level%", level).
+                Replace("%caller%", frm.GetMethod().Name).
+                Replace("%message%", lines.ToString()).ToString();
             if (debugWind != null)
-                debugWind.UpdateDebug(lines);
+                debugWind.UpdateDebug(lines.ToString());
             if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
@@ -47,11 +54,16 @@ namespace Murky.Utils
                 catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
             }
         }
-        public static void WriteLine(string lines)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteLine(object lines,string level = "Info")
         {
-            lines = $"[{DateTime.Now.ToString("HH:mm:ss")}] - " + lines;
+            StackFrame frm = new StackFrame(1, false);
+            lines = lineTemplate.Replace("%date%", DateTime.Now.ToString("HH:mm:ss")).
+                Replace("%level%", level).
+                Replace("%caller%", frm.GetMethod().Name).
+                Replace("%message%", lines.ToString()).ToString();
             if (debugWind != null)
-                debugWind.UpdateDebug(lines);
+                debugWind.UpdateDebug(lines.ToString());
             if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
