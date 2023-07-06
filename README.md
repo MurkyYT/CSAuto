@@ -5,7 +5,7 @@
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads" alt="Total Downloads">
   <br>
   <br>
-  <a href="https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.exe"><b>Download Latest Release</b></a>
+  <a href="https://github.com/MurkyYT/CSAuto/releases/latest/download/CSAuto.zip"><b>Download Latest Release</b></a>
   <br>
 </p>
 
