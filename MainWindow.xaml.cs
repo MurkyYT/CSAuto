@@ -253,12 +253,12 @@ namespace CSAuto
         private void InitializeDiscordRPC()
         {
             discordHandlers = default;
-            if (Properties.Settings.Default.enableDiscordRPC)
-            {
-                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
-                Log.WriteLine("DiscordRpc.Initialize();");
-                discordRPCON = true;
-            }
+            //if (Properties.Settings.Default.enableDiscordRPC)
+            //{
+            //    DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
+            //    Log.WriteLine("DiscordRpc.Initialize();");
+            //    discordRPCON = true;
+            //}
         }
 
         private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -492,15 +492,8 @@ namespace CSAuto
                         AutoPauseResumeSpotify();
                     }
                 }
-                if (Properties.Settings.Default.enableDiscordRPC)
-                    UpdateDiscordRPC();
-                else
-                {
-                    DiscordRpc.Shutdown();
-                    Log.WriteLine("DiscordRpc.Shutdown();");
-                    discordRPCON = false;
-                }
-                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
+                UpdateDiscordRPC();
+                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\ncs2Active:{cs2Active}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
             catch (Exception ex)
@@ -510,11 +503,17 @@ namespace CSAuto
         }
         private void UpdateDiscordRPC()
         {
-            if (!discordRPCON)
+            if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
             {
                 DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
+            }
+            else if(discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
+            {
+                DiscordRpc.Shutdown();
+                Log.WriteLine("DiscordRpc.Shutdown();");
+                discordRPCON = false;
             }
             if (cs2Running)
             {
@@ -579,24 +578,38 @@ namespace CSAuto
         }
         private void TimerCallback(object sender, EventArgs e)
         {
-            if (!ServerRunning)
-            {
-                Log.WriteLine("Starting GSI Server");
-                StartGSIServer();
-            }
             try
             {
                 uint pid = 0;
-                Process[] prcs = Process.GetProcessesByName("cs2");
+                Process[] prcs = Process.GetProcessesByName("csgo");
                 cs2Running = prcs.Length > 0;
                 if (cs2Running)
-                    pid = (uint)prcs[0].Id;
-                else if (discordRPCON)
                 {
-                    DiscordRpc.Shutdown();
-                    Log.WriteLine("DiscordRpc.Shutdown();");
-                    discordRPCON = false;
-                    discordPresence = default;
+                    pid = (uint)prcs[0].Id;
+                    if (!ServerRunning)
+                    {
+                        Log.WriteLine("Starting GSI Server");
+                        StartGSIServer();
+                    }
+                }
+                else
+                {
+                    if (discordRPCON)
+                    {
+                        DiscordRpc.Shutdown();
+                        Log.WriteLine("DiscordRpc.Shutdown();");
+                        discordRPCON = false;
+                        discordPresence = default;
+                    }
+                    if (GameState.Timestamp != 0)
+                    {
+                        GameState = new GameState(null);
+                    }
+                    if (ServerRunning)
+                    {
+                        Log.WriteLine("Stopping GSI Server");
+                        StopGSIServer();
+                    }
                 }
                 cs2Active = IsForegroundProcess(pid);
                 if (cs2Active)
