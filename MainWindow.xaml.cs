@@ -33,7 +33,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.6";
+        const string VER = "1.0.7";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -442,14 +442,14 @@ namespace CSAuto
                 int currentRound = GameState.Round.CurrentRound;
                 if (debugWind != null)
                     debugWind.UpdateText(JSON);
-                if (lastActivity != activity)
-                    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
-                if (currentMatchState != matchState)
-                    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState.ToString())} -> {(currentMatchState == null ? "None" : currentMatchState.ToString())}");
-                if (currentRoundState != roundState)
-                    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState.ToString())} -> {(currentRoundState == null ? "None" : currentRoundState.ToString())}");
-                if (round != currentRound)
-                    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
+                //if (lastActivity != activity)
+                //    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
+                //if (currentMatchState != matchState)
+                //    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState.ToString())} -> {(currentMatchState == null ? "None" : currentMatchState.ToString())}");
+                //if (currentRoundState != roundState)
+                //    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState.ToString())} -> {(currentRoundState == null ? "None" : currentRoundState.ToString())}");
+                //if (round != currentRound)
+                //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
                 if (GameState.Match.Map != null && (discordPresence.state == IN_LOBBY_STATE || discordPresence.startTimestamp == 0))
@@ -797,7 +797,7 @@ namespace CSAuto
                         cs2Resolution.X / 2,
                         0),
                         Point.Empty,
-                        new System.Drawing.Size(1, cs2Resolution.Y/2));
+                        new System.Drawing.Size(1, cs2Resolution.Y));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
