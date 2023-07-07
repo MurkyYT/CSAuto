@@ -644,7 +644,7 @@ namespace CSAuto
             if ((matchState == Phase.Live
                 && roundState == Phase.Freezetime)
                 &&
-                ((money >= 650 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY ) ||
+                ((money >= 650 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY) ||
                 (money >= 350 && armor == 100 && !hasHelmet) ||
                 (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
                 )
