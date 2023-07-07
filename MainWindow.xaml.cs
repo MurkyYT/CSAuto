@@ -514,7 +514,7 @@ namespace CSAuto
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
-            else if(discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
+            else if (discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
             {
                 DiscordRpc.Shutdown();
                 Log.WriteLine("DiscordRpc.Shutdown();");
