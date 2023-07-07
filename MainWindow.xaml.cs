@@ -50,6 +50,7 @@ namespace CSAuto
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         const string IN_LOBBY_STATE = "Chilling in lobby";
         const float ACCEPT_BUTTON_DELAY = 20;
+        const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         /// <summary>
         /// Publics
         /// </summary>
@@ -643,9 +644,9 @@ namespace CSAuto
             if ((matchState == Phase.Live
                 && roundState == Phase.Freezetime)
                 &&
-                ((money >= 650 && armor <= 70) ||
+                ((money >= 650 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY) ||
                 (money >= 350 && armor == 100 && !hasHelmet) ||
-                (money >= 1000 && armor <= 70 && !hasHelmet))
+                (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
                 )
             {
                 DisableTextinput();
