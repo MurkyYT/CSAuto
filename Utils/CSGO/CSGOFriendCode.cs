@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Murky.Utils
+namespace Murky.Utils.CSGO
 {
     public static class CSGOFriendCode
     {

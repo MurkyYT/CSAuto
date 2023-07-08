@@ -27,6 +27,8 @@ using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Murky.Utils;
+using Murky.Utils.CSGO;
+using CSAuto.Utils.CSGO;
 namespace CSAuto
 {
     /// <summary>
@@ -38,6 +40,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.7";
+        const string DEBUG_REVISION = "1";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -149,7 +152,7 @@ namespace CSAuto
                 exit.Click += Exit_Click;
                 MenuItem about = new MenuItem
                 {
-                    Header = $"{typeof(MainWindow).Namespace} - {VER}",
+                    Header = $"{typeof(MainWindow).Namespace} - {VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")}",
                     IsEnabled = false,
                     Icon = new System.Windows.Controls.Image
                     {
@@ -475,7 +478,6 @@ namespace CSAuto
                 round = currentRound;
                 weapon = currentWeapon;
                 inGame = GameState.Match.Map != null;
-
                 if (csgoActive && !GameState.Player.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
@@ -525,7 +527,7 @@ namespace CSAuto
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
                 discordPresence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
                 discordPresence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
-                discordPresence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
+                discordPresence.largeImageKey = inGame && CSGOMap.IsOfficial(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                 discordPresence.largeImageText = inGame ? GameState.Match.Map : "Menu";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
@@ -926,7 +928,7 @@ namespace CSAuto
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
-                Log.WriteLine($"CSAuto v{VER} started");
+                Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
                     throw new Exception("Couldn't find CS:GO directory");

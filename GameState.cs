@@ -49,7 +49,12 @@ namespace CSAuto
         Competitive,
         Casual,
         Deathmatch,
-        Wingman
+        Wingman,
+        Demolition,
+        ArmsRace,
+        COOP,
+        Custom,
+        DangerZone
     }
     public class GameState
     {
@@ -144,6 +149,16 @@ namespace CSAuto
                     return Mode.Casual;
                 case "scrimcomp2v2":
                     return Mode.Wingman;
+                case "gungameprogressive":
+                    return Mode.ArmsRace;
+                case "gungametrbomb":
+                    return Mode.Demolition;
+                case "coopmission":
+                    return Mode.COOP;
+                case "custom":
+                    return Mode.Custom;
+                case "survival":
+                    return Mode.DangerZone;
                 default:
                     return null;
             }
