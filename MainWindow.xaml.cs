@@ -49,6 +49,7 @@ namespace CSAuto
         const string IN_LOBBY_STATE = "Chilling in lobby";
         const float ACCEPT_BUTTON_DELAY = 20;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
+        readonly string[] AVAILABLE_MAP_ICONS;
         /// <summary>
         /// Publics
         /// </summary>
@@ -108,7 +109,6 @@ namespace CSAuto
         Phase? matchState;
         Phase? roundState;
         Weapon weapon;
-        int round = -1;
         bool acceptedGame = false;
         public ImageSource ToImageSource(Icon icon)
         {
@@ -124,6 +124,7 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                AVAILABLE_MAP_ICONS = Properties.Resources.AVAILABLE_MAPS_STRING.Split(',');
                 CSGOFriendCode.Encode("76561198341800115");
                 InitializeDiscordRPC();
                 CheckForDuplicates();
@@ -416,35 +417,37 @@ namespace CSAuto
                 // Listener was Closed due to call of Stop();
                 return;
             }
+            catch (HttpListenerException)
+            { 
+                return; 
+            }
             finally
             {
                 _waitForConnection.Set();
             }
-
-            HttpListenerRequest request = context.Request;
-            string JSON;
-
-            using (Stream inputStream = request.InputStream)
-            {
-                using (StreamReader sr = new StreamReader(inputStream))
-                {
-                    JSON = sr.ReadToEnd();
-                }
-            }
-            using (HttpListenerResponse response = context.Response)
-            {
-                response.StatusCode = (int)HttpStatusCode.OK;
-                response.StatusDescription = "OK";
-                response.Close();
-            }
             try
             {
+                HttpListenerRequest request = context.Request;
+                string JSON;
+
+                using (Stream inputStream = request.InputStream)
+                {
+                    using (StreamReader sr = new StreamReader(inputStream))
+                    {
+                        JSON = sr.ReadToEnd();
+                    }
+                }
+                using (HttpListenerResponse response = context.Response)
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.StatusDescription = "OK";
+                    response.Close();
+                }
                 GameState = new GameState(JSON);
                 Activity? activity = GameState.Player.CurrentActivity;
                 Phase? currentMatchState = GameState.Match.Phase;
                 Phase? currentRoundState = GameState.Round.Phase;
                 Weapon currentWeapon = GameState.Player.ActiveWeapon;
-                int currentRound = GameState.Round.CurrentRound;
                 if (debugWind != null)
                     debugWind.UpdateText(JSON);
                 //if (lastActivity != activity)
@@ -461,19 +464,27 @@ namespace CSAuto
                 {
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                     discordPresence.startTimestamp = GameState.Timestamp;
+                    discordPresence.details = $"{GameState.Match.Mode} - {GameState.Match.Map}";
+                    discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
+                    discordPresence.largeImageText = GameState.Match.Map;
                 }
                 else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
                 {
                     Log.WriteLine($"Player is back in main menu");
                     discordPresence.startTimestamp = GameState.Timestamp;
+                    discordPresence.details = $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
+                    discordPresence.state = IN_LOBBY_STATE;
+                    discordPresence.largeImageKey = "csgo_icon";
+                    discordPresence.largeImageText = "Menu";
+                    discordPresence.smallImageKey = null;
+                    discordPresence.smallImageText = null;
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
                 roundState = currentRoundState;
-                round = currentRound;
                 weapon = currentWeapon;
                 inGame = GameState.Match.Map != null;
-                if (cs2Active && !GameState.Player.IsSpectating)
+                if (cs2Active && !GameState.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
                     {
@@ -517,36 +528,26 @@ namespace CSAuto
                 Log.WriteLine("DiscordRpc.Shutdown();");
                 discordRPCON = false;
             }
-            if (cs2Running)
+            if (cs2Running && inGame)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
-                discordPresence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
-                discordPresence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
-                discordPresence.largeImageKey = inGame && CSGOMap.IsOfficial(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
-                discordPresence.largeImageText = inGame ? GameState.Match.Map : "Menu";
+                discordPresence.state = $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]";
+                discordPresence.smallImageKey = GameState.IsSpectating || GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
+                discordPresence.smallImageText = GameState.IsSpectating || GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
                 discordPresence.partyMax = 5;
                 discordPresence.partyId = "37123098213021";
                 discordPresence.partySize = 1;
                 */
-                if (inGame)
-                {
-                    discordPresence.smallImageKey = GameState.Player.IsSpectating ? "spectator" : GameState.Player.Team.ToString().ToLower();
-                    discordPresence.smallImageText = GameState.Player.IsSpectating ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
-                }
-                else 
-                {
-                    discordPresence.smallImageKey = null;
-                    discordPresence.smallImageText = null;
-                }
-                DiscordRpc.UpdatePresence(ref discordPresence);
             }
-            else if (!discordRPCON)
+            else if (discordRPCON && !csgoRunning)
             {
                 DiscordRpc.Shutdown();
+                discordRPCON = false;
                 Log.WriteLine("DiscordRpc.Shutdown();");
             }
+            DiscordRpc.UpdatePresence(ref discordPresence);
         }
 
         private void AutoPauseResumeSpotify()
