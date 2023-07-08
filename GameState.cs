@@ -63,6 +63,8 @@ namespace CSAuto
         public Round Round { get; private set; }
         public long Timestamp { get; private set; }
         public string MySteamID { get; private set; }
+        public bool IsDead { get; private set; }
+        public bool IsSpectating { get; private set; }
         private readonly string JSON;
         public GameState(string JSON)
         {
@@ -93,10 +95,11 @@ namespace CSAuto
                 Armor = GetArmor(),
                 Money = GetMoney(),
                 HasHelmet = GetHelmetState(),
-                HasDefuseKit = HasDefuseKit(),
-                IsSpectating = CheckIfSpectator()
+                HasDefuseKit = HasDefuseKit()
             };
             Player.SetWeapons(JSON);
+            IsDead = Player.SteamID != MySteamID;
+            IsSpectating = CheckIfSpectator();
         }
 
         private long GetTimeStamp()
@@ -362,7 +365,6 @@ namespace CSAuto
         public int Money { get; internal set; }
         public bool HasHelmet { get; internal set; }
         public bool HasDefuseKit { get; internal set; }
-        public bool IsSpectating { get; internal set; }
         public string SteamID { get; internal set; }
         internal void SetWeapons(string JSON)
         {
