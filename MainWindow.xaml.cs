@@ -835,7 +835,7 @@ namespace CSAuto
                             y);
                         int X = clickpoint.X;
                         int Y = clickpoint.Y;
-                        Log.WriteLine($"Found accept button at X:{X} Y:{Y}");
+                        Log.WriteLine($"Found accept button at X:{X} Y:{Y}",caller:"AutoAcceptMatch");
                         LeftMouseClick(X, Y);
                         found = true;
                         acceptedGame = true;
