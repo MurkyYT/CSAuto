@@ -24,7 +24,6 @@ using Point = System.Drawing.Point;
 using CSAuto.Exceptions;
 using Murky.Utils;
 using Murky.Utils.CSGO;
-using CSAuto.Utils.CSGO;
 namespace CSAuto
 {
     /// <summary>
