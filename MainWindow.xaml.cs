@@ -541,7 +541,7 @@ namespace CSAuto
                 discordPresence.partySize = 1;
                 */
             }
-            else if (discordRPCON && !csgoRunning)
+            else if (discordRPCON && !cs2Running)
             {
                 DiscordRpc.Shutdown();
                 discordRPCON = false;
