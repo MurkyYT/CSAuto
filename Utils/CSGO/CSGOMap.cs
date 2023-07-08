@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSAuto.Utils.CSGO
+namespace Murky.Utils.CSGO
 {
     public static class CSGOMap
     {
