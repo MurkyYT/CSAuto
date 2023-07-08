@@ -23,6 +23,8 @@ using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using CSAuto.Exceptions;
 using Murky.Utils;
+using Murky.Utils.CSGO;
+using CSAuto.Utils.CSGO;
 namespace CSAuto
 {
     /// <summary>
@@ -34,6 +36,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.7";
+        const string DEBUG_REVISION = "1";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -46,6 +49,7 @@ namespace CSAuto
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
         const string IN_LOBBY_STATE = "Chilling in lobby";
         const float ACCEPT_BUTTON_DELAY = 20;
+        const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         /// <summary>
         /// Publics
         /// </summary>
@@ -144,7 +148,7 @@ namespace CSAuto
                 exit.Click += Exit_Click;
                 MenuItem about = new MenuItem
                 {
-                    Header = $"{typeof(MainWindow).Namespace} - {VER}",
+                    Header = $"{typeof(MainWindow).Namespace} - {VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")}",
                     IsEnabled = false,
                     Icon = new System.Windows.Controls.Image
                     {
@@ -470,7 +474,6 @@ namespace CSAuto
                 round = currentRound;
                 weapon = currentWeapon;
                 inGame = GameState.Match.Map != null;
-                
                 if (cs2Active && !GameState.Player.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
@@ -509,7 +512,7 @@ namespace CSAuto
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
-            else if(discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
+            else if (discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
             {
                 DiscordRpc.Shutdown();
                 Log.WriteLine("DiscordRpc.Shutdown();");
@@ -520,7 +523,7 @@ namespace CSAuto
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
                 discordPresence.details = inGame ? $"{GameState.Match.Mode} - {GameState.Match.Map}" : $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
                 discordPresence.state = inGame ? $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" : IN_LOBBY_STATE;
-                discordPresence.largeImageKey = inGame ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
+                discordPresence.largeImageKey = inGame && CSGOMap.IsOfficial(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                 discordPresence.largeImageText = inGame ? GameState.Match.Map : "Menu";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
@@ -639,9 +642,9 @@ namespace CSAuto
             if ((matchState == Phase.Live
                 && roundState == Phase.Freezetime)
                 &&
-                ((money >= 650 && armor <= 70) ||
+                ((money >= 650 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY) ||
                 (money >= 350 && armor == 100 && !hasHelmet) ||
-                (money >= 1000 && armor <= 70 && !hasHelmet))
+                (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
                 )
             {
                 DisableTextinput();
@@ -882,7 +885,7 @@ namespace CSAuto
                 appTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 appTimer.Tick += new EventHandler(TimerCallback);
                 appTimer.Start();
-                Log.WriteLine($"CSAuto v{VER} started");
+                Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException("Couldn't find CS:GO directory");
