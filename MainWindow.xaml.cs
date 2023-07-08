@@ -533,10 +533,10 @@ namespace CSAuto
                 */
                 if (inGame)
                 {
-                    discordPresence.smallImageKey = GameState.Player.Team.ToString().ToLower();
-                    discordPresence.smallImageText = GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
+                    discordPresence.smallImageKey = GameState.Player.IsSpectating ? "spectator" : GameState.Player.Team.ToString().ToLower();
+                    discordPresence.smallImageText = GameState.Player.IsSpectating ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 }
-                else
+                else 
                 {
                     discordPresence.smallImageKey = null;
                     discordPresence.smallImageText = null;
