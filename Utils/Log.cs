@@ -30,12 +30,12 @@ namespace Murky.Utils
             catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void Write(object lines, string level = "Info")
+        public static void Write(object lines, string level = "Info", string caller = "")
         {
             StackFrame frm = new StackFrame(1, false);
             lines = lineTemplate.Replace("%date%", DateTime.Now.ToString("HH:mm:ss")).
                 Replace("%level%", level).
-                Replace("%caller%", frm.GetMethod().Name).
+                Replace("%caller%", caller == "" ? frm.GetMethod().Name : caller).
                 Replace("%message%", lines.ToString()).ToString();
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
@@ -55,12 +55,12 @@ namespace Murky.Utils
             }
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteLine(object lines,string level = "Info")
+        public static void WriteLine(object lines,string level = "Info",string caller = "")
         {
             StackFrame frm = new StackFrame(1, false);
             lines = lineTemplate.Replace("%date%", DateTime.Now.ToString("HH:mm:ss")).
                 Replace("%level%", level).
-                Replace("%caller%", frm.GetMethod().Name).
+                Replace("%caller%", caller == "" ? frm.GetMethod().Name : caller).
                 Replace("%message%", lines.ToString()).ToString();
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
