@@ -538,8 +538,8 @@ namespace CSAuto
                 discordPresence.state = GameState.Player.Team == Team.T ?
                     $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" :
                     $"{GameState.Match.CTScore} [CT] ({phase}) {GameState.Match.TScore} [T]";
-                discordPresence.smallImageKey = GameState.IsDead ? "spectator" : GameState.IsSpectating ? "gotv_icon" : GameState.Player.Team.ToString().ToLower();
-                discordPresence.smallImageText = GameState.IsDead ? "Spectating" : GameState.IsSpectating ? "Watching GOTV" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
+                discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
+                discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
                 discordPresence.partyMax = 5;
