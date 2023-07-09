@@ -35,7 +35,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.7";
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -531,9 +531,11 @@ namespace CSAuto
             if (cs2Running && inGame)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
-                discordPresence.state = $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]";
-                discordPresence.smallImageKey = GameState.IsSpectating || GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
-                discordPresence.smallImageText = GameState.IsSpectating || GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
+                discordPresence.state = GameState.Player.Team == Team.T ?
+                    $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" :
+                    $"{GameState.Match.CTScore} [CT] ({phase}) {GameState.Match.TScore} [T]";
+                discordPresence.smallImageKey = GameState.IsDead ? "spectator" : GameState.IsSpectating ? "gotv_icon" : GameState.Player.Team.ToString().ToLower();
+                discordPresence.smallImageText = GameState.IsDead ? "Spectating" : GameState.IsSpectating ? "Watching GOTV" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
                 discordPresence.partyMax = 5;
