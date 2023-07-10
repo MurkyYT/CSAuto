@@ -28,6 +28,8 @@ using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Murky.Utils;
 using Murky.Utils.CSGO;
+using System.Net.Sockets;
+
 namespace CSAuto
 {
     /// <summary>
@@ -114,6 +116,9 @@ namespace CSAuto
         Phase? roundState;
         Weapon weapon;
         bool acceptedGame = false;
+        Socket client;
+        bool connectedToPhone;
+
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -128,6 +133,7 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                _ = ConnectToServerAsync(IPAddress.Parse("192.168.0.63"), 11_000);
                 AVAILABLE_MAP_ICONS = Properties.Resources.AVAILABLE_MAPS_STRING.Split(',');
                 CSGOFriendCode.Encode("76561198341800115");
                 InitializeDiscordRPC();
@@ -249,6 +255,70 @@ namespace CSAuto
             {
                 MessageBox.Show($"An error ocurred\n'{ex.Message}'\nTry to download the latest version from github.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
+            }
+        }
+        public async Task SendToServerAsync(string message)
+        {
+            if (!connectedToPhone)
+                await ConnectToServerAsync(IPAddress.Parse("192.168.0.63"), 11_000);
+            try
+            {
+                await client.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes("<ALV>" + "<|EOM|>")), SocketFlags.None);
+                var messageBytes = Encoding.UTF8.GetBytes(message + "<|EOM|>");
+                client.Send(messageBytes, SocketFlags.None);
+                Log.WriteLine($"Sent to server '{message}'");
+            }
+            catch 
+            { 
+                Log.WriteLine("Couldnt send to server");
+                connectedToPhone = false;
+            }
+        }
+        public string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+        private async Task ConnectToServerAsync(IPAddress iPAddress, int port)
+        {
+            try
+            {
+                IPEndPoint ipEndPoint = new IPEndPoint(iPAddress, port);
+                client = new Socket(
+                ipEndPoint.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp);
+
+                await client.ConnectAsync(ipEndPoint);
+                Log.WriteLine($"Connected to server on '{iPAddress}:{port}'");
+                connectedToPhone = true;
+                SendToServerAsync($"Connected from {GetLocalIPAddress()}");
+                while (true)
+                {
+                    // Receive ack.
+                    var buffer = new byte[1_024];
+                    var received = await client.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
+                    var response = Encoding.UTF8.GetString(buffer, 0, received);
+                    if (response == "<|ACK|>")
+                    {
+
+                    }
+                    // Sample output:
+                    //     Socket client sent message: "Hi friends 👋!<|EOM|>"
+                    //     Socket client received acknowledgment: "<|ACK|>"
+                }
+            }
+            catch 
+            { 
+                Log.WriteLine($"Couldnt connect to server on '{iPAddress}:{port}'");
+                connectedToPhone = false;
             }
         }
 
@@ -441,6 +511,7 @@ namespace CSAuto
                         JSON = sr.ReadToEnd();
                     }
                 }
+                SendToServerAsync("<GSI>" + JSON);
                 using (HttpListenerResponse response = context.Response)
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
@@ -589,6 +660,7 @@ namespace CSAuto
         {
             try
             {
+                SendToServerAsync("Test123");
                 uint pid = 0;
                 Process[] prcs = Process.GetProcessesByName("csgo");
                 csgoRunning = prcs.Length > 0;
@@ -902,8 +974,7 @@ namespace CSAuto
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-            notifyIcon.Close();
-            StopGSIServer();
+            notifyIcon.Close(); 
         }
         private void CheckForDuplicates()
         {

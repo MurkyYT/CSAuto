@@ -55,6 +55,7 @@ namespace CSAuto
         }
         void ParseGameState(string JSON)
         {
+            main.SendToServerAsync("<GSI>"+JSON);
             try
             {
                 GameState gs = new GameState(JSON);
