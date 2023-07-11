@@ -268,10 +268,8 @@ namespace CSAuto
             thread.Start(); 
         }
 
-        private async Task SendToServerThreadAsync(string message)
+        private Task SendToServerThreadAsync(string message)
         {
-            if (!connectedToPhone)
-                await ConnectToServerAsync(IPAddress.Parse("192.168.0.63"), 11_000);
             try
             {
                 var messageBytes = Encoding.UTF8.GetBytes(message + "<|EOM|>");
@@ -281,6 +279,8 @@ namespace CSAuto
             {
                 connectedToPhone = false;
             }
+
+            return Task.CompletedTask;
         }
 
         public string GetLocalIPAddress()
@@ -318,6 +318,10 @@ namespace CSAuto
                     var buffer = new byte[1_024];
                     var received = await client.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
                     var response = Encoding.UTF8.GetString(buffer, 0, received);
+                    if (response == "<|ACK|>")
+                    {
+                        Log.WriteLine("Got a response");
+                    }
                     // Sample output:
                     //     Socket client sent message: "Hi friends 👋!<|EOM|>"
                     //     Socket client received acknowledgment: "<|ACK|>"
@@ -665,17 +669,27 @@ namespace CSAuto
 
             return (foregroundPid == pid);
         }
+        bool SocketConnected(Socket s)
+        {
+            bool part1 = s.Poll(1000, SelectMode.SelectRead);
+            bool part2 = (s.Available == 0);
+            if (part1 && part2)
+                return false;
+            else
+                return true;
+        }
         private void TimerCallback(object sender, EventArgs e)
         {
             try
             {
-                if (client == null || !client.Connected)
+                if (client == null || !client.Connected || !connectedToPhone || !SocketConnected(client))
                     new Thread(ConnectToServer).Start();
                 else
                 {
                     try
                     {
-                        SendToServer("Keep alive check");
+                        var messageBytes = Encoding.UTF8.GetBytes("Alive?");
+                        client.Send(messageBytes, SocketFlags.None);
                     }
                     catch { new Thread(ConnectToServer).Start(); }
                 }

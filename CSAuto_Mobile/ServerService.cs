@@ -23,6 +23,7 @@ using Activity = Android.App.Activity;
 using Xamarin.Essentials;
 using AndroidX.Core.App;
 using Android.Preferences;
+using CSAuto;
 
 namespace CSAuto_Mobile
 {
@@ -137,7 +138,7 @@ namespace CSAuto_Mobile
                         var ackMessage = "<|ACK|>";
                         var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
                         await handler.SendAsync(echoBytes, 0);
-                        string clearResponse = response.Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "");
+                        string clearResponse = response.Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "");
                         switch (response.Substring(0, "<XXX>".Length))
                         {
                             case "<ACP>":
@@ -152,18 +153,12 @@ namespace CSAuto_Mobile
                             case "<CNT>":
                                 ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
                                 break;
+                            case "<GSI>":
+                                ParseGameState(clearResponse);
+                                break;
                         }
-                        //if (response.Substring(0, "<GSI>".Length) == "<GSI>")
-                        //{
-                        //    gameState = new GameState(outputText.Text);
-                        //    outputText.Text = gameState.MySteamID;
-                        //}
                         outputText.Text = clearResponse;
-                        //ShowNotification(Resources.GetString(Resource.String.app_name), response, id++);
                     }
-                    // Sample output:
-                    //    Socket server received message: "Hi friends 👋!"
-                    //    Socket server sent acknowledgment: "<|ACK|>"
                 }
                 if (stopServer)
                 {
@@ -172,10 +167,24 @@ namespace CSAuto_Mobile
                 }
                 listener.EndConnect(null);
             }
-            catch (SocketException) { listener.Dispose(); }
-            catch (ObjectDisposedException) { }
+            catch (SocketException ex) 
+            {
+                ShowNotification("Socket exception", $"{ex.Message}", Constants.SOCKET_EXCEPTION_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
+                listener.Dispose();
+                listener = null;
+            }
+            catch (ObjectDisposedException ex) 
+            {
+                ShowNotification("Disposed exception", $"{ex.Message}", Constants.DISPOSED_EXCEPTION_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
+            }
             catch (Exception ex){ ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
             await StartServerAsync();
+        }
+
+        private void ParseGameState(string clearResponse)
+        {
+            GameState gs = new GameState(clearResponse);
+            outputText.Text = $"{gs.Match.TScore} - {gs.Match.CTScore}";
         }
 
         private void LoadMainWindowItems()

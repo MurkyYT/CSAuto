@@ -20,6 +20,8 @@ namespace CSAuto_Mobile
         public const int IN_LOBBY_NOTIFICATION_ID = 2;
         public const int LOADED_ON_MAP_NOTIFICATION_ID = 3;
         public const int ACCEPTED_MATCH_NOTIFICATION_ID = 4;
+        public const int SOCKET_EXCEPTION_NOTIFICATION_ID = 5;
+        public const int DISPOSED_EXCEPTION_NOTIFICATION_ID = 6;
         public const string SERVICE_STARTED_KEY = "has_service_been_started";
         public const string BROADCAST_MESSAGE_KEY = "broadcast_message";
         public const string NOTIFICATION_BROADCAST_ACTION = "ServicesDemo3.Notification.Action";
