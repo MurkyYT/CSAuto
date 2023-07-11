@@ -116,8 +116,6 @@ namespace CSAuto
         Phase? roundState;
         Weapon weapon;
         bool acceptedGame = false;
-        Socket client;
-        bool connectedToPhone;
 
         public ImageSource ToImageSource(Icon icon)
         {
@@ -127,10 +125,6 @@ namespace CSAuto
                 BitmapSizeOptions.FromEmptyOptions());
 
             return imageSource;
-        }
-        void ConnectToServer()
-        {
-            _ = ConnectToServerAsync(IPAddress.Parse("192.168.0.63"), 11_000);
         }
         public MainWindow()
         {
@@ -260,79 +254,6 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
-        public void SendToServer(string message)
-        {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            Thread thread = new Thread(() => SendToServerThreadAsync(message));
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            thread.Start(); 
-        }
-
-        private Task SendToServerThreadAsync(string message)
-        {
-            try
-            {
-                var messageBytes = Encoding.UTF8.GetBytes(message + "<|EOM|>");
-                client.Send(messageBytes, SocketFlags.None);
-            }
-            catch
-            {
-                connectedToPhone = false;
-            }
-
-            return Task.CompletedTask;
-        }
-
-        public string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
-        }
-        private async Task ConnectToServerAsync(IPAddress iPAddress, int port)
-        {
-            try
-            {
-                IPEndPoint ipEndPoint = new IPEndPoint(iPAddress, port);
-                client = new Socket(
-                ipEndPoint.AddressFamily,
-                SocketType.Stream,
-                ProtocolType.Tcp);
-
-                await client.ConnectAsync(ipEndPoint);
-                if (client.Connected)
-                {
-                    Log.WriteLine($"Connected to server on '{iPAddress}:{port}'");
-                    SendToServer($"<CNT>Connected from {GetLocalIPAddress()} - {Environment.MachineName}");
-                }
-                connectedToPhone = client.Connected;
-                while (true)
-                {
-                    // Receive ack.
-                    var buffer = new byte[1_024];
-                    var received = await client.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
-                    var response = Encoding.UTF8.GetString(buffer, 0, received);
-                    if (response == "<|ACK|>")
-                    {
-                        Log.WriteLine("Got a response");
-                    }
-                    // Sample output:
-                    //     Socket client sent message: "Hi friends 👋!<|EOM|>"
-                    //     Socket client received acknowledgment: "<|ACK|>"
-                }
-            }
-            catch
-            {
-                connectedToPhone = false;
-            }
-        }
-
         private void EnableDiscordRPC_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.enableDiscordRPC = enableDiscordRPC.IsChecked;
@@ -522,7 +443,7 @@ namespace CSAuto
                         JSON = sr.ReadToEnd();
                     }
                 }
-                SendToServer("<GSI>" + JSON);
+                SendMessageToServer("<GSI>" + JSON);
                 using (HttpListenerResponse response = context.Response)
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
@@ -553,7 +474,7 @@ namespace CSAuto
                     discordPresence.details = $"{GameState.Match.Mode} - {GameState.Match.Map}";
                     discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                     discordPresence.largeImageText = GameState.Match.Map;
-                    SendToServer($"<MAP>Loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
+                    SendMessageToServer($"<MAP>Loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                 }
                 else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
                 {
@@ -565,7 +486,7 @@ namespace CSAuto
                     discordPresence.largeImageText = "Menu";
                     discordPresence.smallImageKey = null;
                     discordPresence.smallImageText = null;
-                    SendToServer("<LBY>Loaded in lobby!");
+                    SendMessageToServer("<LBY>Loaded in lobby!");
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -678,21 +599,24 @@ namespace CSAuto
             else
                 return true;
         }
+        private void SendMessageToServer(string message)
+        {
+            try // Try connecting and send the message bytes  
+            {
+                TcpClient client = new TcpClient("192.168.0.63", 11_000); // Create a new connection  
+                NetworkStream stream = client.GetStream();
+                byte[] messageBytes = Encoding.UTF8.GetBytes($"{message}<|EOM|>");
+                stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
+                // Clean up  
+                stream.Dispose();
+                client.Close();
+            }
+            catch  {   }
+        }
         private void TimerCallback(object sender, EventArgs e)
         {
             try
             {
-                if (client == null || !client.Connected || !connectedToPhone || !SocketConnected(client))
-                    new Thread(ConnectToServer).Start();
-                else
-                {
-                    try
-                    {
-                        var messageBytes = Encoding.UTF8.GetBytes("Alive?");
-                        client.Send(messageBytes, SocketFlags.None);
-                    }
-                    catch { new Thread(ConnectToServer).Start(); }
-                }
                 uint pid = 0;
                 Process[] prcs = Process.GetProcessesByName("csgo");
                 csgoRunning = prcs.Length > 0;
@@ -985,7 +909,7 @@ namespace CSAuto
                         int X = clickpoint.X;
                         int Y = clickpoint.Y;
                         Log.WriteLine($"Found accept button at X:{X} Y:{Y}",caller:"AutoAcceptMatch");
-                        SendToServer("<ACP>Accepted a match!");
+                        SendMessageToServer("<ACP>Accepted a match!");
                         LeftMouseClick(X, Y);
                         found = true;
                         acceptedGame = true;
@@ -1007,11 +931,6 @@ namespace CSAuto
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             notifyIcon.Close();
-            if (client != null)
-            {
-                client.Close();
-                client.Dispose();
-            }
             StopGSIServer();
             Application.Current.Shutdown();
         }

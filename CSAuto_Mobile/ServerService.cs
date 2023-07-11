@@ -24,6 +24,8 @@ using Xamarin.Essentials;
 using AndroidX.Core.App;
 using Android.Preferences;
 using CSAuto;
+using System.Threading;
+using static Android.Telecom.Call;
 
 namespace CSAuto_Mobile
 {
@@ -44,8 +46,7 @@ namespace CSAuto_Mobile
         TextView ipAdressText;
         Button stopServiceButton;
         Button startServiceButton;
-        Socket listener;
-        bool stopServer = false;
+        TcpListener listener;
         public override void OnCreate()
         {
             base.OnCreate();
@@ -83,7 +84,7 @@ namespace CSAuto_Mobile
                     Log.Info(TAG, "OnStartCommand: The service is starting.");
                     CreateNotificationChannel();
                     RegisterForegroundService();
-                    StartServerAsync();
+                    new Thread(StartServer).Start();
                     isStarted = true;
                 }
             }
@@ -103,43 +104,39 @@ namespace CSAuto_Mobile
             // This tells Android not to restart the service if it is killed to reclaim resources.
             return StartCommandResult.Sticky;
         }
-        private async Task StartServerAsync()
+        private static string cleanMessage(byte[] bytes)
+        {
+            string message = Encoding.UTF8.GetString(bytes);
+            return message;
+        }
+        private void StartServer()
         {
             try
             {
                 IPEndPoint ipEndPoint = new IPEndPoint(GetMyIpAddress(), 11_000);
-                listener = new Socket(
-                    ipEndPoint.AddressFamily,
-                    SocketType.Stream,
-                    ProtocolType.Tcp);
-                listener.Bind(ipEndPoint);
-                listener.Listen(100);
-                var handler = await listener.AcceptAsync();
-                stopServer = false;
+                listener = new TcpListener(ipEndPoint);
+                listener.Start();
                 while (true)
                 {
-                    if (stopServer)
-                    {
-                        handler.Dispose();
-                        break;
-                    }
                     if(isStarted && stopServiceButton != null && !stopServiceButton.Enabled)
                     {
                         stopServiceButton.Enabled = true;
                         startServiceButton.Enabled = false;
                     }
                     // Receive message.
-                    var buffer = new byte[1_024 * 1_024];
-                    var received = await handler.ReceiveAsync(buffer, SocketFlags.None);
-                    var response = Encoding.UTF8.GetString(buffer, 0, received);
+                    const int bytesize = 1024 * 1024;
+
+                    string message = null;
+                    byte[] buffer = new byte[bytesize];
+
+                    var sender = listener.AcceptTcpClient();
+                    sender.GetStream().Read(buffer, 0, bytesize);
+                    message = cleanMessage(buffer);
                     var eom = "<|EOM|>";
-                    if (response.IndexOf(eom) > -1 /* is end of message */)
+                    if (message.IndexOf(eom) > -1 /* is end of message */)
                     {
-                        var ackMessage = "<|ACK|>";
-                        var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                        await handler.SendAsync(echoBytes, 0);
-                        string clearResponse = response.Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "");
-                        switch (response.Substring(0, "<XXX>".Length))
+                        string clearResponse = message.Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "");
+                        switch (message.Substring(0, "<XXX>".Length))
                         {
                             case "<ACP>":
                                 ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.ACCEPTED_MATCH_NOTIFICATION_ID, Constants.ACCEPTED_MATCH_CHANNEL);
@@ -157,28 +154,27 @@ namespace CSAuto_Mobile
                                 ParseGameState(clearResponse);
                                 break;
                         }
-                        outputText.Text = clearResponse;
+                        ((Activity)currentContext).RunOnUiThread(() => {
+                            outputText.Text = clearResponse;
+                        });
+                    
                     }
                 }
-                if (stopServer)
-                {
-                    stopServer = false;
-                    return;
-                }
-                listener.EndConnect(null);
             }
-            catch (SocketException ex) 
+            catch (SocketException ex)
             {
                 ShowNotification("Socket exception", $"{ex.Message}", Constants.SOCKET_EXCEPTION_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
-                listener.Dispose();
-                listener = null;
+                listener.Stop();
             }
-            catch (ObjectDisposedException ex) 
+            catch (ObjectDisposedException ex)
             {
                 ShowNotification("Disposed exception", $"{ex.Message}", Constants.DISPOSED_EXCEPTION_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
             }
-            catch (Exception ex){ ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
-            await StartServerAsync();
+            catch (Exception ex) { ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
+            var stopServiceIntent = new Intent(this, GetType());
+            stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
+            var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, PendingIntentFlags.Mutable);
+            currentContext.StartService(stopServiceIntent);
         }
 
         private void ParseGameState(string clearResponse)
@@ -186,20 +182,6 @@ namespace CSAuto_Mobile
             GameState gs = new GameState(clearResponse);
             outputText.Text = $"{gs.Match.TScore} - {gs.Match.CTScore}";
         }
-
-        private void LoadMainWindowItems()
-        {
-            if(currentContext == null)
-                currentContext = Platform.CurrentActivity;
-            if (currentContext != null)
-            {
-                ipAdressText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.IpAdressText);
-                outputText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.OutputText);
-                stopServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
-                startServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.start_timestamp_service_button);
-            }
-        }
-
         private long GetMyIpAddress()
         {
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
@@ -257,9 +239,8 @@ namespace CSAuto_Mobile
         {
             try
             {
-                stopServer = true;
                 if (listener != null)
-                    listener.Dispose();
+                    listener.Stop();
             }
             catch { }
         }

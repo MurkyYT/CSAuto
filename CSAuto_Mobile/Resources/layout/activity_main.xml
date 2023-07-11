@@ -19,7 +19,8 @@
         android:gravity="top|center"
         android:textColor="#ffb71c1c"
         android:text="output"
-        android:id="@+id/OutputText"/>
+        android:id="@+id/OutputText"
+        android:scrollbars="vertical"/>
      <Button
         android:id="@+id/start_timestamp_service_button"
         android:layout_width="match_parent"
