@@ -130,7 +130,6 @@ namespace CSAuto
         }
         void ConnectToServer()
         {
-            Log.WriteLine("Trying to connect");
             _ = ConnectToServerAsync(IPAddress.Parse("192.168.0.63"), 11_000);
         }
         public MainWindow()
@@ -310,7 +309,7 @@ namespace CSAuto
                 if (client.Connected)
                 {
                     Log.WriteLine($"Connected to server on '{iPAddress}:{port}'");
-                    SendToServer($"<CNT>Connected from {GetLocalIPAddress()}");
+                    SendToServer($"<CNT>Connected from {GetLocalIPAddress()} - {Environment.MachineName}");
                 }
                 connectedToPhone = client.Connected;
                 while (true)
