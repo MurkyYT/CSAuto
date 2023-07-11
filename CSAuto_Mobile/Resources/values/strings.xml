@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">CSAuto</string>
     <string name="action_settings">Settings</string>
+		<string name="stop_timestamp_service_button_text">Stop Server</string>
+		<string name="restart_timestamp_service_button_text"> Start Server</string>
+		<string name="service_started">The service is started.</string>
+		<string name="app_description">This app is a demonstration of running a Xamarin.Android service in the foreground.</string>
+		<string name="notification_text">The started service is running.</string>
+		<string name="restart_timer">Restart Timer</string>
+		<string name="stop_service">Stop Server</string>
 </resources>

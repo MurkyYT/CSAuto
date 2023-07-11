@@ -1,10 +1,13 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Net.Wifi;
+using Android.Nfc;
 using Android.OS;
 using Android.Runtime;
+using Android.Util;
 using Android.Widget;
 using AndroidX.AppCompat.App;
-using CSAuto;
+
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -17,75 +20,108 @@ namespace CSAuto_Mobile
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
-        TextView outputText;
-        TextView ipAdressText;
-        IPAddress myIpAddress;
-        GameState gameState = new GameState(null);
+        static readonly string TAG = typeof(MainActivity).FullName;
+        Button stopServiceButton;
+        Button startServiceButton;
+        Intent startServiceIntent;
+        Intent stopServiceIntent;
+        bool isStarted = false;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
-            outputText = FindViewById<TextView>(Resource.Id.OutputText);
+           
+            if (savedInstanceState != null)
+            {
+                isStarted = savedInstanceState.GetBoolean(Constants.SERVICE_STARTED_KEY, false);
+            }
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
 #pragma warning disable CS0618 // Type or member is obsolete
             int ip = wifiManager.ConnectionInfo.IpAddress;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            myIpAddress = new IPAddress(ip);
-            ipAdressText.Text = $"Your ip address : {myIpAddress}";
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            StartServerAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        }
+            FindViewById<TextView>(Resource.Id.IpAdressText).Text = $"Your ip address : {new IPAddress(ip)}";
 
-        private async Task StartServerAsync()
-        {
-            IPEndPoint ipEndPoint = new IPEndPoint(myIpAddress, 11_000);
-            using Socket listener = new Socket(
-                ipEndPoint.AddressFamily,
-                SocketType.Stream,
-                ProtocolType.Tcp);
+            startServiceIntent = new Intent(this, typeof(ServerService));
+            startServiceIntent.SetAction(Constants.ACTION_START_SERVICE);
 
-            listener.Bind(ipEndPoint);
-            listener.Listen(100);
+            stopServiceIntent = new Intent(this, typeof(ServerService));
+            stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
 
-            var handler = await listener.AcceptAsync();
-            try
+
+            stopServiceButton = FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
+            startServiceButton = FindViewById<Button>(Resource.Id.start_timestamp_service_button);
+            if (isStarted)
             {
-                while (true)
+                stopServiceButton.Click += StopServiceButton_Click;
+                stopServiceButton.Enabled = true;
+                startServiceButton.Enabled = false;
+            }
+            else
+            {
+                startServiceButton.Click += StartServiceButton_Click;
+                startServiceButton.Enabled = true;
+                stopServiceButton.Enabled = false;
+            }
+        }
+        protected override void OnNewIntent(Intent intent)
+        {
+            if (intent == null)
+            {
+                return;
+            }
+
+            var bundle = intent.Extras;
+            if (bundle != null)
+            {
+                if (bundle.ContainsKey(Constants.SERVICE_STARTED_KEY))
                 {
-                    // Receive message.
-                    var buffer = new byte[1_024*1_024];
-                    var received = await handler.ReceiveAsync(buffer, SocketFlags.None);
-                    var response = Encoding.UTF8.GetString(buffer, 0, received);
-                    var eom = "<|EOM|>";
-                    if (response.IndexOf(eom) > -1 /* is end of message */)
-                    {
-                        var ackMessage = "<|ACK|>";
-                        var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                        await handler.SendAsync(echoBytes, 0);
-                        if (response.Substring(0, "<GSI>".Length) == "<GSI>")
-                        {
-                            gameState = new GameState(outputText.Text);
-                            outputText.Text = gameState.MySteamID;
-                        }
-                        if (response.Substring(0, "<ALV>".Length) == "<ALV>")
-                            continue;
-                        outputText.Text = response.Replace(eom, "").Replace("<CLS>", "").Replace("<GSI>", "");
-                    }
-                    // Sample output:
-                    //    Socket server received message: "Hi friends 👋!"
-                    //    Socket server sent acknowledgment: "<|ACK|>"
+                    isStarted = true;
                 }
             }
-            catch {}
-            listener.Close();
-            await StartServerAsync();
         }
 
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            outState.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
+            base.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnDestroy()
+        {
+            //Log.Info(TAG, "Activity is being destroyed; stop the service.");
+
+            //StopService(startServiceIntent);
+            base.OnDestroy();
+        }
+        void StopServiceButton_Click(object sender, System.EventArgs e)
+        {
+            stopServiceButton.Click -= StopServiceButton_Click;
+            stopServiceButton.Enabled = false;
+
+            Log.Info(TAG, "User requested that the service be stopped.");
+            StopService(stopServiceIntent);
+            isStarted = false;
+
+            startServiceButton.Click += StartServiceButton_Click;
+            startServiceButton.Enabled = true;
+        }
+
+        void StartServiceButton_Click(object sender, System.EventArgs e)
+        {
+            startServiceButton.Enabled = false;
+            startServiceButton.Click -= StartServiceButton_Click;
+
+            StartService(startServiceIntent);
+            Log.Info(TAG, "User requested that the service be started.");
+
+            isStarted = true;
+            stopServiceButton.Click += StopServiceButton_Click;
+
+            stopServiceButton.Enabled = true;
+        }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);

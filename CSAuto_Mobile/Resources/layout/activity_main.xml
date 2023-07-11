@@ -8,18 +8,28 @@
     android:orientation="vertical">
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_weight="1"
         android:textColor="#ffb71c1c"
         android:text="ip"
         android:id="@+id/IpAdressText"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="top|center"
-        android:layout_weight="0.1"
         android:textColor="#ffb71c1c"
         android:text="output"
         android:id="@+id/OutputText"/>
+     <Button
+        android:id="@+id/start_timestamp_service_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:text="@string/restart_timestamp_service_button_text" />
+    <Button
+        android:id="@+id/stop_timestamp_service_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/stop_timestamp_service_button_text" />
 </LinearLayout>
