@@ -194,9 +194,7 @@ namespace CSAuto_Mobile
         private long GetMyIpAddress()
         {
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
-#pragma warning disable CS0618 // Type or member is obsolete
             return wifiManager.ConnectionInfo.IpAddress;
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         void ShowNotification(string title,string description,int id,string channel_id)

@@ -16,7 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static AndroidX.Core.Util.Pools;
 using ProtocolType = System.Net.Sockets.ProtocolType;
-
+#pragma warning disable CS0618 // Type or member is obsolete
 namespace CSAuto_Mobile
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
@@ -42,9 +42,8 @@ namespace CSAuto_Mobile
             ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
             isStarted = prefs.GetBoolean(Constants.SERVICE_STARTED_KEY,false);
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
-#pragma warning disable CS0618 // Type or member is obsolete
+
             int ip = wifiManager.ConnectionInfo.IpAddress;
-#pragma warning restore CS0618 // Type or member is obsolete
 
             FindViewById<TextView>(Resource.Id.IpAdressText).Text = $"Your ip address : {new IPAddress(ip)}";
 
