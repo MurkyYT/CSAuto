@@ -22,6 +22,7 @@ using ProtocolType = System.Net.Sockets.ProtocolType;
 using Activity = Android.App.Activity;
 using Xamarin.Essentials;
 using AndroidX.Core.App;
+using Android.Preferences;
 
 namespace CSAuto_Mobile
 {
@@ -40,26 +41,36 @@ namespace CSAuto_Mobile
         IPAddress myIpAddress;
         TextView outputText;
         TextView ipAdressText;
+        Button stopServiceButton;
+        Button startServiceButton;
         Socket listener;
-        int id = 1;
         bool stopServer = false;
         public override void OnCreate()
         {
             base.OnCreate();
             Log.Info(TAG, "OnCreate: the service is initializing.");
-            ipAdressText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.IpAdressText);
-            outputText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.OutputText);
+            if (currentContext != null)
+            {
+                ipAdressText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.IpAdressText);
+                outputText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.OutputText);
+                stopServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
+                startServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.start_timestamp_service_button);
+            }
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
 #pragma warning disable CS0618 // Type or member is obsolete
             int ip = wifiManager.ConnectionInfo.IpAddress;
 #pragma warning restore CS0618 // Type or member is obsolete
-
-            myIpAddress = new IPAddress(ip);
-            ipAdressText.Text = $"Your ip address : {myIpAddress}";
+            if (ipAdressText != null)
+            {
+                myIpAddress = new IPAddress(ip);
+                ipAdressText.Text = $"Your ip address : {myIpAddress}";
+            }
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
+            if (intent == null)
+                return StartCommandResult.Sticky;
             if (intent.Action.Equals(Constants.ACTION_START_SERVICE))
             {
                 if (isStarted)
@@ -93,23 +104,28 @@ namespace CSAuto_Mobile
         }
         private async Task StartServerAsync()
         {
-            IPEndPoint ipEndPoint = new IPEndPoint(myIpAddress, 11_000);
-            listener = new Socket(
-                ipEndPoint.AddressFamily,
-                SocketType.Stream,
-                ProtocolType.Tcp);
-            listener.Bind(ipEndPoint);
-            listener.Listen(100);
-            var handler = await listener.AcceptAsync();
-            stopServer = false;
             try
             {
+                IPEndPoint ipEndPoint = new IPEndPoint(GetMyIpAddress(), 11_000);
+                listener = new Socket(
+                    ipEndPoint.AddressFamily,
+                    SocketType.Stream,
+                    ProtocolType.Tcp);
+                listener.Bind(ipEndPoint);
+                listener.Listen(100);
+                var handler = await listener.AcceptAsync();
+                stopServer = false;
                 while (true)
                 {
                     if (stopServer)
                     {
                         handler.Dispose();
                         break;
+                    }
+                    if(isStarted && stopServiceButton != null && !stopServiceButton.Enabled)
+                    {
+                        stopServiceButton.Enabled = true;
+                        startServiceButton.Enabled = false;
                     }
                     // Receive message.
                     var buffer = new byte[1_024 * 1_024];
@@ -121,17 +137,20 @@ namespace CSAuto_Mobile
                         var ackMessage = "<|ACK|>";
                         var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
                         await handler.SendAsync(echoBytes, 0);
-                        string clearResponse = response.Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>","").Replace("<LBY>","");
+                        string clearResponse = response.Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "");
                         switch (response.Substring(0, "<XXX>".Length))
                         {
                             case "<ACP>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, id++,Constants.ACCEPTED_MATCH_CHANNEL);
+                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.ACCEPTED_MATCH_NOTIFICATION_ID, Constants.ACCEPTED_MATCH_CHANNEL);
                                 break;
                             case "<MAP>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, id++, Constants.LOADED_ON_MAP_CHANNEL_ID);
+                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.LOADED_ON_MAP_NOTIFICATION_ID, Constants.LOADED_ON_MAP_CHANNEL_ID);
                                 break;
                             case "<LBY>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, id++, Constants.LOADED_TO_LOBBY_CHANNEL);
+                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.IN_LOBBY_NOTIFICATION_ID, Constants.LOADED_TO_LOBBY_CHANNEL);
+                                break;
+                            case "<CNT>":
+                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
                                 break;
                         }
                         //if (response.Substring(0, "<GSI>".Length) == "<GSI>")
@@ -146,16 +165,40 @@ namespace CSAuto_Mobile
                     //    Socket server received message: "Hi friends 👋!"
                     //    Socket server sent acknowledgment: "<|ACK|>"
                 }
+                if (stopServer)
+                {
+                    stopServer = false;
+                    return;
+                }
+                listener.EndConnect(null);
             }
-            catch (Exception ex) { Log.Debug(TAG, ex.StackTrace); }
-            if (stopServer)
-            {
-                stopServer = false;
-                return;
-            }
-            listener.Close();
+            catch (SocketException) { listener.Dispose(); }
+            catch (ObjectDisposedException) { }
+            catch (Exception ex){ ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
             await StartServerAsync();
         }
+
+        private void LoadMainWindowItems()
+        {
+            if(currentContext == null)
+                currentContext = Platform.CurrentActivity;
+            if (currentContext != null)
+            {
+                ipAdressText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.IpAdressText);
+                outputText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.OutputText);
+                stopServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
+                startServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.start_timestamp_service_button);
+            }
+        }
+
+        private long GetMyIpAddress()
+        {
+            WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
+#pragma warning disable CS0618 // Type or member is obsolete
+            return wifiManager.ConnectionInfo.IpAddress;
+#pragma warning restore CS0618 // Type or member is obsolete
+        }
+
         void ShowNotification(string title,string description,int id,string channel_id)
         {
             var builder = new NotificationCompat.Builder(this, channel_id)
@@ -194,8 +237,12 @@ namespace CSAuto_Mobile
             // Remove the notification from the status bar.
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.Cancel(Constants.SERVICE_RUNNING_NOTIFICATION_ID);
-
             isStarted = false;
+            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            ISharedPreferencesEditor editor = prefs.Edit();
+            editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
+            // editor.Commit();    // applies changes synchronously on older APIs
+            editor.Apply();        // applies changes asynchronously on newer APIs
             base.OnDestroy();
         }
 
@@ -204,7 +251,8 @@ namespace CSAuto_Mobile
             try
             {
                 stopServer = true;
-                listener.Dispose();
+                if (listener != null)
+                    listener.Dispose();
             }
             catch { }
         }

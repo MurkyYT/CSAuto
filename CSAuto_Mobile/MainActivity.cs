@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Net.Wifi;
 using Android.Nfc;
 using Android.OS;
+using Android.Preferences;
 using Android.Runtime;
 using Android.Util;
 using Android.Widget;
@@ -13,6 +14,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static AndroidX.Core.Util.Pools;
 using ProtocolType = System.Net.Sockets.ProtocolType;
 
 namespace CSAuto_Mobile
@@ -32,11 +34,13 @@ namespace CSAuto_Mobile
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-           
-            if (savedInstanceState != null)
-            {
-                isStarted = savedInstanceState.GetBoolean(Constants.SERVICE_STARTED_KEY, false);
-            }
+
+            //if (savedInstanceState != null)
+            //{
+            //    isStarted = savedInstanceState.GetBoolean(Constants.SERVICE_STARTED_KEY, false);
+            //}
+            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            isStarted = prefs.GetBoolean(Constants.SERVICE_STARTED_KEY,false);
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
 #pragma warning disable CS0618 // Type or member is obsolete
             int ip = wifiManager.ConnectionInfo.IpAddress;
@@ -91,9 +95,11 @@ namespace CSAuto_Mobile
 
         protected override void OnDestroy()
         {
-            //Log.Info(TAG, "Activity is being destroyed; stop the service.");
-
-            //StopService(startServiceIntent);
+            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            ISharedPreferencesEditor editor = prefs.Edit();
+            editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
+            // editor.Commit();    // applies changes synchronously on older APIs
+            editor.Apply();        // applies changes asynchronously on newer APIs
             base.OnDestroy();
         }
         void StopServiceButton_Click(object sender, System.EventArgs e)

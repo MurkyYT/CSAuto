@@ -51,7 +51,7 @@ namespace Murky.Utils
                     file.Close();
 
                 }
-                catch (Exception ex) { MessageBox.Show(ex.StackTrace+ " " + ex.Message); }
+                catch { }
             }
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -76,7 +76,7 @@ namespace Murky.Utils
                     file.Close();
 
                 }
-                catch (Exception ex) { MessageBox.Show(ex.StackTrace + " " + ex.Message); }
+                catch {  }
             }
         }
     }

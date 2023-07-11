@@ -130,6 +130,7 @@ namespace CSAuto
         }
         void ConnectToServer()
         {
+            Log.WriteLine("Trying to connect");
             _ = ConnectToServerAsync(IPAddress.Parse("192.168.0.63"), 11_000);
         }
         public MainWindow()
@@ -306,8 +307,11 @@ namespace CSAuto
                 ProtocolType.Tcp);
 
                 await client.ConnectAsync(ipEndPoint);
-                if(client.Connected)
+                if (client.Connected)
+                {
                     Log.WriteLine($"Connected to server on '{iPAddress}:{port}'");
+                    SendToServer($"<CNT>Connected from {GetLocalIPAddress()}");
+                }
                 connectedToPhone = client.Connected;
                 while (true)
                 {
@@ -668,6 +672,14 @@ namespace CSAuto
             {
                 if (client == null || !client.Connected)
                     new Thread(ConnectToServer).Start();
+                else
+                {
+                    try
+                    {
+                        SendToServer("Keep alive check");
+                    }
+                    catch { new Thread(ConnectToServer).Start(); }
+                }
                 uint pid = 0;
                 Process[] prcs = Process.GetProcessesByName("csgo");
                 csgoRunning = prcs.Length > 0;
