@@ -36,11 +36,7 @@ namespace CSAuto_Mobile
         {
             base.OnCreate();
             Log.Info(TAG, "OnCreate: the service is initializing.");
-            WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
-#pragma warning disable CS0618 // Type or member is obsolete
-            int ip = wifiManager.ConnectionInfo.IpAddress;
-#pragma warning restore CS0618 // Type or member is obsolete
-            myIpAddress = new IPAddress(ip);
+            myIpAddress = new IPAddress(GetMyIpAddress());
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
@@ -294,7 +290,7 @@ namespace CSAuto_Mobile
         {
             var notification = new NotificationCompat.Builder(this, Constants.SERVICE_CHANNEL_ID)
                 .SetContentTitle(Resources.GetString(Resource.String.app_name))
-                .SetContentText("CSAuto service running")
+                .SetContentText($"Server running on ip {myIpAddress}")
                 .SetSmallIcon(Resource.Mipmap.ic_launcher)
                 .SetContentIntent(BuildIntentToShowMainActivity())
                 .SetOngoing(true)
