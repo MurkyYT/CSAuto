@@ -10,18 +10,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="#ffb71c1c"
+        android:textColor="#ff000000"
         android:text="ip"
-        android:id="@+id/IpAdressText"/>
+        android:id="@+id/IpAdressText"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ff000000"
+        android:contentDescription="description"
+        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top|center"
-        android:textColor="#ffb71c1c"
-        android:text="output"
-        android:id="@+id/OutputText"
-        android:scrollbars="vertical"/>
-     <Button
+        android:gravity="center"
+        android:text="CS:GO"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textColor="#ff000000"
+        tools:ignore="HardcodedText,HardcodedColor,HardcodedSize" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        android:id="@+id/details"
+        android:textColor="#ff000000"
+        tools:ignore="HardcodedText,HardcodedColor" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        android:id="@+id/state"
+        android:textColor="#ff000000"
+        tools:ignore="HardcodedText,HardcodedColor" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ff000000"
+        android:contentDescription="description"
+        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
+    <Button
         android:id="@+id/start_timestamp_service_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,4 +67,29 @@
         android:layout_height="wrap_content"
         android:enabled="false"
         android:text="@string/stop_timestamp_service_button_text" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ff000000"
+        android:contentDescription="description"
+        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:visibility="visible">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:textColor="#ffb71c1c"
+                android:text=""
+                android:id="@+id/OutputText"
+                tools:ignore="HardcodedColor" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

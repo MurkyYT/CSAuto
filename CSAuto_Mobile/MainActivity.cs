@@ -18,7 +18,9 @@ namespace CSAuto_Mobile
         public Button stopServiceButton;
         public Button startServiceButton;
         public TextView outputText;
-        public TextView ipAdressText;
+        TextView ipAdressText;
+        public TextView details;
+        public TextView state;
         public static MainActivity Instance;
         Intent startServiceIntent;
         Intent stopServiceIntent;
@@ -41,7 +43,9 @@ namespace CSAuto_Mobile
             int ip = wifiManager.ConnectionInfo.IpAddress;
             ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
             outputText = FindViewById<TextView>(Resource.Id.OutputText);
-            ipAdressText.Text = $"Your ip address : {new IPAddress(ip)}";
+            details = FindViewById<TextView>(Resource.Id.details);
+            state = FindViewById<TextView>(Resource.Id.state);
+            ipAdressText.Text = $"Your IP Address: {new IPAddress(ip)}";
             Instance = this;
             startServiceIntent = new Intent(this, typeof(ServerService));
             startServiceIntent.SetAction(Constants.ACTION_START_SERVICE);
@@ -52,15 +56,15 @@ namespace CSAuto_Mobile
 
             stopServiceButton = FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
             startServiceButton = FindViewById<Button>(Resource.Id.start_timestamp_service_button);
+            startServiceButton.Click += StartServiceButton_Click;
+            stopServiceButton.Click += StopServiceButton_Click;
             if (isStarted)
             {
-                stopServiceButton.Click += StopServiceButton_Click;
                 stopServiceButton.Enabled = true;
                 startServiceButton.Enabled = false;
             }
             else
             {
-                startServiceButton.Click += StartServiceButton_Click;
                 startServiceButton.Enabled = true;
                 stopServiceButton.Enabled = false;
             }
@@ -99,28 +103,19 @@ namespace CSAuto_Mobile
         }
         void StopServiceButton_Click(object sender, System.EventArgs e)
         {
-            stopServiceButton.Click -= StopServiceButton_Click;
             stopServiceButton.Enabled = false;
-
             Log.Info(TAG, "User requested that the service be stopped.");
             StopService(stopServiceIntent);
             isStarted = false;
-
-            startServiceButton.Click += StartServiceButton_Click;
             startServiceButton.Enabled = true;
         }
 
         void StartServiceButton_Click(object sender, System.EventArgs e)
         {
             startServiceButton.Enabled = false;
-            startServiceButton.Click -= StartServiceButton_Click;
-
             StartService(startServiceIntent);
             Log.Info(TAG, "User requested that the service be started.");
-
             isStarted = true;
-            stopServiceButton.Click += StopServiceButton_Click;
-
             stopServiceButton.Enabled = true;
             Intent intent = new Intent();
             string packageName = PackageName;

@@ -12,7 +12,9 @@ using Xamarin.Essentials;
 using AndroidX.Core.App;
 using Android.Preferences;
 using CSAuto;
+using Murky.Utils.CSGO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CSAuto_Mobile
 {
@@ -38,11 +40,7 @@ namespace CSAuto_Mobile
 #pragma warning disable CS0618 // Type or member is obsolete
             int ip = wifiManager.ConnectionInfo.IpAddress;
 #pragma warning restore CS0618 // Type or member is obsolete
-            if (MainActivity.Instance.ipAdressText != null)
-            {
-                myIpAddress = new IPAddress(ip);
-                MainActivity.Instance.ipAdressText.Text = $"Your ip address : {myIpAddress}";
-            }
+            myIpAddress = new IPAddress(ip);
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
@@ -63,6 +61,8 @@ namespace CSAuto_Mobile
                     new Thread(StartServer).Start();
                     isStarted = true;
                 }
+                MainActivity.Instance.stopServiceButton.Enabled = true;
+                MainActivity.Instance.startServiceButton.Enabled = false;
             }
             else if (intent.Action.Equals(Constants.ACTION_STOP_SERVICE))
             {
@@ -70,6 +70,8 @@ namespace CSAuto_Mobile
                 StopServer();
                 StopForeground(true);
                 StopSelf();
+                MainActivity.Instance.stopServiceButton.Enabled = false;
+                MainActivity.Instance.startServiceButton.Enabled = true;
                 isStarted = false;
             }
             else if (intent.Action.Equals(Constants.ACTION_RESTART_TIMER))
@@ -111,7 +113,7 @@ namespace CSAuto_Mobile
                     var eom = "<|EOM|>";
                     if (message.IndexOf(eom) > -1 /* is end of message */)
                     {
-                        string clearResponse = message.Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "");
+                        string clearResponse = message.Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
                         switch (message.Substring(0, "<XXX>".Length))
                         {
                             case "<ACP>":
@@ -129,10 +131,16 @@ namespace CSAuto_Mobile
                             case "<GSI>":
                                 ParseGameState(clearResponse);
                                 break;
+                            case "<CLS>":
+                                MainActivity.Instance.RunOnUiThread(() => {
+                                    MainActivity.Instance.state.Text = "";
+                                    MainActivity.Instance.details.Text = "";
+                                });
+                                break;
                         }
-                        MainActivity.Instance.RunOnUiThread(() => {
-                            MainActivity.Instance.outputText.Text = clearResponse;
-                        });
+                        //MainActivity.Instance.RunOnUiThread(() => {
+                        //    MainActivity.Instance.outputText.Text = clearResponse;
+                        //});
                     
                     }
                 }
@@ -149,14 +157,31 @@ namespace CSAuto_Mobile
             catch (Exception ex) { ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
             var stopServiceIntent = new Intent(this, GetType());
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
-            var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, PendingIntentFlags.Mutable);
             currentContext.StartService(stopServiceIntent);
         }
 
         private void ParseGameState(string clearResponse)
         {
-            GameState gs = new GameState(clearResponse);
-            MainActivity.Instance.outputText.Text = $"{gs.Match.TScore} - {gs.Match.CTScore}";
+            string[] splt = clearResponse.Split('}');
+            bool inGame = splt[splt.Length-1][..4] == "True";
+            GameState gs = new GameState(clearResponse);  
+            if (!inGame)
+            {
+                MainActivity.Instance.RunOnUiThread(() => {
+                    MainActivity.Instance.state.Text = $"FriendCode: {CSGOFriendCode.Encode(gs.MySteamID)}";
+                    MainActivity.Instance.details.Text = $"Chilling in lobby";
+                });
+            }
+            else
+            {
+                MainActivity.Instance.RunOnUiThread(() => {
+                    MainActivity.Instance.state.Text = $"{gs.Match.Mode} - {gs.Match.Map}";
+                    string phase = gs.Match.Phase == Phase.Warmup ? "Warmup" : gs.Round.Phase.ToString();
+                    MainActivity.Instance.details.Text = gs.Player.Team == Team.T ?
+                        $"{gs.Match.TScore} [T] ({phase}) {gs.Match.CTScore} [CT]" :
+                        $"{gs.Match.CTScore} [CT] ({phase}) {gs.Match.TScore} [T]";
+                });
+            }
         }
         private long GetMyIpAddress()
         {
@@ -266,8 +291,8 @@ namespace CSAuto_Mobile
             notificationManager.CreateNotificationChannel(channel);
         }
         void RegisterForegroundService()
-        {       
-            var notification = new Notification.Builder(this, Constants.SERVICE_CHANNEL_ID)
+        {
+            var notification = new NotificationCompat.Builder(this, Constants.SERVICE_CHANNEL_ID)
                 .SetContentTitle(Resources.GetString(Resource.String.app_name))
                 .SetContentText("CSAuto service running")
                 .SetSmallIcon(Resource.Mipmap.ic_launcher)
@@ -305,13 +330,13 @@ namespace CSAuto_Mobile
         /// notification in the status bar
         /// </summary>
         /// <returns>The stop service action.</returns>
-        Notification.Action BuildStopServiceAction()
+        NotificationCompat.Action BuildStopServiceAction()
         {
             var stopServiceIntent = new Intent(this, GetType());
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
             var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, PendingIntentFlags.Mutable);
 
-            var builder = new Notification.Action.Builder(Android.Resource.Drawable.IcMediaPause,
+            var builder = new NotificationCompat.Action.Builder(Android.Resource.Drawable.IcMediaPause,
                                                           GetText(Resource.String.stop_service),
                                                           stopServicePendingIntent);
             return builder.Build();

@@ -473,7 +473,6 @@ namespace CSAuto
                         JSON = sr.ReadToEnd();
                     }
                 }
-                SendMessageToServer("<GSI>" + JSON);
                 using (HttpListenerResponse response = context.Response)
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
@@ -545,6 +544,7 @@ namespace CSAuto
                     }
                 }
                 UpdateDiscordRPC();
+                SendMessageToServer($"<GSI>{JSON}{inGame}");
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
@@ -668,6 +668,7 @@ namespace CSAuto
                     {
                         Log.WriteLine("Stopping GSI Server");
                         StopGSIServer();
+                        SendMessageToServer("<CLS>");
                     }
                 }
                 csgoActive = IsForegroundProcess(pid);
