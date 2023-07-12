@@ -1,21 +1,13 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Net.Wifi;
-using Android.Nfc;
 using Android.OS;
 using Android.Preferences;
 using Android.Runtime;
 using Android.Util;
 using Android.Widget;
 using AndroidX.AppCompat.App;
-
-using System;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using static AndroidX.Core.Util.Pools;
-using ProtocolType = System.Net.Sockets.ProtocolType;
 #pragma warning disable CS0618 // Type or member is obsolete
 namespace CSAuto_Mobile
 {
@@ -23,8 +15,11 @@ namespace CSAuto_Mobile
     public class MainActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(MainActivity).FullName;
-        Button stopServiceButton;
-        Button startServiceButton;
+        public Button stopServiceButton;
+        public Button startServiceButton;
+        public TextView outputText;
+        public TextView ipAdressText;
+        public static MainActivity Instance;
         Intent startServiceIntent;
         Intent stopServiceIntent;
         bool isStarted = false;
@@ -44,9 +39,10 @@ namespace CSAuto_Mobile
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
 
             int ip = wifiManager.ConnectionInfo.IpAddress;
-
-            FindViewById<TextView>(Resource.Id.IpAdressText).Text = $"Your ip address : {new IPAddress(ip)}";
-
+            ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
+            outputText = FindViewById<TextView>(Resource.Id.OutputText);
+            ipAdressText.Text = $"Your ip address : {new IPAddress(ip)}";
+            Instance = this;
             startServiceIntent = new Intent(this, typeof(ServerService));
             startServiceIntent.SetAction(Constants.ACTION_START_SERVICE);
 
@@ -126,6 +122,18 @@ namespace CSAuto_Mobile
             stopServiceButton.Click += StopServiceButton_Click;
 
             stopServiceButton.Enabled = true;
+            Intent intent = new Intent();
+            string packageName = PackageName;
+            PowerManager pm = (PowerManager)GetSystemService(PowerService);
+            if (pm.IsIgnoringBatteryOptimizations(packageName))
+                Log.Info(TAG, "Already ignoring battery optimizations");
+            else
+            {
+                intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
+                intent.SetData(Android.Net.Uri.Parse("package:" + packageName));
+                StartActivity(intent);
+            }
+            
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

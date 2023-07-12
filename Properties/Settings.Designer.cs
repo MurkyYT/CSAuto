@@ -166,5 +166,29 @@ namespace CSAuto.Properties {
                 this["enableDiscordRPC"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string phoneIpAddress {
+            get {
+                return ((string)(this["phoneIpAddress"]));
+            }
+            set {
+                this["phoneIpAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool mobileAppEnabled {
+            get {
+                return ((bool)(this["mobileAppEnabled"]));
+            }
+            set {
+                this["mobileAppEnabled"] = value;
+            }
+        }
     }
 }

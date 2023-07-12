@@ -94,6 +94,7 @@
     <Compile Include="Utils\CSGO\CSGOMap.cs" />
     <Compile Include="Utils\DiscordRpc.cs" />
     <Compile Include="Utils\Github.cs" />
+    <Compile Include="Utils\InputBox.cs" />
     <Compile Include="Utils\Spotify.cs" />
     <Compile Include="Utils\TypeConvertor.cs" />
     <Page Include="GSIDebugWindow.xaml">

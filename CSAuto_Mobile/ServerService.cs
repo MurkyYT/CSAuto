@@ -1,31 +1,18 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Media;
 using Android.OS;
-using Android.Runtime;
 using Android.Util;
-using Android.Views;
-using Android.Widget;
-using AndroidX.LocalBroadcastManager.Content;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Encoding = System.Text.Encoding;
 using Android.Net.Wifi;
-using System.Runtime.Remoting.Contexts;
 using Context = Android.Content.Context;
-using ProtocolType = System.Net.Sockets.ProtocolType;
-using Activity = Android.App.Activity;
 using Xamarin.Essentials;
 using AndroidX.Core.App;
 using Android.Preferences;
 using CSAuto;
 using System.Threading;
-using static Android.Telecom.Call;
 
 namespace CSAuto_Mobile
 {
@@ -42,30 +29,19 @@ namespace CSAuto_Mobile
         bool isStarted;
         Context currentContext = Platform.CurrentActivity;
         IPAddress myIpAddress;
-        TextView outputText;
-        TextView ipAdressText;
-        Button stopServiceButton;
-        Button startServiceButton;
         TcpListener listener;
         public override void OnCreate()
         {
             base.OnCreate();
             Log.Info(TAG, "OnCreate: the service is initializing.");
-            if (currentContext != null)
-            {
-                ipAdressText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.IpAdressText);
-                outputText = ((Activity)currentContext).FindViewById<TextView>(Resource.Id.OutputText);
-                stopServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
-                startServiceButton = ((Activity)currentContext).FindViewById<Button>(Resource.Id.start_timestamp_service_button);
-            }
             WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
 #pragma warning disable CS0618 // Type or member is obsolete
             int ip = wifiManager.ConnectionInfo.IpAddress;
 #pragma warning restore CS0618 // Type or member is obsolete
-            if (ipAdressText != null)
+            if (MainActivity.Instance.ipAdressText != null)
             {
                 myIpAddress = new IPAddress(ip);
-                ipAdressText.Text = $"Your ip address : {myIpAddress}";
+                MainActivity.Instance.ipAdressText.Text = $"Your ip address : {myIpAddress}";
             }
         }
 
@@ -118,10 +94,10 @@ namespace CSAuto_Mobile
                 listener.Start();
                 while (true)
                 {
-                    if(isStarted && stopServiceButton != null && !stopServiceButton.Enabled)
+                    if(isStarted && MainActivity.Instance.stopServiceButton != null && !MainActivity.Instance.stopServiceButton.Enabled)
                     {
-                        stopServiceButton.Enabled = true;
-                        startServiceButton.Enabled = false;
+                        MainActivity.Instance.stopServiceButton.Enabled = true;
+                        MainActivity.Instance.startServiceButton.Enabled = false;
                     }
                     // Receive message.
                     const int bytesize = 1024 * 1024;
@@ -154,8 +130,8 @@ namespace CSAuto_Mobile
                                 ParseGameState(clearResponse);
                                 break;
                         }
-                        ((Activity)currentContext).RunOnUiThread(() => {
-                            outputText.Text = clearResponse;
+                        MainActivity.Instance.RunOnUiThread(() => {
+                            MainActivity.Instance.outputText.Text = clearResponse;
                         });
                     
                     }
@@ -180,7 +156,7 @@ namespace CSAuto_Mobile
         private void ParseGameState(string clearResponse)
         {
             GameState gs = new GameState(clearResponse);
-            outputText.Text = $"{gs.Match.TScore} - {gs.Match.CTScore}";
+            MainActivity.Instance.outputText.Text = $"{gs.Match.TScore} - {gs.Match.CTScore}";
         }
         private long GetMyIpAddress()
         {

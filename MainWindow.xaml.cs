@@ -10,20 +10,15 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Murky.Utils;
@@ -41,7 +36,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.7";
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -80,6 +75,7 @@ namespace CSAuto
         readonly MenuItem autoCheckForUpdates = new MenuItem();
         readonly MenuItem autoPauseResumeSpotify = new MenuItem();
         readonly MenuItem enableDiscordRPC = new MenuItem();
+        readonly MenuItem enableMobileApp = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = "Auto Buy"
@@ -140,6 +136,10 @@ namespace CSAuto
                 {
                     Header = "Debug"
                 };
+                MenuItem mobileMenu = new MenuItem
+                {
+                    Header = "Mobile App"
+                };
                 MenuItem exit = new MenuItem
                 {
                     Header = "Exit"
@@ -172,10 +172,19 @@ namespace CSAuto
                     Header = "Check for updates"
                 };
                 checkForUpdates.Click += CheckForUpdates_Click;
+                MenuItem enterMobileIpAddress = new MenuItem
+                {
+                    Header = "Enter ip address"
+                };
+                enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
                 enableDiscordRPC.IsChecked = Properties.Settings.Default.enableDiscordRPC;
                 enableDiscordRPC.Header = "Discord RPC";
                 enableDiscordRPC.IsCheckable = true;
                 enableDiscordRPC.Click += EnableDiscordRPC_Click;
+                enableMobileApp.IsChecked = Properties.Settings.Default.mobileAppEnabled;
+                enableMobileApp.Header = "Enabled";
+                enableMobileApp.IsCheckable = true;
+                enableMobileApp.Click += EnableMobileApp_Click;
                 autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
                 autoCheckForUpdates.Header = "Check For Updates On Startup";
                 autoCheckForUpdates.IsCheckable = true;
@@ -235,9 +244,12 @@ namespace CSAuto
                 options.Items.Add(startUpCheck);
                 options.Items.Add(autoCheckForUpdates);
                 discordMenu.Items.Add(enableDiscordRPC);
+                mobileMenu.Items.Add(enableMobileApp);
+                mobileMenu.Items.Add(enterMobileIpAddress);
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
+                exitcm.Items.Add(mobileMenu);
                 exitcm.Items.Add(discordMenu);
                 exitcm.Items.Add(automation);
                 exitcm.Items.Add(options);
@@ -254,6 +266,24 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
+
+        private void EnterMobileIpAddress_Click(object sender, RoutedEventArgs e)
+        {
+            string res = "";
+            if (InputBox.Show("Mobile Phone Ip Address", "Enter the ip address you see in the app:", ref res) == System.Windows.Forms.DialogResult.OK) 
+            { 
+                Properties.Settings.Default.phoneIpAddress = res; 
+                Properties.Settings.Default.Save();
+                SendMessageToServer($"<CNT>Computer {Environment.MachineName} ({GetLocalIPAddress()}) is online");
+            }
+        }
+
+        private void EnableMobileApp_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.mobileAppEnabled = enableMobileApp.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         private void EnableDiscordRPC_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.enableDiscordRPC = enableDiscordRPC.IsChecked;
@@ -580,7 +610,6 @@ namespace CSAuto
             }
 
         }
-
         bool IsForegroundProcess(uint pid)
         {
             IntPtr hwnd = GetForegroundWindow();
@@ -592,9 +621,11 @@ namespace CSAuto
         }
         private void SendMessageToServer(string message)
         {
+            if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled)
+                return;
             try // Try connecting and send the message bytes  
             {
-                TcpClient client = new TcpClient("192.168.0.63", 11_000); // Create a new connection  
+                TcpClient client = new TcpClient(Properties.Settings.Default.phoneIpAddress, 11_000); // Create a new connection  
                 NetworkStream stream = client.GetStream();
                 byte[] messageBytes = Encoding.UTF8.GetBytes($"{message}<|EOM|>");
                 stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
@@ -936,6 +967,18 @@ namespace CSAuto
                 Log.WriteLine($"Shutting down, found another CSAuto process");
             }
         }
+        string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
             try
@@ -980,6 +1023,7 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
+                SendMessageToServer($"<CNT>Computer {Environment.MachineName} ({GetLocalIPAddress()}) is online");
             }
             catch (Exception ex)
             {
