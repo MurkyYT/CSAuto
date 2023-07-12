@@ -125,13 +125,18 @@ namespace CSAuto_Mobile
                                 ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
                                 break;
                             case "<GSI>":
-                                ParseGameState(clearResponse);
+                                if (MainActivity.Active)
+                                    ParseGameState(clearResponse);
                                 break;
                             case "<CLS>":
-                                MainActivity.Instance.RunOnUiThread(() => {
-                                    MainActivity.Instance.state.Text = "";
-                                    MainActivity.Instance.details.Text = "";
-                                });
+                                if (MainActivity.Active)
+                                {
+                                    MainActivity.Instance.RunOnUiThread(() =>
+                                    {
+                                        MainActivity.Instance.state.Text = "";
+                                        MainActivity.Instance.details.Text = "";
+                                    });
+                                }
                                 break;
                         }
                         //MainActivity.Instance.RunOnUiThread(() => {

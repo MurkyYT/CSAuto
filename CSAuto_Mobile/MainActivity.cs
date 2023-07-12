@@ -22,6 +22,7 @@ namespace CSAuto_Mobile
         public TextView details;
         public TextView state;
         public static MainActivity Instance;
+        public static bool Active = false;
         Intent startServiceIntent;
         Intent stopServiceIntent;
         bool isStarted = false;
@@ -68,6 +69,7 @@ namespace CSAuto_Mobile
                 startServiceButton.Enabled = true;
                 stopServiceButton.Enabled = false;
             }
+            Active = true;
         }
         protected override void OnNewIntent(Intent intent)
         {
@@ -99,6 +101,7 @@ namespace CSAuto_Mobile
             editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
             // editor.Commit();    // applies changes synchronously on older APIs
             editor.Apply();        // applies changes asynchronously on newer APIs
+            Active = false;
             base.OnDestroy();
         }
         void StopServiceButton_Click(object sender, System.EventArgs e)
