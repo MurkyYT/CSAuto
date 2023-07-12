@@ -24,6 +24,8 @@ using Point = System.Drawing.Point;
 using CSAuto.Exceptions;
 using Murky.Utils;
 using Murky.Utils.CSGO;
+using System.Net.Sockets;
+
 namespace CSAuto
 {
     /// <summary>
@@ -34,8 +36,8 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.0.7";
-        const string DEBUG_REVISION = "2";
+        const string VER = "1.0.8";
+        const string DEBUG_REVISION = "";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -74,6 +76,7 @@ namespace CSAuto
         readonly MenuItem autoCheckForUpdates = new MenuItem();
         readonly MenuItem autoPauseResumeSpotify = new MenuItem();
         readonly MenuItem enableDiscordRPC = new MenuItem();
+        readonly MenuItem enableMobileApp = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = "Auto Buy"
@@ -110,6 +113,7 @@ namespace CSAuto
         Phase? roundState;
         Weapon weapon;
         bool acceptedGame = false;
+
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -132,6 +136,10 @@ namespace CSAuto
                 MenuItem debugMenu = new MenuItem
                 {
                     Header = "Debug"
+                };
+                MenuItem mobileMenu = new MenuItem
+                {
+                    Header = "Mobile App"
                 };
                 MenuItem exit = new MenuItem
                 {
@@ -165,10 +173,19 @@ namespace CSAuto
                     Header = "Check for updates"
                 };
                 checkForUpdates.Click += CheckForUpdates_Click;
+                MenuItem enterMobileIpAddress = new MenuItem
+                {
+                    Header = "Enter ip address"
+                };
+                enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
                 enableDiscordRPC.IsChecked = Properties.Settings.Default.enableDiscordRPC;
                 enableDiscordRPC.Header = "Discord RPC";
                 enableDiscordRPC.IsCheckable = true;
                 enableDiscordRPC.Click += EnableDiscordRPC_Click;
+                enableMobileApp.IsChecked = Properties.Settings.Default.mobileAppEnabled;
+                enableMobileApp.Header = "Enabled";
+                enableMobileApp.IsCheckable = true;
+                enableMobileApp.Click += EnableMobileApp_Click;
                 autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
                 autoCheckForUpdates.Header = "Check For Updates On Startup";
                 autoCheckForUpdates.IsCheckable = true;
@@ -228,9 +245,12 @@ namespace CSAuto
                 options.Items.Add(startUpCheck);
                 options.Items.Add(autoCheckForUpdates);
                 discordMenu.Items.Add(enableDiscordRPC);
+                mobileMenu.Items.Add(enableMobileApp);
+                mobileMenu.Items.Add(enterMobileIpAddress);
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
+                exitcm.Items.Add(mobileMenu);
                 exitcm.Items.Add(discordMenu);
                 exitcm.Items.Add(automation);
                 exitcm.Items.Add(options);
@@ -246,6 +266,23 @@ namespace CSAuto
                 MessageBox.Show($"An error ocurred\n'{ex.Message}'\nTry to download the latest version from github.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void EnterMobileIpAddress_Click(object sender, RoutedEventArgs e)
+        {
+            string res = "";
+            if (InputBox.Show("Mobile Phone Ip Address", "Enter the ip address you see in the app:", ref res) == System.Windows.Forms.DialogResult.OK) 
+            { 
+                Properties.Settings.Default.phoneIpAddress = res; 
+                Properties.Settings.Default.Save();
+                SendMessageToServer($"<CNT>Computer {Environment.MachineName} ({GetLocalIPAddress()}) is online");
+            }
+        }
+
+        private void EnableMobileApp_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.mobileAppEnabled = enableMobileApp.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void EnableDiscordRPC_Click(object sender, RoutedEventArgs e)
@@ -467,6 +504,7 @@ namespace CSAuto
                     discordPresence.details = $"{GameState.Match.Mode} - {GameState.Match.Map}";
                     discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                     discordPresence.largeImageText = GameState.Match.Map;
+                    SendMessageToServer($"<MAP>Loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                 }
                 else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
                 {
@@ -478,6 +516,7 @@ namespace CSAuto
                     discordPresence.largeImageText = "Menu";
                     discordPresence.smallImageKey = null;
                     discordPresence.smallImageText = null;
+                    SendMessageToServer("<LBY>Loaded in lobby!");
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -506,6 +545,7 @@ namespace CSAuto
                     }
                 }
                 UpdateDiscordRPC();
+                SendMessageToServer($"<GSI>{JSON}{inGame}");
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\ncs2Active:{cs2Active}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
@@ -534,8 +574,8 @@ namespace CSAuto
                 discordPresence.state = GameState.Player.Team == Team.T ?
                     $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" :
                     $"{GameState.Match.CTScore} [CT] ({phase}) {GameState.Match.TScore} [T]";
-                discordPresence.smallImageKey = GameState.IsDead ? "spectator" : GameState.IsSpectating ? "gotv_icon" : GameState.Player.Team.ToString().ToLower();
-                discordPresence.smallImageText = GameState.IsDead ? "Spectating" : GameState.IsSpectating ? "Watching GOTV" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
+                discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
+                discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
                 discordPresence.partyMax = 5;
@@ -571,7 +611,6 @@ namespace CSAuto
             }
 
         }
-
         bool IsForegroundProcess(uint pid)
         {
             IntPtr hwnd = GetForegroundWindow();
@@ -580,6 +619,22 @@ namespace CSAuto
             if (GetWindowThreadProcessId(hwnd, out uint foregroundPid) == (IntPtr)0) return false;
 
             return (foregroundPid == pid);
+        }
+        private void SendMessageToServer(string message)
+        {
+            if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled)
+                return;
+            try // Try connecting and send the message bytes  
+            {
+                TcpClient client = new TcpClient(Properties.Settings.Default.phoneIpAddress, 11_000); // Create a new connection  
+                NetworkStream stream = client.GetStream();
+                byte[] messageBytes = Encoding.UTF8.GetBytes($"{message}<|EOM|>");
+                stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
+                // Clean up  
+                stream.Dispose();
+                client.Close();
+            }
+            catch  {   }
         }
         private void TimerCallback(object sender, EventArgs e)
         {
@@ -614,6 +669,7 @@ namespace CSAuto
                     {
                         Log.WriteLine("Stopping GSI Server");
                         StopGSIServer();
+                        SendMessageToServer("<CLS>");
                     }
                 }
                 cs2Active = IsForegroundProcess(pid);
@@ -838,6 +894,7 @@ namespace CSAuto
                         int X = clickpoint.X;
                         int Y = clickpoint.Y;
                         Log.WriteLine($"Found accept button at X:{X} Y:{Y}",caller:"AutoAcceptMatch");
+                        SendMessageToServer("<ACP>Accepted a match!");
                         LeftMouseClick(X, Y);
                         found = true;
                         acceptedGame = true;
@@ -858,9 +915,9 @@ namespace CSAuto
         }
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
             notifyIcon.Close();
             StopGSIServer();
+            Application.Current.Shutdown();
         }
         private void CheckForDuplicates()
         {
@@ -872,6 +929,18 @@ namespace CSAuto
                 Application.Current.Shutdown();
                 Log.WriteLine($"Shutting down, found another CSAuto process");
             }
+        }
+        string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -932,6 +1001,7 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
+                SendMessageToServer($"<CNT>Computer {Environment.MachineName} ({GetLocalIPAddress()}) is online");
             }
             catch (Exception ex)
             {
