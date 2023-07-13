@@ -28,6 +28,7 @@ namespace CSAuto
                 $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
                 $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
+            Title = AppLanguage.Get("title_debugwind");
         }
         public void UpdateText(string data)
         {

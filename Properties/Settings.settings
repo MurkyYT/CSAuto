@@ -44,5 +44,15 @@
     <Setting Name="mobileAppEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="languages" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;language_english&lt;/string&gt;
+  &lt;string&gt;language_russian&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="currentLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">language_english</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

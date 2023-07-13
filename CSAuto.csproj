@@ -91,6 +91,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Exception\WriteException.cs" />
+    <Compile Include="AppLanguage.cs" />
     <Compile Include="Utils\CSGO\CSGOFriendCode.cs" />
     <Compile Include="Utils\CSGO\CSGOMap.cs" />
     <Compile Include="Utils\DiscordRpc.cs" />

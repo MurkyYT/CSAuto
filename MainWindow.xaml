@@ -7,3 +7,4 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="0" Width="0" ShowActivated="False" SourceInitialized="Window_SourceInitialized" Focusable="False" ShowInTaskbar="False" WindowStyle="ToolWindow">
 </Window>
+    
