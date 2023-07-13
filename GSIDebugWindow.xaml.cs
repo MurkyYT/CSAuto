@@ -27,7 +27,8 @@ namespace CSAuto
         public GSIDebugWindow(MainWindow main)
         {
             InitializeComponent();
-            this.main = main;  
+            this.main = main;
+            Title = AppLanguage.Get("title_debugwind");
         }
         public void UpdateText(string data)
         {

@@ -36,7 +36,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.8";
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -78,15 +78,15 @@ namespace CSAuto
         readonly MenuItem enableMobileApp = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
-            Header = "Auto Buy"
+            Header = AppLanguage.Get("menu_autobuy")
         };
         readonly MenuItem discordMenu = new MenuItem
         {
-            Header = "Discord"
+            Header = AppLanguage.Get("menu_discord")
         };
         readonly MenuItem autoReloadMenu = new MenuItem
         {
-            Header = "Auto Reload"
+            Header = AppLanguage.Get("menu_autoreload")
         };
         /// <summary>
         /// Privates
@@ -134,23 +134,28 @@ namespace CSAuto
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 MenuItem debugMenu = new MenuItem
                 {
-                    Header = "Debug"
+                    Header = AppLanguage.Get("menu_debug")
                 };
+                MenuItem languageMenu = new MenuItem
+                {
+                    Header = AppLanguage.Get("menu_language")
+                };
+                GenerateLanguages(languageMenu);
                 MenuItem mobileMenu = new MenuItem
                 {
-                    Header = "Mobile App"
+                    Header = AppLanguage.Get("menu_mobile")
                 };
                 MenuItem exit = new MenuItem
                 {
-                    Header = "Exit"
+                    Header = AppLanguage.Get("menu_exit")
                 };
                 MenuItem automation = new MenuItem
                 {
-                    Header = "Automation"
+                    Header = AppLanguage.Get("menu_automation")
                 };
                 MenuItem options = new MenuItem
                 {
-                    Header = "Options"
+                    Header = AppLanguage.Get("menu_options")
                 };
                 exit.Click += Exit_Click;
                 MenuItem about = new MenuItem
@@ -164,69 +169,69 @@ namespace CSAuto
                 };
                 MenuItem openDebugWindow = new MenuItem
                 {
-                    Header = "Open Debug Window"
+                    Header = AppLanguage.Get("menu_opendebug")
                 };
                 openDebugWindow.Click += OpenDebugWindow_Click;
                 MenuItem checkForUpdates = new MenuItem
                 {
-                    Header = "Check for updates"
+                    Header = AppLanguage.Get("menu_checkforupdates")
                 };
                 checkForUpdates.Click += CheckForUpdates_Click;
                 MenuItem enterMobileIpAddress = new MenuItem
                 {
-                    Header = "Enter ip address"
+                    Header = AppLanguage.Get("menu_enterip")
                 };
                 enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
                 enableDiscordRPC.IsChecked = Properties.Settings.Default.enableDiscordRPC;
-                enableDiscordRPC.Header = "Discord RPC";
+                enableDiscordRPC.Header = AppLanguage.Get("menu_discordrpc");
                 enableDiscordRPC.IsCheckable = true;
                 enableDiscordRPC.Click += EnableDiscordRPC_Click;
                 enableMobileApp.IsChecked = Properties.Settings.Default.mobileAppEnabled;
-                enableMobileApp.Header = "Enabled";
+                enableMobileApp.Header = AppLanguage.Get("menu_enabled");
                 enableMobileApp.IsCheckable = true;
                 enableMobileApp.Click += EnableMobileApp_Click;
                 autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
-                autoCheckForUpdates.Header = "Check For Updates On Startup";
+                autoCheckForUpdates.Header = AppLanguage.Get("menu_autocheckupdates");
                 autoCheckForUpdates.IsCheckable = true;
                 autoCheckForUpdates.Click += AutoCheckForUpdates_Click;
                 autoPauseResumeSpotify.IsChecked = Properties.Settings.Default.autoPausePlaySpotify;
-                autoPauseResumeSpotify.Header = "Auto Pause/Resume Spotify";
+                autoPauseResumeSpotify.Header = AppLanguage.Get("menu_autospotify");
                 autoPauseResumeSpotify.IsCheckable = true;
                 autoPauseResumeSpotify.Click += AutoPauseResumeSpotify_Click;
                 startUpCheck.IsChecked = Properties.Settings.Default.runAtStartUp;
-                startUpCheck.Header = "Start With Windows";
+                startUpCheck.Header = AppLanguage.Get("menu_startup");
                 startUpCheck.IsCheckable = true;
                 startUpCheck.Click += StartUpCheck_Click;
                 continueSprayingCheck.IsChecked = Properties.Settings.Default.ContinueSpraying;
-                continueSprayingCheck.Header = "Continue Spraying (Experimental)";
+                continueSprayingCheck.Header = AppLanguage.Get("menu_continuespray");
                 continueSprayingCheck.IsCheckable = true;
                 continueSprayingCheck.Click += ContinueSprayingCheck_Click;
                 saveFramesDebug.IsChecked = Properties.Settings.Default.saveDebugFrames;
-                saveFramesDebug.Header = "Save Frames";
+                saveFramesDebug.Header = AppLanguage.Get("menu_savedebugframes");
                 saveFramesDebug.IsCheckable = true;
                 saveFramesDebug.Click += DebugCheck_Click;
                 saveLogsCheck.IsChecked = Properties.Settings.Default.saveLogs;
-                saveLogsCheck.Header = "Save Logs";
+                saveLogsCheck.Header = AppLanguage.Get("menu_savedebuglogs");
                 saveLogsCheck.IsCheckable = true;
                 saveLogsCheck.Click += SaveLogsCheck_Click;
                 autoAcceptMatchCheck.IsChecked = Properties.Settings.Default.autoAcceptMatch;
-                autoAcceptMatchCheck.Header = "Auto Accept Match";
+                autoAcceptMatchCheck.Header = AppLanguage.Get("menu_autoaccept");
                 autoAcceptMatchCheck.IsCheckable = true;
                 autoAcceptMatchCheck.Click += AutoAcceptMatchCheck_Click;
                 autoBuyArmor.IsChecked = Properties.Settings.Default.autoBuyArmor;
-                autoBuyArmor.Header = "Auto Buy Armor";
+                autoBuyArmor.Header = AppLanguage.Get("menu_autobuyarmor");
                 autoBuyArmor.IsCheckable = true;
                 autoBuyArmor.Click += AutoBuyArmor_Click;
                 autoBuyDefuseKit.IsChecked = Properties.Settings.Default.autoBuyDefuseKit;
-                autoBuyDefuseKit.Header = "Auto Buy Defuse Kit";
+                autoBuyDefuseKit.Header = AppLanguage.Get("menu_autobuydefuse");
                 autoBuyDefuseKit.IsCheckable = true;
                 autoBuyDefuseKit.Click += AutoBuyDefuseKit_Click;
                 preferArmorCheck.IsChecked = Properties.Settings.Default.preferArmor;
-                preferArmorCheck.Header = "Prefer armor";
+                preferArmorCheck.Header = AppLanguage.Get("menu_preferarmor");
                 preferArmorCheck.IsCheckable = true;
                 preferArmorCheck.Click += PreferArmorCheck_Click;
                 autoReloadCheck.IsChecked = Properties.Settings.Default.autoReload;
-                autoReloadCheck.Header = "Enabled";
+                autoReloadCheck.Header = AppLanguage.Get("menu_enabled");
                 autoReloadCheck.IsCheckable = true;
                 autoReloadCheck.Click += AutoReloadCheck_Click;
                 debugMenu.Items.Add(saveFramesDebug);
@@ -243,6 +248,7 @@ namespace CSAuto
                 automation.Items.Add(autoPauseResumeSpotify);
                 options.Items.Add(startUpCheck);
                 options.Items.Add(autoCheckForUpdates);
+                options.Items.Add(languageMenu);
                 discordMenu.Items.Add(enableDiscordRPC);
                 mobileMenu.Items.Add(enableMobileApp);
                 mobileMenu.Items.Add(enterMobileIpAddress);
@@ -262,8 +268,30 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error ocurred\n'{ex.Message}'\nTry to download the latest version from github.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
+            }
+        }
+
+        private static void GenerateLanguages(MenuItem languageMenu)
+        {
+            foreach(string language in Properties.Settings.Default.languages)
+            {
+                RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage};
+                rb.Checked += (sender, args) =>
+                {
+                    Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
+                    Properties.Settings.Default.Save();
+                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartforlanguage"), AppLanguage.Get("title_restartforlanguage"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (restart == MessageBoxResult.OK)
+                    {
+                        Console.WriteLine(Assembly.GetExecutingAssembly().Location);
+                        Process.Start(Assembly.GetExecutingAssembly().Location);
+                        Application.Current.Shutdown();
+                    }
+                };
+                rb.Tag = language;
+                languageMenu.Items.Add(rb);
             }
         }
 
@@ -341,12 +369,12 @@ namespace CSAuto
                 if (latestVersion == VER)
                 {
                     Log.WriteLine("Latest version installed");
-                    MessageBox.Show("You have the latest version!", "Check for updates (CSAuto)", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(AppLanguage.Get("msgbox_latestversion"), AppLanguage.Get("title_update"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
-                    MessageBoxResult result = MessageBox.Show($"Found newer verison ({latestVersion}) would you like to download it?", "Check for updates (CSAuto)", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    MessageBoxResult result = MessageBox.Show($"{AppLanguage.Get("msgbox_newerversion1")} ({latestVersion}) {AppLanguage.Get("msgbox_newerversion2")}", AppLanguage.Get("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
                     {
                         Log.WriteLine("Downloading latest version");
@@ -357,7 +385,7 @@ namespace CSAuto
             catch (Exception ex)
             {
                 Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
-                MessageBox.Show($"Couldn't check for updates,Try again in an hour\n'{ex.Message}'", "Check for updates (CSAuto)", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{AppLanguage.Get("error_update")}\n'{ex.Message}'", AppLanguage.Get("title_update"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return Task.CompletedTask;
@@ -574,7 +602,7 @@ namespace CSAuto
                     $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" :
                     $"{GameState.Match.CTScore} [CT] ({phase}) {GameState.Match.TScore} [T]";
                 discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
-                discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
+                discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 /* maybe add in the feature join lobby
                 discordPresence.joinSecret = "dsadasdsad";
                 discordPresence.partyMax = 5;
@@ -1036,7 +1064,7 @@ namespace CSAuto
                     autoPauseResumeSpotify.IsEnabled = false;
                     discordMenu.IsEnabled = false;
                 }
-                MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{ex.Message}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1057,7 +1085,7 @@ namespace CSAuto
                 else
                 {
                     Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
-                    MessageBoxResult result = MessageBox.Show($"Found newer verison ({latestVersion}) would you like to download it?", "Check for updates (CSAuto)", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    MessageBoxResult result = MessageBox.Show($"{AppLanguage.Get("msgbox_newerversion1")} ({latestVersion}) {AppLanguage.Get("msgbox_newerversion2")}", AppLanguage.Get("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
                     {
                         Log.WriteLine("Downloading latest version");
