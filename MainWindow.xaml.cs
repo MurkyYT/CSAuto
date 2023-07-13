@@ -298,7 +298,7 @@ namespace CSAuto
         private void EnterMobileIpAddress_Click(object sender, RoutedEventArgs e)
         {
             string res = "";
-            if (InputBox.Show("Mobile Phone Ip Address", "Enter the ip address you see in the app:", ref res) == System.Windows.Forms.DialogResult.OK) 
+            if (InputBox.Show(AppLanguage.Get("inputtitle_mobileip"), AppLanguage.Get("inputtext_mobileip"), ref res) == System.Windows.Forms.DialogResult.OK) 
             { 
                 Properties.Settings.Default.phoneIpAddress = res; 
                 Properties.Settings.Default.Save();
