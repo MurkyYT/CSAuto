@@ -282,7 +282,7 @@ namespace CSAuto
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
                     Properties.Settings.Default.Save();
-                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartforlanguage"), AppLanguage.Get("title_restartforlanguage"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
                     if (restart == MessageBoxResult.OK)
                     {
                         Console.WriteLine(Assembly.GetExecutingAssembly().Location);
