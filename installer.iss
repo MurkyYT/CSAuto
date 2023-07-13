@@ -22,6 +22,7 @@ OutputBaseFilename={#NAME}{#VER}_installer
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile=Icons\main.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
