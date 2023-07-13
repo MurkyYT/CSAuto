@@ -73,7 +73,7 @@ namespace CSAuto
             ["menu_language"] = "Язык",
             ["menu_mobile"] = "Мобильный Компаньон",
             ["menu_exit"] = "Выход",
-            ["menu_automation"] = "Аутомация",
+            ["menu_automation"] = "Автоматизация",
             ["menu_options"] = "Настройки",
             ["menu_opendebug"] = "Открыть окно отладки",
             ["menu_checkforupdates"] = "Проверить обновления",
