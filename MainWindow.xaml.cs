@@ -283,7 +283,7 @@ namespace CSAuto
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
                     Properties.Settings.Default.Save();
-                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartforlanguage"), AppLanguage.Get("title_restartforlanguage"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
                     if (restart == MessageBoxResult.OK)
                     {
                         Console.WriteLine(Assembly.GetExecutingAssembly().Location);
@@ -299,7 +299,7 @@ namespace CSAuto
         private void EnterMobileIpAddress_Click(object sender, RoutedEventArgs e)
         {
             string res = "";
-            if (InputBox.Show("Mobile Phone Ip Address", "Enter the ip address you see in the app:", ref res) == System.Windows.Forms.DialogResult.OK) 
+            if (InputBox.Show(AppLanguage.Get("inputtitle_mobileip"), AppLanguage.Get("inputtext_mobileip"), ref res) == System.Windows.Forms.DialogResult.OK) 
             { 
                 Properties.Settings.Default.phoneIpAddress = res; 
                 Properties.Settings.Default.Save();

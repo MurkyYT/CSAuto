@@ -25,6 +25,12 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
+## Installation
+
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
+    alt="Get it on GitHub"
+    height="80">](https://github.com/murkyyt/csauto/releases)
+
 ### FAQ
 * The app couldn't set the launch options, what to do?
   - Follow this instructions
