@@ -21,5 +21,10 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
 ### Suggestions
-*If you have any suggestions you can create an issue with the suggestion in it*  
+*If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
+<h1 align="center">Contributers</h1>
+<p align="center">    
+  <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
+  <!-- more links here -->
+</p>
