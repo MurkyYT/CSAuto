@@ -4,6 +4,11 @@
   <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version" alt="Latest Version">
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads" alt="Total Downloads">
 </p>
+<h1 align="center">Contributers</h1>
+<p align="center">    
+  <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
+  <!-- more links here -->
+</p>
 
 <h1 align="center">Description</h1>
 Have you ever started searching for a game in CS2 went for a bit, and see that you missed the accept button?  
@@ -31,8 +36,11 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 ### Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
-<h1 align="center">Contributers</h1>
-<p align="center">    
-  <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
-  <!-- more links here -->
-</p>
+## Development
+
+### Building the app
+
+1. Install Visual Studio 2022 with C# and Xamarin.
+2. Clone the repository and open the solution in Visual Studio 2022
+3. Build the app
+4. If you want the installer you can run the *installer.iss* file, after which an *Ouput* folder will appear with the installer inside
