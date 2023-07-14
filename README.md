@@ -4,6 +4,10 @@
   <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version" alt="Latest Version">
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads" alt="Total Downloads">
 </p>
+<p align="center">
+  <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/lang-en-red.svg"></a>
+  <a href="https://github.com/MurkyYT/CSAuto/blob/master/README_ru.md"><img src="https://img.shields.io/badge/lang-ru-yellow.svg"></a>
+</p>
 <h1 align="center">Contributers</h1>
 <p align="center">    
   <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
@@ -26,13 +30,12 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
 ## Installation
+<p align="center">    
+  <a href="https://github.com/murkyyt/csauto/releases"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="80" alt="Get On Github"></a>
+</p>
 
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
-    alt="Get it on GitHub"
-    height="80">](https://github.com/murkyyt/csauto/releases)
-
-### FAQ
-* How to connect to the mobile app
+## FAQ
+### **How to connect to the mobile app**
   1. Make sure you have installed the app on your phone
   2. Make sure you are connected to the same network
   3. In the mobile app start the server (and allow ignoring battery optimization)
@@ -40,7 +43,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   5. Go again to the 'Mobile App' menu and press 'Enter IP address'
   6. In the input box that appeared, enter the IP address you see in the notification on the phone
   7. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online' 
-### Suggestions
+## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
 ## Development
