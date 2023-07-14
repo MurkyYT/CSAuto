@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define NAME "CSAuto"
-#define VER "1.0.8"
+#define VER "1.0.9"
 #define EXE_NAME "CSAuto.exe"
 #define InstallPath "C:\Program Files (x86)\"
 
