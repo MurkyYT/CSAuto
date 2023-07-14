@@ -8,7 +8,7 @@
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/lang-en-red.svg"></a>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README_ru.md"><img src="https://img.shields.io/badge/lang-ru-yellow.svg"></a>
 </p>
-<h1 align="center">Contributers</h1>
+<h1 align="center">Contributors</h1>
 <p align="center">    
   <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
   <!-- more links here -->
