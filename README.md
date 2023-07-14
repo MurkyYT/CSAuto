@@ -30,6 +30,16 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
     alt="Get it on GitHub"
     height="80">](https://github.com/murkyyt/csauto/releases)
+
+### FAQ
+* How to connect to the mobile app
+  1. Make sure you have installed the app on your phone
+  2. Make sure you are connected to the same network
+  3. In the mobile app start the server (and allow ignoring battery optimization)
+  4. Go to the desktop app, in the 'Mobile App' menu and make sure it is enabled
+  5. Go again to the 'Mobile App' menu and press 'Enter IP address'
+  6. In the input box that appeared, enter the IP address you see in the notification on the phone
+  7. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online' 
 ### Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
