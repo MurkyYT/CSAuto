@@ -18,7 +18,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 PrivilegesRequired=admin
 ;PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename={#NAME}{#VER}_installer
+OutputBaseFilename={#NAME}_Installer
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
