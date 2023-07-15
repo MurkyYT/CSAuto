@@ -32,11 +32,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "CSAuto\bin\Release\CSAuto.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "CSAuto\bin\Release\discord-rpc-w32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "CSAuto\bin\Release\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "CSAuto\bin\Release\System.Memory.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "CSAuto\bin\Release\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "CSAuto\bin\Release\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
