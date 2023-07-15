@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto", "CSAuto.csproj", "{BD49B7AC-EE56-40B8-B35D-F0F0B88626D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto", "CSAuto\CSAuto.csproj", "{BD49B7AC-EE56-40B8-B35D-F0F0B88626D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto_Mobile", "CSAuto_Mobile\CSAuto_Mobile.csproj", "{D19ED752-CE9E-43A0-BC8B-05F1B5B845BC}"
 EndProject
