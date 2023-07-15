@@ -60,6 +60,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 ### Building the app
 
 1. Install Visual Studio 2022 with C# and Xamarin.
-2. Clone the repository and open the solution in Visual Studio 2022
-3. Build the app
-4. If you want the installer you can run the *installer.iss* file, after which an *Ouput* folder will appear with the installer inside
+2. Install Inno Setup Compiler.
+3. Clone the repository and open the solution in Visual Studio 2022
+4. Build the app
+5. If you want the installer you can run the compile.bat
