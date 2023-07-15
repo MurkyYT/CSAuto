@@ -737,7 +737,7 @@ namespace CSAuto
         {
             try
             {
-                Process[] prcs = Process.GetProcessesByName("csgo");
+                Process[] prcs = Process.GetProcessesByName("cs2");
                 if (csProcess == null && prcs.Length > 0)
                 {
                     csProcess = prcs[0];
