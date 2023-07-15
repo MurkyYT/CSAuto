@@ -51,6 +51,7 @@ namespace CSAuto
         const string IN_LOBBY_STATE = "Chilling in lobby";
         const float ACCEPT_BUTTON_DELAY = 20;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
+        const int MIN_AMOUNT_OF_PIXELS_TO_ACCEPT = 5;
         readonly string[] AVAILABLE_MAP_ICONS;
         /// <summary>
         /// Publics
@@ -113,7 +114,6 @@ namespace CSAuto
         Phase? roundState;
         Weapon weapon;
         bool acceptedGame = false;
-
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -917,8 +917,8 @@ namespace CSAuto
                     Color pixelColor = bitmap.GetPixel(0, y);
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
-                        count++;
-                        if (count >= 1) /*
+                        
+                        if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                          * just in case the program finds the 0:20 timer tick
                                          * didnt happen for a while but can happen still
                                          * happend while trying to create a while loop to search for button
@@ -936,6 +936,7 @@ namespace CSAuto
                             acceptedGame = true;
                             acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                         }
+                        count++;
                     }
                 }
             }
