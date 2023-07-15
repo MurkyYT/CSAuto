@@ -22,6 +22,7 @@ namespace CSAuto_Mobile
         public const int ACCEPTED_MATCH_NOTIFICATION_ID = 4;
         public const int SOCKET_EXCEPTION_NOTIFICATION_ID = 5;
         public const int DISPOSED_EXCEPTION_NOTIFICATION_ID = 6;
+        public const int CRASHED_NOTIFICATION_ID = 6;
         public const string SERVICE_STARTED_KEY = "has_service_been_started";
         public const string BROADCAST_MESSAGE_KEY = "broadcast_message";
         public const string NOTIFICATION_BROADCAST_ACTION = "ServicesDemo3.Notification.Action";
@@ -29,6 +30,7 @@ namespace CSAuto_Mobile
         public const string LOADED_ON_MAP_CHANNEL_ID = "LOADEDCHANNELID";
         public const string ACCEPTED_MATCH_CHANNEL = "ACCEPTEDCHANNELID";
         public const string LOADED_TO_LOBBY_CHANNEL = "LOBBYDCHANNELID";
+        public const string CRASHED_CHANNEL = "CRASHEDCHANNELID";
 
         public const string ACTION_START_SERVICE = "ServicesDemo3.action.START_SERVICE";
         public const string ACTION_STOP_SERVICE = "ServicesDemo3.action.STOP_SERVICE";
