@@ -949,22 +949,31 @@ namespace CSAuto
                     bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
                 }
                 bool found = false;
+                int count = 0;
                 for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
                 {
                     Color pixelColor = bitmap.GetPixel(0, y);
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
-                        var clickpoint = new Point(
-                            csgoResolution.X / 2,
-                            y);
-                        int X = clickpoint.X;
-                        int Y = clickpoint.Y;
-                        Log.WriteLine($"Found accept button at X:{X} Y:{Y}",caller:"AutoAcceptMatch");
-                        SendMessageToServer("<ACP>Accepted a match!");
-                        LeftMouseClick(X, Y);
-                        found = true;
-                        acceptedGame = true;
-                        acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                        count++;
+                        if (count >= 1) /*
+                                         * just in case the program finds the 0:20 timer tick
+                                         * didnt happen for a while but can happen still
+                                         * happend while trying to create a while loop to search for button
+                                         */
+                        {
+                            var clickpoint = new Point(
+                                csgoResolution.X / 2,
+                                y);
+                            int X = clickpoint.X;
+                            int Y = clickpoint.Y;
+                            Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
+                            SendMessageToServer("<ACP>Accepted a match!");
+                            LeftMouseClick(X, Y);
+                            found = true;
+                            acceptedGame = true;
+                            acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                        }
                     }
                 }
             }
