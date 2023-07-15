@@ -39,6 +39,7 @@ namespace Murky.Utils
                 Replace("%message%", lines.ToString()).ToString();
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
+            Debug.WriteLine(lines);
             if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
@@ -46,7 +47,6 @@ namespace Murky.Utils
                 try
                 {
                     System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
-                    Debug.Write(lines);
                     file.Write(lines);
                     file.Close();
 
@@ -64,6 +64,7 @@ namespace Murky.Utils
                 Replace("%message%", lines.ToString()).ToString();
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
+            Debug.WriteLine(lines);
             if (CSAuto.Properties.Settings.Default.saveLogs)
             {
                 VerifyDir();
@@ -71,7 +72,6 @@ namespace Murky.Utils
                 try
                 {
                     System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
-                    Debug.WriteLine(lines);
                     file.WriteLine(lines);
                     file.Close();
 
