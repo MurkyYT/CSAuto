@@ -77,6 +77,11 @@ namespace CSAuto
         readonly MenuItem autoPauseResumeSpotify = new MenuItem();
         readonly MenuItem enableDiscordRPC = new MenuItem();
         readonly MenuItem enableMobileApp = new MenuItem();
+        readonly MenuItem acceptedNotification = new MenuItem();
+        readonly MenuItem mapNotification = new MenuItem();
+        readonly MenuItem lobbyNotification = new MenuItem();
+        readonly MenuItem connectedNotification = new MenuItem();
+        readonly MenuItem crashedNotification = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = AppLanguage.Get("menu_autobuy")
@@ -101,18 +106,19 @@ namespace CSAuto
         /// <summary>
         /// Members
         /// </summary>
-        Point csgoResolution = new Point();
+        Point csResolution = new Point();
         GameState GameState = new GameState(null);
         int frame = 0;
-        bool csgoRunning = false;
+        bool csRunning = false;
         bool inGame = false;
-        bool csgoActive = false;
+        bool csActive = false;
         bool discordRPCON = false;
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
         Weapon weapon;
         bool acceptedGame = false;
+        Process csProcess = null;
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -135,6 +141,10 @@ namespace CSAuto
                 MenuItem debugMenu = new MenuItem
                 {
                     Header = AppLanguage.Get("menu_debug")
+                };
+                MenuItem mobileNotificationsMenu = new MenuItem
+                {
+                    Header = AppLanguage.Get("menu_notifications")
                 };
                 MenuItem languageMenu = new MenuItem
                 {
@@ -182,6 +192,26 @@ namespace CSAuto
                     Header = AppLanguage.Get("menu_enterip")
                 };
                 enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
+                acceptedNotification.IsChecked = Properties.Settings.Default.acceptedNotification;
+                acceptedNotification.Header = AppLanguage.Get("menu_acceptednotification");
+                acceptedNotification.IsCheckable = true;
+                acceptedNotification.Click += AcceptedNotification_Click;
+                mapNotification.IsChecked = Properties.Settings.Default.mapNotification;
+                mapNotification.Header = AppLanguage.Get("menu_mapnotification");
+                mapNotification.IsCheckable = true;
+                mapNotification.Click += MapNotification_Click;
+                lobbyNotification.IsChecked = Properties.Settings.Default.lobbyNotification;
+                lobbyNotification.Header = AppLanguage.Get("menu_lobbynotification");
+                lobbyNotification.IsCheckable = true;
+                lobbyNotification.Click += LobbyNotification_Click;
+                connectedNotification.IsChecked = Properties.Settings.Default.connectedNotification;
+                connectedNotification.Header = AppLanguage.Get("menu_connectednotification");
+                connectedNotification.IsCheckable = true;
+                connectedNotification.Click += ConnectedNotification_Click;
+                crashedNotification.IsChecked = Properties.Settings.Default.crashedNotification;
+                crashedNotification.Header = AppLanguage.Get("menu_crashednotification");
+                crashedNotification.IsCheckable = true;
+                crashedNotification.Click += CrashedNotification_Click;
                 enableDiscordRPC.IsChecked = Properties.Settings.Default.enableDiscordRPC;
                 enableDiscordRPC.Header = AppLanguage.Get("menu_discordrpc");
                 enableDiscordRPC.IsCheckable = true;
@@ -234,6 +264,11 @@ namespace CSAuto
                 autoReloadCheck.Header = AppLanguage.Get("menu_enabled");
                 autoReloadCheck.IsCheckable = true;
                 autoReloadCheck.Click += AutoReloadCheck_Click;
+                mobileNotificationsMenu.Items.Add(acceptedNotification);
+                mobileNotificationsMenu.Items.Add(mapNotification);
+                mobileNotificationsMenu.Items.Add(lobbyNotification);
+                mobileNotificationsMenu.Items.Add(connectedNotification);
+                mobileNotificationsMenu.Items.Add(crashedNotification);
                 debugMenu.Items.Add(saveFramesDebug);
                 debugMenu.Items.Add(saveLogsCheck);
                 debugMenu.Items.Add(openDebugWindow);
@@ -252,6 +287,7 @@ namespace CSAuto
                 discordMenu.Items.Add(enableDiscordRPC);
                 mobileMenu.Items.Add(enableMobileApp);
                 mobileMenu.Items.Add(enterMobileIpAddress);
+                mobileMenu.Items.Add(mobileNotificationsMenu);
                 exitcm.Items.Add(about);
                 exitcm.Items.Add(debugMenu);
                 exitcm.Items.Add(new Separator());
@@ -271,6 +307,36 @@ namespace CSAuto
                 MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void CrashedNotification_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.crashedNotification = crashedNotification.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void ConnectedNotification_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.connectedNotification = connectedNotification.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void LobbyNotification_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.lobbyNotification = lobbyNotification.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void MapNotification_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.mapNotification = mapNotification.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void AcceptedNotification_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.acceptedNotification = acceptedNotification.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private static void GenerateLanguages(MenuItem languageMenu)
@@ -302,7 +368,8 @@ namespace CSAuto
             { 
                 Properties.Settings.Default.phoneIpAddress = res; 
                 Properties.Settings.Default.Save();
-                SendMessageToServer($"<CNT>Computer {Environment.MachineName} ({GetLocalIPAddress()}) is online");
+                if(Properties.Settings.Default.connectedNotification)
+                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
             }
         }
 
@@ -531,7 +598,8 @@ namespace CSAuto
                     discordPresence.details = $"{GameState.Match.Mode} - {GameState.Match.Map}";
                     discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                     discordPresence.largeImageText = GameState.Match.Map;
-                    SendMessageToServer($"<MAP>Loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
+                    if(Properties.Settings.Default.mapNotification)
+                        SendMessageToServer($"<MAP>{AppLanguage.Get("server_loadedmap")} {GameState.Match.Map} {AppLanguage.Get("server_mode")} {GameState.Match.Mode}");
                 }
                 else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
                 {
@@ -543,14 +611,15 @@ namespace CSAuto
                     discordPresence.largeImageText = "Menu";
                     discordPresence.smallImageKey = null;
                     discordPresence.smallImageText = null;
-                    SendMessageToServer("<LBY>Loaded in lobby!");
+                    if (Properties.Settings.Default.lobbyNotification)
+                        SendMessageToServer($"<LBY>{AppLanguage.Get("server_loadedlobby")}");
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
                 roundState = currentRoundState;
                 weapon = currentWeapon;
                 inGame = GameState.Match.Map != null;
-                if (csgoActive && !GameState.IsSpectating)
+                if (csActive && !GameState.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
                     {
@@ -595,7 +664,7 @@ namespace CSAuto
                 Log.WriteLine("DiscordRpc.Shutdown();");
                 discordRPCON = false;
             }
-            if (csgoRunning && inGame)
+            if (csRunning && inGame)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
                 discordPresence.state = GameState.Player.Team == Team.T ?
@@ -610,7 +679,7 @@ namespace CSAuto
                 discordPresence.partySize = 1;
                 */
             }
-            else if (discordRPCON && !csgoRunning)
+            else if (discordRPCON && !csRunning)
             {
                 DiscordRpc.Shutdown();
                 discordRPCON = false;
@@ -667,19 +736,20 @@ namespace CSAuto
         {
             try
             {
-                uint pid = 0;
                 Process[] prcs = Process.GetProcessesByName("csgo");
-                csgoRunning = prcs.Length > 0;
-                if (csgoRunning)
+                if (csProcess == null && prcs.Length > 0)
                 {
-                    pid = (uint)prcs[0].Id;
+                    csProcess = prcs[0];
+                    csRunning = true;
+                    csProcess.Exited += CsProcess_Exited;
+                    csProcess.EnableRaisingEvents = true;
                     if (!ServerRunning)
                     {
                         Log.WriteLine("Starting GSI Server");
                         StartGSIServer();
                     }
                 }
-                else
+                else if(!csRunning)
                 {
                     if (discordRPCON)
                     {
@@ -699,10 +769,10 @@ namespace CSAuto
                         SendMessageToServer("<CLS>");
                     }
                 }
-                csgoActive = IsForegroundProcess(pid);
-                if (csgoActive)
+                csActive = IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
+                if (csActive)
                 {
-                    csgoResolution = new Point(
+                    csResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
@@ -717,6 +787,16 @@ namespace CSAuto
             }
             GC.Collect();
         }
+
+        private void CsProcess_Exited(object sender, EventArgs e)
+        {
+            csRunning = false;
+            Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
+            if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
+                SendMessageToServer($"<CRS>{AppLanguage.Get("server_gamecrash")}");
+            csProcess = null;
+        }
+
         private void AutoBuyArmor()
         {
             if (!Properties.Settings.Default.autoBuyArmor || lastActivity == Activity.Menu)
@@ -933,15 +1013,15 @@ namespace CSAuto
         }
         private async Task AutoAcceptMatchAsync()
         {
-            using (Bitmap bitmap = new Bitmap(1, csgoResolution.Y))
+            using (Bitmap bitmap = new Bitmap(1, csResolution.Y))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
                     g.CopyFromScreen(new Point(
-                        csgoResolution.X / 2,
+                        csResolution.X / 2,
                         0),
                         Point.Empty,
-                        new System.Drawing.Size(1, csgoResolution.Y));
+                        new System.Drawing.Size(1, csResolution.Y));
                 }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
@@ -963,12 +1043,13 @@ namespace CSAuto
                                          */
                         {
                             var clickpoint = new Point(
-                                csgoResolution.X / 2,
+                                csResolution.X / 2,
                                 y);
                             int X = clickpoint.X;
                             int Y = clickpoint.Y;
                             Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
-                            SendMessageToServer("<ACP>Accepted a match!");
+                            if (Properties.Settings.Default.acceptedNotification)
+                                SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
                             acceptedGame = true;
@@ -1062,7 +1143,8 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
-                SendMessageToServer($"<CNT>Computer {Environment.MachineName} ({GetLocalIPAddress()}) is online");
+                if (Properties.Settings.Default.connectedNotification)
+                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
             }
             catch (Exception ex)
             {

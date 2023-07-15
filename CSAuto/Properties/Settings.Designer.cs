@@ -214,5 +214,65 @@ namespace CSAuto.Properties {
                 this["currentLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool acceptedNotification {
+            get {
+                return ((bool)(this["acceptedNotification"]));
+            }
+            set {
+                this["acceptedNotification"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool mapNotification {
+            get {
+                return ((bool)(this["mapNotification"]));
+            }
+            set {
+                this["mapNotification"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool lobbyNotification {
+            get {
+                return ((bool)(this["lobbyNotification"]));
+            }
+            set {
+                this["lobbyNotification"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool connectedNotification {
+            get {
+                return ((bool)(this["connectedNotification"]));
+            }
+            set {
+                this["connectedNotification"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool crashedNotification {
+            get {
+                return ((bool)(this["crashedNotification"]));
+            }
+            set {
+                this["crashedNotification"] = value;
+            }
+        }
     }
 }

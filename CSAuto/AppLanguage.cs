@@ -64,6 +64,19 @@ namespace CSAuto
             ["error_update"] = "Couldn't check for updates. Try again later",
             ["error_startup1"] = "An error ocurred",
             ["error_startup2"] = "Try to download the latest version from github.",
+            ["menu_notifications"] = "Notifications",
+            ["menu_acceptednotification"] = "Accepted match",
+            ["menu_mapnotification"] = "Loaded on map",
+            ["menu_lobbynotification"] = "Loaded in lobby",
+            ["menu_connectednotification"] = "Computer connected",
+            ["menu_crashednotification"] = "Game crashed",
+            ["server_computer"] = "Computer",
+            ["server_online"] = "is online",
+            ["server_loadedmap"] = "Loaded on map",
+            ["server_mode"] = "in mode",
+            ["server_loadedlobby"] = "Loaded in lobby!",
+            ["server_gamecrash"] = "The game crashed!",
+            ["server_acceptmatch"] = "Accepted a match!",
         };
         static readonly Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
@@ -106,6 +119,19 @@ namespace CSAuto
             ["error_update"] = "Не получилось проверить обновления. Попробуйте позже",
             ["error_startup1"] = "Случилась ошибка",
             ["error_startup2"] = "Попытайтесь скачать последнюю версию с GitHub.",
+            ["menu_notifications"] = "Уведомления",
+            ["menu_acceptednotification"] = "Принял матч",
+            ["menu_mapnotification"] = "Загрузился на карте",
+            ["menu_lobbynotification"] = "Загрузился в главном меню",
+            ["menu_connectednotification"] = "Компьютер подключился",
+            ["menu_crashednotification"] = "Игра вылетела",
+            ["server_computer"] = "Компьютер",
+            ["server_online"] = "в сети",
+            ["server_loadedmap"] = "Загрузился на карте",
+            ["server_mode"] = "в режиме",
+            ["server_loadedlobby"] = "Загрузился в главном меню!",
+            ["server_gamecrash"] = "Игра вылетела!",
+            ["server_acceptmatch"] = "Принял матч!",
         };
     }
 }

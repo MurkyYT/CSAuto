@@ -109,7 +109,7 @@ namespace CSAuto_Mobile
                     var eom = "<|EOM|>";
                     if (message.IndexOf(eom) > -1 /* is end of message */)
                     {
-                        string clearResponse = message.Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
+                        string clearResponse = message.Replace("<CRS>","").Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
                         switch (message.Substring(0, "<XXX>".Length))
                         {
                             case "<ACP>":
@@ -123,6 +123,9 @@ namespace CSAuto_Mobile
                                 break;
                             case "<CNT>":
                                 ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
+                                break;
+                            case "<CRS>":
+                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CRASHED_NOTIFICATION_ID, Constants.CRASHED_CHANNEL);
                                 break;
                             case "<GSI>":
                                 if (MainActivity.Active)
@@ -285,6 +288,15 @@ namespace CSAuto_Mobile
             name = "Back in lobby";
             description = "No description";
             channel = new NotificationChannel(Constants.LOADED_TO_LOBBY_CHANNEL, name, NotificationImportance.High)
+            {
+                Description = description
+            };
+
+            notificationManager.CreateNotificationChannel(channel);
+
+            name = "Game crahsed";
+            description = "No description";
+            channel = new NotificationChannel(Constants.CRASHED_CHANNEL, name, NotificationImportance.High)
             {
                 Description = description
             };
