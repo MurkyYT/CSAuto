@@ -22,7 +22,7 @@ OutputBaseFilename={#NAME}{#VER}_installer
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile=Icons\main.ico
+SetupIconFile=CSAuto\Icons\main.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -31,12 +31,12 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "bin\Release\CSAuto.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\discord-rpc-w32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\System.Memory.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\CSAuto.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\discord-rpc-w32.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\System.Memory.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
