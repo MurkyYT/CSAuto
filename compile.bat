@@ -10,7 +10,7 @@ msbuild CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=Rele
 @echo Cleaning csauto_mobile project...
 @echo Cleaned csauto_mobile project
 @echo Compiling csauto_mobile project...
-msbuild  CSAuto_Mobile\CSAuto_Mobile.csproj /t:PackageForAndroid /p:Configuration=Release > nul
+msbuild  CSAuto_Mobile\CSAuto_Mobile.csproj /verbosity:normal /t:Rebuild /t:PackageForAndroid /t:SignAndroidPackage /p:Configuration=Release > nul
 @echo Compiled csauto_mobile project
 @echo ------------------------------------------------------------------
 @echo Compiling the installer...
@@ -18,7 +18,7 @@ ISCC.exe installer.iss > nul
 @echo Compiled the installer
 @echo ------------------------------------------------------------------
 @echo Copying the apk...
-echo f | xcopy /s /y CSAuto_Mobile\bin\Release\com.murky.csauto_mobile.apk Output\CSAuto_Android.apk > nul
+echo f | xcopy /s /y CSAuto_Mobile\bin\Release\com.murky.csauto_mobile-Signed.apk Output\CSAuto_Android.apk > nul
 @echo Copied csauto_mobile apk
 @echo ------------------------------------------------------------------
 @echo Zipping csauto...
