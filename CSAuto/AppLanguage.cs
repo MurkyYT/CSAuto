@@ -60,7 +60,7 @@ namespace CSAuto
             ["msgbox_latestversion"] = "You have the latest version!",
             ["msgbox_newerversion1"] = "Found newer verison",
             ["msgbox_newerversion2"] = "would you like to download it?",
-            ["msgbox_restartneeded"] = "You must restart the programm to apply these changes",
+            ["msgbox_restartneeded"] = "You must restart the program to apply these changes",
             ["error_update"] = "Couldn't check for updates. Try again later",
             ["error_startup1"] = "An error ocurred",
             ["error_startup2"] = "Try to download the latest version from github.",
