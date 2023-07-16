@@ -18,10 +18,11 @@ namespace CSAuto
                         return English[category];
                     case "language_russian":
                         return Russian[category];
+                    default:
+                        return English[category];
                 }
             }
-            catch { }
-            return category;
+            catch (KeyNotFoundException){ return English[category]; }
         }
         static readonly Dictionary<string, string> English = new Dictionary<string, string>()
         {
