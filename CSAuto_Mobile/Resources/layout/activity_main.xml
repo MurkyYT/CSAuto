@@ -49,6 +49,15 @@
         android:id="@+id/state"
         android:textColor="#ff000000"
         tools:ignore="HardcodedText,HardcodedColor" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        android:id="@+id/bomb_state"
+        android:textColor="#ff000000"
+        tools:ignore="HardcodedText,HardcodedColor" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="2dp"

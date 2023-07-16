@@ -109,7 +109,7 @@ namespace CSAuto_Mobile
                     var eom = "<|EOM|>";
                     if (message.IndexOf(eom) > -1 /* is end of message */)
                     {
-                        string clearResponse = message.Replace("<CRS>","").Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
+                        string clearResponse = message.Replace("<BMB>","").Replace("<CRS>","").Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
                         switch (message.Substring(0, "<XXX>".Length))
                         {
                             case "<ACP>":
@@ -127,6 +127,16 @@ namespace CSAuto_Mobile
                             case "<CRS>":
                                 ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CRASHED_NOTIFICATION_ID, Constants.CRASHED_CHANNEL);
                                 break;
+                            case "<BMB>":
+                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.BOMB_NOTIFICATION_ID, Constants.BOMB_CHANNEL,NotificationPriority.Default);
+                                if (MainActivity.Active)
+                                {
+                                    MainActivity.Instance.RunOnUiThread(() =>
+                                    {
+                                        MainActivity.Instance.bombState.Text = clearResponse;
+                                    });
+                                }
+                                break;
                             case "<GSI>":
                                 if (MainActivity.Active)
                                     ParseGameState(clearResponse);
@@ -138,6 +148,7 @@ namespace CSAuto_Mobile
                                     {
                                         MainActivity.Instance.state.Text = "";
                                         MainActivity.Instance.details.Text = "";
+                                        MainActivity.Instance.bombState.Text = "";
                                     });
                                 }
                                 break;
@@ -193,7 +204,7 @@ namespace CSAuto_Mobile
             return wifiManager.ConnectionInfo.IpAddress;
         }
 
-        void ShowNotification(string title,string description,int id,string channel_id)
+        void ShowNotification(string title,string description,int id,string channel_id, NotificationPriority priority= NotificationPriority.High)
         {
             var builder = new NotificationCompat.Builder(this, channel_id)
                           .SetAutoCancel(true) // Dismiss the notification from the notification area when the user clicks on it
@@ -201,7 +212,7 @@ namespace CSAuto_Mobile
                           .SetNumber(id) // Display the count in the Content Info
                           .SetSmallIcon(Resource.Mipmap.ic_launcher) // This is the icon to display
                           .SetContentText(description); // the message to display.
-            builder.SetPriority((int)NotificationPriority.High);
+            builder.SetPriority((int)priority);
             Notification notification = builder.Build();
             // Turn on sound if the sound switch is on:                 
             notification.Defaults |= NotificationDefaults.Sound;
@@ -297,6 +308,15 @@ namespace CSAuto_Mobile
             name = "Game crahsed";
             description = "No description";
             channel = new NotificationChannel(Constants.CRASHED_CHANNEL, name, NotificationImportance.High)
+            {
+                Description = description
+            };
+
+            notificationManager.CreateNotificationChannel(channel);
+
+            name = "Bomb information";
+            description = "No description";
+            channel = new NotificationChannel(Constants.BOMB_CHANNEL, name, NotificationImportance.Default)
             {
                 Description = description
             };
