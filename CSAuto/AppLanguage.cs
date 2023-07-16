@@ -80,7 +80,10 @@ namespace CSAuto
             ["menu_bombnotification"] = "Bomb information",
             ["server_timeleft"] = "Bomb seconds left:",
             ["server_bombexplode"] = "The bomb exploded",
-            ["server_bombdefuse"] = "Bomb has been defused"
+            ["server_bombdefuse"] = "Bomb has been defused",
+            ["exception_steamnotfound"] = "Couldn't find Steam Path",
+            ["exception_nonetworkadapter"] = "No network adapters with an IPv4 address in the system!",
+            ["exception_csgonotfound"] = "Couldn't find CS:GO directory"
         };
         static readonly Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
@@ -139,7 +142,10 @@ namespace CSAuto
             ["menu_bombnotification"] = "Информация о бомбы",
             ["server_timeleft"] = "До взрыва осталось: ",
             ["server_bombexplode"] = "Бомба взорвалась",
-            ["server_bombdefuse"] = "Бомба обезврежена"
+            ["server_bombdefuse"] = "Бомба обезврежена",
+            ["exception_steamnotfound"] = "Не удалось найти путь к Steam",
+            ["exception_nonetworkadapter"] = "В системе нет сетевых адаптеров с IPv4-адресом!",
+            ["exception_csgonotfound"] = "Не удалось найти папку CS:GO"
         };
     }
 }
