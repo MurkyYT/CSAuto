@@ -77,6 +77,10 @@ namespace CSAuto
             ["server_loadedlobby"] = "Loaded in lobby!",
             ["server_gamecrash"] = "The game crashed!",
             ["server_acceptmatch"] = "Accepted a match!",
+            ["menu_bombnotification"] = "Bomb information",
+            ["server_timeleft"] = "Bomb seconds left:",
+            ["server_bombexplode"] = "The bomb exploded",
+            ["server_bombdefuse"] = "Bomb has been defused"
         };
         static readonly Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
@@ -132,6 +136,10 @@ namespace CSAuto
             ["server_loadedlobby"] = "Загрузился в главном меню!",
             ["server_gamecrash"] = "Игра вылетела!",
             ["server_acceptmatch"] = "Принял матч!",
+            ["menu_bombnotification"] = "Информация о бомбы",
+            ["server_timeleft"] = "До взрыва осталось: ",
+            ["server_bombexplode"] = "Бомба взорвалась",
+            ["server_bombdefuse"] = "Бомба обезврежена"
         };
     }
 }

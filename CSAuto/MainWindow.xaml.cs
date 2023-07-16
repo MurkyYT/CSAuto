@@ -36,13 +36,13 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.9";
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
-        const string THROTTLE = "0.5";
+        const string THROTTLE = "0.0";
         const string HEARTBEAT = "10.0";
-        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "\"\r\n{\r\n\"uri\" \"http://localhost:" + PORT +
+        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + ","+DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + PORT +
             "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
@@ -51,6 +51,9 @@ namespace CSAuto
         const float ACCEPT_BUTTON_DELAY = 20;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         const int MIN_AMOUNT_OF_PIXELS_TO_ACCEPT = 5;
+        const int BOMB_SECONDS_DELAY = 2;
+        const int BOMB_SECONDS = 40 - BOMB_SECONDS_DELAY;
+        const int BOMB_TIMER_DELAY = 950;
         readonly string[] AVAILABLE_MAP_ICONS;
         /// <summary>
         /// Publics
@@ -82,6 +85,7 @@ namespace CSAuto
         readonly MenuItem lobbyNotification = new MenuItem();
         readonly MenuItem connectedNotification = new MenuItem();
         readonly MenuItem crashedNotification = new MenuItem();
+        readonly MenuItem bombNotification = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = AppLanguage.Get("menu_autobuy")
@@ -116,9 +120,12 @@ namespace CSAuto
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
+        BombState? bombState;
         Weapon weapon;
         bool acceptedGame = false;
         Process csProcess = null;
+        Thread bombTimerThread = null;
+
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -192,6 +199,10 @@ namespace CSAuto
                     Header = AppLanguage.Get("menu_enterip")
                 };
                 enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
+                bombNotification.IsChecked = Properties.Settings.Default.bombNotification;
+                bombNotification.Header = AppLanguage.Get("menu_bombnotification");
+                bombNotification.IsCheckable = true;
+                bombNotification.Click += BombNotification_Click;
                 acceptedNotification.IsChecked = Properties.Settings.Default.acceptedNotification;
                 acceptedNotification.Header = AppLanguage.Get("menu_acceptednotification");
                 acceptedNotification.IsCheckable = true;
@@ -269,6 +280,7 @@ namespace CSAuto
                 mobileNotificationsMenu.Items.Add(lobbyNotification);
                 mobileNotificationsMenu.Items.Add(connectedNotification);
                 mobileNotificationsMenu.Items.Add(crashedNotification);
+                mobileNotificationsMenu.Items.Add(bombNotification);
                 debugMenu.Items.Add(saveFramesDebug);
                 debugMenu.Items.Add(saveLogsCheck);
                 debugMenu.Items.Add(openDebugWindow);
@@ -307,6 +319,12 @@ namespace CSAuto
                 MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void BombNotification_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.bombNotification = bombNotification.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void CrashedNotification_Click(object sender, RoutedEventArgs e)
@@ -578,6 +596,7 @@ namespace CSAuto
                 Activity? activity = GameState.Player.CurrentActivity;
                 Phase? currentMatchState = GameState.Match.Phase;
                 Phase? currentRoundState = GameState.Round.Phase;
+                BombState? currentBombState = GameState.Round.Bombstate;
                 Weapon currentWeapon = GameState.Player.ActiveWeapon;
                 if (debugWind != null)
                     debugWind.UpdateText(JSON);
@@ -591,6 +610,26 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+                if(bombState == null && currentBombState == BombState.Planted && bombTimerThread == null)
+                {
+                    StartBombTimer();
+                }
+                if(bombState == BombState.Planted && currentBombState != BombState.Planted)
+                {
+                    if(bombTimerThread != null)
+                        bombTimerThread.Abort();
+                    bombTimerThread = null;
+                    switch (currentBombState)
+                    {
+                        case BombState.Defused:
+                            SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombdefuse")}");
+                            break;
+                        case BombState.Exploded:
+                            SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombexplode")}");
+                            break;
+                    }
+                    
+                }
                 if (GameState.Match.Map != null && (discordPresence.state == IN_LOBBY_STATE || discordPresence.startTimestamp == 0))
                 {
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
@@ -618,6 +657,7 @@ namespace CSAuto
                 matchState = currentMatchState;
                 roundState = currentRoundState;
                 weapon = currentWeapon;
+                bombState = currentBombState;
                 inGame = GameState.Match.Map != null;
                 if (csActive && !GameState.IsSpectating)
                 {
@@ -650,6 +690,24 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n" + ex);
             }
         }
+        private void StartBombTimer()
+        {
+            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
+            long result = ms / 1000;
+            int diff = (int)(GameState.Timestamp - result);
+            bombTimerThread = new Thread(() =>
+            {
+                for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
+                {
+                    SendMessageToServer($"<BMB>{AppLanguage.Get("server_timeleft")} {seconds}");
+                    Thread.Sleep(BOMB_TIMER_DELAY);
+                }
+                bombTimerThread = null;
+            });
+            bombTimerThread.Start();
+        }
+
         private void UpdateDiscordRPC()
         {
             if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
@@ -730,7 +788,7 @@ namespace CSAuto
                 stream.Dispose();
                 client.Close();
             }
-            catch  {   }
+            catch { }
         }
         private void TimerCallback(object sender, EventArgs e)
         {
@@ -983,7 +1041,6 @@ namespace CSAuto
 
         public const int MOUSEEVENTF_LEFTDOWN = 0x02;
         public const int MOUSEEVENTF_LEFTUP = 0x04;
-
         //This simulates a left mouse click
         public static void LeftMouseClick(int xpos, int ypos)
         {
@@ -1131,7 +1188,7 @@ namespace CSAuto
                 {
                     string[] lines = File.ReadAllLines(integrationPath);
                     string ver = lines[0].Split('v')[1].Split('"')[0].Trim();
-                    if (ver != VER)
+                    if (ver != VER+","+DEBUG_REVISION)
                     {
                         using (FileStream fs = File.Create(integrationPath))
                         {

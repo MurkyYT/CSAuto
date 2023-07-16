@@ -21,6 +21,7 @@ namespace CSAuto_Mobile
         TextView ipAdressText;
         public TextView details;
         public TextView state;
+        public TextView bombState;
         public static MainActivity Instance;
         public static bool Active = false;
         Intent startServiceIntent;
@@ -46,6 +47,7 @@ namespace CSAuto_Mobile
             outputText = FindViewById<TextView>(Resource.Id.OutputText);
             details = FindViewById<TextView>(Resource.Id.details);
             state = FindViewById<TextView>(Resource.Id.state);
+            bombState = FindViewById<TextView>(Resource.Id.bomb_state);
             ipAdressText.Text = $"Your IP Address: {new IPAddress(ip)}";
             Instance = this;
             startServiceIntent = new Intent(this, typeof(ServerService));

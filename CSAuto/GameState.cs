@@ -10,6 +10,12 @@ using static System.Windows.Forms.AxHost;
 
 namespace CSAuto
 {
+    public enum BombState
+    {
+        Planted,
+        Exploded,
+        Defused
+    }
     public enum Activity
     {
         Menu,
@@ -84,7 +90,8 @@ namespace CSAuto
             Round = new Round()
             {
                 Phase = GetRoundPhase(),
-                CurrentRound = GetRound()
+                CurrentRound = GetRound(),
+                Bombstate = GetRoundBombState()
             };
             Player = new Player()
             {
@@ -100,6 +107,29 @@ namespace CSAuto
             Player.SetWeapons(JSON);
             IsDead = Player.SteamID != MySteamID;
             IsSpectating = CheckIfSpectator();
+        }
+
+        private BombState? GetRoundBombState()
+        {
+            string[] splitStrs = JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
+            if (splitStrs.Length < 2)
+                return null;
+            string splitStr = splitStrs[1].Split('}')[0];
+            string[] bombStates = splitStr.Split(new string[] { "\"bomb\": \"" }, StringSplitOptions.None);
+            if (bombStates.Length < 2)
+                return null;
+            string bombState = bombStates[1].Split('"')[0];
+            switch (bombState)
+            {
+                case "planted":
+                    return BombState.Planted;
+                case "exploded":
+                    return BombState.Exploded;
+                case "defused":
+                    return BombState.Defused;
+                default:
+                    return null;
+            }
         }
 
         private long GetTimeStamp()
@@ -353,6 +383,7 @@ namespace CSAuto
     {
         public int CurrentRound { get; internal set; }
         public Phase? Phase { get; internal set; }
+        public BombState? Bombstate { get; internal set; }
     }
     public class Player
     {
