@@ -978,7 +978,7 @@ namespace CSAuto
         {
             string steamPath = GetSteamPath();
             if (steamPath == null)
-                throw new Exception("Couldn't find Steam Path");
+                throw new Exception(AppLanguage.Get("exception_steamnotfound")/*"Couldn't find Steam Path"*/);
             string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
 
             if (!File.Exists(pathsFile))
@@ -1154,7 +1154,7 @@ namespace CSAuto
                     return ip.ToString();
                 }
             }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
+            throw new Exception(AppLanguage.Get("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -1173,7 +1173,7 @@ namespace CSAuto
                 Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
-                    throw new Exception("Couldn't find CS:GO directory");
+                    throw new Exception(AppLanguage.Get("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
                 if (!File.Exists(integrationPath))
                 {
@@ -1205,8 +1205,8 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                if (ex.Message == "Couldn't find Steam Path"
-                    || ex.Message == "Couldn't find CS:GO directory")
+                if (ex.Message == AppLanguage.Get("exception_steamnotfound")
+                    || ex.Message == AppLanguage.Get("exception_csgonotfound"))
                 {
                     autoReloadMenu.IsEnabled = false;
                     autoBuyMenu.IsEnabled = false;
