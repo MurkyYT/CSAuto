@@ -29,6 +29,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * Auto buy armor for you or auto refill it when you have less then 70 left!
 * Auto buy defuse kit for you as a CT
 * Auto pause/resume spotify song
+* Send time left till bomb exploded to mobile! (not accurate as of right now)
 
 **Image demonstration of the menu:**  
 ![right-click-menu](menuimage.png)
