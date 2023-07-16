@@ -6,8 +6,8 @@ msbuild CSAuto\CSAuto.csproj /t:Clean /property:Configuration=Release > nul
 msbuild CSAuto\CSAuto.csproj /property:Configuration=Release > nul
 @echo Compiled csauto project
 @echo ------------------------------------------------------------------
-msbuild CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=Release > nul
 @echo Cleaning csauto_mobile project...
+msbuild CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=Release > nul
 @echo Cleaned csauto_mobile project
 @echo Compiling csauto_mobile project...
 msbuild  CSAuto_Mobile\CSAuto_Mobile.csproj /verbosity:normal /t:Rebuild /t:PackageForAndroid /t:SignAndroidPackage /p:Configuration=Release > nul
