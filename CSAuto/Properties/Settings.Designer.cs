@@ -286,5 +286,17 @@ namespace CSAuto.Properties {
                 this["bombNotification"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string steamAPIkey {
+            get {
+                return ((string)(this["steamAPIkey"]));
+            }
+            set {
+                this["steamAPIkey"] = value;
+            }
+        }
     }
 }

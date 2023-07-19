@@ -89,7 +89,7 @@ namespace Murky.Utils
             else return 0;
         }
 
-        private static string GetWebInfo(string url)
+        public static string GetWebInfo(string url)
         {
             try
             {

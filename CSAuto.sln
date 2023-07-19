@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAPIServer", "SteamAPIServer\SteamAPIServer.csproj", "{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{D19ED752-CE9E-43A0-BC8B-05F1B5B845BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D19ED752-CE9E-43A0-BC8B-05F1B5B845BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D19ED752-CE9E-43A0-BC8B-05F1B5B845BC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,6 +6,13 @@ msbuild CSAuto\CSAuto.csproj /t:Clean /property:Configuration=Release > nul
 msbuild CSAuto\CSAuto.csproj /property:Configuration=Release > nul
 @echo Compiled csauto project
 @echo ------------------------------------------------------------------
+@echo Cleaning steamapiserver project...
+msbuild SteamAPIServer\SteamAPIServer.csproj /t:Clean /property:Configuration=Release > nul
+@echo Cleaned steamapiserver project
+@echo Compiling steamapiserver project...
+msbuild SteamAPIServer\SteamAPIServer.csproj /property:Configuration=Release > nul
+@echo Compiled steamapiserver project
+@echo ------------------------------------------------------------------
 @echo Cleaning csauto_mobile project...
 msbuild CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=Release > nul
 @echo Cleaned csauto_mobile project

@@ -29,6 +29,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * ~~Auto buy armor for you or auto refill it when you have less then 70 left!~~ (GSI might not be enabled in cs2)
 * ~~Auto buy defuse kit for you as a CT~~ (GSI might not be enabled in cs2)
 * ~~Auto pause/resume spotify song~~ (GSI might not be enabled in cs2)
+* ~~Show status about cs, when you are in lobby it shows your friendcode and amount of players in lobby, when in match it shows the map, mode, score, and round phase~~ (GSI might not be enabled in cs2)
 * ~~Send time left till bomb exploded to mobile! (not accurate as of right now)~~ (GSI might not be enabled in cs2)
 
 **Image demonstration of the menu:**  
@@ -53,6 +54,12 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   3. In the general tab you have launch options at the bottom
   4. Add -gamestateintegration to the launch options
   5. Close and start the game
+### **Discord doesn't show amount of players in lobby**
+  1. Open the discord sub-menu
+  2. Press enter 'Enter Steam Web API Key'
+  3. Get your steam web api key from [here](https://steamcommunity.com/dev)
+  4. After you entered it you should have it
+  5. If you still dont have it, make sure you created a lobby by inviting someone
 ## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
