@@ -7,7 +7,7 @@
     <ProjectGuid>{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SteamAPIServer</RootNamespace>
-    <AssemblyName>SteamAPIServer</AssemblyName>
+    <AssemblyName>steamapi</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -54,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
