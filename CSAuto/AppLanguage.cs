@@ -97,7 +97,8 @@ namespace CSAuto
             ["exception_csgonotfound"] = "Couldn't find CS:GO directory",
             ["menu_entersteamkey"] = "Enter Steam Web API Key",
             ["inputtitle_steamkey"] = "Steam Web API Key",
-            ["inputtext_steamkey"] = "Please enter your Steam Web API Key"
+            ["inputtext_steamkey"] = "Please enter your Steam Web API Key",
+            ["menu_lobbycount"] = "Show players lobby count",
         };
         static readonly Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
@@ -162,7 +163,8 @@ namespace CSAuto
             ["exception_csgonotfound"] = "Не удалось найти папку CS:GO",
             ["menu_entersteamkey"] = "Ввести ключ Steam Web API",
             ["inputtitle_steamkey"] = "Ключ Steam Web API",
-            ["inputtext_steamkey"] = "Пожалуйста, введите свой ключ Steam Web API"
+            ["inputtext_steamkey"] = "Пожалуйста, введите свой ключ Steam Web API",
+            ["menu_lobbycount"] = "Показать количество игроков в лобби",
         };
     }
 }

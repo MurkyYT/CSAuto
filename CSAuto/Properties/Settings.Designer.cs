@@ -298,5 +298,17 @@ namespace CSAuto.Properties {
                 this["steamAPIkey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool enableLobbyCount {
+            get {
+                return ((bool)(this["enableLobbyCount"]));
+            }
+            set {
+                this["enableLobbyCount"] = value;
+            }
+        }
     }
 }

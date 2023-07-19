@@ -126,6 +126,7 @@ namespace CSAuto
         readonly MenuItem connectedNotification = new MenuItem();
         readonly MenuItem crashedNotification = new MenuItem();
         readonly MenuItem bombNotification = new MenuItem();
+        readonly MenuItem enableLobbyCount = new MenuItem();
         readonly MenuItem autoBuyMenu = new MenuItem
         {
             Header = AppLanguage.Get("menu_autobuy")
@@ -268,6 +269,10 @@ namespace CSAuto
             bombNotification.Header = AppLanguage.Get("menu_bombnotification");
             bombNotification.IsCheckable = true;
             bombNotification.Click += BombNotification_Click;
+            enableLobbyCount.IsChecked = Properties.Settings.Default.enableLobbyCount;
+            enableLobbyCount.Header = AppLanguage.Get("menu_lobbycount");
+            enableLobbyCount.IsCheckable = true;
+            enableLobbyCount.Click += EnableLobbyCount_Click;
             acceptedNotification.IsChecked = Properties.Settings.Default.acceptedNotification;
             acceptedNotification.Header = AppLanguage.Get("menu_acceptednotification");
             acceptedNotification.IsCheckable = true;
@@ -362,6 +367,7 @@ namespace CSAuto
             options.Items.Add(autoCheckForUpdates);
             options.Items.Add(languageMenu);
             discordMenu.Items.Add(enableDiscordRPC);
+            discordMenu.Items.Add(enableLobbyCount);
             discordMenu.Items.Add(enterSteamAPIKey);
             mobileMenu.Items.Add(enableMobileApp);
             mobileMenu.Items.Add(enterMobileIpAddress);
@@ -377,6 +383,12 @@ namespace CSAuto
             exitcm.Items.Add(checkForUpdates);
             exitcm.Items.Add(exit);
             exitcm.StaysOpen = false;
+        }
+
+        private void EnableLobbyCount_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.enableLobbyCount = enableLobbyCount.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void EnterSteamAPIKey_Click(object sender, RoutedEventArgs e)
@@ -804,13 +816,16 @@ namespace CSAuto
             }
             else if(csRunning && !inGame)
             {
-                string steamworksRes = GetLobbyInfoFromSteamworks();
-                string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
-                string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
-                string partysize = steamworksRes.Split('/')[0];
-                discordPresence.partyMax = int.Parse(partyMax);
-                discordPresence.partyId = lobbyid == "0" ? null : lobbyid;
-                discordPresence.partySize = int.Parse(partysize);
+                if (Properties.Settings.Default.enableLobbyCount)
+                {
+                    string steamworksRes = GetLobbyInfoFromSteamworks();
+                    string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
+                    string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
+                    string partysize = steamworksRes.Split('/')[0];
+                    discordPresence.partyMax = int.Parse(partyMax);
+                    discordPresence.partyId = lobbyid == "0" ? null : lobbyid;
+                    discordPresence.partySize = int.Parse(partysize);
+                }
             }
             else if (discordRPCON && !csRunning)
             {
@@ -884,9 +899,9 @@ namespace CSAuto
                         Log.WriteLine("Starting GSI Server");
                         StartGSIServer();
                     }
-                    if(steamAPIServer == null)
+                    if(steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
                     {
-                        steamAPIServer = new Process() { StartInfo = { FileName = "SteamAPIServer.exe" } };
+                        steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
                         steamAPIServer.Start();
                     }
                 }
@@ -1298,7 +1313,6 @@ namespace CSAuto
                 Visibility = Visibility.Hidden;
                 InitializeNotifyIcon();
                 InitializeTimer();
-                InitializeAPPID();
                 Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
@@ -1364,19 +1378,6 @@ namespace CSAuto
                         fs.Write(title, 0, title.Length);
                     }
                     Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
-                }
-            }
-        }
-        private void InitializeAPPID()
-        {
-            string currentDir = Directory.GetCurrentDirectory();
-            string path = currentDir + "\\steam_appid.txt";
-            if (!File.Exists(path))
-            {
-                using (FileStream fs = File.Create(path))
-                {
-                    Byte[] title = new UTF8Encoding(true).GetBytes("730");
-                    fs.Write(title, 0, title.Length);
                 }
             }
         }

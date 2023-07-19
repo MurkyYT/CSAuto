@@ -12,52 +12,41 @@ namespace SteamAPIServer
 {
     internal class Program
     {
-        private static int numThreads = 1;
         static void Main(string[] args)
         {
-            SteamAPI.Init();
-            int i;
-            Thread[] servers = new Thread[numThreads];
-
-            Console.WriteLine("\n*** Named pipe server stream with impersonation example ***\n");
-            Console.WriteLine("Waiting for client connect...\n");
-            for (i = 0; i < numThreads; i++)
+            InitializeSteamAPI();
+            new Thread(ServerThread).Start();
+        }
+        static void InitializeSteamAPI()
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string path = currentDir + "\\steam_appid.txt";
+            if (!File.Exists(path))
             {
-                servers[i] = new Thread(ServerThread);
-                servers[i]?.Start();
+                using (FileStream fs = File.Create(path))
+                {
+                    Byte[] title = new UTF8Encoding(true).GetBytes("730");
+                    fs.Write(title, 0, title.Length);
+                }
             }
+            File.Delete(path);
         }
         private static void ServerThread(object data)
         {
-
-
-            int threadId = Thread.CurrentThread.ManagedThreadId;
             while (true)
             {
                 using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("csautopipe", PipeDirection.InOut))
                 {
                     pipeServer.WaitForConnection();
-
-                    Console.WriteLine("Client connected on thread[{0}].", threadId);
                     try
                     {
-                        // Read the request from the client. Once the client has
-                        // written to the pipe its security token will be available.
-
                         StreamString ss = new StreamString(pipeServer);
-
-                        // Verify our identity to the connected client using a
-                        // string that the client anticipates.
-
                         ss.WriteString("I am the one true server!");
                         ulong lobbysteamid = ulong.Parse(ss.ReadString());
-
                         CSteamID lobbyid = new CSteamID(lobbysteamid);
                         string res = $"{SteamMatchmaking.GetNumLobbyMembers(lobbyid)}/{SteamMatchmaking.GetLobbyMemberLimit(lobbyid)}({lobbyid})";
                         ss.WriteString(res);
                     }
-                    // Catch the IOException that is raised if the pipe is broken
-                    // or disconnected.
                     catch (Exception e)
                     {
                         Console.WriteLine("ERROR: {0}", e.Message);
