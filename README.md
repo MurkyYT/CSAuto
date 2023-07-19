@@ -29,6 +29,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * Auto buy armor for you or auto refill it when you have less then 70 left!
 * Auto buy defuse kit for you as a CT
 * Auto pause/resume spotify song
+* Show status about cs, when you are in lobby it shows your friendcode and amount of players in lobby, when in match it shows the map, mode, score, and round phase
 * Send time left till bomb exploded to mobile! (not accurate as of right now)
 
 **Image demonstration of the menu:**  
@@ -46,7 +47,13 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   4. Go to the desktop app, in the 'Mobile App' menu and make sure it is enabled
   5. Go again to the 'Mobile App' menu and press 'Enter IP address'
   6. In the input box that appeared, enter the IP address you see in the notification on the phone
-  7. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online' 
+  7. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online'
+### **Discord doesn't show amount of players in lobby**
+  1. Open the discord sub-menu
+  2. Press enter 'Enter Steam Web API Key'
+  3. Get your steam web api key from [here](https://steamcommunity.com/dev)
+  4. After you entered it you should have it
+  5. If you still dont have it, make sure you created a lobby by inviting someone
 ## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
