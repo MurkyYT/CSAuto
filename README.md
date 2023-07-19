@@ -1,6 +1,6 @@
 <h1 align="center">CSAuto</h1>
 <p align="center">
-   <a href="https://www.virustotal.com/gui/file/f68ba52499a4158e2d72876c33ea8ee5ade3ab496b2da4bbcb109383a29a61ed?nocache=1"><img src="https://github.com/MurkyYT/CSAuto/blob/dev/virustotal_icon.png?raw=true" height="40" alt="VirusTotal scan"></a>
+   <a href="https://www.virustotal.com/gui/file/9297cb519b209e6f0c7d937c93cea40aefda3f9d1b870c74405097b3deb0596b/detection"><img src="https://github.com/MurkyYT/CSAuto/blob/dev/virustotal_icon.png?raw=true" height="40" alt="VirusTotal scan"></a>
 </p>
 <p align="center">
   <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release" alt="Latest Release">
