@@ -22,7 +22,17 @@ namespace CSAuto
                         return English[category];
                 }
             }
-            catch (KeyNotFoundException){ return English[category]; }
+            catch (KeyNotFoundException)
+            {
+                try
+                {
+                    return English[category];
+                }
+                catch
+                {
+                    return category;
+                }
+            }
         }
         static readonly Dictionary<string, string> English = new Dictionary<string, string>()
         {
@@ -84,7 +94,10 @@ namespace CSAuto
             ["server_bombdefuse"] = "Bomb has been defused",
             ["exception_steamnotfound"] = "Couldn't find Steam Path",
             ["exception_nonetworkadapter"] = "No network adapters with an IPv4 address in the system!",
-            ["exception_csgonotfound"] = "Couldn't find CS:GO directory"
+            ["exception_csgonotfound"] = "Couldn't find CS:GO directory",
+            ["menu_entersteamkey"] = "Enter Steam Web API Key",
+            ["inputtitle_steamkey"] = "Steam Web API Key",
+            ["inputtext_steamkey"] = "Please enter your Steam Web API Key"
         };
         static readonly Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
@@ -146,7 +159,10 @@ namespace CSAuto
             ["server_bombdefuse"] = "Бомба обезврежена",
             ["exception_steamnotfound"] = "Не удалось найти путь к Steam",
             ["exception_nonetworkadapter"] = "В системе нет сетевых адаптеров с IPv4-адресом!",
-            ["exception_csgonotfound"] = "Не удалось найти папку CS:GO"
+            ["exception_csgonotfound"] = "Не удалось найти папку CS:GO",
+            ["menu_entersteamkey"] = "Ввести ключ Steam Web API",
+            ["inputtitle_steamkey"] = "Ключ Steam Web API",
+            ["inputtext_steamkey"] = "Пожалуйста, введите свой ключ Steam Web API"
         };
     }
 }

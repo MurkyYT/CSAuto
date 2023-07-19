@@ -24,9 +24,49 @@ using Point = System.Drawing.Point;
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using System.Net.Sockets;
+using System.IO.Pipes;
+using System.Security.Principal;
 
 namespace CSAuto
 {
+    public class StreamString
+    {
+        private Stream ioStream;
+        private UnicodeEncoding streamEncoding;
+
+        public StreamString(Stream ioStream)
+        {
+            this.ioStream = ioStream;
+            streamEncoding = new UnicodeEncoding();
+        }
+
+        public string ReadString()
+        {
+            int len;
+            len = ioStream.ReadByte() * 256;
+            len += ioStream.ReadByte();
+            var inBuffer = new byte[len];
+            ioStream.Read(inBuffer, 0, len);
+
+            return streamEncoding.GetString(inBuffer);
+        }
+
+        public int WriteString(string outString)
+        {
+            byte[] outBuffer = streamEncoding.GetBytes(outString);
+            int len = outBuffer.Length;
+            if (len > UInt16.MaxValue)
+            {
+                len = (int)UInt16.MaxValue;
+            }
+            ioStream.WriteByte((byte)(len / 256));
+            ioStream.WriteByte((byte)(len & 255));
+            ioStream.Write(outBuffer, 0, len);
+            ioStream.Flush();
+
+            return outBuffer.Length + 2;
+        }
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -36,7 +76,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.0.9";
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -123,6 +163,7 @@ namespace CSAuto
         BombState? bombState;
         Weapon weapon;
         bool acceptedGame = false;
+        Process steamAPIServer = null;
         Process csProcess = null;
         Thread bombTimerThread = null;
 
@@ -140,6 +181,7 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                Application.Current.Exit += Current_Exit;
                 AVAILABLE_MAP_ICONS = Properties.Resources.AVAILABLE_MAPS_STRING.Split(',');
                 CSGOFriendCode.Encode("76561198341800115");
                 InitializeDiscordRPC();
@@ -154,6 +196,11 @@ namespace CSAuto
                 MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void Current_Exit(object sender, ExitEventArgs e)
+        {
+            Exited();
         }
 
         private void InitializeContextMenu()
@@ -212,6 +259,11 @@ namespace CSAuto
                 Header = AppLanguage.Get("menu_enterip")
             };
             enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
+            MenuItem enterSteamAPIKey = new MenuItem
+            {
+                Header = AppLanguage.Get("menu_entersteamkey")
+            };
+            enterSteamAPIKey.Click += EnterSteamAPIKey_Click;
             bombNotification.IsChecked = Properties.Settings.Default.bombNotification;
             bombNotification.Header = AppLanguage.Get("menu_bombnotification");
             bombNotification.IsCheckable = true;
@@ -310,6 +362,7 @@ namespace CSAuto
             options.Items.Add(autoCheckForUpdates);
             options.Items.Add(languageMenu);
             discordMenu.Items.Add(enableDiscordRPC);
+            discordMenu.Items.Add(enterSteamAPIKey);
             mobileMenu.Items.Add(enableMobileApp);
             mobileMenu.Items.Add(enterMobileIpAddress);
             mobileMenu.Items.Add(mobileNotificationsMenu);
@@ -324,6 +377,16 @@ namespace CSAuto
             exitcm.Items.Add(checkForUpdates);
             exitcm.Items.Add(exit);
             exitcm.StaysOpen = false;
+        }
+
+        private void EnterSteamAPIKey_Click(object sender, RoutedEventArgs e)
+        {
+            string res = "";
+            if (InputBox.Show(AppLanguage.Get("inputtitle_steamkey"), AppLanguage.Get("inputtext_steamkey"), ref res) == System.Windows.Forms.DialogResult.OK)
+            {
+                Properties.Settings.Default.steamAPIkey = res;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void BombNotification_Click(object sender, RoutedEventArgs e)
@@ -374,7 +437,6 @@ namespace CSAuto
                     MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
                     if (restart == MessageBoxResult.OK)
                     {
-                        Console.WriteLine(Assembly.GetExecutingAssembly().Location);
                         Process.Start(Assembly.GetExecutingAssembly().Location);
                         Application.Current.Shutdown();
                     }
@@ -736,12 +798,19 @@ namespace CSAuto
                     $"{GameState.Match.CTScore} [CT] ({phase}) {GameState.Match.TScore} [T]";
                 discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
                 discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
-                /* maybe add in the feature join lobby
-                discordPresence.joinSecret = "dsadasdsad";
-                discordPresence.partyMax = 5;
-                discordPresence.partyId = "37123098213021";
-                discordPresence.partySize = 1;
-                */
+                discordPresence.partyMax = 0;
+                discordPresence.partyId = null;
+                discordPresence.partySize = 0;
+            }
+            else if(csRunning && !inGame)
+            {
+                string steamworksRes = GetLobbyInfoFromSteamworks();
+                string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
+                string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
+                string partysize = steamworksRes.Split('/')[0];
+                discordPresence.partyMax = int.Parse(partyMax);
+                discordPresence.partyId = lobbyid == "0" ? null : lobbyid;
+                discordPresence.partySize = int.Parse(partysize);
             }
             else if (discordRPCON && !csRunning)
             {
@@ -815,6 +884,11 @@ namespace CSAuto
                         Log.WriteLine("Starting GSI Server");
                         StartGSIServer();
                     }
+                    if(steamAPIServer == null)
+                    {
+                        steamAPIServer = new Process() { StartInfo = { FileName = "SteamAPIServer.exe" } };
+                        steamAPIServer.Start();
+                    }
                 }
                 else if(!csRunning)
                 {
@@ -834,6 +908,11 @@ namespace CSAuto
                         Log.WriteLine("Stopping GSI Server");
                         StopGSIServer();
                         SendMessageToServer("<CLS>");
+                    }
+                    if(steamAPIServer != null)
+                    {
+                        steamAPIServer.Kill();
+                        steamAPIServer = null;
                     }
                 }
                 csActive = IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
@@ -855,6 +934,47 @@ namespace CSAuto
             GC.Collect();
         }
 
+        private string GetLobbyInfoFromSteamworks()
+        {
+            string res = "0/0(0)";
+            if (Properties.Settings.Default.steamAPIkey == "" || Properties.Settings.Default.steamAPIkey == null)
+                return res;
+            var pipeClient =
+                    new NamedPipeClientStream(".", "csautopipe",
+                        PipeDirection.InOut, PipeOptions.None,
+                        TokenImpersonationLevel.Impersonation);
+            pipeClient.Connect();
+
+            var ss = new StreamString(pipeClient);
+            // Validate the server's signature string.
+            if (ss.ReadString() == "I am the one true server!")
+            {
+                // The client security token is sent with the first write.
+                // Send the name of the file whose contents are returned
+                // by the server.
+                ss.WriteString(GetLobbyID());
+                res = ss.ReadString();
+            }
+            else
+            {
+                Log.WriteLine("Server could not be verified.");
+            }
+            pipeClient.Close();
+            return res;
+        }
+
+        private string GetLobbyID()
+        {
+            string KEY = Properties.Settings.Default.steamAPIkey;
+            if (KEY == "" || KEY == null)
+                return "0";
+            string apiURL = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={KEY}&steamids={GameState.MySteamID}&appids=730";
+            string webInfo = Github.GetWebInfo(apiURL);
+            string[] split = webInfo.Split(new string[] { "\"lobbysteamid\":\"" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return "0";
+            return split[1].Split('"')[0];
+        }
         private void CsProcess_Exited(object sender, EventArgs e)
         {
             csRunning = false;
@@ -1138,9 +1258,15 @@ namespace CSAuto
         }
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
+            Application.Current.Shutdown();
+        }
+        private void Exited()
+        {
             notifyIcon.Close();
             StopGSIServer();
             Application.Current.Shutdown();
+            if(steamAPIServer != null && !steamAPIServer.HasExited)
+                steamAPIServer.Kill();
         }
         private void CheckForDuplicates()
         {
@@ -1172,6 +1298,7 @@ namespace CSAuto
                 Visibility = Visibility.Hidden;
                 InitializeNotifyIcon();
                 InitializeTimer();
+                InitializeAPPID();
                 Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
@@ -1240,7 +1367,19 @@ namespace CSAuto
                 }
             }
         }
-
+        private void InitializeAPPID()
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string path = currentDir + "\\steam_appid.txt";
+            if (!File.Exists(path))
+            {
+                using (FileStream fs = File.Create(path))
+                {
+                    Byte[] title = new UTF8Encoding(true).GetBytes("730");
+                    fs.Write(title, 0, title.Length);
+                }
+            }
+        }
         void AutoCheckUpdate()
         {
             new Thread(() =>
