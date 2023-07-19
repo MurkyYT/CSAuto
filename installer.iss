@@ -31,7 +31,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "CSAuto\bin\Release\CSAuto.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CSAuto\bin\Release\*.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "CSAuto\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
