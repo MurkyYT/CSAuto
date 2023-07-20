@@ -29,6 +29,7 @@ namespace SteamAPIServer
                     fs.Write(title, 0, title.Length);
                 }
             }
+            SteamAPI.Init();
             File.Delete(path);
         }
         private static void ServerThread(object data)
