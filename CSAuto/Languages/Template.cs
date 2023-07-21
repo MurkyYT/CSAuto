@@ -11,7 +11,7 @@ namespace CSAuto.Languages
         };
         public static string Get(string category)
         {
-            if (translation.ContainsKey(category)) return translation[category]; else return category;
+            if (translation.ContainsKey(category)) return translation[category]; else return English.Get(category);
         }
     }
 }
