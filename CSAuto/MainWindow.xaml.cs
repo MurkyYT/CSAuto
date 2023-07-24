@@ -1227,7 +1227,7 @@ namespace CSAuto
                                 SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
-                            if (CheckIfAccepted(bitmap))
+                            if (CheckIfAccepted(bitmap,Y))
                             {
                                 acceptedGame = true;
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
@@ -1242,11 +1242,11 @@ namespace CSAuto
                 }
             }
         }
-        private bool CheckIfAccepted(Bitmap bitmap)
+        private bool CheckIfAccepted(Bitmap bitmap,int maxY)
         {
             bool found = false;
             int count = 0;
-            for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
+            for (int y = bitmap.Height - 1; y >= maxY && !found; y--)
             {
                 Color pixelColor = bitmap.GetPixel(0, y);
                 if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
@@ -1258,12 +1258,12 @@ namespace CSAuto
                                          * happend while trying to create a while loop to search for button
                                          */
                     {
-                        return true;
+                        return false;
                     }
                     count++;
                 }
             }
-            return false;
+            return true;
         }
         async Task<bool> MakeFalse(float afterSeconds)
         {
