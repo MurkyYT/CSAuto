@@ -1423,6 +1423,7 @@ namespace CSAuto
                 debugWind = new GSIDebugWindow(this);
                 Log.debugWind = debugWind;
                 debugWind.Show();
+                debugWind.Activate();
             }
             else
             {
