@@ -27,6 +27,7 @@ using Murky.Utils.CSGO;
 using System.Net.Sockets;
 using System.IO.Pipes;
 using System.Security.Principal;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace CSAuto
 {
@@ -856,15 +857,6 @@ namespace CSAuto
             }
 
         }
-        bool IsForegroundProcess(uint pid)
-        {
-            IntPtr hwnd = GetForegroundWindow();
-            if (hwnd == null) return false;
-
-            if (GetWindowThreadProcessId(hwnd, out uint foregroundPid) == (IntPtr)0) return false;
-
-            return (foregroundPid == pid);
-        }
         private void SendMessageToServer(string message)
         {
             if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled)
@@ -931,16 +923,14 @@ namespace CSAuto
                         steamAPIServer = null;
                     }
                 }
-                csActive = IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
+                csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
                 if (csActive)
                 {
                     csResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        AutoAcceptMatchAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        _ = AutoAcceptMatchAsync();
                 }
             }
             catch (Exception ex)
@@ -1075,7 +1065,7 @@ namespace CSAuto
                 string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
-                    mouse_event(MOUSEEVENTF_LEFTUP,
+                    NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
                         System.Windows.Forms.Cursor.Position.X,
                         System.Windows.Forms.Cursor.Position.Y,
                         0, 0);
@@ -1088,7 +1078,7 @@ namespace CSAuto
                         && Properties.Settings.Default.ContinueSpraying)
                     {
                         Thread.Sleep(100);
-                        mouse_event(MOUSEEVENTF_LEFTDOWN,
+                        NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
                             System.Windows.Forms.Cursor.Position.X,
                             System.Windows.Forms.Cursor.Position.Y,
                             0, 0);
@@ -1132,27 +1122,11 @@ namespace CSAuto
             Properties.Settings.Default.saveDebugFrames = saveFramesDebug.IsChecked;
             Properties.Settings.Default.Save();
         }
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-        //This is a replacement for Cursor.Position in WinForms
-        [DllImport("user32.dll")]
-        static extern bool SetCursorPos(int x, int y);
-
-        [DllImport("user32.dll")]
-        public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
-
-        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-        public const int MOUSEEVENTF_LEFTUP = 0x04;
-        //This simulates a left mouse click
         public static void LeftMouseClick(int xpos, int ypos)
         {
-            SetCursorPos(xpos, ypos);
-            mouse_event(MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
-            mouse_event(MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
+            NativeMethods.SetCursorPos(xpos, ypos);
+            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
+            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
             Log.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
         }
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
@@ -1215,13 +1189,43 @@ namespace CSAuto
                                 SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
-                            acceptedGame = true;
-                            acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                            if (CheckIfAccepted(bitmap))
+                            {
+                                acceptedGame = true;
+                                acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                            }
+                            else
+                            {
+                                await AutoAcceptMatchAsync();
+                            }
                         }
                         count++;
                     }
                 }
             }
+        }
+        private bool CheckIfAccepted(Bitmap bitmap)
+        {
+            bool found = false;
+            int count = 0;
+            for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
+            {
+                Color pixelColor = bitmap.GetPixel(0, y);
+                if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                {
+
+                    if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
+                                         * just in case the program finds the 0:20 timer tick
+                                         * didnt happen for a while but can happen still
+                                         * happend while trying to create a while loop to search for button
+                                         */
+                    {
+                        return true;
+                    }
+                    count++;
+                }
+            }
+            return false;
         }
         async Task<bool> MakeFalse(float afterSeconds)
         {
