@@ -19,7 +19,7 @@ namespace CSAuto.Languages
             ["menu_enterip"] = "Ввести IP-адрес",
             ["menu_discordrpc"] = "Discord RPC",
             ["menu_enabled"] = "Включить",
-            ["menu_autocheckupdates"] = "Проверять обновления автоматически",
+            ["menu_autocheckupdates"] = "Проверять обновления",
             ["menu_autospotify"] = "Автоматическая пауза/возобновление Spotify",
             ["menu_startup"] = "Автозапуск",
             ["menu_continuespray"] = "Продолжить стрелять (экспериментальное)",
