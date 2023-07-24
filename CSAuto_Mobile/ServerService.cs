@@ -15,7 +15,7 @@ using CSAuto;
 using Murky.Utils.CSGO;
 using System.Threading;
 using System.Threading.Tasks;
-
+#pragma warning disable CS0618 // Type or member is obsolete
 namespace CSAuto_Mobile
 {
     /// <summary>
