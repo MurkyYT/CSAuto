@@ -83,7 +83,7 @@ namespace CSAuto
         const string BUFFER = "0.1";
         const string THROTTLE = "0.0";
         const string HEARTBEAT = "10.0";
-        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + ","+DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + PORT +
+        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "," + DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + PORT +
             "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
@@ -440,9 +440,9 @@ namespace CSAuto
 
         private static void GenerateLanguages(MenuItem languageMenu)
         {
-            foreach(string language in Properties.Settings.Default.languages)
+            foreach (string language in Properties.Settings.Default.languages)
             {
-                RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage};
+                RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage };
                 rb.Checked += (sender, args) =>
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
@@ -462,11 +462,11 @@ namespace CSAuto
         private void EnterMobileIpAddress_Click(object sender, RoutedEventArgs e)
         {
             string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_mobileip"), AppLanguage.Get("inputtext_mobileip"), ref res) == System.Windows.Forms.DialogResult.OK) 
-            { 
-                Properties.Settings.Default.phoneIpAddress = res; 
+            if (InputBox.Show(AppLanguage.Get("inputtitle_mobileip"), AppLanguage.Get("inputtext_mobileip"), ref res) == System.Windows.Forms.DialogResult.OK)
+            {
+                Properties.Settings.Default.phoneIpAddress = res;
                 Properties.Settings.Default.Save();
-                if(Properties.Settings.Default.connectedNotification)
+                if (Properties.Settings.Default.connectedNotification)
                     SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
             }
         }
@@ -648,8 +648,8 @@ namespace CSAuto
                 return;
             }
             catch (HttpListenerException)
-            { 
-                return; 
+            {
+                return;
             }
             finally
             {
@@ -691,13 +691,13 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if(bombState == null && currentBombState == BombState.Planted && bombTimerThread == null)
+                if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null)
                 {
                     StartBombTimer();
                 }
-                if(bombState == BombState.Planted && currentBombState != BombState.Planted)
+                if (bombState == BombState.Planted && currentBombState != BombState.Planted)
                 {
-                    if(bombTimerThread != null)
+                    if (bombTimerThread != null)
                         bombTimerThread.Abort();
                     bombTimerThread = null;
                     switch (currentBombState)
@@ -709,7 +709,7 @@ namespace CSAuto
                             SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombexplode")}");
                             break;
                     }
-                    
+
                 }
                 if (GameState.Match.Map != null && (discordPresence.state == IN_LOBBY_STATE || discordPresence.startTimestamp == 0))
                 {
@@ -718,7 +718,7 @@ namespace CSAuto
                     discordPresence.details = $"{GameState.Match.Mode} - {GameState.Match.Map}";
                     discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                     discordPresence.largeImageText = GameState.Match.Map;
-                    if(Properties.Settings.Default.mapNotification)
+                    if (Properties.Settings.Default.mapNotification)
                         SendMessageToServer($"<MAP>{AppLanguage.Get("server_loadedmap")} {GameState.Match.Map} {AppLanguage.Get("server_mode")} {GameState.Match.Mode}");
                 }
                 else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
@@ -815,7 +815,7 @@ namespace CSAuto
                 discordPresence.partyId = null;
                 discordPresence.partySize = 0;
             }
-            else if(csRunning && !inGame)
+            else if (csRunning && !inGame)
             {
                 if (Properties.Settings.Default.enableLobbyCount)
                 {
@@ -900,13 +900,13 @@ namespace CSAuto
                         Log.WriteLine("Starting GSI Server");
                         StartGSIServer();
                     }
-                    if(steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
+                    if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
                     {
                         steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
                         steamAPIServer.Start();
                     }
                 }
-                else if(!csRunning)
+                else if (!csRunning)
                 {
                     if (discordRPCON)
                     {
@@ -925,7 +925,7 @@ namespace CSAuto
                         StopGSIServer();
                         SendMessageToServer("<CLS>");
                     }
-                    if(steamAPIServer != null)
+                    if (steamAPIServer != null)
                     {
                         steamAPIServer.Kill();
                         steamAPIServer = null;
@@ -1198,7 +1198,7 @@ namespace CSAuto
                     Color pixelColor = bitmap.GetPixel(0, y);
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
-                        
+
                         if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                          * just in case the program finds the 0:20 timer tick
                                          * didnt happen for a while but can happen still
@@ -1242,7 +1242,7 @@ namespace CSAuto
             notifyIcon.Close();
             StopGSIServer();
             Application.Current.Shutdown();
-            if(steamAPIServer != null && !steamAPIServer.HasExited)
+            if (steamAPIServer != null && !steamAPIServer.HasExited)
                 steamAPIServer.Kill();
         }
         private void CheckForDuplicates()
