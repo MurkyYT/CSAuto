@@ -1232,10 +1232,6 @@ namespace CSAuto
                                 acceptedGame = true;
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
-                            else
-                            {
-                                await AutoAcceptMatchAsync();
-                            }
                         }
                         count++;
                     }
