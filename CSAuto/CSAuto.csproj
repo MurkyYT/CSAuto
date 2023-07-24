@@ -31,7 +31,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
-	<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -100,6 +100,8 @@
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Russian.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Native\RECT.cs" />
     <Compile Include="Utils\CSGO\CSGOFriendCode.cs" />
     <Compile Include="Utils\CSGO\CSGOMap.cs" />
     <Compile Include="Utils\DiscordRpc.cs" />

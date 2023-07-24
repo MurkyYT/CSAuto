@@ -855,15 +855,6 @@ namespace CSAuto
             }
 
         }
-        bool IsForegroundProcess(uint pid)
-        {
-            IntPtr hwnd = GetForegroundWindow();
-            if (hwnd == null) return false;
-
-            if (GetWindowThreadProcessId(hwnd, out uint foregroundPid) == (IntPtr)0) return false;
-
-            return (foregroundPid == pid);
-        }
         private void SendMessageToServer(string message)
         {
             if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled)
@@ -930,7 +921,7 @@ namespace CSAuto
                         steamAPIServer = null;
                     }
                 }
-                csActive = IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
+                csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
                 if (csActive)
                 {
                     csResolution = new Point(
@@ -1074,7 +1065,7 @@ namespace CSAuto
                 string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
-                    mouse_event(MOUSEEVENTF_LEFTUP,
+                    NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
                         System.Windows.Forms.Cursor.Position.X,
                         System.Windows.Forms.Cursor.Position.Y,
                         0, 0);
@@ -1087,7 +1078,7 @@ namespace CSAuto
                         && Properties.Settings.Default.ContinueSpraying)
                     {
                         Thread.Sleep(100);
-                        mouse_event(MOUSEEVENTF_LEFTDOWN,
+                        NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
                             System.Windows.Forms.Cursor.Position.X,
                             System.Windows.Forms.Cursor.Position.Y,
                             0, 0);
@@ -1170,27 +1161,11 @@ namespace CSAuto
             Properties.Settings.Default.saveDebugFrames = saveFramesDebug.IsChecked;
             Properties.Settings.Default.Save();
         }
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-        //This is a replacement for Cursor.Position in WinForms
-        [DllImport("user32.dll")]
-        static extern bool SetCursorPos(int x, int y);
-
-        [DllImport("user32.dll")]
-        public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
-
-        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-        public const int MOUSEEVENTF_LEFTUP = 0x04;
-        //This simulates a left mouse click
         public static void LeftMouseClick(int xpos, int ypos)
         {
-            SetCursorPos(xpos, ypos);
-            mouse_event(MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
-            mouse_event(MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
+            NativeMethods.SetCursorPos(xpos, ypos);
+            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
+            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
             Log.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
         }
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
