@@ -26,6 +26,7 @@ using Murky.Utils.CSGO;
 using System.Net.Sockets;
 using System.IO.Pipes;
 using System.Security.Principal;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace CSAuto
 {
@@ -928,9 +929,7 @@ namespace CSAuto
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
                     if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        AutoAcceptMatchAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        _ = AutoAcceptMatchAsync();
                 }
             }
             catch (Exception ex)
@@ -1228,13 +1227,43 @@ namespace CSAuto
                                 SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
-                            acceptedGame = true;
-                            acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                            if (CheckIfAccepted(bitmap))
+                            {
+                                acceptedGame = true;
+                                acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                            }
+                            else
+                            {
+                                await AutoAcceptMatchAsync();
+                            }
                         }
                         count++;
                     }
                 }
             }
+        }
+        private bool CheckIfAccepted(Bitmap bitmap)
+        {
+            bool found = false;
+            int count = 0;
+            for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
+            {
+                Color pixelColor = bitmap.GetPixel(0, y);
+                if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                {
+
+                    if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
+                                         * just in case the program finds the 0:20 timer tick
+                                         * didnt happen for a while but can happen still
+                                         * happend while trying to create a while loop to search for button
+                                         */
+                    {
+                        return true;
+                    }
+                    count++;
+                }
+            }
+            return false;
         }
         async Task<bool> MakeFalse(float afterSeconds)
         {
