@@ -1064,7 +1064,7 @@ namespace CSAuto
         }
         private void TryToAutoReload()
         {
-            bool isMousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) & 0x80) != 0;
+            bool isMousePressed = Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON);
             if (!isMousePressed || weapon == null)
                 return;
             try
