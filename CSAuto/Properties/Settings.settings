@@ -78,5 +78,8 @@
     <Setting Name="enableLobbyCount" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="telegramUsers" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">;userid,chatid</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
