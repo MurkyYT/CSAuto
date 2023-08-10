@@ -56,12 +56,12 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   3. Get your steam web api key from [here](https://steamcommunity.com/dev)
   4. After you entered it you should have it
   5. If you still dont have it, make sure you created a lobby by inviting someone
-### **How to get Telegram Chat id**
-  1. Open [Raw Data Bot](https://t.me/raw_info_bot)
-  2. Send a message
-  3. Copy your 'Chat ID'
-  4. Enter it in the desktop app
-  5. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online'
+### **How to get notifications in Telegram**
+   1. Send a message to the [bot](https://t.me/csautonotification_bot)
+   2. Get your chat id by sending a message to [this bot](https://t.me/raw_info_bot)
+   3. Copy your 'Chat ID'
+   4. Enter it in the desktop app
+   5. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online'
 ## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
