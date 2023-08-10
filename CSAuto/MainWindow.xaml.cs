@@ -77,7 +77,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.1.1";
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -201,11 +201,15 @@ namespace CSAuto
         }
         public string TelegramSendMessage(string text)
         {
-            string urlString = $"https://api.telegram.org/bot{APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
+            try
+            {
+                string urlString = $"https://api.telegram.org/bot{APIKeys.APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
 
-            WebClient webclient = new WebClient();
+                WebClient webclient = new WebClient();
 
-            return webclient.DownloadString(urlString);
+                return webclient.DownloadString(urlString);
+            }
+            catch { MessageBox.Show(AppLanguage.Get("error_telegrammessage"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);return null; }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
@@ -402,7 +406,7 @@ namespace CSAuto
         private void EnterTelegramChatID_Click(object sender, RoutedEventArgs e)
         {
             string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res) == System.Windows.Forms.DialogResult.OK)
+            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res, AppLanguage.Get("inputtext_linkbutton"), "https://t.me/csautonotification_bot") == System.Windows.Forms.DialogResult.OK)
             {
                 Properties.Settings.Default.telegramChatId = res;
                 Properties.Settings.Default.Save();
@@ -707,11 +711,11 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null)
+                if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
                 {
                     StartBombTimer();
                 }
-                if (bombState == BombState.Planted && currentBombState != BombState.Planted)
+                if (bombState == BombState.Planted && currentBombState != BombState.Planted && Properties.Settings.Default.bombNotification)
                 {
                     if (bombTimerThread != null)
                         bombTimerThread.Abort();
@@ -809,7 +813,7 @@ namespace CSAuto
         {
             if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Initialize(APIKeys.DiscordAPIKey, ref discordHandlers, true, "730");
+                DiscordRpc.Initialize(APIKeys.APIKeys.DiscordAppID, ref discordHandlers, true, "730");
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
