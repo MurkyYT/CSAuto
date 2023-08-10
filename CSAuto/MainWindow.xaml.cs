@@ -78,7 +78,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         const string VER = "1.1.1";
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -204,7 +204,7 @@ namespace CSAuto
         {
             try
             {
-                string urlString = $"https://api.telegram.org/bot{APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
+                string urlString = $"https://api.telegram.org/bot{APIKeys.APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
 
                 WebClient webclient = new WebClient();
 
@@ -814,7 +814,7 @@ namespace CSAuto
         {
             if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Initialize(APIKeys.DiscordAPIKey, ref discordHandlers, true, "730");
+                DiscordRpc.Initialize(APIKeys.APIKeys.DiscordAppID, ref discordHandlers, true, "730");
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
