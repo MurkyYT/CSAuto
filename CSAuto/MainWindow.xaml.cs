@@ -778,7 +778,7 @@ namespace CSAuto
                     }
                 }
                 UpdateDiscordRPC();
-                SendMessageToServer($"<GSI>{JSON}{inGame}");
+                SendMessageToServer($"<GSI>{JSON}{inGame}",onlyServer:true);
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
