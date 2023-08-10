@@ -77,8 +77,8 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        const string VER = "1.1.0";
-        const string DEBUG_REVISION = "1";
+        const string VER = "1.1.1";
+        const string DEBUG_REVISION = "0";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -200,7 +200,14 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
+        public string TelegramSendMessage(string text)
+        {
+            string urlString = $"https://api.telegram.org/bot{APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
 
+            WebClient webclient = new WebClient();
+
+            return webclient.DownloadString(urlString);
+        }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
             Exited();
@@ -267,6 +274,11 @@ namespace CSAuto
                 Header = AppLanguage.Get("menu_entersteamkey")
             };
             enterSteamAPIKey.Click += EnterSteamAPIKey_Click;
+            MenuItem enterTelegramChatID = new MenuItem
+            {
+                Header = AppLanguage.Get("menu_entertelegramid")
+            };
+            enterTelegramChatID.Click += EnterTelegramChatID_Click;
             bombNotification.IsChecked = Properties.Settings.Default.bombNotification;
             bombNotification.Header = AppLanguage.Get("menu_bombnotification");
             bombNotification.IsCheckable = true;
@@ -300,7 +312,7 @@ namespace CSAuto
             enableDiscordRPC.IsCheckable = true;
             enableDiscordRPC.Click += EnableDiscordRPC_Click;
             enableMobileApp.IsChecked = Properties.Settings.Default.mobileAppEnabled;
-            enableMobileApp.Header = AppLanguage.Get("menu_enabled");
+            enableMobileApp.Header = AppLanguage.Get("menu_mobileappenabled");
             enableMobileApp.IsCheckable = true;
             enableMobileApp.Click += EnableMobileApp_Click;
             autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
@@ -373,6 +385,7 @@ namespace CSAuto
             discordMenu.Items.Add(enterSteamAPIKey);
             mobileMenu.Items.Add(enableMobileApp);
             mobileMenu.Items.Add(enterMobileIpAddress);
+            mobileMenu.Items.Add(enterTelegramChatID);
             mobileMenu.Items.Add(mobileNotificationsMenu);
             exitcm.Items.Add(about);
             exitcm.Items.Add(debugMenu);
@@ -385,6 +398,18 @@ namespace CSAuto
             exitcm.Items.Add(checkForUpdates);
             exitcm.Items.Add(exit);
             exitcm.StaysOpen = false;
+        }
+
+        private void EnterTelegramChatID_Click(object sender, RoutedEventArgs e)
+        {
+            string res = "";
+            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res) == System.Windows.Forms.DialogResult.OK)
+            {
+                Properties.Settings.Default.telegramChatId = res;
+                Properties.Settings.Default.Save();
+                if (Properties.Settings.Default.connectedNotification)
+                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}",true);
+            }
         }
 
         private void EnableLobbyCount_Click(object sender, RoutedEventArgs e)
@@ -468,7 +493,7 @@ namespace CSAuto
                 Properties.Settings.Default.phoneIpAddress = res;
                 Properties.Settings.Default.Save();
                 if (Properties.Settings.Default.connectedNotification)
-                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
+                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}",onlyServer:true);
             }
         }
 
@@ -487,12 +512,6 @@ namespace CSAuto
         private void InitializeDiscordRPC()
         {
             discordHandlers = default;
-            //if (Properties.Settings.Default.enableDiscordRPC)
-            //{
-            //    DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
-            //    Log.WriteLine("DiscordRpc.Initialize();");
-            //    discordRPCON = true;
-            //}
         }
 
         private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -530,9 +549,6 @@ namespace CSAuto
                 {
                     Log.WriteLine("Checking for updates");
                     string latestVersion = Github.GetLatestStringTag("murkyyt", "csauto");
-                    //string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
-                    //string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
-                    //string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
                     Log.WriteLine($"The latest version is {latestVersion}");
                     if (latestVersion == VER)
                     {
@@ -794,7 +810,7 @@ namespace CSAuto
         {
             if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Initialize("1121012657126916157", ref discordHandlers, true, "730");
+                DiscordRpc.Initialize(APIKeys.DiscordAPIKey, ref discordHandlers, true, "730");
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
@@ -857,9 +873,11 @@ namespace CSAuto
             }
 
         }
-        private void SendMessageToServer(string message)
+        private void SendMessageToServer(string message, bool onlyTelegram = false,bool onlyServer = false)
         {
-            if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled)
+            if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
+                TelegramSendMessage(message.Substring(5));
+            if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
                 return;
             new Thread(() =>
             {
@@ -1189,14 +1207,10 @@ namespace CSAuto
                                 SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
-                            if (CheckIfAccepted(bitmap))
+                            if (CheckIfAccepted(bitmap,Y))
                             {
                                 acceptedGame = true;
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
-                            }
-                            else
-                            {
-                                await AutoAcceptMatchAsync();
                             }
                         }
                         count++;
@@ -1204,11 +1218,11 @@ namespace CSAuto
                 }
             }
         }
-        private bool CheckIfAccepted(Bitmap bitmap)
+        private bool CheckIfAccepted(Bitmap bitmap,int maxY)
         {
             bool found = false;
             int count = 0;
-            for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
+            for (int y = bitmap.Height - 1; y >= maxY && !found; y--)
             {
                 Color pixelColor = bitmap.GetPixel(0, y);
                 if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
@@ -1220,12 +1234,12 @@ namespace CSAuto
                                          * happend while trying to create a while loop to search for button
                                          */
                     {
-                        return true;
+                        return false;
                     }
                     count++;
                 }
             }
-            return false;
+            return true;
         }
         async Task<bool> MakeFalse(float afterSeconds)
         {
@@ -1420,6 +1434,7 @@ namespace CSAuto
                 debugWind = new GSIDebugWindow(this);
                 Log.debugWind = debugWind;
                 debugWind.Show();
+                debugWind.Activate();
             }
             else
             {

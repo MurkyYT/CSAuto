@@ -10,7 +10,7 @@ namespace CSAuto.Languages
             ["language_russian"] = "Russian",
             ["menu_debug"] = "Debug",
             ["menu_language"] = "Language",
-            ["menu_mobile"] = "Mobile App",
+            ["menu_mobile"] = "Phone notifications",
             ["menu_exit"] = "Exit",
             ["menu_automation"] = "Automation",
             ["menu_options"] = "Options",
@@ -19,7 +19,7 @@ namespace CSAuto.Languages
             ["menu_enterip"] = "Enter IP address",
             ["menu_discordrpc"] = "Discord RPC",
             ["menu_enabled"] = "Enabled",
-            ["menu_autocheckupdates"] = "Check For Updates On Startup",
+            ["menu_autocheckupdates"] = "Auto Check For Updates",
             ["menu_autospotify"] = "Auto Pause/Resume Spotify",
             ["menu_startup"] = "Start With Windows",
             ["menu_continuespray"] = "Continue Spraying (Experimental)",
@@ -69,6 +69,10 @@ namespace CSAuto.Languages
             ["inputtitle_steamkey"] = "Steam Web API Key",
             ["inputtext_steamkey"] = "Please enter your Steam Web API Key",
             ["menu_lobbycount"] = "Show players lobby count",
+            ["menu_entertelegramid"] = "Enter Telegram Chat ID",
+            ["inputtitle_telegramid"] = "Telegram ID",
+            ["inputtext_telegramid"] = "Please enter your Telegram chat id, use the faq if you dont know how",
+            ["menu_mobileappenabled"] = "Mobile App Enabled"
         };
         public static string Get(string category)
         {
