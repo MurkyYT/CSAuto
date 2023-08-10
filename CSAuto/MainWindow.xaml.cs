@@ -203,7 +203,7 @@ namespace CSAuto
         {
             try
             {
-                string urlString = $"https://api.telegram.org/bot{APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
+                string urlString = $"https://api.telegram.org/bot{APIKeys.APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
 
                 WebClient webclient = new WebClient();
 
@@ -813,7 +813,7 @@ namespace CSAuto
         {
             if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Initialize(APIKeys.DiscordAPIKey, ref discordHandlers, true, "730");
+                DiscordRpc.Initialize(APIKeys.APIKeys.DiscordAppID, ref discordHandlers, true, "730");
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }

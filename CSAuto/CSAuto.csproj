@@ -97,8 +97,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="APIKeys.cs" />
-    <Compile Include="APIKeysLocal.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Russian.cs" />
@@ -196,6 +194,12 @@
     <Content Include="steam_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\APIKeys\APIKeys.csproj">
+      <Project>{7db4be0d-bb99-4ce7-aa57-b5b8777bd95c}</Project>
+      <Name>APIKeys</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
