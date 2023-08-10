@@ -5,9 +5,6 @@ msbuild CSAuto\CSAuto.csproj /t:Clean /property:Configuration=Release > nul
 @echo Compiling csauto project...
 msbuild CSAuto\CSAuto.csproj /property:Configuration=Release > nul
 @echo Compiled csauto project
-ConfuserEx\confuser.cli -n CSAuto.crproj > nul
-echo f | xcopy /s /y CSAuto\bin\Release\Confused\CSAuto.exe CSAuto\bin\Release\CSAuto.exe > nul
-@echo confused CSAuto.exe
 @echo ------------------------------------------------------------------
 @echo Cleaning steamapiserver project...
 msbuild SteamAPIServer\SteamAPIServer.csproj /t:Clean /property:Configuration=Release > nul
