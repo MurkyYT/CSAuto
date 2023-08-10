@@ -937,7 +937,7 @@ namespace CSAuto
                     {
                         Log.WriteLine("Stopping GSI Server");
                         StopGSIServer();
-                        SendMessageToServer("<CLS>");
+                        SendMessageToServer("<CLS>",onlyServer:true);
                     }
                     if (steamAPIServer != null)
                     {
