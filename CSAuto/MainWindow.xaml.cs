@@ -202,11 +202,15 @@ namespace CSAuto
         }
         public string TelegramSendMessage(string text)
         {
-            string urlString = $"https://api.telegram.org/bot{APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
+            try
+            {
+                string urlString = $"https://api.telegram.org/bot{APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
 
-            WebClient webclient = new WebClient();
+                WebClient webclient = new WebClient();
 
-            return webclient.DownloadString(urlString);
+                return webclient.DownloadString(urlString);
+            }
+            catch { MessageBox.Show(AppLanguage.Get("error_telegrammessage"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);return null; }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
@@ -403,7 +407,7 @@ namespace CSAuto
         private void EnterTelegramChatID_Click(object sender, RoutedEventArgs e)
         {
             string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res) == System.Windows.Forms.DialogResult.OK)
+            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res, AppLanguage.Get("inputtext_linkbutton"), "https://t.me/csautonotification_bot") == System.Windows.Forms.DialogResult.OK)
             {
                 Properties.Settings.Default.telegramChatId = res;
                 Properties.Settings.Default.Save();
