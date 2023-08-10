@@ -707,11 +707,11 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null)
+                if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
                 {
                     StartBombTimer();
                 }
-                if (bombState == BombState.Planted && currentBombState != BombState.Planted)
+                if (bombState == BombState.Planted && currentBombState != BombState.Planted && Properties.Settings.Default.bombNotification)
                 {
                     if (bombTimerThread != null)
                         bombTimerThread.Abort();
