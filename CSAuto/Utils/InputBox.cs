@@ -40,7 +40,7 @@ namespace Murky.Utils
             buttonCancel.SetBounds(309, 72, 75, 23);
             if(buttonLinkObject != null)
             {
-                buttonLinkObject.SetBounds(9, 72, 75, 23);
+                buttonLinkObject.SetBounds(9, 72, 150, 23);
                 buttonLinkObject.Click += (s, eArgs) =>
                 {
                     Process.Start(buttonLink);

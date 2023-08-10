@@ -73,7 +73,8 @@ namespace CSAuto.Languages
             ["inputtitle_telegramid"] = "Идентификатор чата Telegram",
             ["inputtext_telegramid"] = "Пожалуйста, введите свой идентификатор чата Telegram, воспользуйтесь FAQ если вы не знаете как это сделать",
             ["menu_mobileappenabled"] = "Мобильное приложение включено",
-            ["error_telegrammessage"] = "Произошла ошибка при отправке сообщения Telegram, убедитесь, что ваш идентификатор чата указан правильно"
+            ["error_telegrammessage"] = "Произошла ошибка при отправке сообщения Telegram, убедитесь, что ваш идентификатор чата указан правильно",
+            ["inputtext_linkbutton"] = "Ссылка на бота",
         };
         public static string Get(string category)
         {

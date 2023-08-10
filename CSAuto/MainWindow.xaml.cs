@@ -406,7 +406,7 @@ namespace CSAuto
         private void EnterTelegramChatID_Click(object sender, RoutedEventArgs e)
         {
             string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res,"Bot Link", "https://t.me/csautonotification_bot") == System.Windows.Forms.DialogResult.OK)
+            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res, AppLanguage.Get("inputtext_linkbutton"), "https://t.me/csautonotification_bot") == System.Windows.Forms.DialogResult.OK)
             {
                 Properties.Settings.Default.telegramChatId = res;
                 Properties.Settings.Default.Save();
