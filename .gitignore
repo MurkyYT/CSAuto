@@ -66,7 +66,8 @@ artifacts/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
-
+#API Keys
+APIKeysLocal.cs
 # StyleCop
 StyleCopReport.xml
 

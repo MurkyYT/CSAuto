@@ -310,5 +310,17 @@ namespace CSAuto.Properties {
                 this["enableLobbyCount"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string telegramChatId {
+            get {
+                return ((string)(this["telegramChatId"]));
+            }
+            set {
+                this["telegramChatId"] = value;
+            }
+        }
     }
 }
