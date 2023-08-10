@@ -78,14 +78,5 @@ namespace CSAuto.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string TELEGRAM_BOT_TOKEN {
-            get {
-                return ResourceManager.GetString("TELEGRAM_BOT_TOKEN", resourceCulture);
-            }
-        }
     }
 }

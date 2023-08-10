@@ -26,12 +26,7 @@ using Murky.Utils.CSGO;
 using System.Net.Sockets;
 using System.IO.Pipes;
 using System.Security.Principal;
-using Telegram.Bot;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using File = System.IO.File;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace CSAuto
 {
@@ -157,7 +152,6 @@ namespace CSAuto
         /// <summary>
         /// Members
         /// </summary>
-        Dictionary<string, long> telegramChatIDS = new Dictionary<string, long>();
         Point csResolution = new Point();
         GameState GameState = new GameState(null);
         int frame = 0;
@@ -196,7 +190,6 @@ namespace CSAuto
                 CheckForDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 InitializeContextMenu();
-                //InitializeTelegramBot();
                 Top = -1000;
                 Left = -1000;
             }
@@ -206,50 +199,6 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
-
-        //private void InitializeTelegramBot()
-        //{
-        //    TelegramBotClient botClient = new TelegramBotClient(Properties.Resources.TELEGRAM_BOT_TOKEN);
-        //    CancellationTokenSource cts = new CancellationTokenSource();
-
-        //    // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
-        //    ReceiverOptions receiverOptions = new ReceiverOptions()
-        //    {
-        //        AllowedUpdates = Array.Empty<UpdateType>() // receive all update types except ChatMember related updates
-        //    };
-        //    botClient.StartReceiving(
-        //        updateHandler: HandleUpdateAsync,
-        //        pollingErrorHandler: HandlePollingErrorAsync,
-        //        receiverOptions: receiverOptions,
-        //        cancellationToken: cts.Token
-        //    );
-        //}
-
-        //async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        //{
-        //    // Only process Message updates: https://core.telegram.org/bots/api#message
-        //    if (update.Message == null)
-        //        return;
-        //    // Only process text messages
-        //    if (update.Message.Text == null)
-        //        return;
-        //    Message message = update.Message;
-        //    var chatId = message.Chat.Id;
-        //    var chatName = message.Chat.Username;
-        //    string messageText = update.Message.Text;
-        //    // Echo received message text
-        //    Message sentMessage = await botClient.SendTextMessageAsync(
-        //        chatId: chatId,
-        //        text: "You said:\n" + messageText,
-        //        cancellationToken: cancellationToken);
-        //}
-
-        //Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-        //{
-        //    var ErrorMessage = exception;
-        //    Console.WriteLine(ErrorMessage);
-        //    return Task.CompletedTask;
-        //}
 
         private void Current_Exit(object sender, ExitEventArgs e)
         {
