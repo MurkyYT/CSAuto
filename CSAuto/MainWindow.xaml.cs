@@ -1223,7 +1223,7 @@ namespace CSAuto
                 }
                 bool found = false;
                 int count = 0;
-                for (int y = bitmap.Height - 1; y >= 0 && !found; y--)
+                for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
                 {
                     Color pixelColor = bitmap.GetPixel(0, y);
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
