@@ -24,6 +24,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Output\\CSAuto_Portable.zip
-            Output\\CSAuto_Installer.exe
-            Output\\CSAuto_Android.apk
+            Output/CSAuto_Portable.zip
+            Output/CSAuto_Installer.exe
+            Output/CSAuto_Android.apk
