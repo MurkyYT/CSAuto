@@ -2,8 +2,10 @@
 // This software is licensed under the Code Project Open License.  See the Licenses.txt file.
 
 using DefinitionLibrary;
+using Murky.Utils;
 using NotifyIconLibrary.Events;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -537,6 +539,11 @@ namespace NotifyIconLibrary
         {
             if (!NativeMethods.Shell_NotifyIcon(nim, _data))
             {
+                if (nim == 0)
+                {
+                    _iconShownInTray = true;
+                    return;
+                }
                 throw new ApplicationException(
                     string.Format(
                         CultureInfo.InvariantCulture,
