@@ -1,0 +1,106 @@
+﻿<mahapps:MetroWindow x:Class="CSAuto.GUIWindow"
+        xmlns:mahapps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:properties="clr-namespace:CSAuto.Properties"
+        xmlns:language="clr-namespace:CSAuto.Languages"
+        xmlns:local="clr-namespace:CSAuto"
+        mc:Ignorable="d"
+        Title="CSAUTO" Height="450" Width="800" Closed="GUIWindow_Closed" Loaded="GUIWindow_Loaded" WindowState="Maximized">
+    <mahapps:MetroWindow.LeftWindowCommands>
+        <mahapps:WindowCommands>
+            <Button Click="LaunchGitHubSite" ToolTip="Open up the GitHub site">
+                <Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>
+            </Button>
+        </mahapps:WindowCommands>
+    </mahapps:MetroWindow.LeftWindowCommands>
+    <Grid>
+        <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left">
+            <mahapps:MetroTabItem Header="menu_options">
+                <Grid>
+                    <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top" SelectionChanged="TabControl_SelectionChanged">
+                        <mahapps:MetroTabItem Header="menu_general">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox x:Name="StartUpCheck" Content="menu_startup" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=runAtStartUp}" Click="StartUpCheck_Click"/>
+                                <CheckBox Content="menu_checkforupdates" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoCheckForUpdates}"/>
+                                <TextBlock Text="menu_language" FontSize="20" FontWeight="Bold"/>
+                                <StackPanel x:Name="languagesStackPanel" Orientation="Vertical"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                        <mahapps:MetroTabItem Header="menu_mobile">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox Content="menu_mobileappenabled" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mobileAppEnabled}"/>
+                                <TextBlock Text="inputtitle_mobileip" FontSize="20" FontWeight="Bold"/>
+                                <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=phoneIpAddress}"/>
+                                <TextBlock Text="inputtitle_telegramid" FontSize="20" FontWeight="Bold"/>
+                                <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=telegramChatId}"/>
+                                <TextBlock Text="menu_notifications" FontSize="20" FontWeight="Bold"/>
+                                <CheckBox Content="menu_acceptednotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=acceptedNotification}"/>
+                                <CheckBox Content="menu_mapnotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mapNotification}"/>
+                                <CheckBox Content="menu_lobbynotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=lobbyNotification}"/>
+                                <CheckBox Content="menu_connectednotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=connectedNotification}"/>
+                                <CheckBox Content="menu_crashednotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=crashedNotification}"/>
+                                <CheckBox Content="menu_bombnotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=bombNotification}"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                        <mahapps:MetroTabItem Header="menu_discord">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox Content="menu_discordrpc" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableDiscordRPC}"/>
+                                <CheckBox Content="menu_lobbycount" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableLobbyCount}"/>
+                                <TextBlock Text="inputtitle_steamkey" FontSize="20" FontWeight="Bold"/>
+                                <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=steamAPIkey}"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                        <mahapps:MetroTabItem Header="menu_automation">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox Content="menu_autoaccept" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoAcceptMatch}"/>
+                                <CheckBox Content="menu_autospotify" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoPausePlaySpotify}"/>
+                                <TextBlock Text="menu_autobuy" FontSize="20" FontWeight="Bold"/>
+                                <CheckBox Content="menu_preferarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=preferArmor}"/>
+                                <CheckBox Content="menu_autobuyarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyArmor}"/>
+                                <CheckBox Content="menu_autobuydefuse" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyDefuseKit}"/>
+                                <TextBlock Text="menu_autoreload" FontSize="20" FontWeight="Bold"/>
+                                <CheckBox Content="menu_enabled" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoReload}"/>
+                                <CheckBox Content="menu_continuespray" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ContinueSpraying}"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                        <mahapps:MetroTabItem Header="menu_debug">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox Content="menu_savedebugframes" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveDebugFrames}"/>
+                                <CheckBox Content="menu_savedebuglogs" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveLogs}"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                    </TabControl>
+                </Grid>
+            </mahapps:MetroTabItem>
+            <mahapps:MetroTabItem Header="menu_debug">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Row ="0" Grid.ColumnSpan="2">
+                        <Menu DockPanel.Dock="Top">
+                            <MenuItem Header="_File">
+                                <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
+                                <MenuItem x:Name="SaveFile" Header="_Save" Click="SaveFile_Click"/>
+                            </MenuItem>
+                        </Menu>
+                    </DockPanel>
+                    <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                </Grid>
+            </mahapps:MetroTabItem>
+        </TabControl>
+    </Grid>
+</mahapps:MetroWindow>

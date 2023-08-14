@@ -12,7 +12,7 @@ namespace Murky.Utils
 {
     class Log
     {
-        public static CSAuto.GSIDebugWindow debugWind = null;
+        public static CSAuto.GUIWindow debugWind = null;
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         static string path = strWorkPath + "/DEBUG/LOGS/";
         static string lineTemplate = "[%date%] (%caller%) - %message%";

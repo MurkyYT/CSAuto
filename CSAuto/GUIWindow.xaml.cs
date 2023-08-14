@@ -1,23 +1,41 @@
-﻿using Murky.Utils;
+﻿using MahApps.Metro.Controls;
+using Microsoft.Win32;
+using Murky.Utils;
 using Murky.Utils.CSGO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Controls;
+using System.Windows.Media;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using CheckBox = System.Windows.Controls.CheckBox;
+
 namespace CSAuto
 {
     /// <summary>
     /// Interaction logic for GSIDebugWindow.xaml
     /// </summary>
-    public partial class GSIDebugWindow : Window
+    public partial class GUIWindow : MetroWindow
     {
         readonly MainWindow main;
-        public GSIDebugWindow(MainWindow main)
+        IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
+            }
+        }
+        public GUIWindow(MainWindow main)
         {
             InitializeComponent();
             this.main = main;
@@ -28,7 +46,8 @@ namespace CSAuto
                 $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
                 $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
-            Title = AppLanguage.Get("title_debugwind");
+            //Title = AppLanguage.Get("title_debugwind");
+            GenerateLanguages();
         }
         public void UpdateText(string data)
         {
@@ -49,10 +68,11 @@ namespace CSAuto
 
         }
 
-        private void debugWind_Closed(object sender, EventArgs e)
+        private void GUIWindow_Closed(object sender, EventArgs e)
         {
             main.debugWind = null;
             Log.debugWind = null;
+            Properties.Settings.Default.Save();
         }
         void ParseGameState(string JSON)
         {
@@ -171,7 +191,7 @@ namespace CSAuto
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog
             {
                 InitialDirectory = @"C:\",
                 Title = "Browse Text Files",
@@ -210,7 +230,7 @@ namespace CSAuto
             }
         }
 
-        private void debugWind_Loaded(object sender, RoutedEventArgs e)
+        private void GUIWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -220,6 +240,64 @@ namespace CSAuto
             finally
             {
                 debugBox.ScrollToEnd();
+            }
+            LoadLanguages(this);
+        }
+
+        private void LoadLanguages(DependencyObject obj)
+        {
+            foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
+                ch.Content = AppLanguage.Get((string)ch.Content);
+            foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
+                ch.Header = AppLanguage.Get((string)ch.Header);
+            foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
+                ch.Text = AppLanguage.Get((string)ch.Text);
+        }
+
+        private void LaunchGitHubSite(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/MurkyYT/CSAuto");
+        }
+        private void GenerateLanguages()
+        {
+            foreach (string language in Properties.Settings.Default.languages)
+            {
+                RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage };
+                rb.Checked += (sender, args) =>
+                {
+                    Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
+                    Properties.Settings.Default.Save();
+                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (restart == MessageBoxResult.OK)
+                    {
+                        Process.Start(Assembly.GetExecutingAssembly().Location);
+                        Application.Current.Shutdown();
+                    }
+                };
+                rb.Tag = language;
+                languagesStackPanel.Children.Add(rb);
+            }
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LoadLanguages((((sender as TabControl).SelectedItem as MetroTabItem).GetChildObjects().First() as StackPanel));
+        }
+
+        private void StartUpCheck_Click(object sender, RoutedEventArgs e)
+        {
+            string appname = Assembly.GetEntryAssembly().GetName().Name;
+            string executablePath = Process.GetCurrentProcess().MainModule.FileName;
+            using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                if (Properties.Settings.Default.runAtStartUp)
+                {
+                    rk.SetValue(appname, executablePath);
+                }
+                else
+                {
+                    rk.DeleteValue(appname, false);
+                }
             }
         }
     }
