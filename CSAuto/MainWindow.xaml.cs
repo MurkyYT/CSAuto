@@ -100,7 +100,7 @@ namespace CSAuto
         /// <summary>
         /// Publics
         /// </summary>
-        public GSIDebugWindow debugWind = null;
+        public GUIWindow debugWind = null;
         /// <summary>
         /// Readonly
         /// </summary>
@@ -109,38 +109,6 @@ namespace CSAuto
         readonly System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
         readonly Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
-        readonly MenuItem startUpCheck = new MenuItem();
-        readonly MenuItem saveFramesDebug = new MenuItem();
-        readonly MenuItem autoAcceptMatchCheck = new MenuItem();
-        readonly MenuItem autoReloadCheck = new MenuItem();
-        readonly MenuItem autoBuyArmor = new MenuItem();
-        readonly MenuItem autoBuyDefuseKit = new MenuItem();
-        readonly MenuItem preferArmorCheck = new MenuItem();
-        readonly MenuItem saveLogsCheck = new MenuItem();
-        readonly MenuItem continueSprayingCheck = new MenuItem();
-        readonly MenuItem autoCheckForUpdates = new MenuItem();
-        readonly MenuItem autoPauseResumeSpotify = new MenuItem();
-        readonly MenuItem enableDiscordRPC = new MenuItem();
-        readonly MenuItem enableMobileApp = new MenuItem();
-        readonly MenuItem acceptedNotification = new MenuItem();
-        readonly MenuItem mapNotification = new MenuItem();
-        readonly MenuItem lobbyNotification = new MenuItem();
-        readonly MenuItem connectedNotification = new MenuItem();
-        readonly MenuItem crashedNotification = new MenuItem();
-        readonly MenuItem bombNotification = new MenuItem();
-        readonly MenuItem enableLobbyCount = new MenuItem();
-        readonly MenuItem autoBuyMenu = new MenuItem
-        {
-            Header = AppLanguage.Get("menu_autobuy")
-        };
-        readonly MenuItem discordMenu = new MenuItem
-        {
-            Header = AppLanguage.Get("menu_discord")
-        };
-        readonly MenuItem autoReloadMenu = new MenuItem
-        {
-            Header = AppLanguage.Get("menu_autoreload")
-        };
         /// <summary>
         /// Privates
         /// </summary>
@@ -169,6 +137,7 @@ namespace CSAuto
         Process steamAPIServer = null;
         Process csProcess = null;
         Thread bombTimerThread = null;
+        bool hadError = false;
 
         public ImageSource ToImageSource(Icon icon)
         {
@@ -210,7 +179,7 @@ namespace CSAuto
 
                 return webclient.DownloadString(urlString);
             }
-            catch { MessageBox.Show(AppLanguage.Get("error_telegrammessage"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);return null; }
+            catch { MessageBox.Show(AppLanguage.Get("error_telegrammessage"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error); return null; }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
@@ -219,36 +188,16 @@ namespace CSAuto
 
         private void InitializeContextMenu()
         {
-            MenuItem debugMenu = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_debug")
-            };
-            MenuItem mobileNotificationsMenu = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_notifications")
-            };
-            MenuItem languageMenu = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_language")
-            };
-            GenerateLanguages(languageMenu);
-            MenuItem mobileMenu = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_mobile")
-            };
             MenuItem exit = new MenuItem
             {
                 Header = AppLanguage.Get("menu_exit")
-            };
-            MenuItem automation = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_automation")
             };
             MenuItem options = new MenuItem
             {
                 Header = AppLanguage.Get("menu_options")
             };
             exit.Click += Exit_Click;
+            options.Click += Options_Click;
             MenuItem about = new MenuItem
             {
                 Header = $"{typeof(MainWindow).Namespace} - {VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")}",
@@ -258,150 +207,23 @@ namespace CSAuto
                     Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
                 }
             };
-            MenuItem openDebugWindow = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_opendebug")
-            };
-            openDebugWindow.Click += OpenDebugWindow_Click;
             MenuItem checkForUpdates = new MenuItem
             {
                 Header = AppLanguage.Get("menu_checkforupdates")
             };
             checkForUpdates.Click += CheckForUpdates_Click;
-            MenuItem enterMobileIpAddress = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_enterip")
-            };
-            enterMobileIpAddress.Click += EnterMobileIpAddress_Click;
-            MenuItem enterSteamAPIKey = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_entersteamkey")
-            };
-            enterSteamAPIKey.Click += EnterSteamAPIKey_Click;
-            MenuItem enterTelegramChatID = new MenuItem
-            {
-                Header = AppLanguage.Get("menu_entertelegramid")
-            };
-            enterTelegramChatID.Click += EnterTelegramChatID_Click;
-            bombNotification.IsChecked = Properties.Settings.Default.bombNotification;
-            bombNotification.Header = AppLanguage.Get("menu_bombnotification");
-            bombNotification.IsCheckable = true;
-            bombNotification.Click += BombNotification_Click;
-            enableLobbyCount.IsChecked = Properties.Settings.Default.enableLobbyCount;
-            enableLobbyCount.Header = AppLanguage.Get("menu_lobbycount");
-            enableLobbyCount.IsCheckable = true;
-            enableLobbyCount.Click += EnableLobbyCount_Click;
-            acceptedNotification.IsChecked = Properties.Settings.Default.acceptedNotification;
-            acceptedNotification.Header = AppLanguage.Get("menu_acceptednotification");
-            acceptedNotification.IsCheckable = true;
-            acceptedNotification.Click += AcceptedNotification_Click;
-            mapNotification.IsChecked = Properties.Settings.Default.mapNotification;
-            mapNotification.Header = AppLanguage.Get("menu_mapnotification");
-            mapNotification.IsCheckable = true;
-            mapNotification.Click += MapNotification_Click;
-            lobbyNotification.IsChecked = Properties.Settings.Default.lobbyNotification;
-            lobbyNotification.Header = AppLanguage.Get("menu_lobbynotification");
-            lobbyNotification.IsCheckable = true;
-            lobbyNotification.Click += LobbyNotification_Click;
-            connectedNotification.IsChecked = Properties.Settings.Default.connectedNotification;
-            connectedNotification.Header = AppLanguage.Get("menu_connectednotification");
-            connectedNotification.IsCheckable = true;
-            connectedNotification.Click += ConnectedNotification_Click;
-            crashedNotification.IsChecked = Properties.Settings.Default.crashedNotification;
-            crashedNotification.Header = AppLanguage.Get("menu_crashednotification");
-            crashedNotification.IsCheckable = true;
-            crashedNotification.Click += CrashedNotification_Click;
-            enableDiscordRPC.IsChecked = Properties.Settings.Default.enableDiscordRPC;
-            enableDiscordRPC.Header = AppLanguage.Get("menu_discordrpc");
-            enableDiscordRPC.IsCheckable = true;
-            enableDiscordRPC.Click += EnableDiscordRPC_Click;
-            enableMobileApp.IsChecked = Properties.Settings.Default.mobileAppEnabled;
-            enableMobileApp.Header = AppLanguage.Get("menu_mobileappenabled");
-            enableMobileApp.IsCheckable = true;
-            enableMobileApp.Click += EnableMobileApp_Click;
-            autoCheckForUpdates.IsChecked = Properties.Settings.Default.autoCheckForUpdates;
-            autoCheckForUpdates.Header = AppLanguage.Get("menu_autocheckupdates");
-            autoCheckForUpdates.IsCheckable = true;
-            autoCheckForUpdates.Click += AutoCheckForUpdates_Click;
-            autoPauseResumeSpotify.IsChecked = Properties.Settings.Default.autoPausePlaySpotify;
-            autoPauseResumeSpotify.Header = AppLanguage.Get("menu_autospotify");
-            autoPauseResumeSpotify.IsCheckable = true;
-            autoPauseResumeSpotify.Click += AutoPauseResumeSpotify_Click;
-            startUpCheck.IsChecked = Properties.Settings.Default.runAtStartUp;
-            startUpCheck.Header = AppLanguage.Get("menu_startup");
-            startUpCheck.IsCheckable = true;
-            startUpCheck.Click += StartUpCheck_Click;
-            continueSprayingCheck.IsChecked = Properties.Settings.Default.ContinueSpraying;
-            continueSprayingCheck.Header = AppLanguage.Get("menu_continuespray");
-            continueSprayingCheck.IsCheckable = true;
-            continueSprayingCheck.Click += ContinueSprayingCheck_Click;
-            saveFramesDebug.IsChecked = Properties.Settings.Default.saveDebugFrames;
-            saveFramesDebug.Header = AppLanguage.Get("menu_savedebugframes");
-            saveFramesDebug.IsCheckable = true;
-            saveFramesDebug.Click += DebugCheck_Click;
-            saveLogsCheck.IsChecked = Properties.Settings.Default.saveLogs;
-            saveLogsCheck.Header = AppLanguage.Get("menu_savedebuglogs");
-            saveLogsCheck.IsCheckable = true;
-            saveLogsCheck.Click += SaveLogsCheck_Click;
-            autoAcceptMatchCheck.IsChecked = Properties.Settings.Default.autoAcceptMatch;
-            autoAcceptMatchCheck.Header = AppLanguage.Get("menu_autoaccept");
-            autoAcceptMatchCheck.IsCheckable = true;
-            autoAcceptMatchCheck.Click += AutoAcceptMatchCheck_Click;
-            autoBuyArmor.IsChecked = Properties.Settings.Default.autoBuyArmor;
-            autoBuyArmor.Header = AppLanguage.Get("menu_autobuyarmor");
-            autoBuyArmor.IsCheckable = true;
-            autoBuyArmor.Click += AutoBuyArmor_Click;
-            autoBuyDefuseKit.IsChecked = Properties.Settings.Default.autoBuyDefuseKit;
-            autoBuyDefuseKit.Header = AppLanguage.Get("menu_autobuydefuse");
-            autoBuyDefuseKit.IsCheckable = true;
-            autoBuyDefuseKit.Click += AutoBuyDefuseKit_Click;
-            preferArmorCheck.IsChecked = Properties.Settings.Default.preferArmor;
-            preferArmorCheck.Header = AppLanguage.Get("menu_preferarmor");
-            preferArmorCheck.IsCheckable = true;
-            preferArmorCheck.Click += PreferArmorCheck_Click;
-            autoReloadCheck.IsChecked = Properties.Settings.Default.autoReload;
-            autoReloadCheck.Header = AppLanguage.Get("menu_enabled");
-            autoReloadCheck.IsCheckable = true;
-            autoReloadCheck.Click += AutoReloadCheck_Click;
-            mobileNotificationsMenu.Items.Add(acceptedNotification);
-            mobileNotificationsMenu.Items.Add(mapNotification);
-            mobileNotificationsMenu.Items.Add(lobbyNotification);
-            mobileNotificationsMenu.Items.Add(connectedNotification);
-            mobileNotificationsMenu.Items.Add(crashedNotification);
-            mobileNotificationsMenu.Items.Add(bombNotification);
-            debugMenu.Items.Add(saveFramesDebug);
-            debugMenu.Items.Add(saveLogsCheck);
-            debugMenu.Items.Add(openDebugWindow);
-            autoReloadMenu.Items.Add(autoReloadCheck);
-            autoReloadMenu.Items.Add(continueSprayingCheck);
-            autoBuyMenu.Items.Add(preferArmorCheck);
-            autoBuyMenu.Items.Add(autoBuyArmor);
-            autoBuyMenu.Items.Add(autoBuyDefuseKit);
-            automation.Items.Add(autoBuyMenu);
-            automation.Items.Add(autoReloadMenu);
-            automation.Items.Add(autoAcceptMatchCheck);
-            automation.Items.Add(autoPauseResumeSpotify);
-            options.Items.Add(startUpCheck);
-            options.Items.Add(autoCheckForUpdates);
-            options.Items.Add(languageMenu);
-            discordMenu.Items.Add(enableDiscordRPC);
-            discordMenu.Items.Add(enableLobbyCount);
-            discordMenu.Items.Add(enterSteamAPIKey);
-            mobileMenu.Items.Add(enableMobileApp);
-            mobileMenu.Items.Add(enterMobileIpAddress);
-            mobileMenu.Items.Add(enterTelegramChatID);
-            mobileMenu.Items.Add(mobileNotificationsMenu);
             exitcm.Items.Add(about);
-            exitcm.Items.Add(debugMenu);
             exitcm.Items.Add(new Separator());
-            exitcm.Items.Add(mobileMenu);
-            exitcm.Items.Add(discordMenu);
-            exitcm.Items.Add(automation);
             exitcm.Items.Add(options);
             exitcm.Items.Add(new Separator());
             exitcm.Items.Add(checkForUpdates);
             exitcm.Items.Add(exit);
             exitcm.StaysOpen = false;
+        }
+
+        private void Options_Click(object sender, RoutedEventArgs e)
+        {
+            Notifyicon_LeftMouseButtonDoubleClick(null, null);
         }
 
         private void EnterTelegramChatID_Click(object sender, RoutedEventArgs e)
@@ -412,133 +234,12 @@ namespace CSAuto
                 Properties.Settings.Default.telegramChatId = res;
                 Properties.Settings.Default.Save();
                 if (Properties.Settings.Default.connectedNotification)
-                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}",true);
+                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}", true);
             }
         }
-
-        private void EnableLobbyCount_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.enableLobbyCount = enableLobbyCount.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void EnterSteamAPIKey_Click(object sender, RoutedEventArgs e)
-        {
-            string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_steamkey"), AppLanguage.Get("inputtext_steamkey"), ref res) == System.Windows.Forms.DialogResult.OK)
-            {
-                Properties.Settings.Default.steamAPIkey = res;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        private void BombNotification_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.bombNotification = bombNotification.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void CrashedNotification_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.crashedNotification = crashedNotification.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void ConnectedNotification_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.connectedNotification = connectedNotification.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void LobbyNotification_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.lobbyNotification = lobbyNotification.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void MapNotification_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.mapNotification = mapNotification.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void AcceptedNotification_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.acceptedNotification = acceptedNotification.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private static void GenerateLanguages(MenuItem languageMenu)
-        {
-            foreach (string language in Properties.Settings.Default.languages)
-            {
-                RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage };
-                rb.Checked += (sender, args) =>
-                {
-                    Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
-                    Properties.Settings.Default.Save();
-                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                    if (restart == MessageBoxResult.OK)
-                    {
-                        Process.Start(Assembly.GetExecutingAssembly().Location);
-                        Application.Current.Shutdown();
-                    }
-                };
-                rb.Tag = language;
-                languageMenu.Items.Add(rb);
-            }
-        }
-
-        private void EnterMobileIpAddress_Click(object sender, RoutedEventArgs e)
-        {
-            string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_mobileip"), AppLanguage.Get("inputtext_mobileip"), ref res) == System.Windows.Forms.DialogResult.OK)
-            {
-                Properties.Settings.Default.phoneIpAddress = res;
-                Properties.Settings.Default.Save();
-                if (Properties.Settings.Default.connectedNotification)
-                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}",onlyServer:true);
-            }
-        }
-
-        private void EnableMobileApp_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.mobileAppEnabled = enableMobileApp.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void EnableDiscordRPC_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.enableDiscordRPC = enableDiscordRPC.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
         private void InitializeDiscordRPC()
         {
             discordHandlers = default;
-        }
-
-        private void AutoCheckForUpdates_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.autoCheckForUpdates = autoCheckForUpdates.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void OpenDebugWindow_Click(object sender, RoutedEventArgs e)
-        {
-            Notifyicon_LeftMouseButtonDoubleClick(null, null);
-        }
-
-        private void AutoPauseResumeSpotify_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.autoPausePlaySpotify = autoPauseResumeSpotify.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void ContinueSprayingCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.ContinueSpraying = continueSprayingCheck.IsChecked;
-            Properties.Settings.Default.Save();
         }
 
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -576,36 +277,6 @@ namespace CSAuto
                     MessageBox.Show($"{AppLanguage.Get("error_update")}\n'{ex.Message}'", AppLanguage.Get("title_update"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }).Start();
-        }
-
-        private void SaveLogsCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.saveLogs = saveLogsCheck.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void PreferArmorCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.preferArmor = preferArmorCheck.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void AutoBuyDefuseKit_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.autoBuyDefuseKit = autoBuyDefuseKit.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void AutoBuyArmor_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.autoBuyArmor = autoBuyArmor.IsChecked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void AutoReloadCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.autoReload = autoReloadCheck.IsChecked;
-            Properties.Settings.Default.Save();
         }
         public bool StartGSIServer()
         {
@@ -783,7 +454,7 @@ namespace CSAuto
                     }
                 }
                 UpdateDiscordRPC();
-                SendMessageToServer($"<GSI>{JSON}{inGame}",onlyServer:true);
+                SendMessageToServer($"<GSI>{JSON}{inGame}", onlyServer: true);
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
 
             }
@@ -877,7 +548,7 @@ namespace CSAuto
             }
 
         }
-        private void SendMessageToServer(string message, bool onlyTelegram = false,bool onlyServer = false)
+        private void SendMessageToServer(string message, bool onlyTelegram = false, bool onlyServer = false)
         {
             if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
                 TelegramSendMessage(message.Substring(5));
@@ -937,7 +608,7 @@ namespace CSAuto
                     {
                         Log.WriteLine("Stopping GSI Server");
                         StopGSIServer();
-                        SendMessageToServer("<CLS>",onlyServer:true);
+                        SendMessageToServer("<CLS>", onlyServer: true);
                     }
                     if (steamAPIServer != null)
                     {
@@ -1124,7 +795,7 @@ namespace CSAuto
                 Keyboard.SendKey(keys[i], true, Keyboard.InputType.Keyboard);
             }
         }
-        
+
         // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
         private string GetCSGODir()
         {
@@ -1133,42 +804,23 @@ namespace CSAuto
                 return $"{csgoDir}\\csgo";
             return null;
         }
-        private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.autoAcceptMatch = autoAcceptMatchCheck.IsChecked;
-            Properties.Settings.Default.Save();
-        }
+        //private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Properties.Settings.Default.autoAcceptMatch = autoAcceptMatchCheck.IsChecked;
+        //    Properties.Settings.Default.Save();
+        //}
 
-        private void DebugCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.saveDebugFrames = saveFramesDebug.IsChecked;
-            Properties.Settings.Default.Save();
-        }
+        //private void DebugCheck_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Properties.Settings.Default.saveDebugFrames = saveFramesDebug.IsChecked;
+        //    Properties.Settings.Default.Save();
+        //}
         public static void LeftMouseClick(int xpos, int ypos)
         {
             NativeMethods.SetCursorPos(xpos, ypos);
             NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
             NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
             Log.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
-        }
-        private void StartUpCheck_Click(object sender, RoutedEventArgs e)
-        {
-            string appname = Assembly.GetEntryAssembly().GetName().Name;
-            string executablePath = Process.GetCurrentProcess().MainModule.FileName;
-            using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
-            {
-                if ((bool)startUpCheck.IsChecked)
-                {
-                    Properties.Settings.Default.runAtStartUp = true;
-                    rk.SetValue(appname, executablePath);
-                }
-                else
-                {
-                    Properties.Settings.Default.runAtStartUp = false;
-                    rk.DeleteValue(appname, false);
-                }
-            }
-            Properties.Settings.Default.Save();
         }
         private async Task AutoAcceptMatchAsync()
         {
@@ -1211,7 +863,7 @@ namespace CSAuto
                                 SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
-                            if (CheckIfAccepted(bitmap,Y))
+                            if (CheckIfAccepted(bitmap, Y))
                             {
                                 acceptedGame = true;
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
@@ -1222,7 +874,7 @@ namespace CSAuto
                 }
             }
         }
-        private bool CheckIfAccepted(Bitmap bitmap,int maxY)
+        private bool CheckIfAccepted(Bitmap bitmap, int maxY)
         {
             bool found = false;
             int count = 0;
@@ -1315,10 +967,11 @@ namespace CSAuto
                 if (type == typeof(WriteException) ||
                     type == typeof(DirectoryNotFoundException))
                 {
-                    autoReloadMenu.IsEnabled = false;
-                    autoBuyMenu.IsEnabled = false;
-                    autoPauseResumeSpotify.IsEnabled = false;
-                    discordMenu.IsEnabled = false;
+                    //autoReloadMenu.IsEnabled = false;
+                    //autoBuyMenu.IsEnabled = false;
+                    //autoPauseResumeSpotify.IsEnabled = false;
+                    //discordMenu.IsEnabled = false;
+                    hadError = true;
                 }
                 MessageBox.Show($"{ex.Message}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -1431,11 +1084,11 @@ namespace CSAuto
         }
 
         private void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
-        {
+        { 
             //open debug menu
             if (debugWind == null)
             {
-                debugWind = new GSIDebugWindow(this);
+                debugWind = new GUIWindow(this);
                 Log.debugWind = debugWind;
                 debugWind.Show();
                 debugWind.Activate();

@@ -13,6 +13,7 @@ namespace CSAuto.Languages
             ["menu_mobile"] = "Уведомления по телефону",
             ["menu_exit"] = "Выход",
             ["menu_automation"] = "Автоматизация",
+            ["menu_general"] = "Разное",
             ["menu_options"] = "Настройки",
             ["menu_opendebug"] = "Открыть окно отладки",
             ["menu_checkforupdates"] = "Проверить обновления",

@@ -123,7 +123,7 @@
     <Compile Include="Utils\Spotify.cs" />
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
-    <Page Include="GSIDebugWindow.xaml">
+    <Page Include="GUIWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -136,8 +136,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameState.cs" />
-    <Compile Include="GSIDebugWindow.xaml.cs">
-      <DependentUpon>GSIDebugWindow.xaml</DependentUpon>
+    <Compile Include="GUIWindow.xaml.cs">
+      <DependentUpon>GUIWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Keyboard.cs" />
     <Compile Include="Utils\Log.cs" />
@@ -204,6 +204,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Icons\GitHub-Mark.png" />
     <Content Include="Steamworks.NET.dll" />
     <Content Include="steam_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
