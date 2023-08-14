@@ -34,8 +34,9 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * ~~Show status about cs, when you are in lobby it shows your friendcode and amount of players in lobby, when in match it shows the map, mode, score, and round phase (amount of players in lobby is disabled by default, you will have to enable it manually, it is like that because i dont know if its bannable or not)~~ (GSI might not be enabled in cs2)
 * ~~Send time left till bomb exploded to mobile! (not accurate as of right now)~~ (GSI might not be enabled in cs2)
 
-**Image demonstration of the menu:**  
+**Image demonstration of the app:**  
 ![right-click-menu](menuimage.png)
+![gui-menu](appimage.png)
 ## Installation
 <p align="center">    
   <a href="https://github.com/murkyyt/csauto/releases"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="80" alt="Get On Github"></a>
@@ -46,10 +47,9 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   1. Make sure you have installed the app on your phone
   2. Make sure you are connected to the same network
   3. In the mobile app start the server (and allow ignoring battery optimization)
-  4. Go to the desktop app, in the 'Mobile App' menu and make sure it is enabled
-  5. Go again to the 'Mobile App' menu and press 'Enter IP address'
-  6. In the input box that appeared, enter the IP address you see in the notification on the phone
-  7. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online' 
+  4. Go to the desktop app, in the 'Phone notifications' category and make sure it is enabled
+  5. Go again to the 'Phone notifications' category and enter the IP address you see in the notification on the phone
+  6. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online' 
 ### The app couldn't set the launch options, what to do?
   1. Open steam library
   2. Right click on CS2 and press properties
@@ -57,16 +57,16 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   4. Add -gamestateintegration to the launch options
   5. Close and start the game
 ### **Discord doesn't show amount of players in lobby**
-  1. Open the discord sub-menu
-  2. Press enter 'Enter Steam Web API Key'
-  3. Get your steam web api key from [here](https://steamcommunity.com/dev)
-  4. After you entered it you should have it
-  5. If you still dont have it, make sure you created a lobby by inviting someone
+  1. Open the discord category
+  2. Get your steam web api key from [here](https://steamcommunity.com/dev)
+  3. Enter your Steam Web API Key
+  5. After you entered it you should have it
+  6. If you still dont have it, make sure you created a lobby by inviting someone and enabled it
 ### **How to get notifications in Telegram**
    1. Send a message to the [bot](https://t.me/csautonotification_bot)
    2. Get your chat id by sending a message to [this bot](https://t.me/raw_info_bot)
    3. Copy your 'Chat ID'
-   4. Enter it in the desktop app
+   4. Go to the 'Phone notifications' category and enter the Chat ID you got
    5. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online'
 ## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
