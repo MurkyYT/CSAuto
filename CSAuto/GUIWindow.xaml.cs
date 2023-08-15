@@ -13,9 +13,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 
 namespace CSAuto
@@ -26,6 +28,7 @@ namespace CSAuto
     public partial class GUIWindow : MetroWindow
     {
         readonly MainWindow main;
+        readonly List<string> Colors = new List<string>();
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -40,6 +43,7 @@ namespace CSAuto
         public GUIWindow(MainWindow main)
         {
             InitializeComponent();
+            Properties.Resources.AVAILABLE_THEME_COLORS.Split(',').ToList().ForEach(x => Colors.Add(x.Replace("\"", "").Trim()));
             this.main = main;
             Steam.GetLaunchOptions(730, out string launchOpt);
             steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
@@ -50,7 +54,36 @@ namespace CSAuto
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
             //Title = AppLanguage.Get("title_debugwind");
             GenerateLanguages();
+            GenerateColors();
         }
+
+        private void GenerateColors()
+        {
+            int index = -1;
+            foreach (string color in Colors)
+            {
+                if (color == Properties.Settings.Default.currentColor)
+                    index = Colors.IndexOf(color);
+                ComboBoxItem comboBoxItem = new ComboBoxItem()
+                {
+                    Content = color
+                };
+                ColorsComboBox.Items.Add(comboBoxItem);
+            }
+            ColorsComboBox.SelectedIndex = index;
+            ColorsComboBox.SelectionChanged += (s, eArgs) =>
+            {
+                Properties.Settings.Default.currentColor = (string)(ColorsComboBox.SelectedItem as ComboBoxItem).Content;
+                Properties.Settings.Default.Save();
+                MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if (restart == MessageBoxResult.OK)
+                {
+                    Process.Start(Assembly.GetExecutingAssembly().Location);
+                    Application.Current.Shutdown();
+                }
+            };
+        }
+
         public void UpdateText(string data)
         {
             this.Dispatcher.Invoke(() =>
@@ -234,13 +267,10 @@ namespace CSAuto
 
         private void GUIWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            try
+            string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
+            if (File.Exists(finalPath))
             {
-                debugBox.Text = File.ReadAllText(Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt");
-            }
-            catch { }
-            finally
-            {
+                debugBox.Text = File.ReadAllText(finalPath);
                 debugBox.ScrollToEnd();
             }
             LoadLanguages(this);
@@ -259,7 +289,10 @@ namespace CSAuto
             foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
                 ch.Header = AppLanguage.Get((string)ch.Header);
             foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
-                ch.Text = AppLanguage.Get((string)ch.Text);
+                ch.Text = AppLanguage.Get(ch.Text);
+            foreach (Button ch in FindVisualChildren<Button>(obj))
+                if(ch.Content != null && ch.Content.GetType().Name == "String")
+                    ch.Content = AppLanguage.Get((string)ch.Content);
         }
 
         private void LaunchGitHubSite(object sender, RoutedEventArgs e)
@@ -289,7 +322,9 @@ namespace CSAuto
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            LoadLanguages((((sender as TabControl).SelectedItem as MetroTabItem).GetChildObjects().First() as StackPanel));
+            IEnumerable<DependencyObject> enumarble = ((sender as TabControl).SelectedItem as MetroTabItem).GetChildObjects();
+            if(enumarble.Count() > 0)
+                LoadLanguages((enumarble.First() as StackPanel));
         }
 
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
@@ -317,6 +352,11 @@ namespace CSAuto
                 Process.Start(Assembly.GetExecutingAssembly().Location);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void BotButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://t.me/csautonotification_bot");
         }
     }
 }

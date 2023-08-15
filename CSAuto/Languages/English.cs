@@ -75,9 +75,10 @@ namespace CSAuto.Languages
             ["inputtext_telegramid"] = "Please enter your Telegram chat id, use the faq if you dont know how",
             ["menu_mobileappenabled"] = "Mobile App Enabled",
             ["error_telegrammessage"] = "There was an error when sending the Telegram message, make sure your chat id is correct",
-            ["inputtext_linkbutton"] = "Bot Link",
+            ["inputtext_botlinkbutton"] = "Bot Link",
             ["menu_darktheme"] = "Dark Theme",
-            ["menu_changelog"] = "Changelog"
+            ["menu_changelog"] = "Changelog",
+            ["title_color"] = "Color: "
         };
         public static string Get(string category)
         {

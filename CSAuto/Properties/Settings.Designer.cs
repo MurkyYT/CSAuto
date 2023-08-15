@@ -334,5 +334,17 @@ namespace CSAuto.Properties {
                 this["darkTheme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public string currentColor {
+            get {
+                return ((string)(this["currentColor"]));
+            }
+            set {
+                this["currentColor"] = value;
+            }
+        }
     }
 }

@@ -70,6 +70,15 @@ namespace CSAuto.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Purple&quot;, &quot;Orange&quot;, &quot;Lime&quot;, &quot;Emerald&quot;, &quot;Teal&quot;, &quot;Cyan&quot;, &quot;Cobalt&quot;, &quot;Indigo&quot;, &quot;Violet&quot;, &quot;Pink&quot;, &quot;Magenta&quot;, &quot;Crimson&quot;, &quot;Amber&quot;, &quot;Yellow&quot;, &quot;Brown&quot;, &quot;Olive&quot;, &quot;Steel&quot;, &quot;Mauve&quot;, &quot;Taupe&quot;, &quot;Sienna&quot;.
+        /// </summary>
+        internal static string AVAILABLE_THEME_COLORS {
+            get {
+                return ResourceManager.GetString("AVAILABLE_THEME_COLORS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon main {
