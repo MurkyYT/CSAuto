@@ -8,7 +8,7 @@
         xmlns:language="clr-namespace:CSAuto.Languages"
         xmlns:local="clr-namespace:CSAuto"
         mc:Ignorable="d"
-        Title="CSAUTO" Height="450" Width="800" Closed="GUIWindow_Closed" Loaded="GUIWindow_Loaded" WindowState="Maximized">
+        Title="CSAuto" Height="450" Width="800" Closed="GUIWindow_Closed" Loaded="GUIWindow_Loaded" WindowState="Maximized">
     <mahapps:MetroWindow.LeftWindowCommands>
         <mahapps:WindowCommands>
             <Button Click="LaunchGitHubSite" ToolTip="Open up the GitHub site">
