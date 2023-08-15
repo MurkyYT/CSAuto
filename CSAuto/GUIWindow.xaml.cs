@@ -300,5 +300,15 @@ namespace CSAuto
                 }
             }
         }
+
+        private void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            if (restart == MessageBoxResult.OK)
+            {
+                Process.Start(Assembly.GetExecutingAssembly().Location);
+                Application.Current.Shutdown();
+            }
+        }
     }
 }
