@@ -31,7 +31,24 @@ namespace Murky.Utils
         {
             string url = $"https://api.github.com/repos/{user}/{repository}/releases/tags/{tag}";
             string webInfo = GetWebInfo(url);
-            return webInfo.Split(new string[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split('"')[0];
+            string[] split = webInfo.Split(new string[] { "\"body\":\"" }, StringSplitOptions.None);
+            string res = split[1].Split('}')[0].Replace("\\\"", "\"").Replace("\\r\\n", "\r\n");
+            res = res.Split(new string[] { ",\"mentions_count\":" }, StringSplitOptions.None)[0];
+            return res.Substring(0, res.Length - 1);
+        }
+        public static string[] GetReleasesDescription(string user, string repository)
+        {
+            List<string> result = new List<string>();
+            string url = $"https://api.github.com/repos/{user}/{repository}/releases";
+            string webInfo = GetWebInfo(url);
+            string[] split = webInfo.Split(new string[] { "\"body\":\"" }, StringSplitOptions.None);
+            for (int i = 1; i < split.Length; i++)
+            {
+                string res = split[i].Split('}')[0].Replace("\\\"", "\"").Replace("\\r\\n", "\r\n");
+                res = res.Split(new string[] { ",\"mentions_count\":" }, StringSplitOptions.None)[0];
+                result.Add(res.Substring(0, res.Length-1));
+            }
+            return result.ToArray();
         }
         public static string GetLatestStringTag(string user, string repository)
         {

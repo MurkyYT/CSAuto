@@ -274,12 +274,21 @@ namespace CSAuto
                 debugBox.ScrollToEnd();
             }
             LoadLanguages(this);
-            string res = Github.GetReleaseDescription("murkyyt", "csauto", MainWindow.VER);
-            res = res.Replace("\\r\\n", "\r\n").Split(new string[] { "🛡" },StringSplitOptions.None)[0];
-            TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
-            FlowDocument document = (FlowDocument)converter.Convert(res,null,null,null);
-            ChangeLogFlowDocument.Document = document;
+            LoadChangelog();
             VersionText.Text = $"ver {MainWindow.VER}";
+        }
+
+        private void LoadChangelog()
+        {
+            string[] res = Github.GetReleasesDescription("murkyyt", "csauto");
+            string finalRes = "";
+            foreach (var item in res)
+            {
+                finalRes += item.Split(new string[] { "🛡" }, StringSplitOptions.None)[0] + "\r\n";
+            }
+            TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
+            FlowDocument document = (FlowDocument)converter.Convert(finalRes, null, null, null);
+            ChangeLogFlowDocument.Document = document;
         }
 
         private void LoadLanguages(DependencyObject obj)
