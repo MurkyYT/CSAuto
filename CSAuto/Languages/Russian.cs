@@ -76,7 +76,8 @@ namespace CSAuto.Languages
             ["menu_mobileappenabled"] = "Мобильное приложение включено",
             ["error_telegrammessage"] = "Произошла ошибка при отправке сообщения Telegram, убедитесь, что ваш идентификатор чата указан правильно",
             ["inputtext_linkbutton"] = "Ссылка на бота",
-            ["menu_darktheme"] = "Тёмная Тема"
+            ["menu_darktheme"] = "Тёмная Тема",
+            ["menu_changelog"] = "Журнал изменений"
         };
         public static string Get(string category)
         {

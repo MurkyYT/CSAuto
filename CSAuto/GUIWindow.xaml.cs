@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using Markdown.Xaml;
 using Microsoft.Win32;
 using Murky.Utils;
 using Murky.Utils.CSGO;
@@ -12,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -242,6 +244,12 @@ namespace CSAuto
                 debugBox.ScrollToEnd();
             }
             LoadLanguages(this);
+            string res = Github.GetReleaseDescription("murkyyt", "csauto", MainWindow.VER);
+            res = res.Replace("\\r\\n", "\r\n").Split(new string[] { "🛡" },StringSplitOptions.None)[0];
+            TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
+            FlowDocument document = (FlowDocument)converter.Convert(res,null,null,null);
+            ChangeLogFlowDocument.Document = document;
+            VersionText.Text = $"ver {MainWindow.VER}";
         }
 
         private void LoadLanguages(DependencyObject obj)

@@ -76,6 +76,13 @@
                     </TabControl>
                 </Grid>
             </mahapps:MetroTabItem>
+            <mahapps:MetroTabItem Header="menu_changelog">
+                <FlowDocumentScrollViewer x:Name="ChangeLogFlowDocument"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalScrollBarVisibility="Auto"
+                                  Margin="5"/>
+            </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="menu_debug">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -103,5 +110,6 @@
                 </Grid>
             </mahapps:MetroTabItem>
         </TabControl>
+        <TextBlock x:Name="VersionText" Text="ver smthn" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="Gray"/>
     </Grid>
 </mahapps:MetroWindow>

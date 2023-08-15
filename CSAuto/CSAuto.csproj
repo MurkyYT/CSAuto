@@ -113,6 +113,8 @@
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Russian.cs" />
+    <Compile Include="Markdown.Xaml\Markdown.cs" />
+    <Compile Include="Markdown.Xaml\TextToFlowDocumentConverter.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\RECT.cs" />
     <Compile Include="Utils\CSGO\CSGOFriendCode.cs" />
@@ -216,9 +218,7 @@
       <Name>APIKeys</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Markdown.Xaml\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

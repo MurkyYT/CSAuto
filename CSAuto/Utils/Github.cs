@@ -27,6 +27,12 @@ namespace Murky.Utils
                 res += long.Parse(split[i].Split(',')[0]);
             return res;
         }
+        public static string GetReleaseDescription(string user,string repository,string tag)
+        {
+            string url = $"https://api.github.com/repos/{user}/{repository}/releases/tags/{tag}";
+            string webInfo = GetWebInfo(url);
+            return webInfo.Split(new string[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split('"')[0];
+        }
         public static string GetLatestStringTag(string user, string repository)
         {
             string url = $"https://api.github.com/repos/{user}/{repository}/releases/latest";
