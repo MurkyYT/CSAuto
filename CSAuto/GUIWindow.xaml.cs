@@ -51,33 +51,8 @@ namespace CSAuto
                 $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
                 $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
-            //Title = AppLanguage.Get("title_debugwind");
             GenerateLanguages();
-            //GenerateColors();
         }
-
-        //private void GenerateColors()
-        //{
-        //    int index = -1;
-        //    foreach (string color in Colors)
-        //    {
-        //        if (color == Properties.Settings.Default.currentColor)
-        //            index = Colors.IndexOf(color);
-        //        ComboBoxItem comboBoxItem = new ComboBoxItem()
-        //        {
-        //            Content = color
-        //        };
-        //        comboBoxItem.Tag = color;
-        //    }
-        //    ColorsComboBox.SelectedIndex = index;
-        //    ColorsComboBox.SelectionChanged += (s, eArgs) =>
-        //    {
-        //        Properties.Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
-        //        Properties.Settings.Default.Save();
-        //        RestartMessageBox();
-        //    };
-        //}
-
         private async Task RestartMessageBox()
         {
             var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"), AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
@@ -278,7 +253,9 @@ namespace CSAuto
                 debugBox.ScrollToEnd();
             }
             LoadLanguages(this);
+#if !DEBUG
             LoadChangelog();
+#endif
             VersionText.Text = $"ver {MainWindow.VER}";
         }
 
@@ -302,7 +279,11 @@ namespace CSAuto
             foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
                 ch.Header = AppLanguage.Get((string)ch.Header);
             foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
+            {
+                if (Colors.Contains(ch.Text))
+                    continue;
                 ch.Text = AppLanguage.Get(ch.Text);
+            }
             foreach (Button ch in FindVisualChildren<Button>(obj))
                 if(ch.Content != null && ch.Content.GetType().Name == "String")
                     ch.Content = AppLanguage.Get((string)ch.Content);
@@ -321,12 +302,7 @@ namespace CSAuto
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
                     Properties.Settings.Default.Save();
-                    var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"), AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
-                    if (restart == MessageDialogResult.Affirmative)
-                    {
-                        Process.Start(Assembly.GetExecutingAssembly().Location);
-                        Application.Current.Shutdown();
-                    }
+                    await RestartMessageBox();
                 };
                 rb.Tag = language;
                 languagesStackPanel.Children.Add(rb);
@@ -364,17 +340,20 @@ namespace CSAuto
         }
         private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
-            var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"),AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
-            if (restart == MessageDialogResult.Affirmative)
-            {
-                Process.Start(Assembly.GetExecutingAssembly().Location);
-                Application.Current.Shutdown();
-            }
+            await RestartMessageBox();
         }
 
         private void BotButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://t.me/csautonotification_bot");
+        }
+
+        private async void ColorsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Properties.Settings.Default.currentColor == Colors[ColorsComboBox.SelectedIndex])
+                return;
+            Properties.Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
+            await RestartMessageBox();
         }
     }
 }

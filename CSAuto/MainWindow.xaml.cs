@@ -77,8 +77,8 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "1.1.1";
-        const string DEBUG_REVISION = "1";
+        public const string VER = "2.0.0";
+        const string DEBUG_REVISION = "";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
@@ -956,8 +956,10 @@ namespace CSAuto
                 integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
                 InitializeLaunchOptions();
+#if !DEBUG
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
+#endif
                 if (Properties.Settings.Default.connectedNotification)
                     SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
             }
