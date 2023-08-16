@@ -179,7 +179,7 @@ namespace CSAuto
 
                 return webclient.DownloadString(urlString);
             }
-            catch { MessageBox.Show(AppLanguage.Get("error_telegrammessage"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error); return null; }
+            catch (Exception ex){ MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n{ex.GetType()}\n{ex.Message}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);return null; }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
@@ -469,11 +469,12 @@ namespace CSAuto
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
             int diff = (int)(GameState.Timestamp - result);
+            SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true);
             bombTimerThread = new Thread(() =>
             {
                 for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
                 {
-                    SendMessageToServer($"<BMB>{AppLanguage.Get("server_timeleft")} {seconds}");
+                    SendMessageToServer($"<BMB>{AppLanguage.Get("server_timeleft")} {seconds}",onlyServer:true);
                     Thread.Sleep(BOMB_TIMER_DELAY);
                 }
                 bombTimerThread = null;

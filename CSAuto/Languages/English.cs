@@ -78,7 +78,9 @@ namespace CSAuto.Languages
             ["inputtext_botlinkbutton"] = "Bot Link",
             ["menu_darktheme"] = "Dark Theme",
             ["menu_changelog"] = "Changelog",
-            ["title_color"] = "Color: "
+            ["title_color"] = "Color: ",
+            ["inputtext_linkbutton"] = "Bot Link",
+            ["server_bombplanted"] = "Bomb has been planted"
         };
         public static string Get(string category)
         {
