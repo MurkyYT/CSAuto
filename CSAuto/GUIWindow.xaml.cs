@@ -1,10 +1,12 @@
 ﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Markdown.Xaml;
 using Microsoft.Win32;
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,10 +15,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 
@@ -28,7 +28,7 @@ namespace CSAuto
     public partial class GUIWindow : MetroWindow
     {
         readonly MainWindow main;
-        readonly List<string> Colors = new List<string>();
+        readonly StringCollection Colors = Properties.Settings.Default.availableColors;
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -43,7 +43,6 @@ namespace CSAuto
         public GUIWindow(MainWindow main)
         {
             InitializeComponent();
-            Properties.Resources.AVAILABLE_THEME_COLORS.Split(',').ToList().ForEach(x => Colors.Add(x.Replace("\"", "").Trim()));
             this.main = main;
             Steam.GetLaunchOptions(730, out string launchOpt);
             steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
@@ -54,34 +53,39 @@ namespace CSAuto
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
             //Title = AppLanguage.Get("title_debugwind");
             GenerateLanguages();
-            GenerateColors();
+            //GenerateColors();
         }
 
-        private void GenerateColors()
+        //private void GenerateColors()
+        //{
+        //    int index = -1;
+        //    foreach (string color in Colors)
+        //    {
+        //        if (color == Properties.Settings.Default.currentColor)
+        //            index = Colors.IndexOf(color);
+        //        ComboBoxItem comboBoxItem = new ComboBoxItem()
+        //        {
+        //            Content = color
+        //        };
+        //        comboBoxItem.Tag = color;
+        //    }
+        //    ColorsComboBox.SelectedIndex = index;
+        //    ColorsComboBox.SelectionChanged += (s, eArgs) =>
+        //    {
+        //        Properties.Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
+        //        Properties.Settings.Default.Save();
+        //        RestartMessageBox();
+        //    };
+        //}
+
+        private async Task RestartMessageBox()
         {
-            int index = -1;
-            foreach (string color in Colors)
+            var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"), AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
+            if (restart == MessageDialogResult.Affirmative)
             {
-                if (color == Properties.Settings.Default.currentColor)
-                    index = Colors.IndexOf(color);
-                ComboBoxItem comboBoxItem = new ComboBoxItem()
-                {
-                    Content = color
-                };
-                ColorsComboBox.Items.Add(comboBoxItem);
+                Process.Start(Assembly.GetExecutingAssembly().Location);
+                Application.Current.Shutdown();
             }
-            ColorsComboBox.SelectedIndex = index;
-            ColorsComboBox.SelectionChanged += (s, eArgs) =>
-            {
-                Properties.Settings.Default.currentColor = (string)(ColorsComboBox.SelectedItem as ComboBoxItem).Content;
-                Properties.Settings.Default.Save();
-                MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                if (restart == MessageBoxResult.OK)
-                {
-                    Process.Start(Assembly.GetExecutingAssembly().Location);
-                    Application.Current.Shutdown();
-                }
-            };
         }
 
         public void UpdateText(string data)
@@ -313,12 +317,12 @@ namespace CSAuto
             foreach (string language in Properties.Settings.Default.languages)
             {
                 RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage };
-                rb.Checked += (sender, args) =>
+                rb.Checked += async (sender, args) =>
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
                     Properties.Settings.Default.Save();
-                    MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                    if (restart == MessageBoxResult.OK)
+                    var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"), AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
+                    if (restart == MessageDialogResult.Affirmative)
                     {
                         Process.Start(Assembly.GetExecutingAssembly().Location);
                         Application.Current.Shutdown();
@@ -352,11 +356,16 @@ namespace CSAuto
                 }
             }
         }
-
-        private void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
+        public async Task<MessageDialogResult> ShowMessage(string title,
+           string message, MessageDialogStyle dialogStyle)
         {
-            MessageBoxResult restart = MessageBox.Show(AppLanguage.Get("msgbox_restartneeded"), AppLanguage.Get("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
-            if (restart == MessageBoxResult.OK)
+            return await this.ShowMessageAsync(
+                title, message, dialogStyle);
+        }
+        private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
+        {
+            var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"),AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
+            if (restart == MessageDialogResult.Affirmative)
             {
                 Process.Start(Assembly.GetExecutingAssembly().Location);
                 Application.Current.Shutdown();

@@ -5,6 +5,8 @@ namespace CSAuto
     {
         public static string Get(string category)
         {
+            if (category == null)
+                return "";
             switch (Properties.Settings.Default.currentLanguage)
             {
                 case "language_english":

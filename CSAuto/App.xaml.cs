@@ -20,10 +20,10 @@ namespace CSAuto
             base.OnStartup(e);
             if (CSAuto.Properties.Settings.Default.darkTheme)
                 // Set the application theme to Dark + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Dark.{CSAuto.Properties.Settings.Default.currentColor}");
+                ThemeManager.Current.ChangeTheme(this, $"Dark.Green");
             else
                 // Set the application theme to Light + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Light.{CSAuto.Properties.Settings.Default.currentColor}");
+                ThemeManager.Current.ChangeTheme(this, $"Light.Green");
 
 
         }

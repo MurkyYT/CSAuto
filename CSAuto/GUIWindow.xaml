@@ -8,7 +8,15 @@
         xmlns:language="clr-namespace:CSAuto.Languages"
         xmlns:local="clr-namespace:CSAuto"
         mc:Ignorable="d"
-        Title="CSAuto" Height="450" Width="800" Closed="GUIWindow_Closed" Loaded="GUIWindow_Loaded" WindowState="Maximized">
+        Title="CSAuto" 
+        Height="450"
+        Width="800"
+        Closed="GUIWindow_Closed"
+        Loaded="GUIWindow_Loaded"
+        WindowState="Maximized"
+        WindowTitleBrush="Black"
+        GlowBrush="Black"
+        TitleCharacterCasing="Normal">
     <mahapps:MetroWindow.LeftWindowCommands>
         <mahapps:WindowCommands>
             <Button Click="LaunchGitHubSite" ToolTip="Open up the GitHub site">
@@ -17,7 +25,7 @@
         </mahapps:WindowCommands>
     </mahapps:MetroWindow.LeftWindowCommands>
     <Grid>
-        <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left">
+        <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left">
             <mahapps:MetroTabItem Header="menu_options">
                 <Grid>
                     <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top" SelectionChanged="TabControl_SelectionChanged">
@@ -25,10 +33,10 @@
                             <StackPanel Orientation="Vertical">
                                 <CheckBox x:Name="StartUpCheck" Content="menu_startup" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=runAtStartUp}" Click="StartUpCheck_Click"/>
                                 <CheckBox x:Name="DarkThemeCheck" Content="menu_darktheme" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=darkTheme}" Click="DarkThemeCheck_Click"/>
-                                <StackPanel Orientation="Horizontal">
+                                <!--<StackPanel Orientation="Horizontal">
                                     <TextBlock Text="title_color" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <ComboBox x:Name="ColorsComboBox"/>
-                                </StackPanel>
+                                    <ComboBox x:Name="ColorsComboBox" ItemsSource="{Binding Source={x:Static properties:Settings.Default},Path=availableColors}" SelectedItem="{Binding Source={x:Static properties:Settings.Default},Path=currentColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>--> <!--ComboBox doesnt update-->
                                 <CheckBox Content="menu_checkforupdates" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoCheckForUpdates}"/>
                                 <TextBlock Text="menu_language" FontSize="20" FontWeight="Bold"/>
                                 <StackPanel x:Name="languagesStackPanel" Orientation="Vertical"/>
@@ -84,6 +92,15 @@
                 </Grid>
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="menu_changelog">
+                <!--<TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Icons/GitHub-Mark.png" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock>menu_changelog</TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>-->
+                <!--Example on how to add image to the left-->
                 <FlowDocumentScrollViewer x:Name="ChangeLogFlowDocument"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch"

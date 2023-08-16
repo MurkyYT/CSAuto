@@ -87,5 +87,33 @@
     <Setting Name="currentColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Green</Value>
     </Setting>
+    <Setting Name="availableColors" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;Red&lt;/string&gt;
+  &lt;string&gt;Green&lt;/string&gt;
+  &lt;string&gt;Blue&lt;/string&gt;
+  &lt;string&gt;Purple&lt;/string&gt;
+  &lt;string&gt;Orange&lt;/string&gt;
+  &lt;string&gt;Lime&lt;/string&gt;
+  &lt;string&gt;Emerald&lt;/string&gt;
+  &lt;string&gt;Teal&lt;/string&gt;
+  &lt;string&gt;Cyan&lt;/string&gt;
+  &lt;string&gt;Cobalt&lt;/string&gt;
+  &lt;string&gt;Indigo&lt;/string&gt;
+  &lt;string&gt;Violet&lt;/string&gt;
+  &lt;string&gt;Pink&lt;/string&gt;
+  &lt;string&gt;Magenta&lt;/string&gt;
+  &lt;string&gt;Crimson&lt;/string&gt;
+  &lt;string&gt;Amber&lt;/string&gt;
+  &lt;string&gt;Yellow&lt;/string&gt;
+  &lt;string&gt;Brown&lt;/string&gt;
+  &lt;string&gt;Olive&lt;/string&gt;
+  &lt;string&gt;Steel&lt;/string&gt;
+  &lt;string&gt;Mauve&lt;/string&gt;
+  &lt;string&gt;Taupe&lt;/string&gt;
+  &lt;string&gt;Sienna&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -346,5 +346,39 @@ namespace CSAuto.Properties {
                 this["currentColor"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>Red</string>
+  <string>Green</string>
+  <string>Blue</string>
+  <string>Purple</string>
+  <string>Orange</string>
+  <string>Lime</string>
+  <string>Emerald</string>
+  <string>Teal</string>
+  <string>Cyan</string>
+  <string>Cobalt</string>
+  <string>Indigo</string>
+  <string>Violet</string>
+  <string>Pink</string>
+  <string>Magenta</string>
+  <string>Crimson</string>
+  <string>Amber</string>
+  <string>Yellow</string>
+  <string>Brown</string>
+  <string>Olive</string>
+  <string>Steel</string>
+  <string>Mauve</string>
+  <string>Taupe</string>
+  <string>Sienna</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection availableColors {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["availableColors"]));
+            }
+        }
     }
 }
