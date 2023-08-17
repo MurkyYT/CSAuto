@@ -160,6 +160,9 @@ namespace CSAuto
                 CheckForDuplicates();
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 InitializeContextMenu();
+#if !DEBUG
+                MakeSureStartupIsOn();
+#endif
                 Top = -1000;
                 Left = -1000;
             }
@@ -169,6 +172,24 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
+
+        private void MakeSureStartupIsOn()
+        {
+            string appname = Assembly.GetEntryAssembly().GetName().Name;
+            string executablePath = Process.GetCurrentProcess().MainModule.FileName;
+            using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                if (Properties.Settings.Default.runAtStartUp)
+                {
+                    rk.SetValue(appname, executablePath);
+                }
+                else
+                {
+                    rk.DeleteValue(appname, false);
+                }
+            }
+        }
+
         public string TelegramSendMessage(string text)
         {
             try
@@ -179,7 +200,7 @@ namespace CSAuto
 
                 return webclient.DownloadString(urlString);
             }
-            catch (Exception ex){ MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n{ex.GetType()}\n{ex.Message}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);return null; }
+            catch (WebException ex){ if (!ex.Message.Contains("(429)")) { MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n'{ex.Message}'", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error); } return null;  }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
