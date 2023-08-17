@@ -189,19 +189,19 @@ namespace CSAuto
             }
         }
 
-        private static void ParseWeaponGSI(Player player, PropertyInfo pi2)
-        {
-            foreach (PropertyInfo pi3 in pi2.PropertyType.GetProperties())
-            {
-                Log.WriteLine(
-                    string.Format("Name: {0} | Value: {1}",
-                            pi3.Name,
-                            pi3.GetValue(TypeConvertor.ConvertPropertyInfoToOriginalType<Weapon>(pi2, player), null)
-                        )
-                );
-            }
-            Log.WriteLine("-----------------------------");
-        }
+        //private static void ParseWeaponGSI(Player player, PropertyInfo pi2)
+        //{
+        //    foreach (PropertyInfo pi3 in pi2.PropertyType.GetProperties())
+        //    {
+        //        Log.WriteLine(
+        //            string.Format("Name: {0} | Value: {1}",
+        //                    pi3.Name,
+        //                    pi3.GetValue(TypeConvertor.ConvertPropertyInfoToOriginalType<Weapon>(pi2, player), null)
+        //                )
+        //        );
+        //    }
+        //    Log.WriteLine("-----------------------------");
+        //}
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {

@@ -225,18 +225,7 @@ namespace CSAuto
         {
             Notifyicon_LeftMouseButtonDoubleClick(null, null);
         }
-
-        private void EnterTelegramChatID_Click(object sender, RoutedEventArgs e)
-        {
-            string res = "";
-            if (InputBox.Show(AppLanguage.Get("inputtitle_telegramid"), AppLanguage.Get("inputtext_telegramid"), ref res, AppLanguage.Get("inputtext_linkbutton"), "https://t.me/csautonotification_bot") == System.Windows.Forms.DialogResult.OK)
-            {
-                Properties.Settings.Default.telegramChatId = res;
-                Properties.Settings.Default.Save();
-                if (Properties.Settings.Default.connectedNotification)
-                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}", true);
-            }
-        }
+       
         private void InitializeDiscordRPC()
         {
             discordHandlers = default;
@@ -805,17 +794,6 @@ namespace CSAuto
                 return $"{csgoDir}\\csgo";
             return null;
         }
-        //private void AutoAcceptMatchCheck_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Properties.Settings.Default.autoAcceptMatch = autoAcceptMatchCheck.IsChecked;
-        //    Properties.Settings.Default.Save();
-        //}
-
-        //private void DebugCheck_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Properties.Settings.Default.saveDebugFrames = saveFramesDebug.IsChecked;
-        //    Properties.Settings.Default.Save();
-        //}
         public static void LeftMouseClick(int xpos, int ypos)
         {
             NativeMethods.SetCursorPos(xpos, ypos);
