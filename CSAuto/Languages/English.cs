@@ -80,7 +80,27 @@ namespace CSAuto.Languages
             ["menu_changelog"] = "Changelog",
             ["title_color"] = "Color: ",
             ["inputtext_linkbutton"] = "Bot Link",
-            ["server_bombplanted"] = "Bomb has been planted"
+            ["server_bombplanted"] = "Bomb has been planted",
+            ["menu_discordcustomization"] = "Customize Discord RPC",
+            ["title_discordstate"] = "State template",
+            ["title_discorddetails"] = "Details template",
+            ["menu_discordlobby"] = "Lobby RPC",
+            ["menu_discordingame"] = "In Game RPC",
+            ["title_discordrpctemplates"] = "Templates:",
+            ["discord_friendcode"] = "{Friendcode} - Your friencode",
+            ["discord_gamemode"] = "{Gamemode} - The current match mode",
+            ["discord_map"] = "{Map} - The current match map",
+            ["discord_teamscore"] = "{TeamScore} - Your team score",
+            ["discord_myteam"] = "{MyTeam} - Your current team",
+            ["discord_roundstate"] = "{RoundState} - Current round state",
+            ["discord_matchstate"] = "{MatchState} - Current match state",
+            ["discord_enemyscore"] = "{EnemyScore} - Enemy team score",
+            ["discord_enemyteam"] = "{EnemyTeam} - Enemy team name",
+            ["discord_tscore"] = "{TScore} - T side score",
+            ["discord_ctscore"] = "{CTScore} - CT side score",
+            ["discord_steamid"] = "{SteamID} - Your steam id",
+            ["discord_result"] = "Result",
+            ["discord_restartneeded"] = "You may need to restart the app for changes to apply",
         };
         public static string Get(string category)
         {

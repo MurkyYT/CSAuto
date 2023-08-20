@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:CSAuto"
         mc:Ignorable="d"
         Title="CSAuto" 
-        Height="450"
+        Height="650"
         Width="800"
         Closed="GUIWindow_Closed"
         Loaded="GUIWindow_Loaded"
@@ -25,7 +25,7 @@
         </mahapps:WindowCommands>
     </mahapps:MetroWindow.LeftWindowCommands>
     <Grid>
-        <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left">
+        <TabControl x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged">
             <mahapps:MetroTabItem Header="menu_options">
                 <Grid>
                     <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top" SelectionChanged="TabControl_SelectionChanged">
@@ -132,6 +132,67 @@
                     <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
                     <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,0"/>
                 </Grid>
+            </mahapps:MetroTabItem>
+            <mahapps:MetroTabItem Header="menu_discordcustomization">
+                <StackPanel Orientation="Vertical">
+                    <TabControl x:Name="DiscordTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" SelectionChanged="DiscordTabControl_SelectionChanged">
+                        <mahapps:MetroTabItem Header="menu_discordlobby">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="title_discorddetails" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="LobbyDetailsText" Text="{Binding Source={x:Static properties:Settings.Default},Path=lobbyDetails,Mode=OneTime}" TextChanged="LobbyDetailsText_TextChanged"/>
+                                <TextBlock Text="title_discordstate" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="LobbyStateText" Text="{Binding Source={x:Static properties:Settings.Default},Path=lobbyState,Mode=OneTime}" TextChanged="LobbyStateText_TextChanged"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                        <mahapps:MetroTabItem Header="menu_discordingame">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="title_discorddetails" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="InGameDetailsText" Text="{Binding Source={x:Static properties:Settings.Default},Path=inGameDetails,Mode=OneTime}" TextChanged="InGameDetailsText_TextChanged"/>
+                                <TextBlock Text="title_discordstate" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="InGameStateText" Text="{Binding Source={x:Static properties:Settings.Default},Path=inGameState,Mode=OneTime}" TextChanged="InGameStateText_TextChanged"/>
+                            </StackPanel>
+                        </mahapps:MetroTabItem>
+                    </TabControl>
+                    <TextBlock Text="title_discordrpctemplates"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="discord_friendcode"/>
+                            <TextBlock Text="discord_gamemode"/>
+                            <TextBlock Text="discord_map"/>
+                            <TextBlock Text="discord_teamscore"/>
+                            <TextBlock Text="discord_myteam"/>
+                            <TextBlock Text="discord_roundstate"/>
+                            <TextBlock Text="discord_matchstate"/>
+                            <TextBlock Text="discord_enemyscore"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                            <TextBlock Text="discord_enemyteam"/>
+                            <TextBlock Text="discord_tscore"/>
+                            <TextBlock Text="discord_ctscore"/>
+                            <TextBlock Text="discord_steamid"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBlock Text="discord_result" HorizontalAlignment="Center"/>
+                    <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="6" Background="Black" MinWidth="300" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="PLAYING A GAME" Foreground="#FFF2F3F5" FontWeight="Bold" Margin="10,0,0,0"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="5" Width="50" Height="50" Margin="20,10,0,0">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="/Images/CS_ICON.png"/>
+                                    </Border.Background>
+                                </Border>
+                                <StackPanel Orientation="Vertical"  Margin="10,10,0,0">
+                                    <TextBlock Text="Counter-Strike 2" Foreground="White" FontWeight="Bold"/>
+                                    <TextBlock x:Name="DiscordRpcDetails" Text="Details text" Foreground="LightGray"/>
+                                    <TextBlock x:Name="DiscordRpcState" Text="State text" Foreground="LightGray"/>
+                                    <TextBlock Text="00:00 elapsed" Foreground="LightGray" Margin="0,0,0,5"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="discord_restartneeded"/>
+                </StackPanel>
             </mahapps:MetroTabItem>
         </TabControl>
         <TextBlock x:Name="VersionText" Text="ver smthn" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="Gray"/>
