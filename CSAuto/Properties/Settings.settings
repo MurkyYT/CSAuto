@@ -115,5 +115,17 @@
   &lt;string&gt;Sienna&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="lobbyDetails" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FriendCode: {FriendCode}</Value>
+    </Setting>
+    <Setting Name="lobbyState" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Chilling in lobby</Value>
+    </Setting>
+    <Setting Name="inGameDetails" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Gamemode} - {Map}</Value>
+    </Setting>
+    <Setting Name="inGameState" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{TeamScore} [{MyTeam}] ({RoundState}) {EnemyScore} [{EnemyTeam}]</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -27,8 +27,9 @@ namespace CSAuto
     /// </summary>
     public partial class GUIWindow : MetroWindow
     {
-        readonly MainWindow main;
+        readonly MainWindow main = (MainWindow)Application.Current.MainWindow;
         readonly StringCollection Colors = Properties.Settings.Default.availableColors;
+        readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -40,10 +41,9 @@ namespace CSAuto
                 foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
             }
         }
-        public GUIWindow(MainWindow main)
+        public GUIWindow()
         {
             InitializeComponent();
-            this.main = main;
             Steam.GetLaunchOptions(730, out string launchOpt);
             steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
                 $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
@@ -257,6 +257,7 @@ namespace CSAuto
             LoadChangelog();
 #endif
             VersionText.Text = $"ver {MainWindow.VER}";
+            UpdateDiscordRPCResult(true);
         }
 
         private void LoadChangelog()
@@ -354,6 +355,55 @@ namespace CSAuto
                 return;
             Properties.Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
             await RestartMessageBox();
+        }
+
+        private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2)
+                LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
+        }
+
+        private void InGameDetailsText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Properties.Settings.Default.inGameDetails = InGameDetailsText.Text;
+            UpdateDiscordRPCResult(false);
+        }
+        private void InGameStateText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Properties.Settings.Default.inGameState = InGameStateText.Text;
+            UpdateDiscordRPCResult(false);
+        }
+        private void LobbyDetailsText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Properties.Settings.Default.lobbyDetails = LobbyDetailsText.Text;
+            UpdateDiscordRPCResult(true);
+        }
+
+        private void LobbyStateText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Properties.Settings.Default.lobbyState = LobbyStateText.Text;
+            UpdateDiscordRPCResult(true);
+        }
+        private void UpdateDiscordRPCResult(bool lobby)
+        {
+            if (DiscordRpcDetails == null || DiscordRpcState == null)
+                return;
+            if (lobby) 
+            {
+                DiscordRpcDetails.Text = main.FormatDiscordRPC(Properties.Settings.Default.lobbyDetails, GameState);
+                DiscordRpcState.Text = main.FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
+            }
+            else
+            {
+                DiscordRpcDetails.Text = main.FormatDiscordRPC(Properties.Settings.Default.inGameDetails, GameState);
+                DiscordRpcState.Text = main.FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
+            }
+        }
+
+        private void DiscordTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabControl_SelectionChanged(sender, e);
+            UpdateDiscordRPCResult(DiscordTabControl.SelectedIndex == 0);
         }
     }
 }

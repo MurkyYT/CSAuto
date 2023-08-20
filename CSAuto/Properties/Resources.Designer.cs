@@ -79,6 +79,39 @@ namespace CSAuto.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	&quot;provider&quot;: {
+        ///		&quot;name&quot;: &quot;Counter-Strike: Global Offensive&quot;,
+        ///		&quot;appid&quot;: 730,
+        ///		&quot;version&quot;: 13879,
+        ///		&quot;steamid&quot;: &quot;76561198341800115&quot;,
+        ///		&quot;timestamp&quot;: 1692506622
+        ///	},
+        ///	&quot;map&quot;: {
+        ///		&quot;mode&quot;: &quot;competitive&quot;,
+        ///		&quot;name&quot;: &quot;de_mirage&quot;,
+        ///		&quot;phase&quot;: &quot;live&quot;,
+        ///		&quot;round&quot;: 0,
+        ///		&quot;team_ct&quot;: {
+        ///			&quot;score&quot;: 0,
+        ///			&quot;consecutive_round_losses&quot;: 1,
+        ///			&quot;timeouts_remaining&quot;: 1,
+        ///			&quot;matches_won_this_series&quot;: 0
+        ///		},
+        ///		&quot;team_t&quot;: {
+        ///			&quot;score&quot;: 0,
+        ///			&quot;name&quot;: &quot;wat doink&quot;,
+        ///			&quot;consecutive_round_losses&quot;: 1,
+        ///			&quot;timeouts_remaining&quot;: 1,
+        ///			&quot;matches_wo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string GAMESTATE_EXAMPLE {
+            get {
+                return ResourceManager.GetString("GAMESTATE_EXAMPLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon main {

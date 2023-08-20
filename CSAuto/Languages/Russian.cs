@@ -80,7 +80,27 @@ namespace CSAuto.Languages
             ["menu_changelog"] = "Журнал изменений",
             ["title_color"] = "Цвет: ",
             ["inputtext_linkbutton"] = "Ссылка на бота",
-            ["server_bombplanted"] = "Бомба заложена"
+            ["server_bombplanted"] = "Бомба заложена",
+            ["menu_discordcustomization"] = "Кастомизация Discord RPC",
+            ["title_discordstate"] = "Шаблон состояния",
+            ["title_discorddetails"] = "Шаблон сведений",
+            ["menu_discordlobby"] = "Лобби RPC",
+            ["menu_discordingame"] = "В игре RPC",
+            ["title_discordrpctemplates"] = "Шаблоны:",
+            ["discord_friendcode"] = "{Friendcode} - Ваш код друга",
+            ["discord_gamemode"] = "{Gamemode} - Текущий режим матча",
+            ["discord_map"] = "{Map} - Текущая карта матча",
+            ["discord_teamscore"] = "{TeamScore} - Счёт вашей команды",
+            ["discord_myteam"] = "{MyTeam} - Ваша нынешняя команда",
+            ["discord_roundstate"] = "{RoundState} - Текущее состояние раунда",
+            ["discord_matchstate"] = "{MatchState} - Текущее состояние матча",
+            ["discord_enemyscore"] = "{EnemyScore} - Счет вражеской команды",
+            ["discord_enemyteam"] = "{EnemyTeam} - Название вражеской команды",
+            ["discord_tscore"] = "{TScore} - Счет террористов",
+            ["discord_ctscore"] = "{CTScore} - Счет контер-террористов",
+            ["discord_steamid"] = "{SteamID} - Ваш Steam ID",
+            ["discord_result"] = "Результат",
+            ["discord_restartneeded"] = "Возможно, вам потребуется перезапустить приложение, чтобы изменения вступили в силу",
         };
         public static string Get(string category)
         {

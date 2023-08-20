@@ -209,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\GitHub-Mark.png" />
+    <Resource Include="Images\CS_ICON.png" />
     <Content Include="Steamworks.NET.dll" />
     <Content Include="steam_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

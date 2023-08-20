@@ -78,7 +78,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         public const string VER = "2.0.0";
-        const string GAME_PROCCES_NAME = "csgo";
+        const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
@@ -90,7 +90,6 @@ namespace CSAuto
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
-        const string IN_LOBBY_STATE = "Chilling in lobby";
         const float ACCEPT_BUTTON_DELAY = 20;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         const int MIN_AMOUNT_OF_PIXELS_TO_ACCEPT = 5;
@@ -119,6 +118,7 @@ namespace CSAuto
         private string integrationPath = null;
         private HttpListener _listener;
         private bool ServerRunning = false;
+        private string IN_LOBBY_STATE = "Chilling in lobby";
         /// <summary>
         /// Members
         /// </summary>
@@ -166,12 +166,34 @@ namespace CSAuto
 #endif
                 Top = -1000;
                 Left = -1000;
+                IN_LOBBY_STATE = FormatDiscordRPC(Properties.Settings.Default.lobbyState,GameState);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        public string FormatDiscordRPC(string original, GameState gameState)
+        {
+            if (gameState.Player != null)
+            {
+                return original
+                    .Replace("{FriendCode}", CSGOFriendCode.Encode(gameState.MySteamID))
+                    .Replace("{Gamemode}", gameState.Match.Mode.ToString())
+                    .Replace("{Map}", gameState.Match.Map)
+                    .Replace("{TeamScore}", gameState.Player.Team == Team.CT ? gameState.Match.CTScore.ToString() : gameState.Match.TScore.ToString())
+                    .Replace("{MyTeam}", gameState.Player.Team == null ? Team.T.ToString() : gameState.Player.Team.ToString())
+                    .Replace("{RoundState}", gameState.Match.Phase == Phase.Warmup ? "Warmup" : gameState.Round.Phase.ToString())
+                    .Replace("{MatchState}" , gameState.Match.Phase.ToString())
+                    .Replace("{EnemyScore}", gameState.Player.Team == Team.CT ? gameState.Match.TScore.ToString() : gameState.Match.CTScore.ToString())
+                    .Replace("{EnemyTeam}", gameState.Player.Team == Team.CT ? Team.T.ToString() : Team.CT.ToString())
+                    .Replace("{TScore}",gameState.Match.TScore.ToString())
+                    .Replace("{CTScore}",gameState.Match.CTScore.ToString())
+                    .Replace("{SteamID}",gameState.MySteamID);
+            }
+            return original;
         }
 
         private void MakeSureStartupIsOn()
@@ -418,7 +440,7 @@ namespace CSAuto
                 {
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                     discordPresence.startTimestamp = GameState.Timestamp;
-                    discordPresence.details = $"{GameState.Match.Mode} - {GameState.Match.Map}";
+                    discordPresence.details = FormatDiscordRPC(Properties.Settings.Default.inGameDetails,GameState);
                     discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                     discordPresence.largeImageText = GameState.Match.Map;
                     if (Properties.Settings.Default.mapNotification)
@@ -426,9 +448,10 @@ namespace CSAuto
                 }
                 else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
                 {
+                    IN_LOBBY_STATE = FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
                     Log.WriteLine($"Player is back in main menu");
                     discordPresence.startTimestamp = GameState.Timestamp;
-                    discordPresence.details = $"FriendCode: {CSGOFriendCode.Encode(GameState.MySteamID)}";
+                    discordPresence.details = FormatDiscordRPC(Properties.Settings.Default.lobbyDetails, GameState);
                     discordPresence.state = IN_LOBBY_STATE;
                     discordPresence.largeImageKey = "csgo_icon";
                     discordPresence.largeImageText = "Menu";
@@ -510,9 +533,7 @@ namespace CSAuto
             if (csRunning && inGame)
             {
                 string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
-                discordPresence.state = GameState.Player.Team == Team.T ?
-                    $"{GameState.Match.TScore} [T] ({phase}) {GameState.Match.CTScore} [CT]" :
-                    $"{GameState.Match.CTScore} [CT] ({phase}) {GameState.Match.TScore} [T]";
+                discordPresence.state = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
                 discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
                 discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
                 discordPresence.partyMax = 0;
@@ -1091,7 +1112,7 @@ namespace CSAuto
             //open debug menu
             if (debugWind == null)
             {
-                debugWind = new GUIWindow(this);
+                debugWind = new GUIWindow();
                 Log.debugWind = debugWind;
                 debugWind.Show();
                 debugWind.Activate();

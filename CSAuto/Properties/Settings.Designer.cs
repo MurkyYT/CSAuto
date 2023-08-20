@@ -380,5 +380,53 @@ namespace CSAuto.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["availableColors"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FriendCode: {FriendCode}")]
+        public string lobbyDetails {
+            get {
+                return ((string)(this["lobbyDetails"]));
+            }
+            set {
+                this["lobbyDetails"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Chilling in lobby")]
+        public string lobbyState {
+            get {
+                return ((string)(this["lobbyState"]));
+            }
+            set {
+                this["lobbyState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Gamemode} - {Map}")]
+        public string inGameDetails {
+            get {
+                return ((string)(this["inGameDetails"]));
+            }
+            set {
+                this["inGameDetails"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{TeamScore} [{MyTeam}] ({RoundState}) {EnemyScore} [{EnemyTeam}]")]
+        public string inGameState {
+            get {
+                return ((string)(this["inGameState"]));
+            }
+            set {
+                this["inGameState"] = value;
+            }
+        }
     }
 }
