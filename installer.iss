@@ -2,7 +2,6 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define NAME "CSAuto"
-#define VER "1.1.0"
 #define EXE_NAME "CSAuto.exe"
 #define InstallPath "C:\Program Files (x86)\"
 
@@ -11,8 +10,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{F5E4D811-7A92-47F9-BEEC-B6751463D69B}
 AppName={#NAME}
-AppVersion={#VER}
-;AppVerName={#MyAppName} {#MyAppVersion}
+AppVersion={#VERSION_NAME}
+;AppVerName=MyApplication v{#VERSION_NAME}
 DefaultDirName={#InstallPath}{#NAME}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
@@ -41,4 +40,3 @@ Name: "{autodesktop}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#EXE_NAME}"; Description: "{cm:LaunchProgram,{#StringChange(NAME, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

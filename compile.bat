@@ -23,8 +23,11 @@ msbuild CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=Rele
 msbuild  CSAuto_Mobile\CSAuto_Mobile.csproj /verbosity:normal /t:Rebuild /t:PackageForAndroid /t:SignAndroidPackage /p:Configuration=Release > nul
 @echo Compiled csauto_mobile project
 @echo ------------------------------------------------------------------
+set "xprvar="
+for /F "skip=79 delims=" %%i in (CSAuto\MainWindow.xaml.cs) do (if not defined xprvar (set "xprvar=%%i"  & goto compile))
+:compile
 @echo Compiling the installer...
-ISCC.exe installer.iss > nul
+ISCC.exe installer.iss /DVERSION_NAME=%xprvar:~35,5%> nul
 @echo Compiled the installer
 @echo ------------------------------------------------------------------
 @echo Copying the apk...
