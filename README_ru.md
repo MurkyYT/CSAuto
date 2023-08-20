@@ -35,8 +35,8 @@
 * ~~Отправлять время, оставшееся до взрыва бомбы, на мобильный телефон! (не точно на данный момент)~~ (GSI может не быть в cs2)
 
 **Фотографии приложения:**  
-![right-click-menu](menuimage.png)
-![gui-menu](appimage.png)
+![right-click-menu](Images/menuimage.png)
+![gui-menu](Images/appimage.png)
 ## Установка
 <p align="center">    
   <a href="https://github.com/murkyyt/csauto/releases"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="80" alt="Get On Github"></a>

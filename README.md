@@ -35,8 +35,8 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 * ~~Send time left till bomb exploded to mobile! (not accurate as of right now)~~ (GSI might not be enabled in cs2)
 
 **Image demonstration of the app:**  
-![right-click-menu](menuimage.png)
-![gui-menu](appimage.png)
+![right-click-menu](Images/menuimage.png)
+![gui-menu](Images/appimage.png)
 ## Installation
 <p align="center">    
   <a href="https://github.com/murkyyt/csauto/releases"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="80" alt="Get On Github"></a>
