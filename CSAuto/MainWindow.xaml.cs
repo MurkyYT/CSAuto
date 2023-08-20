@@ -78,6 +78,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         public const string VER = "2.0.0";
+        const string GAME_PROCCES_NAME = "csgo";
         const string DEBUG_REVISION = "";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
@@ -584,7 +585,7 @@ namespace CSAuto
         {
             try
             {
-                Process[] prcs = Process.GetProcessesByName("cs2");
+                Process[] prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
                 if (csProcess == null && prcs.Length > 0)
                 {
                     csProcess = prcs[0];
