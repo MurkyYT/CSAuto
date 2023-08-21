@@ -80,12 +80,13 @@ namespace CSAuto
         public const string VER = "2.0.0";
         const string GAME_PROCCES_NAME = "csgo";
         const string DEBUG_REVISION = "";
-        const string PORT = "11523";
+        const string GAMESTATE_PORT = "11523";
+        const string NETCON_PORT = "21823";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
         const string THROTTLE = "0.0";
         const string HEARTBEAT = "10.0";
-        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "," + DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + PORT +
+        const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "," + DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + GAMESTATE_PORT +
             "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
@@ -139,6 +140,7 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
+        private TcpClient netConClient;
 
         public ImageSource ToImageSource(Icon icon)
         {
@@ -174,7 +176,49 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
+        public void NetConEstablishConnection()
+        {
+            try
+            {
+                netConClient = new TcpClient("127.0.0.1", int.Parse(NETCON_PORT));
+                Log.WriteLine($"[NetCon] : Successfully connected to netCon");
+            }
+            catch (SocketException ex)
+            {
+                Log.WriteLine($"[NetCon] : Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
+            }
+        }
+        public void NetConCloseConnection()
+        {
+            try
+            {
+                netConClient.Close();
+                netConClient = null;
+                Log.WriteLine($"[NetCon] : Successfully closed netCon");
+            }
+            catch (SocketException ex)
+            {
+                Log.WriteLine($"[NetCon] : Couldn't close netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
+            }
+        }
+        public string SendNetConMessage(string command)
+        {
+            Byte[] data = System.Text.Encoding.ASCII.GetBytes(command + "\n");
+            netConClient.GetStream().Write(data, 0, data.Length);
+            // Receive response
+            string response = ReadMessage();
+            //Log.WriteLine($"Received : {response}");
 
+            return response;
+        }
+        public string ReadMessage()
+        {
+            // Receive response
+            Byte[] responseData = new byte[256];
+            Int32 numberOfBytesRead = netConClient.GetStream().Read(responseData, 0, responseData.Length);
+            string response = System.Text.Encoding.ASCII.GetString(responseData, 0, numberOfBytesRead);
+            return response;
+        }
         public string FormatDiscordRPC(string original, GameState gameState)
         {
             if (gameState.Player != null)
@@ -317,7 +361,7 @@ namespace CSAuto
                 return false;
 
             _listener = new HttpListener();
-            _listener.Prefixes.Add("http://localhost:" + PORT + "/");
+            _listener.Prefixes.Add("http://localhost:" + GAMESTATE_PORT + "/");
             Thread ListenerThread = new Thread(new ThreadStart(Run));
             try
             {
@@ -416,6 +460,10 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+                if(netConClient == null)
+                {
+                    NetConEstablishConnection();
+                }
                 if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
                 {
                     StartBombTimer();
@@ -641,6 +689,7 @@ namespace CSAuto
                     {
                         Log.WriteLine("Stopping GSI Server");
                         StopGSIServer();
+                        NetConCloseConnection();
                         SendMessageToServer("<CLS>", onlyServer: true);
                     }
                     if (steamAPIServer != null)
@@ -731,22 +780,24 @@ namespace CSAuto
                 (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
                 )
             {
-                if(Properties.Settings.Default.oldAutoBuy)
-                    DisableTextinput();
-                if (lastActivity != Activity.Textinput)
-                {
+                //if(Properties.Settings.Default.oldAutoBuy)
+                //    DisableTextinput();
+                //if (lastActivity != Activity.Textinput)
+                //{
                     Log.WriteLine("Auto buying armor");
-                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                    Thread.Sleep(100);
-                    PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    {
-                    Keyboard.DirectXKeyStrokes.DIK_5,
-                    Keyboard.DirectXKeyStrokes.DIK_1,
-                    Keyboard.DirectXKeyStrokes.DIK_2,
-                    Keyboard.DirectXKeyStrokes.DIK_B,
-                    Keyboard.DirectXKeyStrokes.DIK_B
-                    });
-                }
+                    //PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    //Thread.Sleep(100);
+                    //PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    //{
+                    //Keyboard.DirectXKeyStrokes.DIK_5,
+                    //Keyboard.DirectXKeyStrokes.DIK_1,
+                    //Keyboard.DirectXKeyStrokes.DIK_2,
+                    //Keyboard.DirectXKeyStrokes.DIK_B,
+                    //Keyboard.DirectXKeyStrokes.DIK_B
+                    //});
+                    SendNetConMessage("buy vest");
+                    SendNetConMessage("buy vesthelm");
+                //}
             }
         }
         private void AutoBuyDefuseKit()
@@ -761,21 +812,22 @@ namespace CSAuto
                 && !hasDefuseKit
                 && GameState.Player.Team == Team.CT)
             {
-                if (Properties.Settings.Default.oldAutoBuy)
-                    DisableTextinput();
-                if (lastActivity != Activity.Textinput)
-                {
+                //if (Properties.Settings.Default.oldAutoBuy)
+                //    DisableTextinput();
+                //if (lastActivity != Activity.Textinput)
+                //{
                     Log.WriteLine("Auto buying defuse kit");
-                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                    Thread.Sleep(100);
-                    PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    {
-                    Keyboard.DirectXKeyStrokes.DIK_5,
-                    Keyboard.DirectXKeyStrokes.DIK_4,
-                    Keyboard.DirectXKeyStrokes.DIK_B,
-                    Keyboard.DirectXKeyStrokes.DIK_B
-                    });
-                }
+                    //PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    //Thread.Sleep(100);
+                    //PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    //{
+                    //Keyboard.DirectXKeyStrokes.DIK_5,
+                    //Keyboard.DirectXKeyStrokes.DIK_4,
+                    //Keyboard.DirectXKeyStrokes.DIK_B,
+                    //Keyboard.DirectXKeyStrokes.DIK_B
+                    //});
+                    SendNetConMessage("buy defuser");
+                //}
             }
         }
         private void DisableTextinput()
@@ -985,7 +1037,8 @@ namespace CSAuto
                     throw new DirectoryNotFoundException(AppLanguage.Get("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
-                InitializeLaunchOptions();
+                InitializeGameStateLaunchOption();
+                InitializeNetConLaunchOption();
 #if !DEBUG
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
@@ -1009,7 +1062,36 @@ namespace CSAuto
             }
         }
 
-        private void InitializeLaunchOptions()
+        private void InitializeNetConLaunchOption()
+        {
+            try
+            {
+                Steam.GetLaunchOptions(730, out string launchOpt);
+                if (launchOpt != null && !HasNetCon(launchOpt))
+                    Steam.SetLaunchOptions(730, launchOpt + $" -netconport {NETCON_PORT}");
+                else if (launchOpt == null)
+                    Steam.SetLaunchOptions(730, $"-netconport {NETCON_PORT}");
+                else
+                    Log.WriteLine($"Already has \'-netconport {NETCON_PORT}\' in launch options.");
+            }
+            catch
+            {
+                throw new WriteException($"Couldn't add '-netconport {NETCON_PORT}' to launch options\n" +
+                "please add it manually");
+            }
+        }
+        private bool HasNetCon(string launchOpt)
+        {
+            string[] split = launchOpt.Split(' ');
+            for (int i = 0; i < split.Length; i++)
+            {
+                if (split[i].Trim() == "-netconport")
+                    if (i + 1 < split.Length && split[i + 1].Trim() == NETCON_PORT)
+                        return true;
+            }
+            return false;
+        }
+        private void InitializeGameStateLaunchOption()
         {
             try
             {
