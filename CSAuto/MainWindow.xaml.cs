@@ -731,18 +731,22 @@ namespace CSAuto
                 (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
                 )
             {
-                DisableTextinput();
-                Log.WriteLine("Auto buying armor");
-                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                Thread.Sleep(100);
-                PressKeys(new Keyboard.DirectXKeyStrokes[]
+                if(Properties.Settings.Default.oldAutoBuy)
+                    DisableTextinput();
+                if (lastActivity != Activity.Textinput)
                 {
+                    Log.WriteLine("Auto buying armor");
+                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    Thread.Sleep(100);
+                    PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    {
                     Keyboard.DirectXKeyStrokes.DIK_5,
                     Keyboard.DirectXKeyStrokes.DIK_1,
                     Keyboard.DirectXKeyStrokes.DIK_2,
                     Keyboard.DirectXKeyStrokes.DIK_B,
                     Keyboard.DirectXKeyStrokes.DIK_B
-                });
+                    });
+                }
             }
         }
         private void AutoBuyDefuseKit()
@@ -757,17 +761,21 @@ namespace CSAuto
                 && !hasDefuseKit
                 && GameState.Player.Team == Team.CT)
             {
-                DisableTextinput();
-                Log.WriteLine("Auto buying defuse kit");
-                PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                Thread.Sleep(100);
-                PressKeys(new Keyboard.DirectXKeyStrokes[]
+                if (Properties.Settings.Default.oldAutoBuy)
+                    DisableTextinput();
+                if (lastActivity != Activity.Textinput)
                 {
+                    Log.WriteLine("Auto buying defuse kit");
+                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    Thread.Sleep(100);
+                    PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    {
                     Keyboard.DirectXKeyStrokes.DIK_5,
                     Keyboard.DirectXKeyStrokes.DIK_4,
                     Keyboard.DirectXKeyStrokes.DIK_B,
                     Keyboard.DirectXKeyStrokes.DIK_B
-                });
+                    });
+                }
             }
         }
         private void DisableTextinput()

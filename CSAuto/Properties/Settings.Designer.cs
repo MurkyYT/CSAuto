@@ -428,5 +428,17 @@ namespace CSAuto.Properties {
                 this["inGameState"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool oldAutoBuy {
+            get {
+                return ((bool)(this["oldAutoBuy"]));
+            }
+            set {
+                this["oldAutoBuy"] = value;
+            }
+        }
     }
 }
