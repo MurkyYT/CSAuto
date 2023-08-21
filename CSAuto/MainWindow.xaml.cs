@@ -78,7 +78,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         public const string VER = "2.0.0";
-        const string GAME_PROCCES_NAME = "cs2";
+        const string GAME_PROCCES_NAME = "csgo";
         const string DEBUG_REVISION = "";
         const string PORT = "11523";
         const string TIMEOUT = "5.0";
