@@ -223,7 +223,7 @@ namespace CSAuto
 
                 return webclient.DownloadString(urlString);
             }
-            catch (WebException ex){ if (!ex.Message.Contains("(429)")) { MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n'{ex.Message}'", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error); } return null;  }
+            catch (WebException ex){ if (!ex.Message.Contains("(429)")) { MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n'{ex.Message}'\n'{text}'", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error); } return null;  }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
