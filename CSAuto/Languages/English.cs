@@ -101,6 +101,7 @@ namespace CSAuto.Languages
             ["discord_steamid"] = "{SteamID} - Your steam id",
             ["discord_result"] = "Result",
             ["discord_restartneeded"] = "You may need to restart the app for changes to apply",
+            ["menu_oldautobuy"] = "Disable Chat/Console before auto buy"
         };
         public static string Get(string category)
         {
