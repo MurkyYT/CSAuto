@@ -489,6 +489,7 @@ namespace CSAuto
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                     discordPresence.startTimestamp = GameState.Timestamp;
                     discordPresence.details = FormatDiscordRPC(Properties.Settings.Default.inGameDetails,GameState);
+                    discordPresence.state = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
                     discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
                     discordPresence.largeImageText = GameState.Match.Map;
                     if (Properties.Settings.Default.mapNotification)
