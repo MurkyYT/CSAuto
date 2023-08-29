@@ -1009,9 +1009,10 @@ namespace CSAuto
             var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
             if (duplicates.Count() > 0)
             {
-                notifyIcon.Close();
-                Application.Current.Shutdown();
-                Log.WriteLine($"Shutting down, found another CSAuto process");
+                //notifyIcon.Close();
+                //Application.Current.Shutdown();
+                //Log.WriteLine($"Shutting down, found another CSAuto process");
+                duplicates.ToList().ForEach(dupl => dupl.Kill());
             }
         }
         string GetLocalIPAddress()
