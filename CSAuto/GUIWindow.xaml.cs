@@ -296,7 +296,7 @@ namespace CSAuto
         }
         private void GenerateLanguages()
         {
-            foreach (string language in Properties.Settings.Default.languages)
+            foreach (string language in AppLanguage.Available)
             {
                 RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage };
                 rb.Checked += async (sender, args) =>

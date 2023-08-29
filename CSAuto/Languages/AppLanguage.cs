@@ -3,6 +3,11 @@ namespace CSAuto
 {
     public static class AppLanguage
     {
+        public static string[] Available = new string[]
+        {
+            "language_english",
+            "language_russian"
+        };
         public static string Get(string category)
         {
             if (category == null)
