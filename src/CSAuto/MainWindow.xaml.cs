@@ -756,7 +756,7 @@ namespace CSAuto
         }
         private void TryToAutoReload()
         {
-            bool isMousePressed = Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON);
+            bool isMousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
             if (!isMousePressed || weapon == null)
                 return;
             try
@@ -780,8 +780,20 @@ namespace CSAuto
                         //&& (weaponName != "weapon_sg556")
                         && Properties.Settings.Default.ContinueSpraying)
                     {
-                        SendNetConMessage("+attack");
-                        //Thread.Sleep(100);
+                        //Thread.Sleep(100);   
+                        new Thread(() =>
+                        {
+                            while (true)
+                            {
+                                if (GameState.Player.ActiveWeapon?.Bullets > 0 && GameState.Player.ActiveWeapon?.Name == weaponName)
+                                    break;
+                            }
+                            bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
+                            Log.WriteLine(mousePressed);
+                            if (mousePressed)
+                                SendNetConMessage("+attack");
+                        }).Start();
+
                         //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
                         //    System.Windows.Forms.Cursor.Position.X,
                         //    System.Windows.Forms.Cursor.Position.Y,

@@ -14,10 +14,10 @@ namespace Murky.Utils
     public class Keyboard
     {
         [DllImport("USER32.dll")]
-        public static extern bool GetKeyState(VirtualKeyStates nVirtKey);
+        public static extern short GetKeyState(VirtualKeyStates nVirtKey);
 
         [DllImport("User32.dll")]
-        public static extern bool GetAsyncKeyState(VirtualKeyStates nVirtKey);
+        public static extern short GetAsyncKeyState(VirtualKeyStates nVirtKey);
         public enum VirtualKeyStates : int
         {
             VK_LBUTTON = 0x01,
