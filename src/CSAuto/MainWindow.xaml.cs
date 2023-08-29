@@ -313,11 +313,8 @@ namespace CSAuto
         {
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(command + "\n");
             netConClient.GetStream().Write(data, 0, data.Length);
-            // Receive response
-            string response = ReadMessage();
-            //Log.WriteLine($"Received : {response}");
-
-            return response;
+            Log.WriteLine("NetCon Sent " + command);
+            return null;
         }
         public string ReadMessage()
         {
@@ -498,7 +495,6 @@ namespace CSAuto
             }
             if (csRunning && inGame)
             {
-                string phase = GameState.Match.Phase == Phase.Warmup ? "Warmup" : GameState.Round.Phase.ToString();
                 discordPresence.state = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
                 discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
                 discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
@@ -770,26 +766,29 @@ namespace CSAuto
                 string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
-                    NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
-                        System.Windows.Forms.Cursor.Position.X,
-                        System.Windows.Forms.Cursor.Position.Y,
-                        0, 0);
+                    //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
+                    //    System.Windows.Forms.Cursor.Position.X,
+                    //    System.Windows.Forms.Cursor.Position.Y,
+                    //    0, 0);
+                    SendNetConMessage("+reload");
+                    SendNetConMessage("-attack");
                     Log.WriteLine("Auto reloading");
                     if ((weaponType == WeaponType.Rifle
                         || weaponType == WeaponType.MachineGun
                         || weaponType == WeaponType.SubmachineGun
                         || weaponName == "weapon_cz75a")
-                        && (weaponName != "weapon_sg556")
+                        //&& (weaponName != "weapon_sg556")
                         && Properties.Settings.Default.ContinueSpraying)
                     {
-                        Thread.Sleep(100);
-                        NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
-                            System.Windows.Forms.Cursor.Position.X,
-                            System.Windows.Forms.Cursor.Position.Y,
-                            0, 0);
+                        SendNetConMessage("+attack");
+                        //Thread.Sleep(100);
+                        //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
+                        //    System.Windows.Forms.Cursor.Position.X,
+                        //    System.Windows.Forms.Cursor.Position.Y,
+                        //    0, 0);
                         Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
                     }
-
+                    SendNetConMessage("-reload");
                 }
             }
             catch { return; }
