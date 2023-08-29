@@ -3,18 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto", "CSAuto\CSAuto.csproj", "{BD49B7AC-EE56-40B8-B35D-F0F0B88626D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto", "src\CSAuto\CSAuto.csproj", "{BD49B7AC-EE56-40B8-B35D-F0F0B88626D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto_Mobile", "CSAuto_Mobile\CSAuto_Mobile.csproj", "{D19ED752-CE9E-43A0-BC8B-05F1B5B845BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSAuto_Mobile", "src\CSAuto_Mobile\CSAuto_Mobile.csproj", "{D19ED752-CE9E-43A0-BC8B-05F1B5B845BC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0427C11C-3F9B-4B74-BB1F-5C72E43F9AB5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAPIServer", "SteamAPIServer\SteamAPIServer.csproj", "{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAPIServer", "src\SteamAPIServer\SteamAPIServer.csproj", "{F7985580-40AF-4EC0-AEBA-A37319CD5D8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIKeys", "APIKeys\APIKeys.csproj", "{7DB4BE0D-BB99-4CE7-AA57-B5B8777BD95C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIKeys", "src\APIKeys\APIKeys.csproj", "{7DB4BE0D-BB99-4CE7-AA57-B5B8777BD95C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
