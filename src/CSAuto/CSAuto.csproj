@@ -122,6 +122,7 @@
     <Compile Include="Utils\CSGO\CSGOFriendCode.cs" />
     <Compile Include="Utils\CSGO\CSGOMap.cs" />
     <Compile Include="Utils\CSGO\GameStateListener.cs" />
+    <Compile Include="Utils\CSGO\NetCon.cs" />
     <Compile Include="Utils\DiscordRpc.cs" />
     <Compile Include="Utils\Github.cs" />
     <Compile Include="Utils\InputBox.cs" />

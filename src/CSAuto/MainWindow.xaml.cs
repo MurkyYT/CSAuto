@@ -123,6 +123,7 @@ namespace CSAuto
         Point csResolution = new Point();
         GameState GameState = new GameState(null);
         GameStateListener GameStateListener;
+        NetCon netCon = null;
         int frame = 0;
         bool csRunning = false;
         bool inGame = false;
@@ -138,7 +139,7 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
-        private TcpClient netConClient;
+        bool searchingForAcceptButton = false;
 
         public ImageSource ToImageSource(Icon icon)
         {
@@ -198,7 +199,7 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (netConClient == null)
+                if (netCon == null)
                 {
                     NetConEstablishConnection();
                 }
@@ -286,43 +287,27 @@ namespace CSAuto
 
         public void NetConEstablishConnection()
         {
-            try
-            {
-                netConClient = new TcpClient("127.0.0.1", int.Parse(NETCON_PORT));
-                Log.WriteLine($"[NetCon] : Successfully connected to netCon");
-            }
-            catch (SocketException ex)
-            {
-                Log.WriteLine($"[NetCon] : Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
+            netCon = new NetCon("127.0.0.1", int.Parse(NETCON_PORT));
+            netCon.MatchFound += NetCon_MatchFound;
+        }
+
+        private void NetCon_MatchFound(object sender, EventArgs e)
+        {
+            Log.WriteLine("Match Found!");
+            if (!searchingForAcceptButton)
+            { 
+                searchingForAcceptButton = true;
+                if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
+                    while(!acceptedGame)
+                        _ = AutoAcceptMatchAsync();
+                searchingForAcceptButton = false;
             }
         }
+
         public void NetConCloseConnection()
         {
-            try
-            {
-                netConClient.Close();
-                netConClient = null;
-                Log.WriteLine($"[NetCon] : Successfully closed netCon");
-            }
-            catch (SocketException ex)
-            {
-                Log.WriteLine($"[NetCon] : Couldn't close netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
-            }
-        }
-        public string SendNetConMessage(string command)
-        {
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(command + "\n");
-            netConClient.GetStream().Write(data, 0, data.Length);
-            Log.WriteLine("NetCon Sent " + command);
-            return null;
-        }
-        public string ReadMessage()
-        {
-            // Receive response
-            Byte[] responseData = new byte[256];
-            Int32 numberOfBytesRead = netConClient.GetStream().Read(responseData, 0, responseData.Length);
-            string response = System.Text.Encoding.ASCII.GetString(responseData, 0, numberOfBytesRead);
-            return response;
+            netCon.Close();
+            netCon = null;
         }
         public string FormatDiscordRPC(string original, GameState gameState)
         {
@@ -546,12 +531,12 @@ namespace CSAuto
         }
         private void SendMessageToServer(string message, bool onlyTelegram = false, bool onlyServer = false)
         {
-            if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
-                TelegramSendMessage(message.Substring(5));
-            if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
-                return;
             new Thread(() =>
             {
+                if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
+                    TelegramSendMessage(message.Substring(5));
+                if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
+                    return;
                 try // Try connecting and send the message bytes  
                 {
                     TcpClient client = new TcpClient(Properties.Settings.Default.phoneIpAddress, 11_000); // Create a new connection  
@@ -710,8 +695,8 @@ namespace CSAuto
                 //Keyboard.DirectXKeyStrokes.DIK_B,
                 //Keyboard.DirectXKeyStrokes.DIK_B
                 //});
-                SendNetConMessage("buy vest");
-                SendNetConMessage("buy vesthelm");
+                netCon.SendCommand("buy vest");
+                netCon.SendCommand("buy vesthelm");
                 //}
             }
         }
@@ -741,7 +726,7 @@ namespace CSAuto
                 //Keyboard.DirectXKeyStrokes.DIK_B,
                 //Keyboard.DirectXKeyStrokes.DIK_B
                 //});
-                SendNetConMessage("buy defuser");
+                netCon.SendCommand("buy defuser");
                 //}
             }
         }
@@ -770,8 +755,8 @@ namespace CSAuto
                     //    System.Windows.Forms.Cursor.Position.X,
                     //    System.Windows.Forms.Cursor.Position.Y,
                     //    0, 0);
-                    SendNetConMessage("+reload");
-                    SendNetConMessage("-attack");
+                    netCon.SendCommand("+reload");
+                    netCon.SendCommand("-attack");
                     Log.WriteLine("Auto reloading");
                     if ((weaponType == WeaponType.Rifle
                         || weaponType == WeaponType.MachineGun
@@ -780,27 +765,20 @@ namespace CSAuto
                         //&& (weaponName != "weapon_sg556")
                         && Properties.Settings.Default.ContinueSpraying)
                     {
-                        //Thread.Sleep(100);   
-                        new Thread(() =>
+                        Thread.Sleep(100);   
+                        bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
+                        if (mousePressed)
                         {
-                            while (true)
-                            {
-                                if (GameState.Player.ActiveWeapon?.Bullets > 0 && GameState.Player.ActiveWeapon?.Name == weaponName)
-                                    break;
-                            }
-                            bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
-                            Log.WriteLine(mousePressed);
-                            if (mousePressed)
-                                SendNetConMessage("+attack");
-                        }).Start();
+                            netCon.SendCommand("+attack");
 
-                        //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
-                        //    System.Windows.Forms.Cursor.Position.X,
-                        //    System.Windows.Forms.Cursor.Position.Y,
-                        //    0, 0);
-                        Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
+                            //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
+                            //    System.Windows.Forms.Cursor.Position.X,
+                            //    System.Windows.Forms.Cursor.Position.Y,
+                            //    0, 0);
+                            Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
+                        }
                     }
-                    SendNetConMessage("-reload");
+                    netCon.SendCommand("-reload");
                 }
             }
             catch { return; }

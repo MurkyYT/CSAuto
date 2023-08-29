@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Point = System.Drawing.Point;
 
 namespace CSAuto
 {
@@ -51,10 +52,6 @@ namespace CSAuto
         public const int MOUSEEVENTF_LEFTDOWN = 0x02;
         public const int MOUSEEVENTF_LEFTUP = 0x04;
         public const int SRCCOPY = 0x00CC0020; // BitBlt dwRop parameter
-        public static void BringToFront(IntPtr handle)
-        {
-            SetForegroundWindow(handle);
-        }
         public static bool IsForegroundProcess(uint pid)
         {
             IntPtr hwnd = GetForegroundWindow();
@@ -109,5 +106,68 @@ namespace CSAuto
             DeleteObject(hBitmap);
             return img;
         }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(String sClassName, String sAppName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+        static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        public enum WMessages : int
+        {
+            WM_LBUTTONDOWN = 0x201, //Left mousebutton down
+            WM_LBUTTONUP = 0x202,   //Left mousebutton up
+            WM_LBUTTONDBLCLK = 0x203, //Left mousebutton doubleclick
+            WM_RBUTTONDOWN = 0x204, //Right mousebutton down
+            WM_RBUTTONUP = 0x205,   //Right mousebutton up
+            WM_RBUTTONDBLCLK = 0x206, //Right mousebutton do
+        }
+
+        private static int MAKELPARAM(int p, int p_2)
+        {
+            return ((p_2 << 16) | (p & 0xFFFF));
+        }
+
+        /** This is the non-working code **/
+        public static void DoMouseLeftClick(IntPtr handle, Point x)
+        {
+            SendMessage(handle, (int)WMessages.WM_LBUTTONDOWN, 0, MAKELPARAM(x.X, x.Y));
+            SendMessage(handle, (int)WMessages.WM_LBUTTONUP, 0, MAKELPARAM(x.X, x.Y));
+
+            return;
+
+        }
+
+        public static void BringToFront(string title)
+        {
+            // Get a handle to the Calculator application.
+            IntPtr handle = FindWindow(null, title);
+
+            // Verify that Calculator is a running process.
+            if (handle == IntPtr.Zero)
+            {
+                return;
+            }
+
+            // Make Calculator the foreground application
+            SetForegroundWindow(handle);
+        }
+        public static void BringToFront(IntPtr handle)
+        {
+            // Verify that Calculator is a running process.
+            if (handle == IntPtr.Zero)
+            {
+                return;
+            }
+
+            // Make Calculator the foreground application
+            SetForegroundWindow(handle);
+        }
+        [DllImport("user32.dll", EntryPoint = "FindWindowEx",
+  CharSet = CharSet.Auto)]
+        public static extern IntPtr FindWindowEx(IntPtr hwndParent,
+  IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
     }
 }
