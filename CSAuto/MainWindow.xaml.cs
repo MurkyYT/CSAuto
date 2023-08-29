@@ -619,7 +619,8 @@ namespace CSAuto
                 {
                     Spotify.Pause();
                 }
-                else if (!Spotify.IsPlaying() && GameState.Player.SteamID != GameState.MySteamID)
+                else if (!Spotify.IsPlaying() && GameState.Player.SteamID != GameState.MySteamID || 
+                    (GameState.Player.Health <= 0 && GameState.Player.SteamID == GameState.MySteamID))
                 {
                     Spotify.Resume();
                 }
