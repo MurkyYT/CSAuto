@@ -50,6 +50,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="inputtitle_telegramid" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"/>
                                     <Button Content="inputtext_botlinkbutton" Click="BotButton_Click" Margin="20,0,0,0"/>
+                                    <Button Content="inputtext_testmessagetelegram" Margin="20,0,0,0" Click="TelegramTestMessage_Click"/>
                                 </StackPanel>
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=telegramChatId}"/>
                                 <TextBlock Text="menu_notifications" FontSize="20" FontWeight="Bold"/>

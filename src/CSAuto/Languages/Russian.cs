@@ -101,7 +101,8 @@ namespace CSAuto.Languages
             ["discord_steamid"] = "{SteamID} - Ваш Steam ID",
             ["discord_result"] = "Результат",
             ["discord_restartneeded"] = "Возможно, вам потребуется перезапустить приложение, чтобы изменения вступили в силу",
-            ["menu_oldautobuy"] = "Отключить чат/консоль перед автоматической покупкой"
+            ["menu_oldautobuy"] = "Отключить чат/консоль перед автоматической покупкой",
+            ["inputtext_testmessagetelegram"] = "Прислать Тестовое сообщение"
         };
         public static string Get(string category)
         {

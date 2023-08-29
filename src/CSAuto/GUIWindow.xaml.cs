@@ -405,5 +405,10 @@ namespace CSAuto
             TabControl_SelectionChanged(sender, e);
             UpdateDiscordRPCResult(DiscordTabControl.SelectedIndex == 0);
         }
+
+        private void TelegramTestMessage_Click(object sender, RoutedEventArgs e)
+        {
+            main.TelegramSendMessage("Test Message!");
+        }
     }
 }
