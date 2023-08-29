@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.AxHost;
 
-namespace CSAuto
+namespace Murky.Utils.CSGO
 {
     public enum BombState
     {
@@ -71,12 +71,13 @@ namespace CSAuto
         public string MySteamID { get; private set; }
         public bool IsDead { get; private set; }
         public bool IsSpectating { get; private set; }
-        private readonly string JSON;
-        public GameState(string JSON)
+        public string JSON { get { return _JSON; } }
+        private string _JSON;
+        internal void UpdateJson(string JSON)
         {
             if (JSON == null)
                 return;
-            this.JSON = JSON;
+            _JSON = JSON;
             MySteamID = GetMySteamID();
             Timestamp = GetTimeStamp();
             Match = new Match()
@@ -108,10 +109,14 @@ namespace CSAuto
             IsDead = Player.SteamID != MySteamID;
             IsSpectating = CheckIfSpectator();
         }
+        public GameState(string JSON)
+        {
+            UpdateJson(JSON);
+        }
 
         private BombState? GetRoundBombState()
         {
-            string[] splitStrs = JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
+            string[] splitStrs = _JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
             if (splitStrs.Length < 2)
                 return null;
             string splitStr = splitStrs[1].Split('}')[0];
@@ -134,7 +139,7 @@ namespace CSAuto
 
         private long GetTimeStamp()
         {
-            string splitStr = JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string splitStr = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"timestamp\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
@@ -143,7 +148,7 @@ namespace CSAuto
 
         private string GetMap()
         {
-            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
             string state = split[1].Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
@@ -152,7 +157,7 @@ namespace CSAuto
 
         private int GetTScore()
         {
-            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
             string splitstr = split[1].Split(new string[] { "\"team_t\": {" }, StringSplitOptions.None)[1].Split('}')[0];
@@ -160,7 +165,7 @@ namespace CSAuto
         }
         private int GetCTScore()
         {
-            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
             string splitstr = split[1].Split(new string[] { "\"team_ct\": {" }, StringSplitOptions.None)[1].Split('}')[0];
@@ -168,7 +173,7 @@ namespace CSAuto
         }
         private Mode? GetMode()
         {
-            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
             string state = split[1].Split(new string[] { "\"mode\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
@@ -199,7 +204,7 @@ namespace CSAuto
 
         private string GetSteamID()
         {
-            string splitStr = JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
@@ -208,7 +213,7 @@ namespace CSAuto
 
         private string GetMySteamID()
         {
-            string splitStr = JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string splitStr = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
@@ -217,7 +222,7 @@ namespace CSAuto
 
         private bool HasDefuseKit()
         {
-            string splitStr = JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"defusekit\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return false;
@@ -233,7 +238,7 @@ namespace CSAuto
         }
         string GetBombState()
         {
-            string[] split = JSON.Split(new string[] { "\"bomb\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"bomb\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
 
@@ -242,7 +247,7 @@ namespace CSAuto
         }
         private bool GetHelmetState()
         {
-            string[] split = JSON.Split(new string[] { "\"helmet\": " }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"helmet\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return false;
             try
@@ -254,7 +259,7 @@ namespace CSAuto
 
         private int GetMoney()
         {
-            string[] split = JSON.Split(new string[] { "\"money\": " }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"money\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
             return int.Parse(split[1].Split(',')[0]);
@@ -262,7 +267,7 @@ namespace CSAuto
 
         private int GetArmor()
         {
-            string[] split = JSON.Split(new string[] { "\"armor\": " }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"armor\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
             int armor = int.Parse(split[1].Split(',')[0]);
@@ -271,7 +276,7 @@ namespace CSAuto
 
         private int GetHealth()
         {
-            string[] split = JSON.Split(new string[] { "\"health\": " }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"health\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
             int health = int.Parse(split[1].Split(',')[0]);
@@ -280,7 +285,7 @@ namespace CSAuto
 
         private Team? GetTeam()
         {
-            string[] split = JSON.Split(new string[] { "\"team\": \"" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"team\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
             string team = split[1].Split('"')[0];
@@ -296,7 +301,7 @@ namespace CSAuto
 
         private Activity? GetActivity()
         {
-            string[] splitted = JSON.Split(new string[] { "\"activity\": \"" }, StringSplitOptions.None);
+            string[] splitted = _JSON.Split(new string[] { "\"activity\": \"" }, StringSplitOptions.None);
             if (splitted.Length > 1)
             {
                 string activity = splitted[1].Split('"')[0];
@@ -315,7 +320,7 @@ namespace CSAuto
 
         private int GetRound()
         {
-            string[] splitted = JSON.Split(new string[] { "\"round\": " }, StringSplitOptions.None);
+            string[] splitted = _JSON.Split(new string[] { "\"round\": " }, StringSplitOptions.None);
             if (splitted.Length > 1)
             {
                 bool succes = int.TryParse(splitted[1].Split(',')[0], out int res);
@@ -326,7 +331,7 @@ namespace CSAuto
         }
         private Phase? GetRoundPhase()
         {
-            string[] split = JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
             string state = split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
@@ -344,7 +349,7 @@ namespace CSAuto
         }
         private Phase? GetMatchPhase()
         {
-            string[] split = JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
+            string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
             string state = split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
