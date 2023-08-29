@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using ControlzEx.Theming;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Markdown.Xaml;
 using Microsoft.Win32;
@@ -349,12 +350,22 @@ namespace CSAuto
             Process.Start("https://t.me/csautonotification_bot");
         }
 
-        private async void ColorsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ColorsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Properties.Settings.Default.currentColor == Colors[ColorsComboBox.SelectedIndex])
                 return;
             Properties.Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
-            await RestartMessageBox();
+            UpdateTheme();
+        }
+
+        private void UpdateTheme()
+        {
+            if (Properties.Settings.Default.darkTheme)
+                // Set the application theme to Dark + selected color
+                ThemeManager.Current.ChangeTheme(Application.Current, $"Dark.{Properties.Settings.Default.currentColor}");
+            else
+                // Set the application theme to Light + selected color
+                ThemeManager.Current.ChangeTheme(Application.Current, $"Light.{Properties.Settings.Default.currentColor}");
         }
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
