@@ -115,8 +115,12 @@
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Russian.cs" />
-    <Compile Include="Markdown.Xaml\Markdown.cs" />
-    <Compile Include="Markdown.Xaml\TextToFlowDocumentConverter.cs" />
+    <Compile Include="Utils\Markdown.Xaml\Markdown.cs" />
+    <Compile Include="Utils\Markdown.Xaml\TextToFlowDocumentConverter.cs" />
+    <Compile Include="Utils\Nager.TcpClient\TcpClient.cs" />
+    <Compile Include="Utils\Nager.TcpClient\TcpClientConfig.cs" />
+    <Compile Include="Utils\Nager.TcpClient\TcpClientKeepAliveConfig.cs" />
+    <Compile Include="Utils\Nager.TcpClient\TcpClientKeepaliveExtension.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\RECT.cs" />
     <Compile Include="Utils\CSGO\CSGOFriendCode.cs" />

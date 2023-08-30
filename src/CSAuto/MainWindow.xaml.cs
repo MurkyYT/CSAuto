@@ -27,7 +27,7 @@ using Murky.Utils.CSGO;
 using System.Net.Sockets;
 using System.IO.Pipes;
 using System.Security.Principal;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using System.Windows.Threading;
 
 namespace CSAuto
 {
@@ -107,7 +107,8 @@ namespace CSAuto
         /// </summary>
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
         readonly ContextMenu exitcm = new ContextMenu();
-        readonly System.Windows.Threading.DispatcherTimer appTimer = new System.Windows.Threading.DispatcherTimer();
+        readonly DispatcherTimer appTimer = new DispatcherTimer();
+        readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
         readonly Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
         readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
         /// <summary>
@@ -139,7 +140,6 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
-        bool searchingForAcceptButton = false;
 
         public ImageSource ToImageSource(Icon icon)
         {
@@ -289,18 +289,26 @@ namespace CSAuto
         {
             netCon = new NetCon("127.0.0.1", int.Parse(NETCON_PORT));
             netCon.MatchFound += NetCon_MatchFound;
+            acceptButtonTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            acceptButtonTimer.Tick += AcceptButtonTimer_Tick;
+        }
+
+        private void AcceptButtonTimer_Tick(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame && csActive)
+                _ = AutoAcceptMatchAsync();
+            else if (inGame || !Properties.Settings.Default.autoAcceptMatch)
+                acceptButtonTimer.Stop();
         }
 
         private void NetCon_MatchFound(object sender, EventArgs e)
         {
             Log.WriteLine("Match Found!");
-            if (!searchingForAcceptButton)
-            { 
-                searchingForAcceptButton = true;
-                if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
-                    while(!acceptedGame)
-                        _ = AutoAcceptMatchAsync();
-                searchingForAcceptButton = false;
+            if (acceptButtonTimer.IsEnabled) acceptButtonTimer.Stop();
+            if (!acceptButtonTimer.IsEnabled && !acceptedGame && !inGame)
+            {
+                Log.WriteLine("Starting searching for accept button...");
+                acceptButtonTimer.Start();
             }
         }
 
@@ -604,8 +612,8 @@ namespace CSAuto
                     csResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
-                    if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
-                        _ = AutoAcceptMatchAsync();
+                    //if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
+                    //    _ = AutoAcceptMatchAsync();
                 }
             }
             catch (Exception ex)
@@ -856,6 +864,8 @@ namespace CSAuto
                             if (CheckIfAccepted(bitmap, Y))
                             {
                                 acceptedGame = true;
+                                if (acceptButtonTimer.IsEnabled)
+                                    acceptButtonTimer.Stop();
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
                         }
@@ -866,9 +876,8 @@ namespace CSAuto
         }
         private bool CheckIfAccepted(Bitmap bitmap, int maxY)
         {
-            bool found = false;
             int count = 0;
-            for (int y = bitmap.Height - 1; y >= maxY && !found; y--)
+            for (int y = bitmap.Height - 1; y >= maxY; y--)
             {
                 Color pixelColor = bitmap.GetPixel(0, y);
                 if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
