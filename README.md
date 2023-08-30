@@ -54,7 +54,6 @@ Or have you ever forgot to buy armor or defuse kit as ct?
   3. In the mobile app start the server (and allow ignoring battery optimization)
   4. Go to the desktop app, in the 'Phone notifications' category and make sure it is enabled
   5. Go again to the 'Phone notifications' category and enter the IP address you see in the notification on the phone
-  6. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online' 
 ### The app couldn't set the launch options, what to do?
   1. Open steam library
   2. Right click on CS2 and press properties
@@ -72,7 +71,6 @@ Or have you ever forgot to buy armor or defuse kit as ct?
    2. Get your chat id by sending a message to [this bot](https://t.me/raw_info_bot)
    3. Copy your 'Chat ID'
    4. Go to the 'Phone notifications' category and enter the Chat ID you got
-   5. After that you should get a notification which says 'Computer {MACHINE-NAME} (PC-IP) is online'
 ## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
