@@ -23,11 +23,13 @@ msbuild src\CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=
 msbuild  src\CSAuto_Mobile\CSAuto_Mobile.csproj /verbosity:normal /t:Rebuild /t:PackageForAndroid /t:SignAndroidPackage /p:Configuration=Release > nul
 @echo Compiled csauto_mobile project
 @echo ------------------------------------------------------------------
-set "xprvar="
-for /F "skip=79 delims=" %%i in (src\CSAuto\MainWindow.xaml.cs) do (if not defined xprvar (set "xprvar=%%i"  & goto compile))
+set "version="
+for /F "skip=79 delims=" %%i in (src\CSAuto\MainWindow.xaml.cs) do (if not defined version (set "version=%%i" & goto split))
+:split
+FOR /f "tokens=1,2 delims='" %%a IN ("%version:"='%") do set "version=%%b" & goto compile
 :compile
 @echo Compiling the installer...
-ISCC.exe installer.iss /DVERSION_NAME=%xprvar:~35,5%> nul
+ISCC.exe installer.iss /DVERSION_NAME=%version%> nul
 @echo Compiled the installer
 @echo ------------------------------------------------------------------
 @echo Copying the apk...
