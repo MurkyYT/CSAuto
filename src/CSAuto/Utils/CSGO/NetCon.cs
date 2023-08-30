@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows.Threading;
 using TcpClient = Nager.TcpClient.TcpClient;
 
 namespace Murky.Utils.CSGO
@@ -31,9 +32,12 @@ namespace Murky.Utils.CSGO
         }
         void OnDataReceived(byte[] receivedData)
         {
-            string data = Encoding.ASCII.GetString(receivedData);
+            string data = Encoding.UTF8.GetString(receivedData);
             if (data.Contains("vport 0] connected") && data.Contains("SDR server steamid"))
                 MatchFound?.Invoke(this, new EventArgs());
+            if (Log.debugWind != null)
+                Log.debugWind.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); })); ;
+            
         }
         public void SendCommand(string command)
         {

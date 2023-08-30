@@ -120,6 +120,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250"/>
                         <ColumnDefinition/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Row ="0" Grid.ColumnSpan="2">
                         <Menu DockPanel.Dock="Top">
@@ -129,10 +130,12 @@
                             </MenuItem>
                         </Menu>
                     </DockPanel>
-                    <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom"/>
                     <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
                     <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
-                    <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                    <TextBlock Text="CS Console Output:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom"/>
+                    <TextBox x:Name="csConsoleOutput" IsReadOnly="True" Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,30"/>
                 </Grid>
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="menu_discordcustomization">
