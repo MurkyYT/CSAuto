@@ -591,7 +591,7 @@ namespace CSAuto
                     }
                     if (GameState.Timestamp != 0)
                     {
-                        GameState = new GameState(null);
+                        GameState.UpdateJson(null);
                     }
                     if (GameStateListener.ServerRunning)
                     {
