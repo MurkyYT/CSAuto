@@ -11,6 +11,7 @@
 AppId={{F5E4D811-7A92-47F9-BEEC-B6751463D69B}
 AppName={#NAME}
 AppVersion={#VERSION_NAME}
+AppPublisher=Murky
 ;AppVerName=MyApplication v{#VERSION_NAME}
 DefaultDirName={#InstallPath}{#NAME}
 DisableProgramGroupPage=yes

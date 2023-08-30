@@ -5,8 +5,8 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CS Automation software")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CSAuto")]
+[assembly: AssemblyDescription("CS Automation software")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Murky")]
 [assembly: AssemblyProduct("CSAuto")]
