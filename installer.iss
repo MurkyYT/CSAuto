@@ -4,6 +4,7 @@
 #define NAME "CSAuto"
 #define EXE_NAME "CSAuto.exe"
 #define InstallPath "C:\Program Files (x86)\"
+#define AppWebsite "https://csauto.netlify.app"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -11,21 +12,23 @@
 AppId={{F5E4D811-7A92-47F9-BEEC-B6751463D69B}
 AppName={#NAME}
 AppVersion={#VERSION_NAME}
+AppPublisherURL={#AppWebsite}
+AppSupportURL={#AppWebsite}
+AppUpdatesURL={#AppWebsite}
 AppPublisher=Murky
-;AppVerName=MyApplication v{#VERSION_NAME}
-DefaultDirName={#InstallPath}{#NAME}
-DisableProgramGroupPage=yes
-; Uncomment the following line to run in non administrative install mode (install for current user only.)
-PrivilegesRequired=admin
-;PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename={#NAME}_Installer
 Compression=lzma
+LicenseFile=LICENSE
+DisableProgramGroupPage=yes
+DefaultDirName={#InstallPath}{#NAME}
+OutputBaseFilename={#NAME}_Installer
+PrivilegesRequired=admin
 SolidCompression=yes
-WizardStyle=modern
 SetupIconFile=src\CSAuto\Icons\main.ico
+UninstallDisplayIcon={app}\{#EXE_NAME}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -40,4 +43,4 @@ Name: "{autoprograms}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"
 Name: "{autodesktop}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#EXE_NAME}"; Description: "{cm:LaunchProgram,{#StringChange(NAME, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#EXE_NAME}"; Description: "{cm:LaunchProgram,{#StringChange(NAME, '&', '&&')}}"; Flags: nowait postinstall skipifsilent unchecked
