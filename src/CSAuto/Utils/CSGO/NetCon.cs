@@ -21,13 +21,13 @@ namespace Murky.Utils.CSGO
                 _ip = ip;
                 _port = port;
                 _client = new TcpClient();
-                _client.DataReceived += OnDataReceived;
                 _client.Connect(_ip, _port);
+                _client.DataReceived += OnDataReceived;
                 Log.WriteLine($"[NetCon] : Successfully connected to netCon");
             }
-            catch (SocketException ex)
+            catch (Exception ex)
             {
-                Log.WriteLine($"[NetCon] : Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
+                Log.WriteLine($"[NetCon] : Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}");
             }
         }
         void OnDataReceived(byte[] receivedData)

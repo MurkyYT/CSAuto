@@ -15,6 +15,10 @@ namespace CSAuto
     public static class NativeMethods
     {
         [DllImport("user32.dll")]
+        public static extern IntPtr GetDC(IntPtr hWnd);
+        [DllImport("gdi32.dll")]
+        public static extern uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
+        [DllImport("user32.dll")]
         public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -106,7 +110,8 @@ namespace CSAuto
             DeleteObject(hBitmap);
             return img;
         }
-
+        [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
+        public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(String sClassName, String sAppName);
 

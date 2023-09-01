@@ -78,7 +78,7 @@ namespace CSAuto
         /// Constants
         /// </summary>
         public const string VER = "2.0.0";
-        const string GAME_PROCCES_NAME = "csgo";
+        const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
         const string NETCON_PORT = "21823";
@@ -199,10 +199,10 @@ namespace CSAuto
                 //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
                 //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
                 //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                if (netCon == null)
-                {
-                    NetConEstablishConnection();
-                }
+                //if (netCon == null)
+                //{
+                //    NetConEstablishConnection();
+                //}
                 if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
                 {
                     StartBombTimer();
@@ -314,8 +314,11 @@ namespace CSAuto
 
         public void NetConCloseConnection()
         {
-            netCon.Close();
-            netCon = null;
+            if (netCon != null)
+            {
+                netCon.Close();
+                netCon = null;
+            }
         }
         public string FormatDiscordRPC(string original, GameState gameState)
         {
@@ -688,24 +691,24 @@ namespace CSAuto
                 (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
                 )
             {
-                //if(Properties.Settings.Default.oldAutoBuy)
+                //if (Properties.Settings.Default.oldAutoBuy)
                 //    DisableTextinput();
-                //if (lastActivity != Activity.Textinput)
-                //{
-                Log.WriteLine("Auto buying armor");
-                //PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                //Thread.Sleep(100);
-                //PressKeys(new Keyboard.DirectXKeyStrokes[]
-                //{
-                //Keyboard.DirectXKeyStrokes.DIK_5,
-                //Keyboard.DirectXKeyStrokes.DIK_1,
-                //Keyboard.DirectXKeyStrokes.DIK_2,
-                //Keyboard.DirectXKeyStrokes.DIK_B,
-                //Keyboard.DirectXKeyStrokes.DIK_B
-                //});
-                netCon.SendCommand("buy vest");
-                netCon.SendCommand("buy vesthelm");
-                //}
+                if (lastActivity != Activity.Textinput)
+                {
+                    Log.WriteLine("Auto buying armor");
+                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    Thread.Sleep(100);
+                    PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    {
+                Keyboard.DirectXKeyStrokes.DIK_1,
+                Keyboard.DirectXKeyStrokes.DIK_1,
+                Keyboard.DirectXKeyStrokes.DIK_1,
+                Keyboard.DirectXKeyStrokes.DIK_2,
+                Keyboard.DirectXKeyStrokes.DIK_B
+                    });
+                    //netCon.SendCommand("buy vest");
+                    //netCon.SendCommand("buy vesthelm");
+                }
             }
         }
         private void AutoBuyDefuseKit()
@@ -722,20 +725,19 @@ namespace CSAuto
             {
                 //if (Properties.Settings.Default.oldAutoBuy)
                 //    DisableTextinput();
-                //if (lastActivity != Activity.Textinput)
-                //{
-                Log.WriteLine("Auto buying defuse kit");
-                //PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                //Thread.Sleep(100);
-                //PressKeys(new Keyboard.DirectXKeyStrokes[]
-                //{
-                //Keyboard.DirectXKeyStrokes.DIK_5,
-                //Keyboard.DirectXKeyStrokes.DIK_4,
-                //Keyboard.DirectXKeyStrokes.DIK_B,
-                //Keyboard.DirectXKeyStrokes.DIK_B
-                //});
-                netCon.SendCommand("buy defuser");
-                //}
+                if (lastActivity != Activity.Textinput)
+                {
+                    Log.WriteLine("Auto buying defuse kit");
+                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    Thread.Sleep(100);
+                    PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    {
+                Keyboard.DirectXKeyStrokes.DIK_1,
+                Keyboard.DirectXKeyStrokes.DIK_4,
+                Keyboard.DirectXKeyStrokes.DIK_B
+                    });
+                    //netCon.SendCommand("buy defuser");
+                }
             }
         }
         private void DisableTextinput()
@@ -822,7 +824,7 @@ namespace CSAuto
         }
         private async Task AutoAcceptMatchAsync()
         {
-            using (Bitmap bitmap = new Bitmap(1, csResolution.Y))
+            using (Bitmap bitmap = new Bitmap(1,csResolution.Y))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
