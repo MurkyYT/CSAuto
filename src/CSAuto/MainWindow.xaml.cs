@@ -761,34 +761,34 @@ namespace CSAuto
                 string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
-                    //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
-                    //    System.Windows.Forms.Cursor.Position.X,
-                    //    System.Windows.Forms.Cursor.Position.Y,
-                    //    0, 0);
-                    netCon.SendCommand("+reload");
-                    netCon.SendCommand("-attack");
+                    NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
+                        System.Windows.Forms.Cursor.Position.X,
+                        System.Windows.Forms.Cursor.Position.Y,
+                        0, 0);
+                    //netCon.SendCommand("+reload");
+                    //netCon.SendCommand("-attack");
                     Log.WriteLine("Auto reloading");
                     if ((weaponType == WeaponType.Rifle
                         || weaponType == WeaponType.MachineGun
                         || weaponType == WeaponType.SubmachineGun
                         || weaponName == "weapon_cz75a")
-                        //&& (weaponName != "weapon_sg556")
+                        && (weaponName != "weapon_sg556")
                         && Properties.Settings.Default.ContinueSpraying)
                     {
                         Thread.Sleep(100);   
-                        bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
-                        if (mousePressed)
-                        {
-                            netCon.SendCommand("+attack");
+                        //bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
+                        //if (mousePressed)
+                        //{
+                            //netCon.SendCommand("+attack");
 
-                            //NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
-                            //    System.Windows.Forms.Cursor.Position.X,
-                            //    System.Windows.Forms.Cursor.Position.Y,
-                            //    0, 0);
-                            Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
-                        }
+                        NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
+                            System.Windows.Forms.Cursor.Position.X,
+                            System.Windows.Forms.Cursor.Position.Y,
+                            0, 0);
+                        Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
+                        //}
                     }
-                    netCon.SendCommand("-reload");
+                    //netCon.SendCommand("-reload");
                 }
             }
             catch { return; }
