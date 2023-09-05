@@ -78,7 +78,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "2.0.0";
+        public const string VER = "2.0.0-beta";
         const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
@@ -813,7 +813,7 @@ namespace CSAuto
         {
             string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
             if (csgoDir != null)
-                return $"{csgoDir}\\csgo";
+                return $"{csgoDir}";
             return null;
         }
         public static void LeftMouseClick(int xpos, int ypos)
@@ -961,7 +961,7 @@ namespace CSAuto
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException(AppLanguage.Get("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
-                integrationPath = csgoDir + "\\cfg\\gamestate_integration_csauto.cfg";
+                integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
                 InitializeGameStateLaunchOption();
                 InitializeNetConLaunchOption();
