@@ -24,7 +24,7 @@ msbuild  src\CSAuto_Mobile\CSAuto_Mobile.csproj /verbosity:normal /t:Rebuild /t:
 @echo Compiled csauto_mobile project
 @echo ------------------------------------------------------------------
 set "version="
-for /F "skip=79 delims=" %%i in (src\CSAuto\MainWindow.xaml.cs) do (if not defined version (set "version=%%i" & goto split))
+for /F "skip=80 delims=" %%i in (src\CSAuto\MainWindow.xaml.cs) do (if not defined version (set "version=%%i" & goto split))
 :split
 FOR /f "tokens=1,2 delims='" %%a IN ("%version:"='%") do set "version=%%b" & goto compile
 :compile
