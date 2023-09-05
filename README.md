@@ -32,12 +32,12 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 *Dont Worry!*  
 **CSAuto** is the software for you, CSAuto can:
 * Auto accept matches for you
-* ~~Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)~~ (GSI might not be enabled in cs2)
-* ~~Auto buy armor for you or auto refill it when you have less then 70 left!~~ (GSI might not be enabled in cs2)
-* ~~Auto buy defuse kit for you as a CT~~ (GSI might not be enabled in cs2)
-* ~~Auto pause/resume spotify song~~ (GSI might not be enabled in cs2)
-* ~~Show status about cs, when you are in lobby it shows your friendcode and amount of players in lobby, when in match it shows the map, mode, score, and round phase (amount of players in lobby is disabled by default, you will have to enable it manually, it is like that because i dont know if its bannable or not)~~ (GSI might not be enabled in cs2)
-* ~~Send time left till bomb exploded to mobile! (not accurate as of right now)~~ (GSI might not be enabled in cs2)
+* Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)
+* Auto buy armor for you or auto refill it when you have less then 70 left!
+* Auto buy defuse kit for you as a CT
+* Auto pause/resume spotify song
+* Show status about cs, when you are in lobby it shows your friendcode and amount of players in lobby, when in match it shows the map, mode, score, and round phase (amount of players in lobby is disabled by default, you will have to enable it manually, it is like that because i dont know if its bannable or not)
+* Send time left till bomb exploded to mobile! (not accurate as of right now)
 
 **Image demonstration of the app:**  
 ![right-click-menu](Images/menuimage.png)
