@@ -813,7 +813,7 @@ namespace CSAuto
         {
             string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
             if (csgoDir != null)
-                return $"{csgoDir}";
+                return $"{csgoDir}\\";
             return null;
         }
         public static void LeftMouseClick(int xpos, int ypos)
