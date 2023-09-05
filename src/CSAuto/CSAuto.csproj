@@ -115,6 +115,7 @@
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Russian.cs" />
+    <Compile Include="Utils\DXGICapture.cs" />
     <Compile Include="Utils\Markdown.Xaml\Markdown.cs" />
     <Compile Include="Utils\Markdown.Xaml\TextToFlowDocumentConverter.cs" />
     <Compile Include="Utils\Nager.TcpClient\TcpClient.cs" />
@@ -216,6 +217,9 @@
   <ItemGroup>
     <Resource Include="Icons\GitHub-Mark.png" />
     <Resource Include="Images\CS_ICON.png" />
+    <Content Include="DXGICapture.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Steamworks.NET.dll" />
     <Content Include="steam_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

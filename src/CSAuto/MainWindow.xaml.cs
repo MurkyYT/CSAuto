@@ -28,6 +28,7 @@ using System.Net.Sockets;
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Windows.Threading;
+using Image = System.Drawing.Image;
 
 namespace CSAuto
 {
@@ -109,8 +110,8 @@ namespace CSAuto
         readonly ContextMenu exitcm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
-        readonly Color BUTTON_COLOR = Color.FromArgb(76, 175, 80);
-        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(90, 203, 94);
+        readonly Color BUTTON_COLOR = Color.FromArgb(78, 54, 49);
+        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(78, 56, 51);
         /// <summary>
         /// Privates
         /// </summary>
@@ -140,7 +141,7 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
-
+        DXGICapture capture = new DXGICapture();
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -615,8 +616,8 @@ namespace CSAuto
                     csResolution = new Point(
                             (int)SystemParameters.PrimaryScreenWidth,
                             (int)SystemParameters.PrimaryScreenHeight);
-                    //if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
-                    //    _ = AutoAcceptMatchAsync();
+                    if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
+                        _ = AutoAcceptMatchAsync();
                 }
             }
             catch (Exception ex)
@@ -775,11 +776,11 @@ namespace CSAuto
                         && (weaponName != "weapon_sg556")
                         && Properties.Settings.Default.ContinueSpraying)
                     {
-                        Thread.Sleep(100);   
+                        Thread.Sleep(100);
                         //bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
                         //if (mousePressed)
                         //{
-                            //netCon.SendCommand("+attack");
+                        //netCon.SendCommand("+attack");
 
                         NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
                             System.Windows.Forms.Cursor.Position.X,
@@ -824,16 +825,19 @@ namespace CSAuto
         }
         private async Task AutoAcceptMatchAsync()
         {
-            using (Bitmap bitmap = new Bitmap(1,csResolution.Y))
+            IntPtr _handle = capture.GetCapture();
+            if (_handle == IntPtr.Zero)
+                return;
+            using (Bitmap bitmap = Image.FromHbitmap(_handle))
             {
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    g.CopyFromScreen(new Point(
-                        csResolution.X / 2,
-                        0),
-                        Point.Empty,
-                        new System.Drawing.Size(1, csResolution.Y));
-                }
+                //    using (Graphics g = Graphics.FromImage(bitmap))
+                //    {
+                //        g.CopyFromScreen(new Point(
+                //            csResolution.X / 2,
+                //            0),
+                //            Point.Empty,
+                //            new System.Drawing.Size(1, csResolution.Y));
+                //    }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
                     Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
@@ -874,7 +878,9 @@ namespace CSAuto
                         count++;
                     }
                 }
+                NativeMethods.DeleteObject(_handle);
             }
+            //}
         }
         private bool CheckIfAccepted(Bitmap bitmap, int maxY)
         {

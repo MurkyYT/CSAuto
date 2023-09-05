@@ -120,6 +120,7 @@ namespace CSAuto
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+
         public enum WMessages : int
         {
             WM_LBUTTONDOWN = 0x201, //Left mousebutton down
