@@ -110,8 +110,8 @@ namespace CSAuto
         readonly ContextMenu exitcm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
-        readonly Color BUTTON_COLOR = Color.FromArgb(78, 54, 49);
-        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(78, 56, 51);
+        readonly Color BUTTON_COLOR = Color.FromArgb(77, 176, 81);
+        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(91, 204, 95);
         /// <summary>
         /// Privates
         /// </summary>
@@ -847,10 +847,10 @@ namespace CSAuto
                 int count = 0;
                 for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
                 {
-                    Color pixelColor = bitmap.GetPixel(0, y);
+                    Color pixelColor = bitmap.GetPixel(csResolution.X/2, y);
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
-
+                        
                         if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                          * just in case the program finds the 0:20 timer tick
                                          * didnt happen for a while but can happen still
