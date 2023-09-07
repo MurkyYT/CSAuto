@@ -691,7 +691,7 @@ namespace CSAuto
                 {
                     if (discordRPCON)
                     {
-                        DiscordRpc.Shutdown();
+                        RPCClient.Deinitialize();
                         Log.WriteLine("DiscordRpc.Shutdown();");
                         discordRPCON = false;
                         RPCClient.ClearPresence();
@@ -1028,6 +1028,7 @@ namespace CSAuto
             Application.Current.Shutdown();
             if (steamAPIServer != null && !steamAPIServer.HasExited)
                 steamAPIServer.Kill();
+            RPCClient.Dispose();
         }
         private void CheckForDuplicates()
         {
