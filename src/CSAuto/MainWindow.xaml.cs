@@ -9,9 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,6 +27,8 @@ using System.IO.Pipes;
 using System.Security.Principal;
 using System.Windows.Threading;
 using Image = System.Drawing.Image;
+using DiscordRPC;
+using DiscordRPC.Logging;
 
 namespace CSAuto
 {
@@ -78,7 +78,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "2.0.0-beta";
+        public const string VER = "2.0.0-beta.1";
         const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
@@ -115,8 +115,7 @@ namespace CSAuto
         /// <summary>
         /// Privates
         /// </summary>
-        private DiscordRpc.EventHandlers discordHandlers;
-        private DiscordRpc.RichPresence discordPresence;
+        private DiscordRpcClient RPCClient;
         private string integrationPath = null;
         private string IN_LOBBY_STATE = "Chilling in lobby";
         /// <summary>
@@ -224,28 +223,62 @@ namespace CSAuto
                     }
 
                 }
-                if (GameState.Match.Map != null && (discordPresence.state == IN_LOBBY_STATE || discordPresence.startTimestamp == 0))
+                if (GameState.Match.Map != null && (RPCClient.CurrentPresence.State == IN_LOBBY_STATE || RPCClient.CurrentPresence.Timestamps.Start == null))
                 {
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
-                    discordPresence.startTimestamp = GameState.Timestamp;
-                    discordPresence.details = FormatDiscordRPC(Properties.Settings.Default.inGameDetails, GameState);
-                    discordPresence.state = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
-                    discordPresence.largeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "csgo_icon";
-                    discordPresence.largeImageText = GameState.Match.Map;
+                    RPCClient.SetPresence(new RichPresence()
+                    {
+                        Details = FormatDiscordRPC(Properties.Settings.Default.inGameDetails, GameState),
+                        State = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState),
+                        Party = new Party() { ID = "", Size = 0, Max = 0 },
+                        Assets = new Assets()
+                        {
+                            LargeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "cs2_icon",
+                            LargeImageText = GameState.Match.Map,
+                            SmallImageKey = null,
+                            SmallImageText = null
+                        },
+                        Timestamps = new Timestamps()
+                        {
+                            Start = UnixTimeStampToDateTime(GameState.Timestamp),
+                            End = null
+                        },
+                        Buttons = new DiscordRPC.Button[]
+                        {
+                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
+                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
+                        }
+                    });
                     if (Properties.Settings.Default.mapNotification)
                         SendMessageToServer($"<MAP>{AppLanguage.Get("server_loadedmap")} {GameState.Match.Map} {AppLanguage.Get("server_mode")} {GameState.Match.Mode}");
                 }
-                else if (GameState.Match.Map == null && discordPresence.state != IN_LOBBY_STATE)
+                else if (GameState.Match.Map == null && RPCClient.CurrentPresence.State != IN_LOBBY_STATE)
                 {
                     IN_LOBBY_STATE = FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
                     Log.WriteLine($"Player is back in main menu");
-                    discordPresence.startTimestamp = GameState.Timestamp;
-                    discordPresence.details = FormatDiscordRPC(Properties.Settings.Default.lobbyDetails, GameState);
-                    discordPresence.state = IN_LOBBY_STATE;
-                    discordPresence.largeImageKey = "csgo_icon";
-                    discordPresence.largeImageText = "Menu";
-                    discordPresence.smallImageKey = null;
-                    discordPresence.smallImageText = null;
+                    RPCClient.SetPresence(new RichPresence()
+                    {
+                        Details = FormatDiscordRPC(Properties.Settings.Default.lobbyDetails, GameState),
+                        State = IN_LOBBY_STATE,
+                        Party = new Party() { ID = "", Size = 0, Max = 0 },
+                        Assets = new Assets()
+                        {
+                            LargeImageKey = "cs2_icon",
+                            LargeImageText = "Menu",
+                            SmallImageKey = null,
+                            SmallImageText = null
+                        },
+                        Timestamps = new Timestamps()
+                        {
+                            Start = UnixTimeStampToDateTime(GameState.Timestamp),
+                            End = null
+                        },
+                        Buttons = new DiscordRPC.Button[]
+                        {
+                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
+                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
+                        }
+                    });
                     if (Properties.Settings.Default.lobbyNotification)
                         SendMessageToServer($"<LBY>{AppLanguage.Get("server_loadedlobby")}");
                 }
@@ -285,7 +318,13 @@ namespace CSAuto
                 Log.WriteLine("Error happend while getting GSI Info\n" + ex);
             }
         }
-
+        private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp);
+            return dateTime;
+        }
         public void NetConEstablishConnection()
         {
             netCon = new NetCon("127.0.0.1", int.Parse(NETCON_PORT));
@@ -418,7 +457,34 @@ namespace CSAuto
 
         private void InitializeDiscordRPC()
         {
-            discordHandlers = default;
+            RPCClient = new DiscordRpcClient(APIKeys.APIKeys.DiscordAppID);
+
+            //Set the logger
+            RPCClient.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+
+            //Subscribe to events
+            RPCClient.OnReady += (sender, e) =>
+            {
+                Log.WriteLine($"Received Discord RPC Ready! {e.User.Username}");
+            };
+            RPCClient.SetPresence(new RichPresence()
+            {
+                Details = "CSAuto",
+                State = "",
+                Assets = new Assets(),
+                Party = new Party() { ID = "", Size = 0, Max = 0 },
+                Timestamps = new Timestamps()
+                {
+                    Start = null,
+                    End = null
+                },
+                Buttons = new DiscordRPC.Button[]
+                {
+                    new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
+                    new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
+                }
+            });
+            RPCClient.CurrentPresence.Timestamps = new Timestamps();
         }
 
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -480,24 +546,41 @@ namespace CSAuto
         {
             if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Initialize(APIKeys.APIKeys.DiscordAppID, ref discordHandlers, true, "730");
+                RPCClient.Initialize();
                 Log.WriteLine("DiscordRpc.Initialize();");
                 discordRPCON = true;
             }
             else if (discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
             {
-                DiscordRpc.Shutdown();
+                RPCClient.Deinitialize();
                 Log.WriteLine("DiscordRpc.Shutdown();");
                 discordRPCON = false;
             }
             if (csRunning && inGame)
             {
-                discordPresence.state = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
-                discordPresence.smallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower();
-                discordPresence.smallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist";
-                discordPresence.partyMax = 0;
-                discordPresence.partyId = null;
-                discordPresence.partySize = 0;
+                RPCClient.SetPresence(new RichPresence()
+                {
+                    Details = RPCClient.CurrentPresence.Details,
+                    State = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState),
+                    Party = new Party(),
+                    Assets = new Assets()
+                    {
+                        LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
+                        LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
+                        SmallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower(),
+                        SmallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
+                    },
+                    Timestamps = new Timestamps()
+                    {
+                        Start = RPCClient.CurrentPresence.Timestamps.Start,
+                        End = null
+                    },
+                    Buttons = new DiscordRPC.Button[]
+                        {
+                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
+                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
+                        }
+                });
             }
             else if (csRunning && !inGame)
             {
@@ -507,18 +590,38 @@ namespace CSAuto
                     string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
                     string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
                     string partysize = steamworksRes.Split('/')[0];
-                    discordPresence.partyMax = int.Parse(partyMax);
-                    discordPresence.partyId = lobbyid == "0" ? null : lobbyid;
-                    discordPresence.partySize = int.Parse(partysize);
+                    RPCClient.SetPresence(new RichPresence()
+                    {
+                        Details = RPCClient.CurrentPresence.Details,
+                        State = RPCClient.CurrentPresence.State,
+                        Party = new Party()
+                        { ID= lobbyid == "0" ? "0" : lobbyid ,Max= int.Parse(partyMax) ,Size= int.Parse(partysize) },
+                        Assets = new Assets()
+                        {
+                            LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
+                            LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
+                            SmallImageKey = RPCClient.CurrentPresence.Assets.SmallImageKey,
+                            SmallImageText = RPCClient.CurrentPresence.Assets.SmallImageText
+                        },
+                        Timestamps = new Timestamps()
+                        {
+                            Start = RPCClient.CurrentPresence.Timestamps.Start,
+                            End = null
+                        },
+                        Buttons = new DiscordRPC.Button[]
+                        {
+                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
+                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
+                        }
+                    });
                 }
             }
             else if (discordRPCON && !csRunning)
             {
-                DiscordRpc.Shutdown();
+                RPCClient.Deinitialize();
                 discordRPCON = false;
                 Log.WriteLine("DiscordRpc.Shutdown();");
             }
-            DiscordRpc.UpdatePresence(ref discordPresence);
         }
 
         private void AutoPauseResumeSpotify()
@@ -591,7 +694,7 @@ namespace CSAuto
                         DiscordRpc.Shutdown();
                         Log.WriteLine("DiscordRpc.Shutdown();");
                         discordRPCON = false;
-                        discordPresence = default;
+                        RPCClient.ClearPresence();
                     }
                     if (GameState.Timestamp != 0)
                     {
