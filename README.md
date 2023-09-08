@@ -18,12 +18,7 @@
   <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
   <!-- more links here -->
 </p>
-<h1 align="center">⚠️Important Notice⚠️</h1>
 
-**As Steam sets the games launch options to those which you see in the gui the app cant always set them automatically,**
-**if you have any issues or see that something doesnt work please add ```-gamestateintegration -netconport 21823``` to your launch options of cs.**
-
-**If something still doesnt work create an issue describing what doesnt work, i will try to adress the issue as soon as possible**
 <h1 align="center">Description</h1>
 Have you ever started searching for a game in CS2 went for a bit, and see that you missed the accept button?  
 frustrating isn't it?  
