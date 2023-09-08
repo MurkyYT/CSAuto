@@ -182,6 +182,16 @@ namespace CSAuto
         {
             try
             {
+                if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
+                {
+                    InitializeDiscordRPC();
+                    Log.WriteLine("DiscordRpc.Initialize();");
+                }
+                else if (RPCClient.IsInitialized && !Properties.Settings.Default.enableDiscordRPC)
+                {
+                    RPCClient.Deinitialize();
+                    Log.WriteLine("DiscordRpc.Shutdown();");
+                }
                 Activity? activity = GameState.Player.CurrentActivity;
                 Phase? currentMatchState = GameState.Match.Phase;
                 Phase? currentRoundState = GameState.Round.Phase;
@@ -536,15 +546,6 @@ namespace CSAuto
 
         private void UpdateDiscordRPC()
         {
-            if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
-            {
-                Log.WriteLine("DiscordRpc.Initialize();");
-            }
-            else if (RPCClient.IsInitialized && !Properties.Settings.Default.enableDiscordRPC)
-            {
-                RPCClient.Deinitialize();
-                Log.WriteLine("DiscordRpc.Shutdown();");
-            }
             if (csRunning && inGame)
             {
                 RPCClient.SetPresence(new RichPresence()
@@ -765,6 +766,7 @@ namespace CSAuto
         {
             csRunning = false;
             Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
+            inLobby = false;
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{AppLanguage.Get("server_gamecrash")}");
             csProcess = null;
