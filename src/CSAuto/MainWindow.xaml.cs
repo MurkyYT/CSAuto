@@ -140,7 +140,7 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
-        DXGICapture capture = new DXGICapture();
+        DXGICapture DXGIcapture = new DXGICapture();
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -243,14 +243,15 @@ namespace CSAuto
                             Start = UnixTimeStampToDateTime(GameState.Timestamp),
                             End = null
                         },
-                        Buttons = new DiscordRPC.Button[]
-                        {
-                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
-                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
-                        }
+                        Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
                         SendMessageToServer($"<MAP>{AppLanguage.Get("server_loadedmap")} {GameState.Match.Map} {AppLanguage.Get("server_mode")} {GameState.Match.Mode}");
+                    if (DXGIcapture.Enabled)
+                    {
+                        DXGIcapture.DeInit();
+                        Log.WriteLine("Deinit DXGI Capture");
+                    }
                 }
                 else if (GameState.Match.Map == null && RPCClient.CurrentPresence.State != IN_LOBBY_STATE)
                 {
@@ -273,14 +274,15 @@ namespace CSAuto
                             Start = UnixTimeStampToDateTime(GameState.Timestamp),
                             End = null
                         },
-                        Buttons = new DiscordRPC.Button[]
-                        {
-                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
-                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
-                        }
+                        Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.lobbyNotification)
                         SendMessageToServer($"<LBY>{AppLanguage.Get("server_loadedlobby")}");
+                    if (!DXGIcapture.Enabled)
+                    {
+                        DXGIcapture.Init();
+                        Log.WriteLine("Init DXGI Capture");
+                    }
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -458,10 +460,6 @@ namespace CSAuto
         private void InitializeDiscordRPC()
         {
             RPCClient = new DiscordRpcClient(APIKeys.APIKeys.DiscordAppID);
-
-            //Set the logger
-            RPCClient.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
-
             //Subscribe to events
             RPCClient.OnReady += (sender, e) =>
             {
@@ -478,13 +476,18 @@ namespace CSAuto
                     Start = null,
                     End = null
                 },
-                Buttons = new DiscordRPC.Button[]
+                Buttons = GetDiscordRPCButtons()
+            });
+            RPCClient.CurrentPresence.Timestamps = new Timestamps();
+        }
+
+        private DiscordRPC.Button[] GetDiscordRPCButtons()
+        {
+            return new DiscordRPC.Button[]
                 {
                     new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
                     new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
-                }
-            });
-            RPCClient.CurrentPresence.Timestamps = new Timestamps();
+                };
         }
 
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -575,11 +578,7 @@ namespace CSAuto
                         Start = RPCClient.CurrentPresence.Timestamps.Start,
                         End = null
                     },
-                    Buttons = new DiscordRPC.Button[]
-                        {
-                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
-                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
-                        }
+                    Buttons = GetDiscordRPCButtons()
                 });
             }
             else if (csRunning && !inGame)
@@ -608,11 +607,7 @@ namespace CSAuto
                             Start = RPCClient.CurrentPresence.Timestamps.Start,
                             End = null
                         },
-                        Buttons = new DiscordRPC.Button[]
-                        {
-                            new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
-                            new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
-                        }
+                        Buttons = GetDiscordRPCButtons()
                     });
                 }
             }
@@ -669,7 +664,9 @@ namespace CSAuto
         {
             try
             {
-                Process[] prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
+                Process[] prcs = new Process[0];
+                if (csProcess == null)
+                    prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
                 if (csProcess == null && prcs.Length > 0)
                 {
                     csProcess = prcs[0];
@@ -685,6 +682,11 @@ namespace CSAuto
                     {
                         steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
                         steamAPIServer.Start();
+                    }
+                    if (!DXGIcapture.Enabled)
+                    {
+                        DXGIcapture.Init();
+                        Log.WriteLine("Init DXGI Capture");
                     }
                 }
                 else if (!csRunning)
@@ -711,6 +713,11 @@ namespace CSAuto
                     {
                         steamAPIServer.Kill();
                         steamAPIServer = null;
+                    }
+                    if (DXGIcapture.Enabled)
+                    {
+                        DXGIcapture.DeInit();
+                        Log.WriteLine("Deinit DXGI Capture");
                     }
                 }
                 csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
@@ -928,7 +935,7 @@ namespace CSAuto
         }
         private async Task AutoAcceptMatchAsync()
         {
-            IntPtr _handle = capture.GetCapture();
+            IntPtr _handle = DXGIcapture.GetCapture();
             if (_handle == IntPtr.Zero)
                 return;
             using (Bitmap bitmap = Image.FromHbitmap(_handle))
@@ -1067,8 +1074,8 @@ namespace CSAuto
                     throw new DirectoryNotFoundException(AppLanguage.Get("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
-                InitializeGameStateLaunchOption();
-                InitializeNetConLaunchOption();
+                //InitializeGameStateLaunchOption();
+                //InitializeNetConLaunchOption();
 #if !DEBUG
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();

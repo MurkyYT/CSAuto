@@ -16,23 +16,23 @@ namespace Murky.Utils
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DeInitCapture(IntPtr ptr);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool UpdateFrame(IntPtr ptr);
-        [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr GetBitmap(IntPtr ptr);
-        private IntPtr _handle;
-        public DXGICapture()
+        private static extern IntPtr UpdateFrame(IntPtr ptr);
+        private IntPtr _handle = IntPtr.Zero;
+        public bool Enabled => _handle != IntPtr.Zero;
+        public void Init()
         {
             _handle = InitCapture();
         }
         public IntPtr GetCapture()
         {
-            if(UpdateFrame(_handle))
-                return GetBitmap(_handle);
+            if(_handle != IntPtr.Zero)
+                return UpdateFrame(_handle);
             return IntPtr.Zero;
         }
         public void DeInit()
         {
             DeInitCapture(_handle);
+            _handle = IntPtr.Zero;
         }
     }
 }
