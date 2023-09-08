@@ -129,7 +129,7 @@ namespace CSAuto
         bool csRunning = false;
         bool inGame = false;
         bool csActive = false;
-        bool discordRPCON = false;
+        bool inLobby = false;
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
@@ -223,8 +223,9 @@ namespace CSAuto
                     }
 
                 }
-                if (GameState.Match.Map != null && (RPCClient.CurrentPresence.State == IN_LOBBY_STATE || RPCClient.CurrentPresence.Timestamps.Start == null))
+                if (GameState.Match.Map != null && inLobby)
                 {
+                    inLobby = false;
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                     RPCClient.SetPresence(new RichPresence()
                     {
@@ -253,8 +254,9 @@ namespace CSAuto
                         Log.WriteLine("Deinit DXGI Capture");
                     }
                 }
-                else if (GameState.Match.Map == null && RPCClient.CurrentPresence.State != IN_LOBBY_STATE)
+                else if (GameState.Match.Map == null && !inLobby)
                 {
+                    inLobby = true;
                     IN_LOBBY_STATE = FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
                     Log.WriteLine($"Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
@@ -465,20 +467,7 @@ namespace CSAuto
             {
                 Log.WriteLine($"Received Discord RPC Ready! {e.User.Username}");
             };
-            RPCClient.SetPresence(new RichPresence()
-            {
-                Details = "CSAuto",
-                State = "",
-                Assets = new Assets(),
-                Party = new Party() { ID = "", Size = 0, Max = 0 },
-                Timestamps = new Timestamps()
-                {
-                    Start = null,
-                    End = null
-                },
-                Buttons = GetDiscordRPCButtons()
-            });
-            RPCClient.CurrentPresence.Timestamps = new Timestamps();
+            RPCClient.Initialize();
         }
 
         private DiscordRPC.Button[] GetDiscordRPCButtons()
@@ -547,17 +536,14 @@ namespace CSAuto
 
         private void UpdateDiscordRPC()
         {
-            if (!discordRPCON && Properties.Settings.Default.enableDiscordRPC)
+            if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
             {
-                RPCClient.Initialize();
                 Log.WriteLine("DiscordRpc.Initialize();");
-                discordRPCON = true;
             }
-            else if (discordRPCON && !Properties.Settings.Default.enableDiscordRPC)
+            else if (RPCClient.IsInitialized && !Properties.Settings.Default.enableDiscordRPC)
             {
                 RPCClient.Deinitialize();
                 Log.WriteLine("DiscordRpc.Shutdown();");
-                discordRPCON = false;
             }
             if (csRunning && inGame)
             {
@@ -611,10 +597,9 @@ namespace CSAuto
                     });
                 }
             }
-            else if (discordRPCON && !csRunning)
+            else if (RPCClient.IsInitialized && !csRunning)
             {
                 RPCClient.Deinitialize();
-                discordRPCON = false;
                 Log.WriteLine("DiscordRpc.Shutdown();");
             }
         }
@@ -691,12 +676,10 @@ namespace CSAuto
                 }
                 else if (!csRunning)
                 {
-                    if (discordRPCON)
+                    if (RPCClient.IsInitialized)
                     {
                         RPCClient.Deinitialize();
                         Log.WriteLine("DiscordRpc.Shutdown();");
-                        discordRPCON = false;
-                        RPCClient.ClearPresence();
                     }
                     if (GameState.Timestamp != 0)
                     {
