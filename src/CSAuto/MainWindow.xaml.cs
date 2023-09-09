@@ -1019,13 +1019,21 @@ namespace CSAuto
         }
         private void Exited()
         {
-            notifyIcon.Close();
-            GameStateListener.StopGSIServer();
-            Application.Current.Shutdown();
+            if(notifyIcon != null)
+                notifyIcon.Close();
+
+            if (GameStateListener != null)
+                GameStateListener.StopGSIServer();
+            
             if (steamAPIServer != null && !steamAPIServer.HasExited)
                 steamAPIServer.Kill();
-            RPCClient.Dispose();
+
+            if(RPCClient != null)
+                RPCClient.Dispose();
+
             DiscordRPCButtonSerializer.Serialize(discordRPCButtons);
+
+            Application.Current.Shutdown();
         }
         private void CheckForDuplicates()
         {
