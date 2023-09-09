@@ -17,7 +17,7 @@ namespace CSAuto
         public static void OptimizeMemory()
         {
             IntPtr pHandle = GetCurrentProcess();
-            SetProcessWorkingSetSize(pHandle, -1, -1);
+            SetProcessWorkingSetSize(pHandle, 0, 13);
         }
         [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
         public static extern bool SetProcessWorkingSetSize(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
