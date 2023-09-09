@@ -1033,7 +1033,7 @@ namespace CSAuto
 
             DiscordRPCButtonSerializer.Serialize(discordRPCButtons);
 
-            Application.Current.Shutdown();
+            //Application.Current.Shutdown();
         }
         private void CheckForDuplicates()
         {
