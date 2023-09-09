@@ -14,6 +14,16 @@ namespace CSAuto
 {
     public static class NativeMethods
     {
+        public static void OptimizeMemory()
+        {
+            IntPtr pHandle = GetCurrentProcess();
+            SetProcessWorkingSetSize(pHandle, -1, -1);
+        }
+        [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        public static extern bool SetProcessWorkingSetSize(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
+
+        [DllImport("KERNEL32.DLL", EntryPoint = "GetCurrentProcess", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        public static extern IntPtr GetCurrentProcess();
         [DllImport("user32.dll")]
         public static extern IntPtr GetDC(IntPtr hWnd);
         [DllImport("gdi32.dll")]

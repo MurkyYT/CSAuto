@@ -687,6 +687,7 @@ namespace CSAuto
                         DXGIcapture.Init();
                         Log.WriteLine("Init DXGI Capture");
                     }
+                    NativeMethods.OptimizeMemory();
                 }
                 else if (!csRunning)
                 {
@@ -716,6 +717,7 @@ namespace CSAuto
                         DXGIcapture.DeInit();
                         Log.WriteLine("Deinit DXGI Capture");
                     }
+                    NativeMethods.OptimizeMemory();
                 }
                 csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
                 if (csActive)
@@ -1093,6 +1095,7 @@ namespace CSAuto
 #endif
                 if (Properties.Settings.Default.connectedNotification)
                     SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
+                NativeMethods.OptimizeMemory();
             }
             catch (Exception ex)
             {
