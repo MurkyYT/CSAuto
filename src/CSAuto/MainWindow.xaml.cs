@@ -151,6 +151,15 @@ namespace CSAuto
 
             return imageSource;
         }
+        public ImageSource ToImageSource(IntPtr handle)
+        {
+            ImageSource imageSource = Imaging.CreateBitmapSourceFromHBitmap(
+                handle,
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+            return imageSource;
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -941,6 +950,10 @@ namespace CSAuto
                 {
                     Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
                     bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                }
+                if(debugWind != null)
+                {
+                    debugWind.latestCapturedFrame.Source = ToImageSource(_handle);
                 }
                 bool found = false;
                 int count = 0;
