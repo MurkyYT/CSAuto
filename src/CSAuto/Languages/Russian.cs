@@ -87,7 +87,7 @@ namespace CSAuto.Languages
             ["menu_discordlobby"] = "Лобби RPC",
             ["menu_discordingame"] = "В игре RPC",
             ["title_discordrpctemplates"] = "Шаблоны:",
-            ["discord_friendcode"] = "{Friendcode} - Ваш код друга",
+            ["discord_friendcode"] = "{FriendCode} - Ваш код друга",
             ["discord_gamemode"] = "{Gamemode} - Текущий режим матча",
             ["discord_map"] = "{Map} - Текущая карта матча",
             ["discord_teamscore"] = "{TeamScore} - Счёт вашей команды",
@@ -102,7 +102,18 @@ namespace CSAuto.Languages
             ["discord_result"] = "Результат",
             ["discord_restartneeded"] = "Возможно, вам потребуется перезапустить приложение, чтобы изменения вступили в силу",
             ["menu_oldautobuy"] = "Отключить чат/консоль перед автоматической покупкой",
-            ["inputtext_testmessagetelegram"] = "Прислать Тестовое сообщение"
+            ["inputtext_testmessagetelegram"] = "Прислать Тестовое сообщение",
+            ["discord_label"] = "Заголовок кнопки",
+            ["discord_url"] = "Url-адрес кнопки",
+            ["menu_discordbuttons"] = "Кнопки Discord RPC",
+            ["discord_removebutton"] = "Удалить кнопку",
+            ["discord_addbutton"] = "Добавить кнопку",
+            ["inputtext_label"] = "Ввести заголовок",
+            ["inputtext_enterlabel"] = "Пожалуйста, введите желаемый заголовок",
+            ["inputtext_url"] = "Ввести URL-адрес",
+            ["inputtext_enterurl"] = "Пожалуйста, введите желаемый URL-адрес",
+            ["error_entervalid"] = "Пожалуйста, введите правильные данные",
+            ["error_max1discord"] = "Максимальное количество кнопок - 1 (Ограничения Discord)"
         };
         public static string Get(string category)
         {

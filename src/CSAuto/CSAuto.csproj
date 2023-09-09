@@ -117,6 +117,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DiscordRPCButton.cs" />
+    <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\English.cs" />
@@ -134,7 +136,6 @@
     <Compile Include="Utils\CSGO\CSGOMap.cs" />
     <Compile Include="Utils\CSGO\GameStateListener.cs" />
     <Compile Include="Utils\CSGO\NetCon.cs" />
-    <Compile Include="Utils\DiscordRpc.cs" />
     <Compile Include="Utils\Github.cs" />
     <Compile Include="Utils\InputBox.cs" />
     <Compile Include="Utils\Spotify.cs" />

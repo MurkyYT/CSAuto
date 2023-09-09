@@ -87,7 +87,7 @@ namespace CSAuto.Languages
             ["menu_discordlobby"] = "Lobby RPC",
             ["menu_discordingame"] = "In Game RPC",
             ["title_discordrpctemplates"] = "Templates:",
-            ["discord_friendcode"] = "{Friendcode} - Your friencode",
+            ["discord_friendcode"] = "{FriendCode} - Your friencode",
             ["discord_gamemode"] = "{Gamemode} - The current match mode",
             ["discord_map"] = "{Map} - The current match map",
             ["discord_teamscore"] = "{TeamScore} - Your team score",
@@ -102,7 +102,18 @@ namespace CSAuto.Languages
             ["discord_result"] = "Result",
             ["discord_restartneeded"] = "You may need to restart the app for changes to apply",
             ["menu_oldautobuy"] = "Disable Chat/Console before auto buy",
-            ["inputtext_testmessagetelegram"] = "Send test message"
+            ["inputtext_testmessagetelegram"] = "Send test message",
+            ["discord_label"] = "Button Label",
+            ["discord_url"] = "Button Url",
+            ["menu_discordbuttons"] = "Discord RPC Buttons",
+            ["discord_removebutton"] = "Remove Button",
+            ["discord_addbutton"] = "Add Button",
+            ["inputtext_label"] = "Enter Label",
+            ["inputtext_enterlabel"] = "Please enter your desired label",
+            ["inputtext_url"] = "Enter URL",
+            ["inputtext_enterurl"] = "Please enter your desired URL",
+            ["error_entervalid"] = "Please enter valid inputs",
+            ["error_max1discord"] = "There is a max amount of 1 button (Discord Limitations)"
         };
         public static string Get(string category)
         {

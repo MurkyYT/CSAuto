@@ -103,6 +103,7 @@ namespace CSAuto
         /// Publics
         /// </summary>
         public GUIWindow debugWind = null;
+        public List<DiscordRPCButton> discordRPCButtons;
         /// <summary>
         /// Readonly
         /// </summary>
@@ -129,7 +130,7 @@ namespace CSAuto
         bool csRunning = false;
         bool inGame = false;
         bool csActive = false;
-        bool inLobby = false;
+        bool? inLobby = null;
         Activity? lastActivity;
         Phase? matchState;
         Phase? roundState;
@@ -155,6 +156,7 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 AVAILABLE_MAP_ICONS = Properties.Resources.AVAILABLE_MAPS_STRING.Split(',');
                 CSGOFriendCode.Encode("76561198341800115");
@@ -169,7 +171,7 @@ namespace CSAuto
 #endif
                 Top = -1000;
                 Left = -1000;
-                IN_LOBBY_STATE = FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
+                IN_LOBBY_STATE = FormatString(Properties.Settings.Default.lobbyState, GameState);
             }
             catch (Exception ex)
             {
@@ -233,14 +235,14 @@ namespace CSAuto
                     }
 
                 }
-                if (GameState.Match.Map != null && inLobby)
+                if (GameState.Match.Map != null && (inLobby == true || inLobby == null))
                 {
                     inLobby = false;
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = FormatDiscordRPC(Properties.Settings.Default.inGameDetails, GameState),
-                        State = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState),
+                        Details = FormatString(Properties.Settings.Default.inGameDetails, GameState),
+                        State = FormatString(Properties.Settings.Default.inGameState, GameState),
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
@@ -264,14 +266,14 @@ namespace CSAuto
                         Log.WriteLine("Deinit DXGI Capture");
                     }
                 }
-                else if (GameState.Match.Map == null && !inLobby)
+                else if (GameState.Match.Map == null && (inLobby == false || inLobby == null))
                 {
                     inLobby = true;
-                    IN_LOBBY_STATE = FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
+                    IN_LOBBY_STATE = FormatString(Properties.Settings.Default.lobbyState, GameState);
                     Log.WriteLine($"Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = FormatDiscordRPC(Properties.Settings.Default.lobbyDetails, GameState),
+                        Details = FormatString(Properties.Settings.Default.lobbyDetails, GameState),
                         State = IN_LOBBY_STATE,
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
@@ -374,7 +376,7 @@ namespace CSAuto
                 netCon = null;
             }
         }
-        public string FormatDiscordRPC(string original, GameState gameState)
+        public string FormatString(string original, GameState gameState)
         {
             if (gameState.Player != null)
             {
@@ -482,11 +484,13 @@ namespace CSAuto
 
         private DiscordRPC.Button[] GetDiscordRPCButtons()
         {
-            return new DiscordRPC.Button[]
-                {
-                    new DiscordRPC.Button() {Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto"},
-                    new DiscordRPC.Button() {Label = "Steam Profile", Url = $"https://steamcommunity.com/profiles/{GameState.MySteamID}"}
-                };
+            DiscordRPC.Button[] res = new DiscordRPC.Button[1 + discordRPCButtons.Count];
+            res[0] = new DiscordRPC.Button() { Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto" };
+            for (int i = 1; i < res.Length; i++)
+            {
+                res[i] = new DiscordRPC.Button() { Label = discordRPCButtons[i - 1].Label, Url = FormatString(discordRPCButtons[i - 1].Url,GameState) };
+            }
+            return res;
         }
 
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -551,14 +555,14 @@ namespace CSAuto
                 RPCClient.SetPresence(new RichPresence()
                 {
                     Details = RPCClient.CurrentPresence.Details,
-                    State = FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState),
+                    State = FormatString(Properties.Settings.Default.inGameState, GameState),
                     Party = new Party(),
                     Assets = new Assets()
                     {
                         LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
                         LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
                         SmallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower(),
-                        SmallImageText = GameState.IsSpectating ? "Watching GOTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
+                        SmallImageText = GameState.IsSpectating ? "Watching CSTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
                     },
                     Timestamps = new Timestamps()
                     {
@@ -1021,6 +1025,7 @@ namespace CSAuto
             if (steamAPIServer != null && !steamAPIServer.HasExited)
                 steamAPIServer.Kill();
             RPCClient.Dispose();
+            DiscordRPCButtonSerializer.Serialize(discordRPCButtons);
         }
         private void CheckForDuplicates()
         {

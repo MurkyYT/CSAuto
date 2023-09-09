@@ -56,14 +56,18 @@ namespace CSAuto
         }
         private async Task RestartMessageBox()
         {
-            var restart = await ShowMessage(AppLanguage.Get("title_restartneeded"), AppLanguage.Get("msgbox_restartneeded"), MessageDialogStyle.AffirmativeAndNegative);
+            var restart = await ShowMessage("title_restartneeded", "msgbox_restartneeded", MessageDialogStyle.AffirmativeAndNegative);
             if (restart == MessageDialogResult.Affirmative)
             {
                 Process.Start(Assembly.GetExecutingAssembly().Location);
                 Application.Current.Shutdown();
             }
         }
-
+        private async Task<string> CallInputDialogAsync(string title,string message)
+        {
+            return await this.ShowInputAsync(AppLanguage.Get(title), AppLanguage.Get(message));
+            
+        }
         public void UpdateText(string data)
         {
             this.Dispatcher.Invoke(() =>
@@ -259,6 +263,18 @@ namespace CSAuto
 #endif
             VersionText.Text = $"ver {MainWindow.VER}";
             UpdateDiscordRPCResult(true);
+            LoadDiscordButtons();
+        }
+
+        private void LoadDiscordButtons()
+        {
+            DiscordRPCButtonsListView.Items.Clear();
+            foreach (DiscordRPCButton button in main.discordRPCButtons)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Content = button;
+                DiscordRPCButtonsListView.Items.Add(item);
+            }
         }
 
         private void LoadChangelog()
@@ -338,7 +354,7 @@ namespace CSAuto
            string message, MessageDialogStyle dialogStyle)
         {
             return await this.ShowMessageAsync(
-                title, message, dialogStyle);
+                AppLanguage.Get(title), AppLanguage.Get(message), dialogStyle);
         }
         private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -401,18 +417,20 @@ namespace CSAuto
                 return;
             if (lobby) 
             {
-                DiscordRpcDetails.Text = main.FormatDiscordRPC(Properties.Settings.Default.lobbyDetails, GameState);
-                DiscordRpcState.Text = main.FormatDiscordRPC(Properties.Settings.Default.lobbyState, GameState);
+                DiscordRpcDetails.Text = main.FormatString(Properties.Settings.Default.lobbyDetails, GameState);
+                DiscordRpcState.Text = main.FormatString(Properties.Settings.Default.lobbyState, GameState);
             }
             else
             {
-                DiscordRpcDetails.Text = main.FormatDiscordRPC(Properties.Settings.Default.inGameDetails, GameState);
-                DiscordRpcState.Text = main.FormatDiscordRPC(Properties.Settings.Default.inGameState, GameState);
+                DiscordRpcDetails.Text = main.FormatString(Properties.Settings.Default.inGameDetails, GameState);
+                DiscordRpcState.Text = main.FormatString(Properties.Settings.Default.inGameState, GameState);
             }
         }
 
         private void DiscordTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            listViewLabel.Header = AppLanguage.Get((string)listViewLabel.Header);
+            listViewUrl.Header = AppLanguage.Get((string)listViewUrl.Header);
             TabControl_SelectionChanged(sender, e);
             UpdateDiscordRPCResult(DiscordTabControl.SelectedIndex == 0);
         }
@@ -420,6 +438,36 @@ namespace CSAuto
         private void TelegramTestMessage_Click(object sender, RoutedEventArgs e)
         {
             main.TelegramSendMessage("Test Message!");
+        }
+
+        private void RemoveDiscordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(DiscordRPCButtonsListView.SelectedIndex != -1)
+            {
+                main.discordRPCButtons.Remove(main.discordRPCButtons[DiscordRPCButtonsListView.SelectedIndex]);
+                LoadDiscordButtons();
+                DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
+            }
+        }
+
+        private async void AddDiscordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(main.discordRPCButtons.Count == 1)
+            {
+                await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
+                return;
+            }
+            string label = await CallInputDialogAsync(AppLanguage.Get("inputtext_label"), AppLanguage.Get("inputtext_enterlabel"));
+            string url = await CallInputDialogAsync(AppLanguage.Get("inputtext_url"), AppLanguage.Get("inputtext_enterurl"));
+            if(label.Trim() == "" || label == null || url.Trim() == "" || url == null || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
+            {
+                await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
+                return;
+            }
+            DiscordRPCButton res = new DiscordRPCButton() { Label = label, Url = url };
+            main.discordRPCButtons.Add(res);
+            LoadDiscordButtons();
+            DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
         }
     }
 }
