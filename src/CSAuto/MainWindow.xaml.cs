@@ -78,7 +78,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "2.0.0-beta.1";
+        public const string VER = "2.0.0-beta.2";
         const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
