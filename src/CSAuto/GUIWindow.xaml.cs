@@ -459,7 +459,7 @@ namespace CSAuto
             }
             string label = await CallInputDialogAsync(AppLanguage.Get("inputtext_label"), AppLanguage.Get("inputtext_enterlabel"));
             string url = await CallInputDialogAsync(AppLanguage.Get("inputtext_url"), AppLanguage.Get("inputtext_enterurl"));
-            if(label.Trim() == "" || label == null || url.Trim() == "" || url == null || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
+            if(label == null || url == null || label.Trim() == "" || url.Trim() == "" || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
                 return;
