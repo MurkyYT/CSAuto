@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="CS:GO"
+        android:text="Counter-Strike 2"
         android:textSize="30dp"
         android:textStyle="bold"
         android:textColor="#ff000000"

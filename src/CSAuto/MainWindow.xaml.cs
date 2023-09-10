@@ -423,17 +423,29 @@ namespace CSAuto
             }
         }
 
-        public string TelegramSendMessage(string text)
+        public void TelegramSendMessage(string text)
         {
             try
             {
                 string urlString = $"https://api.telegram.org/bot{APIKeys.APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
 
-                WebClient webclient = new WebClient();
-
-                return webclient.DownloadString(urlString);
+                using (WebClient webclient = new WebClient())
+                {
+                    webclient.DownloadString(urlString);
+                }
+                Log.WriteLine($"Sent telegram message \"{text}\" to \"{Properties.Settings.Default.telegramChatId}\"");
             }
-            catch (WebException ex) { if (!ex.Message.Contains("(429)") && ex.Message != "Unable to connect to the remote server") { MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n'{ex.Message}'\n'{text}'", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error); } return null; }
+            catch (WebException ex) 
+            { 
+                if (!ex.Message.Contains("(429)") &&
+                    ex.Message != "Unable to connect to the remote server") 
+                { 
+                    MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n'{ex.Message}'\n'{text}'",
+                        AppLanguage.Get("title_error"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error); 
+                } 
+            }
         }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
@@ -687,7 +699,7 @@ namespace CSAuto
                         DXGIcapture.Init();
                         Log.WriteLine("Init DXGI Capture");
                     }
-                    NativeMethods.OptimizeMemory();
+                    NativeMethods.OptimizeMemory(-1,-1);
                 }
                 else if (!csRunning)
                 {
@@ -717,7 +729,7 @@ namespace CSAuto
                         DXGIcapture.DeInit();
                         Log.WriteLine("Deinit DXGI Capture");
                     }
-                    NativeMethods.OptimizeMemory();
+                    NativeMethods.OptimizeMemory(0,13);
                 }
                 csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
                 if (csActive)
@@ -1095,7 +1107,7 @@ namespace CSAuto
 #endif
                 if (Properties.Settings.Default.connectedNotification)
                     SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
-                NativeMethods.OptimizeMemory();
+                NativeMethods.OptimizeMemory(0,13);
             }
             catch (Exception ex)
             {

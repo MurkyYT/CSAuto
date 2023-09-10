@@ -62,7 +62,7 @@ namespace Murky.Utils.CSGO
         Custom,
         DangerZone
     }
-    public class GameState
+    public class GameState : IDisposable
     {
         public Player Player { get; private set; }
         public Match Match { get; private set; }
@@ -365,8 +365,21 @@ namespace Murky.Utils.CSGO
                     return null;
             }
         }
+
+        public void Dispose()
+        {
+            Timestamp = 0;
+            MySteamID = null;
+            _JSON = null;
+            Player.Dispose();
+            Player = null;
+            Match.Dispose();
+            Match = null;
+            Round.Dispose();
+            Round = null;
+        }
     }
-    public class Weapon
+    public class Weapon : IDisposable
     {
         public int Index { get; internal set; }
         public int Bullets { get; internal set; }
@@ -375,22 +388,42 @@ namespace Murky.Utils.CSGO
         public string Name { get; internal set; }
         public WeaponType? Type { get; internal set; }
         public WeaponState? State { get; internal set; }
+
+        public void Dispose()
+        {
+            Name = null;
+            Type = null;
+            State = null;
+        }
     }
-    public class Match
+    public class Match : IDisposable
     {
         public Phase? Phase { get; internal set; }
         public Mode? Mode { get; internal set; }
         public string Map { get; internal set; }
         public int TScore { get; internal set; }
         public int CTScore { get; internal set; }
+
+        public void Dispose()
+        {
+            Map = null;
+            Phase = null;
+            Mode = null;
+        }
     }
-    public class Round
+    public class Round : IDisposable
     {
         public int CurrentRound { get; internal set; }
         public Phase? Phase { get; internal set; }
         public BombState? Bombstate { get; internal set; }
+
+        public void Dispose()
+        {
+            Phase = null;
+            Bombstate = null;
+        }
     }
-    public class Player
+    public class Player : IDisposable
     {
         public Weapon ActiveWeapon { get; internal set; }
         public Weapon[] Weapons { get; internal set; }
@@ -402,6 +435,15 @@ namespace Murky.Utils.CSGO
         public bool HasHelmet { get; internal set; }
         public bool HasDefuseKit { get; internal set; }
         public string SteamID { get; internal set; }
+        public void Dispose()
+        {
+            ActiveWeapon.Dispose();
+            ActiveWeapon = null;
+            Weapons = null;
+            CurrentActivity = null;
+            Team = null;
+            SteamID = null;
+        }
         internal void SetWeapons(string JSON)
         {
             string weapons = GetWeapons(JSON);
