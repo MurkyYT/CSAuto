@@ -694,11 +694,6 @@ namespace CSAuto
                         steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
                         steamAPIServer.Start();
                     }
-                    if (!DXGIcapture.Enabled)
-                    {
-                        DXGIcapture.Init();
-                        Log.WriteLine("Init DXGI Capture");
-                    }
                     NativeMethods.OptimizeMemory(-1,-1);
                 }
                 else if (!csRunning)
