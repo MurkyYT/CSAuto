@@ -523,12 +523,15 @@ namespace CSAuto
 
         private void InitializeDiscordRPC()
         {
+            Directory.CreateDirectory(Log.WorkPath + "\\DEBUG\\DISCORD");
             RPCClient = new DiscordRpcClient(APIKeys.APIKeys.DiscordAppID);
             //Subscribe to events
 #if DEBUG
-            RPCClient.Logger = new FileLogger(Log.Path,DiscordRPC.Logging.LogLevel.Trace);
+            File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt").Close();
+            RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt",DiscordRPC.Logging.LogLevel.Trace);
 #elif !DEBUG
-            RPCClient.Logger = new FileLogger(Log.Path,DiscordRPC.Logging.LogLevel.Error);
+            File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt").Close();
+            RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt", DiscordRPC.Logging.LogLevel.Error);
 #endif
             RPCClient.OnReady += (sender, e) =>
             {

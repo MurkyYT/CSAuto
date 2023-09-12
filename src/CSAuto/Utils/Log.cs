@@ -18,6 +18,7 @@ namespace Murky.Utils
         static string path = strWorkPath + "\\DEBUG\\LOGS\\";
         static string lineTemplate = "[%date%] (%caller%) - %message%";
         public static string Path { get { return path; } }
+        public static string WorkPath { get { return strWorkPath; } }
         public static void VerifyDir()
         {
             try
