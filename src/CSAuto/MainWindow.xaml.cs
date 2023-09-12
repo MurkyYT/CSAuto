@@ -29,7 +29,6 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
-using System.Runtime.InteropServices;
 
 namespace CSAuto
 {
@@ -79,7 +78,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "2.0.0-beta.2";
+        public const string VER = "2.0.0-beta.3";
         const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
