@@ -750,6 +750,7 @@ namespace CSAuto
                         GameStateListener.StopGSIServer();
                         NetConCloseConnection();
                         SendMessageToServer("<CLS>", onlyServer: true);
+                        NativeMethods.OptimizeMemory(0, 13);
                     }
                     if (steamAPIServer != null)
                     {
@@ -761,7 +762,6 @@ namespace CSAuto
                         DXGIcapture.DeInit();
                         Log.WriteLine("Deinit DXGI Capture");
                     }
-                    NativeMethods.OptimizeMemory(0,13);
                 }
                 csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
                 if (csActive)

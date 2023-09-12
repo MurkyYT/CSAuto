@@ -18,7 +18,10 @@ namespace CSAuto
         {
             IntPtr pHandle = GetCurrentProcess();
             SetProcessWorkingSetSize(pHandle, min, max);
+            EmptyWorkingSet(pHandle);
         }
+        [DllImport("psapi")]
+        public static extern bool EmptyWorkingSet(IntPtr hProcess);
         [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
         public static extern bool SetProcessWorkingSetSize(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
         [DllImport("KERNEL32.DLL", EntryPoint = "GetCurrentProcess", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
