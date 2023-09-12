@@ -29,6 +29,7 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using System.Runtime.InteropServices;
 
 namespace CSAuto
 {
@@ -151,18 +152,34 @@ namespace CSAuto
 
             return imageSource;
         }
-        public ImageSource ToImageSource(IntPtr handle)
+
+        public static ImageSource CreateBitmapSourceFromBitmap(Bitmap bitmap)
         {
-            ImageSource imageSource = Imaging.CreateBitmapSourceFromHBitmap(
-                handle,
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
-            return imageSource;
+            if (bitmap == null)
+                throw new ArgumentNullException("bitmap");
+
+            lock (bitmap)
+            {
+                IntPtr hBitmap = bitmap.GetHbitmap();
+
+                try
+                {
+                    return Imaging.CreateBitmapSourceFromHBitmap(
+                        hBitmap,
+                        IntPtr.Zero,
+                        Int32Rect.Empty,
+                        BitmapSizeOptions.FromEmptyOptions());
+                }
+                finally
+                {
+                    NativeMethods.DeleteObject(hBitmap);
+                }
+            }
         }
         public MainWindow()
         {
             InitializeComponent();
+            
             try
             {
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
@@ -174,6 +191,7 @@ namespace CSAuto
                 GameStateListener = new GameStateListener(ref GameState, GAMESTATE_PORT);
                 GameStateListener.OnReceive += GameStateListener_OnReceive;
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 InitializeContextMenu();
 #if !DEBUG
                 MakeSureStartupIsOn();
@@ -187,6 +205,17 @@ namespace CSAuto
                 MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = ((Exception)e.ExceptionObject);
+            Log.Error(
+                $"{ex.Message}\n" +
+                $"StackTrace:{ex.StackTrace}");
+            MessageBox.Show(AppLanguage.Get("error_appcrashed"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+            Process.Start("Error_Log.txt");
+            Application.Current.Shutdown();
         }
 
         private void GameStateListener_OnReceive(object sender, EventArgs e)
@@ -496,6 +525,11 @@ namespace CSAuto
         {
             RPCClient = new DiscordRpcClient(APIKeys.APIKeys.DiscordAppID);
             //Subscribe to events
+#if DEBUG
+            RPCClient.Logger = new FileLogger(Log.Path,DiscordRPC.Logging.LogLevel.Trace);
+#elif !DEBUG
+            RPCClient.Logger = new FileLogger(Log.Path,DiscordRPC.Logging.LogLevel.Error);
+#endif
             RPCClient.OnReady += (sender, e) =>
             {
                 Log.WriteLine($"Received Discord RPC Ready! {e.User.Username}");
@@ -944,7 +978,12 @@ namespace CSAuto
         {
             IntPtr _handle = DXGIcapture.GetCapture();
             if (_handle == IntPtr.Zero)
-                return;
+            {
+                DXGIcapture.DeInit();
+                Log.WriteLine("Deinit DXGI Capture");
+                DXGIcapture.Init();
+                Log.WriteLine("Init DXGI Capture");
+            }
             using (Bitmap bitmap = Image.FromHbitmap(_handle))
             {
                 //    using (Graphics g = Graphics.FromImage(bitmap))
@@ -962,7 +1001,7 @@ namespace CSAuto
                 }
                 if(debugWind != null)
                 {
-                    debugWind.latestCapturedFrame.Source = ToImageSource(_handle);
+                    debugWind.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
                 }
                 bool found = false;
                 int count = 0;

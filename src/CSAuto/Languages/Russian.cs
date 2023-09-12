@@ -113,7 +113,8 @@ namespace CSAuto.Languages
             ["inputtext_url"] = "Ввести URL-адрес",
             ["inputtext_enterurl"] = "Пожалуйста, введите желаемый URL-адрес",
             ["error_entervalid"] = "Пожалуйста, введите правильные данные",
-            ["error_max1discord"] = "Максимальное количество кнопок - 1 (Ограничения Discord)"
+            ["error_max1discord"] = "Максимальное количество кнопок - 1 (Ограничения Discord)",
+            ["error_appcrashed"] = "Произошла неожиданная ошибка!, я открою Error_Log.txt , пожалуйста, откройте проблему на github с прикрепленным журналом!"
         };
         public static string Get(string category)
         {

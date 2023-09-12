@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Murky.Utils
     {
         public static CSAuto.GUIWindow debugWind = null;
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        static string path = strWorkPath + "/DEBUG/LOGS/";
+        static string path = strWorkPath + "\\DEBUG\\LOGS\\";
         static string lineTemplate = "[%date%] (%caller%) - %message%";
         public static string Path { get { return path; } }
         public static void VerifyDir()
@@ -78,6 +79,23 @@ namespace Murky.Utils
                 }
                 catch {  }
             }
+        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Error(object lines, string level = "Info", string caller = "")
+        {
+            StackFrame frm = new StackFrame(1, false);
+            lines = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} CRITICAL - {lines}";
+            if (debugWind != null)
+                debugWind.UpdateDebug(lines.ToString());
+            Debug.WriteLine(lines);
+            string fileName = "Error_Log.txt";
+            try
+            {
+                System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, false);
+                file.WriteLine(lines);
+                file.Close();
+            }
+            catch { }
         }
     }
 }

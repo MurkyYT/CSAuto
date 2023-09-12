@@ -113,7 +113,8 @@ namespace CSAuto.Languages
             ["inputtext_url"] = "Enter URL",
             ["inputtext_enterurl"] = "Please enter your desired URL",
             ["error_entervalid"] = "Please enter valid inputs",
-            ["error_max1discord"] = "There is a max amount of 1 button (Discord Limitations)"
+            ["error_max1discord"] = "There is a max amount of 1 button (Discord Limitations)",
+            ["error_appcrashed"] = "An unexpected error has accured!, i will open Error_Log.txt, please open an issue on github with the log Attached!"
         };
         public static string Get(string category)
         {

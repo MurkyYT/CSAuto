@@ -31,7 +31,8 @@ namespace Murky.Utils
         }
         public void DeInit()
         {
-            DeInitCapture(_handle);
+            if (_handle != IntPtr.Zero)
+                DeInitCapture(_handle);
             _handle = IntPtr.Zero;
         }
     }
