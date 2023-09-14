@@ -78,7 +78,7 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "2.0.0-beta.3";
+        public const string VER = "2.0.0-beta.4";
         const string GAME_PROCCES_NAME = "cs2";
         const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
@@ -111,8 +111,8 @@ namespace CSAuto
         readonly ContextMenu exitcm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
-        readonly Color BUTTON_COLOR = Color.FromArgb(77, 176, 81);
-        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(91, 204, 95);
+        readonly Color BUTTON_COLOR = Color.FromArgb(16, 158, 89);
+        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(21, 184, 105);
         /// <summary>
         /// Privates
         /// </summary>
@@ -1010,6 +1010,7 @@ namespace CSAuto
                 for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
                 {
                     Color pixelColor = bitmap.GetPixel(csResolution.X/2, y);
+                    Log.WriteLine($"{pixelColor}, {y}, {csResolution.X/2}");
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
                         

@@ -25,9 +25,13 @@ namespace Murky.Utils
         }
         public IntPtr GetCapture()
         {
-            if(_handle != IntPtr.Zero)
-                return UpdateFrame(_handle);
-            return IntPtr.Zero;
+            try
+            {
+                if (_handle != IntPtr.Zero)
+                    return UpdateFrame(_handle);
+                return IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
         }
         public void DeInit()
         {
