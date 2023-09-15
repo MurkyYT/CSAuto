@@ -1005,6 +1005,9 @@ namespace CSAuto
                 if(debugWind != null)
                 {
                     debugWind.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
+                    Point pixelPos = new Point(csResolution.X / 2, (int)(csResolution.Y / (1050f / 473f)) + 1);
+                    Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
+                    debugWind.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}"; 
                 }
                 bool found = false;
                 int count = 0;
