@@ -78,9 +78,10 @@ namespace CSAuto
         /// <summary>
         /// Constants
         /// </summary>
-        public const string VER = "2.0.0-beta.4";
+        public const string VER = "2.0.0-beta";
+        public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
+        const string DEBUG_REVISION = "5";
         const string GAME_PROCCES_NAME = "cs2";
-        const string DEBUG_REVISION = "";
         const string GAMESTATE_PORT = "11523";
         const string NETCON_PORT = "21823";
         const string TIMEOUT = "5.0";
@@ -494,7 +495,7 @@ namespace CSAuto
             options.Click += Options_Click;
             MenuItem about = new MenuItem
             {
-                Header = $"{typeof(MainWindow).Namespace} - {VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")}",
+                Header = $"{typeof(MainWindow).Namespace} - {FULL_VER}",
                 IsEnabled = false,
                 Icon = new System.Windows.Controls.Image
                 {
@@ -1010,7 +1011,6 @@ namespace CSAuto
                 for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
                 {
                     Color pixelColor = bitmap.GetPixel(csResolution.X/2, y);
-                    Log.WriteLine($"{pixelColor}, {y}, {csResolution.X/2}");
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
                         
@@ -1143,7 +1143,7 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification)
-                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")}");
+                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")} (CSAuto v{FULL_VER})");
                 NativeMethods.OptimizeMemory(0,13);
             }
             catch (Exception ex)

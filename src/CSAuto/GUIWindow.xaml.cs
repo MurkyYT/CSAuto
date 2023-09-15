@@ -263,7 +263,7 @@ namespace CSAuto
 #if !DEBUG
             LoadChangelog();
 #endif
-            VersionText.Text = $"ver {MainWindow.VER}";
+            VersionText.Text = $"ver {MainWindow.FULL_VER}";
             UpdateDiscordRPCResult(true);
             LoadDiscordButtons();
         }
