@@ -65,7 +65,7 @@ namespace CSAuto
         }
         private async Task<string> CallInputDialogAsync(string title,string message)
         {
-            return await this.ShowInputAsync(AppLanguage.Get(title), AppLanguage.Get(message));
+            return await this.ShowInputAsync(AppLanguage.Language[title], AppLanguage.Language[message]);
             
         }
         public void UpdateText(string data)
@@ -295,18 +295,18 @@ namespace CSAuto
         private void LoadLanguages(DependencyObject obj)
         {
             foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
-                ch.Content = AppLanguage.Get((string)ch.Content);
+                ch.Content = AppLanguage.Language[(string)ch.Content];
             foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
-                ch.Header = AppLanguage.Get((string)ch.Header);
+                ch.Header = AppLanguage.Language[(string)ch.Header];
             foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
             {
                 if (Colors.Contains(ch.Text))
                     continue;
-                ch.Text = AppLanguage.Get(ch.Text);
+                ch.Text = AppLanguage.Language[ch.Text];
             }
             foreach (Button ch in FindVisualChildren<Button>(obj))
                 if(ch.Content != null && ch.Content.GetType().Name == "String")
-                    ch.Content = AppLanguage.Get((string)ch.Content);
+                    ch.Content = AppLanguage.Language[(string)ch.Content];
         }
 
         private void LaunchGitHubSite(object sender, RoutedEventArgs e)
@@ -317,7 +317,7 @@ namespace CSAuto
         {
             foreach (string language in AppLanguage.Available)
             {
-                RadioButton rb = new RadioButton() { Content = AppLanguage.Get(language), IsChecked = language == Properties.Settings.Default.currentLanguage };
+                RadioButton rb = new RadioButton() { Content = AppLanguage.Language[language], IsChecked = language == Properties.Settings.Default.currentLanguage };
                 rb.Checked += async (sender, args) =>
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
@@ -356,7 +356,7 @@ namespace CSAuto
            string message, MessageDialogStyle dialogStyle)
         {
             return await this.ShowMessageAsync(
-                AppLanguage.Get(title), AppLanguage.Get(message), dialogStyle);
+                AppLanguage.Language[title], AppLanguage.Language[message], dialogStyle);
         }
         private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -431,8 +431,8 @@ namespace CSAuto
 
         private void DiscordTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            listViewLabel.Header = AppLanguage.Get((string)listViewLabel.Header);
-            listViewUrl.Header = AppLanguage.Get((string)listViewUrl.Header);
+            listViewLabel.Header = AppLanguage.Language[(string)listViewLabel.Header];
+            listViewUrl.Header = AppLanguage.Language[(string)listViewUrl.Header];
             TabControl_SelectionChanged(sender, e);
             UpdateDiscordRPCResult(DiscordTabControl.SelectedIndex == 0);
         }
@@ -459,8 +459,8 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(AppLanguage.Get("inputtext_label"), AppLanguage.Get("inputtext_enterlabel"));
-            string url = await CallInputDialogAsync(AppLanguage.Get("inputtext_url"), AppLanguage.Get("inputtext_enterurl"));
+            string label = await CallInputDialogAsync(AppLanguage.Language["inputtext_label"], AppLanguage.Language["inputtext_enterlabel"]);
+            string url = await CallInputDialogAsync(AppLanguage.Language["inputtext_url"], AppLanguage.Language["inputtext_enterurl"]);
             if(label == null || url == null || label.Trim() == "" || url.Trim() == "" || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);

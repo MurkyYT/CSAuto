@@ -202,7 +202,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{AppLanguage.Get("error_startup1")}\n'{ex.Message}'\n{AppLanguage.Get("error_startup2")}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{AppLanguage.Language["error_startup1"]}\n'{ex.Message}'\n{AppLanguage.Language["error_startup2"]}", AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
         }
@@ -213,7 +213,7 @@ namespace CSAuto
             Log.Error(
                 $"{ex.Message}\n" +
                 $"StackTrace:{ex.StackTrace}");
-            MessageBox.Show(AppLanguage.Get("error_appcrashed"), AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
             Process.Start("Error_Log.txt");
             Application.Current.Shutdown();
         }
@@ -265,10 +265,10 @@ namespace CSAuto
                     switch (currentBombState)
                     {
                         case BombState.Defused:
-                            SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombdefuse")}");
+                            SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombdefuse"]}");
                             break;
                         case BombState.Exploded:
-                            SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombexplode")}");
+                            SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombexplode"]}");
                             break;
                     }
 
@@ -297,7 +297,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer($"<MAP>{AppLanguage.Get("server_loadedmap")} {GameState.Match.Map} {AppLanguage.Get("server_mode")} {GameState.Match.Mode}");
+                        SendMessageToServer($"<MAP>{AppLanguage.Language["server_loadedmap"]} {GameState.Match.Map} {AppLanguage.Language["server_mode"]} {GameState.Match.Mode}");
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -329,7 +329,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.lobbyNotification)
-                        SendMessageToServer($"<LBY>{AppLanguage.Get("server_loadedlobby")}");
+                        SendMessageToServer($"<LBY>{AppLanguage.Language["server_loadedlobby"]}");
                     if (!DXGIcapture.Enabled)
                     {
                         DXGIcapture.Init();
@@ -468,9 +468,9 @@ namespace CSAuto
             { 
                 if (!ex.Message.Contains("(429)") &&
                     ex.Message != "Unable to connect to the remote server") 
-                { 
-                    MessageBox.Show($"{AppLanguage.Get("error_telegrammessage")}\n'{ex.Message}'\n'{text}'",
-                        AppLanguage.Get("title_error"),
+                {
+                    MessageBox.Show($"{AppLanguage.Language["error_telegrammessage"]}\n'{ex.Message}'\n'{text}'",
+                        AppLanguage.Language["title_error"],
                         MessageBoxButton.OK,
                         MessageBoxImage.Error); 
                 } 
@@ -485,11 +485,11 @@ namespace CSAuto
         {
             MenuItem exit = new MenuItem
             {
-                Header = AppLanguage.Get("menu_exit")
+                Header = AppLanguage.Language["menu_exit"]
             };
             MenuItem options = new MenuItem
             {
-                Header = AppLanguage.Get("menu_options")
+                Header = AppLanguage.Language["menu_options"]
             };
             exit.Click += Exit_Click;
             options.Click += Options_Click;
@@ -504,7 +504,7 @@ namespace CSAuto
             };
             MenuItem checkForUpdates = new MenuItem
             {
-                Header = AppLanguage.Get("menu_checkforupdates")
+                Header = AppLanguage.Language["menu_checkforupdates"]
             };
             checkForUpdates.Click += CheckForUpdates_Click;
             exitcm.Items.Add(about);
@@ -567,12 +567,12 @@ namespace CSAuto
                     if (latestVersion == VER)
                     {
                         Log.WriteLine("Latest version installed");
-                        MessageBox.Show(AppLanguage.Get("msgbox_latestversion"), AppLanguage.Get("title_update"), MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(AppLanguage.Language["msgbox_latestversion"], AppLanguage.Language["title_update"], MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
-                        MessageBoxResult result = MessageBox.Show($"{AppLanguage.Get("msgbox_newerversion1")} ({latestVersion}) {AppLanguage.Get("msgbox_newerversion2")}", AppLanguage.Get("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show($"{AppLanguage.Language["msgbox_newerversion1"]} ({latestVersion}) {AppLanguage.Language["msgbox_newerversion2"]}", AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("Downloading latest version");
@@ -583,7 +583,7 @@ namespace CSAuto
                 catch (Exception ex)
                 {
                     Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
-                    MessageBox.Show($"{AppLanguage.Get("error_update")}\n'{ex.Message}'", AppLanguage.Get("title_update"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"{AppLanguage.Language["error_update"]}\n'{ex.Message}'", AppLanguage.Language["title_update"], MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }).Start();
         }
@@ -593,12 +593,12 @@ namespace CSAuto
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
             int diff = (int)(GameState.Timestamp - result);
-            SendMessageToServer($"<BMB>{AppLanguage.Get("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true);
+            SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombplanted"]} ({DateTime.Now})", onlyTelegram: true);
             bombTimerThread = new Thread(() =>
             {
                 for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
                 {
-                    SendMessageToServer($"<BMB>{AppLanguage.Get("server_timeleft")} {seconds}", onlyServer: true);
+                    SendMessageToServer($"<BMB>{AppLanguage.Language["server_timeleft"]} {seconds}", onlyServer: true);
                     Thread.Sleep(BOMB_TIMER_DELAY);
                 }
                 bombTimerThread = null;
@@ -827,7 +827,7 @@ namespace CSAuto
             Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
             inLobby = false;
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                SendMessageToServer($"<CRS>{AppLanguage.Get("server_gamecrash")}");
+                SendMessageToServer($"<CRS>{AppLanguage.Language["server_gamecrash"]}");
             csProcess = null;
         }
 
@@ -1030,7 +1030,7 @@ namespace CSAuto
                             int Y = clickpoint.Y;
                             Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
                             if (Properties.Settings.Default.acceptedNotification)
-                                SendMessageToServer($"<ACP>{AppLanguage.Get("server_acceptmatch")}");
+                                SendMessageToServer($"<ACP>{AppLanguage.Language["server_acceptmatch"]}");
                             LeftMouseClick(X, Y);
                             found = true;
                             if (CheckIfAccepted(bitmap, Y))
@@ -1124,7 +1124,7 @@ namespace CSAuto
                     return ip.ToString();
                 }
             }
-            throw new Exception(AppLanguage.Get("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
+            throw new Exception(AppLanguage.Language["exception_nonetworkadapter"]/*"No network adapters with an IPv4 address in the system!"*/);
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -1136,7 +1136,7 @@ namespace CSAuto
                 Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
                 if (csgoDir == null)
-                    throw new DirectoryNotFoundException(AppLanguage.Get("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
+                    throw new DirectoryNotFoundException(AppLanguage.Language["exception_csgonotfound"]/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
                 //InitializeGameStateLaunchOption();
@@ -1146,7 +1146,7 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification)
-                    SendMessageToServer($"<CNT>{AppLanguage.Get("server_computer")} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Get("server_online")} (CSAuto v{FULL_VER})");
+                    SendMessageToServer($"<CNT>{AppLanguage.Language["server_computer"]} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Language["server_online"]} (CSAuto v{FULL_VER})");
                 NativeMethods.OptimizeMemory(0,13);
             }
             catch (Exception ex)
@@ -1161,7 +1161,7 @@ namespace CSAuto
                     //discordMenu.IsEnabled = false;
                     hadError = true;
                 }
-                MessageBox.Show($"{ex.Message}", AppLanguage.Get("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{ex.Message}", AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1275,7 +1275,7 @@ namespace CSAuto
                     else
                     {
                         Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
-                        MessageBoxResult result = MessageBox.Show($"{AppLanguage.Get("msgbox_newerversion1")} ({latestVersion}) {AppLanguage.Get("msgbox_newerversion2")}", AppLanguage.Get("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show($"{AppLanguage.Language["msgbox_newerversion1"]} ({latestVersion}) {AppLanguage.Language["msgbox_newerversion2"]}", AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("Downloading latest version");

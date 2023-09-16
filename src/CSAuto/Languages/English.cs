@@ -16,6 +16,7 @@ namespace CSAuto.Languages
             ["menu_general"] = "General",
             ["menu_options"] = "Settings",
             ["menu_opendebug"] = "Open Debug Window",
+            ["menu_autocheckforupdates"] = "Check for updates on startup",
             ["menu_checkforupdates"] = "Check for updates",
             ["menu_enterip"] = "Enter IP address",
             ["menu_discordrpc"] = "Discord RPC",

@@ -16,6 +16,7 @@ namespace CSAuto.Languages
             ["menu_general"] = "Разное",
             ["menu_options"] = "Настройки",
             ["menu_opendebug"] = "Открыть окно отладки",
+            ["menu_autocheckforupdates"] = "Проверить обновления при запуске",
             ["menu_checkforupdates"] = "Проверить обновления",
             ["menu_enterip"] = "Ввести IP-адрес",
             ["menu_discordrpc"] = "Discord RPC",
