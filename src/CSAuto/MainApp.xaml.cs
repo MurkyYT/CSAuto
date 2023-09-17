@@ -103,6 +103,8 @@ namespace CSAuto
         #region Publics
         public GUIWindow debugWind = null;
         public List<DiscordRPCButton> discordRPCButtons;
+        public bool alwaysMaximized = false;
+        public bool restarted = false;
         #endregion
         #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
@@ -1160,7 +1162,7 @@ namespace CSAuto
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
 #endif
-                if (Properties.Settings.Default.connectedNotification)
+                if (Properties.Settings.Default.connectedNotification && !restarted)
                     SendMessageToServer($"<CNT>{AppLanguage.Language["server_computer"]} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Language["server_online"]} (CSAuto v{FULL_VER})");
                 NativeMethods.OptimizeMemory(0,13);
             }
@@ -1315,7 +1317,7 @@ namespace CSAuto
             return false;
         }
 
-        private void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
+        internal void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             //open debug menu
             if (debugWind == null)

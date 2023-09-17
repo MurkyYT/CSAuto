@@ -24,8 +24,20 @@ namespace CSAuto
             else
                 // Set the application theme to Light + selected color
                 ThemeManager.Current.ChangeTheme(this, $"Light.{CSAuto.Properties.Settings.Default.currentColor}");
-
-
+            MainApp main = new MainApp();
+            bool startWindow = false;
+            foreach (string arg in e.Args)
+            {
+                if (arg == "--maximized")
+                    main.alwaysMaximized = true;
+                if (arg == "--show")
+                    startWindow = true;
+                if (arg == "--restart")
+                    main.restarted = true;
+            }
+            if (startWindow)
+                main.Notifyicon_LeftMouseButtonDoubleClick(null, null);
+            main.Show();
         }
     }
 }
