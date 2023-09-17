@@ -191,6 +191,8 @@ namespace CSAuto
                 GameStateListener.OnReceive += GameStateListener_OnReceive;
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+                AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
                 InitializeContextMenu();
 #if !DEBUG
                 MakeSureStartupIsOn();
@@ -204,6 +206,20 @@ namespace CSAuto
                 MessageBox.Show($"{AppLanguage.Language["error_startup1"]}\n'{ex.Message}'\n{AppLanguage.Language["error_startup2"]}", AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            CurrentDomain_UnhandledException(
+                sender, 
+                new UnhandledExceptionEventArgs(e.Exception, false));
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            CurrentDomain_UnhandledException(
+                sender,
+                new UnhandledExceptionEventArgs(e.Exception,e.Handled));
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
