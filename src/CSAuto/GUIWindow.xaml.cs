@@ -28,7 +28,7 @@ namespace CSAuto
     /// </summary>
     public partial class GUIWindow : MetroWindow
     {
-        readonly MainWindow main = (MainWindow)Application.Current.MainWindow;
+        readonly MainApp main = (MainApp)Application.Current.MainWindow;
         readonly StringCollection Colors = Properties.Settings.Default.availableColors;
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -263,7 +263,7 @@ namespace CSAuto
 #if !DEBUG
             LoadChangelog();
 #endif
-            VersionText.Text = $"ver {MainWindow.FULL_VER}";
+            VersionText.Text = $"ver {MainApp.FULL_VER}";
             UpdateDiscordRPCResult(true);
             LoadDiscordButtons();
         }

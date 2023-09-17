@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿#region Usings
+using Microsoft.Win32;
 using NotifyIconLibrary;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
-
+#endregion
 namespace CSAuto
 {
     public class StreamString
@@ -70,14 +71,13 @@ namespace CSAuto
             return outBuffer.Length + 2;
         }
     }
+
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Main logic for CSAuto app
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainApp : Window
     {
-        /// <summary>
-        /// Constants
-        /// </summary>
+        #region Constants
         public const string VER = "2.0.0-beta";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
         const string DEBUG_REVISION = "5";
@@ -99,30 +99,26 @@ namespace CSAuto
         const int BOMB_SECONDS_DELAY = 2;
         const int BOMB_SECONDS = 40 - BOMB_SECONDS_DELAY;
         const int BOMB_TIMER_DELAY = 950;
-        readonly string[] AVAILABLE_MAP_ICONS;
-        /// <summary>
-        /// Publics
-        /// </summary>
+        #endregion
+        #region Publics
         public GUIWindow debugWind = null;
         public List<DiscordRPCButton> discordRPCButtons;
-        /// <summary>
-        /// Readonly
-        /// </summary>
+        #endregion
+        #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
         readonly ContextMenu exitcm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
         readonly Color BUTTON_COLOR = Color.FromArgb(16, 158, 89);
         readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(21, 184, 105);
-        /// <summary>
-        /// Privates
-        /// </summary>
+        readonly string[] AVAILABLE_MAP_ICONS;
+        #endregion
+        #region Privates
         private DiscordRpcClient RPCClient;
         private string integrationPath = null;
         private string IN_LOBBY_STATE = "Chilling in lobby";
-        /// <summary>
-        /// Members
-        /// </summary>
+        #endregion
+        #region Members
         Point csResolution = new Point();
         GameState GameState = new GameState(null);
         GameStateListener GameStateListener;
@@ -143,6 +139,8 @@ namespace CSAuto
         Thread bombTimerThread = null;
         bool hadError = false;
         DXGICapture DXGIcapture = new DXGICapture();
+        #endregion
+        #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
         {
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
@@ -176,7 +174,8 @@ namespace CSAuto
                 }
             }
         }
-        public MainWindow()
+        #endregion
+        public MainApp()
         {
             InitializeComponent();
             
@@ -495,7 +494,7 @@ namespace CSAuto
             options.Click += Options_Click;
             MenuItem about = new MenuItem
             {
-                Header = $"{typeof(MainWindow).Namespace} - {FULL_VER}",
+                Header = $"{typeof(MainApp).Namespace} - {FULL_VER}",
                 IsEnabled = false,
                 Icon = new System.Windows.Controls.Image
                 {
