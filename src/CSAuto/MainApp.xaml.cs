@@ -193,6 +193,7 @@ namespace CSAuto
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
                 AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+                TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
                 InitializeContextMenu();
 #if !DEBUG
                 MakeSureStartupIsOn();
@@ -206,6 +207,13 @@ namespace CSAuto
                 MessageBox.Show($"{AppLanguage.Language["error_startup1"]}\n'{ex.Message}'\n{AppLanguage.Language["error_startup2"]}", AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            CurrentDomain_UnhandledException(
+               sender,
+               new UnhandledExceptionEventArgs(e.Exception, false));
         }
 
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
