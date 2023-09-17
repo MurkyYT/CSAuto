@@ -192,7 +192,6 @@ namespace CSAuto
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-                AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
                 TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
                 InitializeContextMenu();
 #if !DEBUG
@@ -215,14 +214,6 @@ namespace CSAuto
                sender,
                new UnhandledExceptionEventArgs(e.Exception, false));
         }
-
-        private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
-        {
-            CurrentDomain_UnhandledException(
-                sender, 
-                new UnhandledExceptionEventArgs(e.Exception, false));
-        }
-
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             CurrentDomain_UnhandledException(
@@ -232,11 +223,12 @@ namespace CSAuto
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            StackFrame frame = new StackFrame(1, false);
             Exception ex = ((Exception)e.ExceptionObject);
             Log.Error(
                 $"{ex.Message}\n" +
                 $"StackTrace:{ex.StackTrace}");
-            MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"] + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
             Process.Start("Error_Log.txt");
             Application.Current.Shutdown();
         }
