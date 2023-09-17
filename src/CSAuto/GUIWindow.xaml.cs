@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -302,7 +303,11 @@ namespace CSAuto
                 ch.Header = AppLanguage.Language[(string)ch.Header];
             foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
             {
-                if (Colors.Contains(ch.Text))
+                if (Colors.Contains(ch.Text) || 
+                    ch.Text == "" ||
+                    ch.Text == "Steam" ||
+                    ch.Text == "Faceit" ||
+                    ch.Text == "CSGOStats")
                     continue;
                 ch.Text = AppLanguage.Language[ch.Text];
             }
@@ -467,6 +472,43 @@ namespace CSAuto
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
                 return;
+            }
+            DiscordRPCButton res = new DiscordRPCButton() { Label = label, Url = url };
+            main.discordRPCButtons.Add(res);
+            LoadDiscordButtons();
+            DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
+        }
+
+        private async void DiscordTemplateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(DiscordTemplateComboBox.SelectedIndex == 0)
+            {
+                await ShowMessage("title_error", "error_discordselecttemplate", MessageDialogStyle.Affirmative);
+                return;
+            }
+            if (main.discordRPCButtons.Count == 1)
+            {
+                await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
+                return;
+            }
+            string label = await CallInputDialogAsync(AppLanguage.Language["inputtext_label"], AppLanguage.Language["inputtext_enterlabel"]);
+            if (label == null || label.Trim() == "")
+            {
+                await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
+                return;
+            }
+            string url = "";
+            switch (DiscordTemplateComboBox.SelectedIndex)
+            {
+                case 1:
+                    url = "https://steamcommunity.com/profiles/{SteamID}";
+                    break;
+                case 2:
+                    url = "https://faceitfinder.com/profile/{SteamID}";
+                    break;
+                case 3:
+                    url = "https://csgostats.gg/player/{SteamID}";
+                    break;
             }
             DiscordRPCButton res = new DiscordRPCButton() { Label = label, Url = url };
             main.discordRPCButtons.Add(res);

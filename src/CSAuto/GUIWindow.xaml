@@ -177,6 +177,19 @@
                                     <Button x:Name="RemoveDiscordButton" Content="discord_removebutton" HorizontalAlignment="Left" Margin="0,0,5,0" Click="RemoveDiscordButton_Click"/>
                                     <Button x:Name="AddDiscordButton" Content="discord_addbutton" HorizontalAlignment="Right" Margin="5,0,0,0" Click="AddDiscordButton_Click"/>
                                 </StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button x:Name="DiscordTemplateButton" Content="discord_createtemplate" Click="DiscordTemplateButton_Click"/>
+                                    <ComboBox x:Name="DiscordTemplateComboBox" SelectedIndex="0">
+                                        <ComboBoxItem Content=""/>
+                                        <ComboBoxItem Content="Steam"/>
+                                        <ComboBoxItem Content="Faceit"/>
+                                        <ComboBoxItem Content="CSGOStats"/>
+                                    </ComboBox>
+                                </StackPanel>
+                                <!--<TextBlock Text="Example urls:"/>
+                                <TextBlock  Text="Steam: 'https://steamcommunity.com/profiles/{SteamID}'"/>
+                                <TextBlock  Text="CSGOStats: 'https://csgostats.gg/player/{SteamID}'"/>
+                                <TextBlock  Text="Faceit: 'https://faceitfinder.com/profile/{SteamID}'" Margin="0,0,0,15"/>-->
                             </StackPanel>
                         </mahapps:MetroTabItem>
                     </TabControl>
