@@ -194,7 +194,7 @@ namespace CSAuto
                 //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-                TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+                //TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
                 InitializeContextMenu();
 #if !DEBUG
                 MakeSureStartupIsOn();
