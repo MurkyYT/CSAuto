@@ -104,9 +104,8 @@ namespace CSAuto
         #region Publics
         public GUIWindow debugWind = null;
         public List<DiscordRPCButton> discordRPCButtons;
-        public bool alwaysMaximized = false;
-        public bool restarted = false;
-        public static Color[] BUTTON_COLORS = LoadButtonColors();
+        public readonly static Color[] BUTTON_COLORS = LoadButtonColors();
+        public readonly App current = (Application.Current as App);
         #endregion
         #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
@@ -182,7 +181,6 @@ namespace CSAuto
         public MainApp()
         {
             InitializeComponent();
-            
             try
             {
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
@@ -218,6 +216,8 @@ namespace CSAuto
                 string url = $"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/colors";
                 string data = Github.GetWebInfo(url); ;
                 string[] lines = data.Split(new char[] { '\n' });
+                string path = DiscordRPCButtonSerializer.Path + "\\colors";
+                File.WriteAllText(path, data);
                 return SplitColorsLines(lines);
             }
             catch 
@@ -506,7 +506,8 @@ namespace CSAuto
             {
                 if (Properties.Settings.Default.runAtStartUp)
                 {
-                    rk.SetValue(appname, executablePath);
+                    rk.SetValue(appname , executablePath + (current.AlwaysMaximized ? " --maximized" : ""));
+                    Log.WriteLine(executablePath + (current.AlwaysMaximized ? " --maximized" : ""));
                 }
                 else
                 {
@@ -1208,8 +1209,10 @@ namespace CSAuto
                 if (Properties.Settings.Default.autoCheckForUpdates)
                     AutoCheckUpdate();
 #endif
-                if (Properties.Settings.Default.connectedNotification && !restarted)
+                if (Properties.Settings.Default.connectedNotification && !current.Restarted)
                     SendMessageToServer($"<CNT>{AppLanguage.Language["server_computer"]} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Language["server_online"]} (CSAuto v{FULL_VER})");
+                if (current.StartWidnow)
+                    Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 NativeMethods.OptimizeMemory(0,13);
             }
             catch (Exception ex)

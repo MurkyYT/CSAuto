@@ -15,6 +15,9 @@ namespace CSAuto
     /// </summary>
     public partial class App : Application
     {
+        public bool StartWidnow;
+        public bool AlwaysMaximized;
+        public bool Restarted;
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -24,20 +27,16 @@ namespace CSAuto
             else
                 // Set the application theme to Light + selected color
                 ThemeManager.Current.ChangeTheme(this, $"Light.{CSAuto.Properties.Settings.Default.currentColor}");
-            MainApp main = new MainApp();
-            bool startWindow = false;
             foreach (string arg in e.Args)
             {
                 if (arg == "--maximized")
-                    main.alwaysMaximized = true;
+                    AlwaysMaximized = true;
                 if (arg == "--show")
-                    startWindow = true;
+                    StartWidnow = true;
                 if (arg == "--restart")
-                    main.restarted = true;
+                    Restarted = true;
             }
-            if (startWindow)
-                main.Notifyicon_LeftMouseButtonDoubleClick(null, null);
-            main.Show();
+            new MainApp().Show();
         }
     }
 }

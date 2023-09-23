@@ -5,7 +5,7 @@ using System.IO;
 
 namespace CSAuto
 {
-    internal static class DiscordRPCButtonSerializer
+    public static class DiscordRPCButtonSerializer
     {
         public static string Path { get { return Directory.GetParent(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath).FullName; } }
         public static void Serialize(List<DiscordRPCButton> buttons)
@@ -15,8 +15,8 @@ namespace CSAuto
         }
         public static List<DiscordRPCButton> Deserialize()
         {
-            if (File.Exists(Path))
-                return JsonConvert.DeserializeObject<List<DiscordRPCButton>>(File.ReadAllText(Path));
+            if (File.Exists(Path + "\\buttons.json"))
+                return JsonConvert.DeserializeObject<List<DiscordRPCButton>>(File.ReadAllText(Path + "\\buttons.json"));
             else
                 return new List<DiscordRPCButton>();
         }

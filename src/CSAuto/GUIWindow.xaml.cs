@@ -61,7 +61,7 @@ namespace CSAuto
             var restart = await ShowMessage("title_restartneeded", "msgbox_restartneeded", MessageDialogStyle.AffirmativeAndNegative);
             if (restart == MessageDialogResult.Affirmative)
             {
-                Process.Start(Assembly.GetExecutingAssembly().Location,"--restart --show" + (main.alwaysMaximized ? " --maximized" : ""));
+                Process.Start(Assembly.GetExecutingAssembly().Location,"--restart --show" + (main.current.AlwaysMaximized ? " --maximized" : ""));
                 Application.Current.Shutdown();
             }
         }
@@ -261,7 +261,7 @@ namespace CSAuto
                 debugBox.Text = File.ReadAllText(finalPath);
                 debugBox.ScrollToEnd();
             }
-            if (main.alwaysMaximized)
+            if (main.current.AlwaysMaximized)
                 WindowState = WindowState.Maximized;
             LoadLanguages(this);
 #if !DEBUG
@@ -352,7 +352,7 @@ namespace CSAuto
             {
                 if (Properties.Settings.Default.runAtStartUp)
                 {
-                    rk.SetValue(appname, executablePath);
+                    rk.SetValue(appname, executablePath + (main.current.AlwaysMaximized ? " --maximized" : ""));
                 }
                 else
                 {

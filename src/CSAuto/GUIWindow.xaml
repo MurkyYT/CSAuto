@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:properties="clr-namespace:CSAuto.Properties"
+        xmlns:csauto="clr-namespace:CSAuto"
         mc:Ignorable="d"
         Title="CSAuto" 
         Height="650"
@@ -137,6 +138,7 @@
                     <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto"/>
                     <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto"/>
                     <!--<TextBlock Text="CS Console Output:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom"/> -->
+                    <TextBlock Text="{Binding Source={x:Static csauto:DiscordRPCButtonSerializer.Path}}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,15"/>
                     <TextBlock x:Name="DebugButtonColor" Text="Active: {color}, Regular: {color}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom"/>
                     <TextBlock x:Name="DebugPixelColor" Text="Pixel Color at (x,y): res" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,0,15"/>
                     <TextBlock Text="Latest Captured Frame:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom"/>
