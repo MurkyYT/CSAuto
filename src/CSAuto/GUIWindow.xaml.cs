@@ -54,7 +54,7 @@ namespace CSAuto
                 $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                 $"CS:GO LaunchOptions: \"{launchOpt}\"";
             GenerateLanguages();
-            DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
+            DebugButtonColor.Text = $"Regular: {MainApp.BUTTON_COLORS[0]}, Active: {MainApp.BUTTON_COLORS[1]}";
         }
         private async Task RestartMessageBox()
         {

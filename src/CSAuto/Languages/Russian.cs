@@ -117,7 +117,8 @@ namespace CSAuto.Languages
             ["error_max1discord"] = "Максимальное количество кнопок - 1 (Ограничения Discord)",
             ["error_appcrashed"] = "Произошла неожиданная ошибка!, я открою Error_Log.txt , пожалуйста, откройте проблему на github с прикрепленным журналом!",
             ["error_discordselecttemplate"] = "Пожалуйста, выберите шаблон кнопки",
-            ["discord_createtemplate"] = "Использовать шаблон"
+            ["discord_createtemplate"] = "Использовать шаблон",
+            ["error_loadcolors"] = "Не удалось загрузить цвета для кнопки, имейте в виду, что автоматическое принятие не будет работать!"
         };
         public static string Get(string category)
         {

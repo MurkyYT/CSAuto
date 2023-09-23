@@ -213,9 +213,34 @@ namespace CSAuto
         }
         static Color[] LoadButtonColors()
         {
-            string url = $"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/colors";
-            string data = Github.GetWebInfo(url); ;
-            string[] lines = data.Split(new char[] { '\n'});
+            try
+            {
+                string url = $"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/colors";
+                string data = Github.GetWebInfo(url); ;
+                string[] lines = data.Split(new char[] { '\n' });
+                return SplitColorsLines(lines);
+            }
+            catch 
+            {
+                Log.WriteLine("Couldn't load colors from web, trying to load latest loaded colors");
+                string path = DiscordRPCButtonSerializer.Path + "\\colors";
+                if (File.Exists(path))
+                {
+                    string data = File.ReadAllText(path); ;
+                    string[] lines = data.Split(new char[] { '\n' });
+                    return SplitColorsLines(lines);
+                }
+                else
+                {
+                    Log.WriteLine("Couldn't load colors at all");
+                    MessageBox.Show(AppLanguage.Language["error_loadcolors"], AppLanguage.Language["title_error"],MessageBoxButton.OK, MessageBoxImage.Error);
+                    return new Color[2];
+                }
+            }
+        }
+
+        private static Color[] SplitColorsLines(string[] lines)
+        {
             Color[] res = new Color[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
@@ -230,6 +255,7 @@ namespace CSAuto
             }
             return res;
         }
+
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             CurrentDomain_UnhandledException(
