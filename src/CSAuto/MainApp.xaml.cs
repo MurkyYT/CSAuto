@@ -81,6 +81,7 @@ namespace CSAuto
         public const string VER = "2.0.0-beta";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
         const string DEBUG_REVISION = "5";
+        const string ONLINE_BRANCH_NAME = "source2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
         const string NETCON_PORT = "21823";
@@ -105,14 +106,15 @@ namespace CSAuto
         public List<DiscordRPCButton> discordRPCButtons;
         public bool alwaysMaximized = false;
         public bool restarted = false;
+        public static Color[] BUTTON_COLORS = LoadButtonColors();
         #endregion
         #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
         readonly ContextMenu exitcm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
-        readonly Color BUTTON_COLOR = Color.FromArgb(16, 158, 89);
-        readonly Color ACTIVE_BUTTON_COLOR = Color.FromArgb(21, 184, 105);
+        readonly Color BUTTON_COLOR = BUTTON_COLORS[0];/* Color.FromArgb(16, 158, 89);*/
+        readonly Color ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1]/*Color.FromArgb(21, 184, 105)*/;
         readonly string[] AVAILABLE_MAP_ICONS;
         #endregion
         #region Privates
@@ -209,7 +211,25 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
+        static Color[] LoadButtonColors()
+        {
+            string url = $"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/colors";
+            string data = Github.GetWebInfo(url); ;
+            string[] lines = data.Split(new char[] { '\n'});
+            Color[] res = new Color[lines.Length];
+            for (int i = 0; i < lines.Length; i++)
+            {
+                //This gives us an array of 3 strings each representing a number in text form.
+                var splitString = lines[i].Split(',');
 
+                //converts the array of 3 strings in to an array of 3 ints.
+                var splitInts = splitString.Select(item => int.Parse(item)).ToArray();
+
+                //takes each element of the array of 3 and passes it in to the correct slot
+                res[i] = Color.FromArgb(splitInts[0], splitInts[1], splitInts[2]);
+            }
+            return res;
+        }
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             CurrentDomain_UnhandledException(
