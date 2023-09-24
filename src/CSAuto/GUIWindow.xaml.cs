@@ -516,5 +516,10 @@ namespace CSAuto
             LoadDiscordButtons();
             DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
         }
+
+        private void OpenDiscordServer(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://discord.gg/57ZEVZgm5W");
+        }
     }
 }
