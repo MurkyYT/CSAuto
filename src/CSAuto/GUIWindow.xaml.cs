@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,15 +47,6 @@ namespace CSAuto
         public GUIWindow()
         {
             InitializeComponent();
-            Steam.GetLaunchOptions(730, out string launchOpt);
-            steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
-                $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
-                $"StemID64: {Steam.GetSteamID64()}\n" +
-                $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
-                $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
-                $"CS:GO LaunchOptions: \"{launchOpt}\"";
-            GenerateLanguages();
-            DebugButtonColor.Text = $"Regular: {MainApp.BUTTON_COLORS[0]}, Active: {MainApp.BUTTON_COLORS[1]}";
         }
         private async Task RestartMessageBox()
         {
@@ -255,21 +247,35 @@ namespace CSAuto
 
         private void GUIWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
-            if (File.Exists(finalPath))
+            new Thread(() =>
             {
-                debugBox.Text = File.ReadAllText(finalPath);
-                debugBox.ScrollToEnd();
-            }
-            if (main.current.AlwaysMaximized)
-                WindowState = WindowState.Maximized;
-            LoadLanguages(this);
+                Steam.GetLaunchOptions(730, out string launchOpt);
+                Dispatcher.InvokeAsync(() => {
+                steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
+                    $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
+                    $"StemID64: {Steam.GetSteamID64()}\n" +
+                    $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
+                    $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
+                    $"CS:GO LaunchOptions: \"{launchOpt}\"";
+                    GenerateLanguages();
+                    DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
+                    string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
+                    if (File.Exists(finalPath))
+                    {
+                        debugBox.Text = File.ReadAllText(finalPath);
+                        debugBox.ScrollToEnd();
+                    }
+                    if (main.current.AlwaysMaximized)
+                        WindowState = WindowState.Maximized;
+                    LoadLanguages(this);
+                     VersionText.Text = $"ver {MainApp.FULL_VER}";
+                    UpdateDiscordRPCResult(true);
+                    LoadDiscordButtons();
+                });
 #if !DEBUG
-            LoadChangelog();
+                LoadChangelog();
 #endif
-            VersionText.Text = $"ver {MainApp.FULL_VER}";
-            UpdateDiscordRPCResult(true);
-            LoadDiscordButtons();
+            }).Start();
         }
 
         private void LoadDiscordButtons()
@@ -286,35 +292,44 @@ namespace CSAuto
         private void LoadChangelog()
         {
             string[] res = Github.GetReleasesDescription("murkyyt", "csauto");
+            if (res.Length == 0)
+                return;
             string finalRes = "";
             foreach (var item in res)
             {
                 finalRes += item.Split(new string[] { "🛡" }, StringSplitOptions.None)[0] + "\r\n";
             }
-            TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
-            FlowDocument document = (FlowDocument)converter.Convert(finalRes, null, null, null);
-            ChangeLogFlowDocument.Document = document;
+            
+           
+            Dispatcher.InvokeAsync(() => {
+                TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
+                FlowDocument document = (FlowDocument)converter.Convert(finalRes, null, null, null);
+                ChangeLogFlowDocument.Document = document;
+                });
         }
 
         private void LoadLanguages(DependencyObject obj)
         {
-            foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
-                ch.Content = AppLanguage.Language[(string)ch.Content];
-            foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
-                ch.Header = AppLanguage.Language[(string)ch.Header];
-            foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
+            Dispatcher.InvokeAsync(() =>
             {
-                if (Colors.Contains(ch.Text) || 
-                    ch.Text == "" ||
-                    ch.Text == "Steam" ||
-                    ch.Text == "Faceit" ||
-                    ch.Text == "CSGOStats")
-                    continue;
-                ch.Text = AppLanguage.Language[ch.Text];
-            }
-            foreach (Button ch in FindVisualChildren<Button>(obj))
-                if(ch.Content != null && ch.Content.GetType().Name == "String")
+                foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
                     ch.Content = AppLanguage.Language[(string)ch.Content];
+                foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
+                    ch.Header = AppLanguage.Language[(string)ch.Header];
+                foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
+                {
+                    if (Colors.Contains(ch.Text) ||
+                        ch.Text == "" ||
+                        ch.Text == "Steam" ||
+                        ch.Text == "Faceit" ||
+                        ch.Text == "CSGOStats")
+                        continue;
+                    ch.Text = AppLanguage.Language[ch.Text];
+                }
+                foreach (Button ch in FindVisualChildren<Button>(obj))
+                    if (ch.Content != null && ch.Content.GetType().Name == "String")
+                        ch.Content = AppLanguage.Language[(string)ch.Content];
+            });
         }
 
         private void LaunchGitHubSite(object sender, RoutedEventArgs e)

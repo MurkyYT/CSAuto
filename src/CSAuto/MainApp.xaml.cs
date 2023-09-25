@@ -104,7 +104,7 @@ namespace CSAuto
         #region Publics
         public GUIWindow debugWind = null;
         public List<DiscordRPCButton> discordRPCButtons;
-        public readonly static Color[] BUTTON_COLORS = LoadButtonColors();
+        public readonly Color[] BUTTON_COLORS;
         public readonly App current = (Application.Current as App);
         #endregion
         #region Readonly
@@ -112,8 +112,8 @@ namespace CSAuto
         readonly ContextMenu exitcm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
-        readonly Color BUTTON_COLOR = BUTTON_COLORS[0];/* Color.FromArgb(16, 158, 89);*/
-        readonly Color ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1]/*Color.FromArgb(21, 184, 105)*/;
+        readonly Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
+        readonly Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         readonly string[] AVAILABLE_MAP_ICONS;
         #endregion
         #region Privates
@@ -181,8 +181,13 @@ namespace CSAuto
         public MainApp()
         {
             InitializeComponent();
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             try
             {
+                BUTTON_COLORS = LoadButtonColors();
+                BUTTON_COLOR = BUTTON_COLORS[0];
+                ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1];
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 AVAILABLE_MAP_ICONS = Properties.Resources.AVAILABLE_MAPS_STRING.Split(',');
@@ -191,10 +196,6 @@ namespace CSAuto
                 CheckForDuplicates();
                 GameStateListener = new GameStateListener(ref GameState, GAMESTATE_PORT);
                 GameStateListener.OnReceive += GameStateListener_OnReceive;
-                //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-                //TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
                 InitializeContextMenu();
 #if !DEBUG
                 MakeSureStartupIsOn();
@@ -214,7 +215,9 @@ namespace CSAuto
             try
             {
                 string url = $"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/colors";
-                string data = Github.GetWebInfo(url); ;
+                string data = Github.GetWebInfo(url);
+                if (data == "")
+                    throw new WebException("Couldn't load button colors");
                 string[] lines = data.Split(new char[] { '\n' });
                 string path = DiscordRPCButtonSerializer.Path + "\\colors";
                 File.WriteAllText(path, data);
@@ -226,16 +229,16 @@ namespace CSAuto
                 string path = DiscordRPCButtonSerializer.Path + "\\colors";
                 if (File.Exists(path))
                 {
-                    string data = File.ReadAllText(path); ;
-                    string[] lines = data.Split(new char[] { '\n' });
-                    return SplitColorsLines(lines);
+                    string data = File.ReadAllText(path);
+                    if (data != "")
+                    {
+                        string[] lines = data.Split(new char[] { '\n' });
+                        return SplitColorsLines(lines);
+                    }
                 }
-                else
-                {
-                    Log.WriteLine("Couldn't load colors at all");
-                    MessageBox.Show(AppLanguage.Language["error_loadcolors"], AppLanguage.Language["title_error"],MessageBoxButton.OK, MessageBoxImage.Error);
-                    return new Color[2];
-                }
+                Log.WriteLine("Couldn't load colors at all");
+                MessageBox.Show(AppLanguage.Language["error_loadcolors"], AppLanguage.Language["title_error"],MessageBoxButton.OK, MessageBoxImage.Error);
+                return new Color[2];
             }
         }
 
