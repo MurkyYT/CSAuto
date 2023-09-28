@@ -1,4 +1,4 @@
-<project outputDir="Confused" baseDir="APIKeys\bin\Release" xmlns="http://confuser.codeplex.com">
+<project outputDir="Confused" baseDir="src\APIKeys\bin\Release" xmlns="http://confuser.codeplex.com">
   <rule pattern="true" inherit="false">
     <protection id="constants" />
   </rule>

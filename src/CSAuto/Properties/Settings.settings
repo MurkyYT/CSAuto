@@ -1,0 +1,127 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CSAuto.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="runAtStartUp" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="saveDebugFrames" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="autoAcceptMatch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="autoReload" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="preferArmor" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="autoBuyDefuseKit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="autoBuyArmor" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="saveLogs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ContinueSpraying" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="autoPausePlaySpotify" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="autoCheckForUpdates" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="enableDiscordRPC" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="phoneIpAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="mobileAppEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="currentLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">language_english</Value>
+    </Setting>
+    <Setting Name="acceptedNotification" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="mapNotification" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="lobbyNotification" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="connectedNotification" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="crashedNotification" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="bombNotification" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="steamAPIkey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="enableLobbyCount" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="telegramChatId" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="darkTheme" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="currentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
+    <Setting Name="availableColors" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;Red&lt;/string&gt;
+  &lt;string&gt;Green&lt;/string&gt;
+  &lt;string&gt;Blue&lt;/string&gt;
+  &lt;string&gt;Purple&lt;/string&gt;
+  &lt;string&gt;Orange&lt;/string&gt;
+  &lt;string&gt;Lime&lt;/string&gt;
+  &lt;string&gt;Emerald&lt;/string&gt;
+  &lt;string&gt;Teal&lt;/string&gt;
+  &lt;string&gt;Cyan&lt;/string&gt;
+  &lt;string&gt;Cobalt&lt;/string&gt;
+  &lt;string&gt;Indigo&lt;/string&gt;
+  &lt;string&gt;Violet&lt;/string&gt;
+  &lt;string&gt;Pink&lt;/string&gt;
+  &lt;string&gt;Magenta&lt;/string&gt;
+  &lt;string&gt;Crimson&lt;/string&gt;
+  &lt;string&gt;Amber&lt;/string&gt;
+  &lt;string&gt;Yellow&lt;/string&gt;
+  &lt;string&gt;Brown&lt;/string&gt;
+  &lt;string&gt;Olive&lt;/string&gt;
+  &lt;string&gt;Steel&lt;/string&gt;
+  &lt;string&gt;Mauve&lt;/string&gt;
+  &lt;string&gt;Taupe&lt;/string&gt;
+  &lt;string&gt;Sienna&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="lobbyDetails" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FriendCode: {FriendCode}</Value>
+    </Setting>
+    <Setting Name="lobbyState" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Chilling in lobby</Value>
+    </Setting>
+    <Setting Name="inGameDetails" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Gamemode} - {Map}</Value>
+    </Setting>
+    <Setting Name="inGameState" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{TeamScore} [{MyTeam}] ({RoundState}) {EnemyScore} [{EnemyTeam}]</Value>
+    </Setting>
+    <Setting Name="oldAutoBuy" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
