@@ -16,11 +16,6 @@
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/lang-en-red.svg?style=for-the-badge"></a>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README_ru.md"><img src="https://img.shields.io/badge/lang-ru-yellow.svg?style=for-the-badge"></a>
 </p>
-<h1 align="center">Contributors</h1>
-<p align="center">    
-  <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
-  <!-- more links here -->
-</p>
 
 <h1 align="center">Description</h1>
 Have you ever started searching for a game in CS2 went for a bit, and see that you missed the accept button?  
@@ -72,6 +67,37 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 ## Suggestions
 *If you have any suggestions you can create an issue/discussion with the suggestion in it*  
 **Thanks in advance :)**
+## Contributors
+<table>
+<tr>
+<th align="center">
+<img width="441" height="0">
+<p> 
+<small>
+Name
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="0">
+<p> 
+<small>
+Helped with
+</small>
+</p>
+</th>
+</tr>
+<tr>
+<td align="center">
+<img src="https://github.com/NoPlagiarism.png?size=30" alt="NoPlagiarism"/>
+<a href="https://github.com/NoPlagiarism"> NoPlagiarism </a>
+</td>
+<td align="center">
+Translation, design and app ideas
+</td>
+</tr>
+</table>
+
 ## Development
 
 ### Building the app
