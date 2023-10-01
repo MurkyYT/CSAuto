@@ -180,9 +180,9 @@ namespace CSAuto
         #endregion
         public MainApp()
         {
-            InitializeComponent();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            InitializeComponent();
             try
             {
                 BUTTON_COLORS = LoadButtonColors();
