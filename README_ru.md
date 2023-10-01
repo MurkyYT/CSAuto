@@ -16,11 +16,6 @@
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/язык-англ-red.svg?style=for-the-badge"></a>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README_ru.md"><img src="https://img.shields.io/badge/язык-рус-yellow.svg?style=for-the-badge"></a>
 </p>
-<h1 align="center">Участники</h1>
-<p align="center">    
-  <a href="https://github.com/NoPlagiarism">NoPlagiarism</a>
-  <!-- more links here -->
-</p>
 
 <h1 align="center">Описание</h1>
 Вы когда нибудь начали искать игру в CS2 ушли на немного, и видите что вы не приняли игру?
@@ -42,7 +37,9 @@
 ![gui-menu](Images/appimage.png)
 ## Установка
 <p align="center">    
-  <a href="https://github.com/murkyyt/csauto/releases"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="80" alt="Get On Github"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip"><img src="Images/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="Images/android-badge.png" height ="80" alt="Get On Android"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="Images/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
 </p>
 
 ## FAQ
@@ -73,6 +70,37 @@
 *Если у вас есть какие-либо предложения, вы можете создать проблему / обсуждение с включенным в него предложением*
 
 **Заранее спасибо:)**
+## Участники
+<table>
+<tr>
+<th align="center">
+<img width="441" height="0">
+<p> 
+<small>
+Имя
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="0">
+<p> 
+<small>
+Помог в..
+</small>
+</p>
+</th>
+</tr>
+<tr>
+<td align="center">
+<img src="https://github.com/NoPlagiarism.png?size=30" alt="NoPlagiarism"/>
+<a href="https://github.com/NoPlagiarism"> NoPlagiarism </a>
+</td>
+<td align="center">
+Переводе, дизайне и в идеях
+</td>
+</tr>
+</table>
+
 ## Разработка
 
 ### Скомпилировать приложения
