@@ -37,7 +37,9 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 ![gui-menu](Images/appimage.png)
 ## Installation
 <p align="center">    
-  <a href="https://github.com/murkyyt/csauto/releases"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="80" alt="Get On Github"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.exe"><img src="Images/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="Images/android-badge.png" height ="80" alt="Get On Android"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="Images/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
 </p>
 
 ## FAQ
