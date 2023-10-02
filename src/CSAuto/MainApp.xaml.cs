@@ -258,13 +258,6 @@ namespace CSAuto
             }
             return res;
         }
-
-        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-        {
-            CurrentDomain_UnhandledException(
-               sender,
-               new UnhandledExceptionEventArgs(e.Exception, false));
-        }
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             CurrentDomain_UnhandledException(
