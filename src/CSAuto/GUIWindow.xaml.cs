@@ -87,7 +87,8 @@ namespace CSAuto
             Log.debugWind = null;
             Properties.Settings.Default.Save();
             GameState.Dispose();
-            NativeMethods.OptimizeMemory(0, 13);
+            NativeMethods.OptimizeMemory();
+            Close();
         }
         void ParseGameState(string JSON)
         {

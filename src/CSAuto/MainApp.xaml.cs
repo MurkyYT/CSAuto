@@ -78,10 +78,10 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.1";
+        public const string VER = "2.0.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
-        const string ONLINE_BRANCH_NAME = "master";
+        const string DEBUG_REVISION = "1";
+        const string ONLINE_BRANCH_NAME = "dev";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
         const string NETCON_PORT = "21823";
@@ -125,7 +125,7 @@ namespace CSAuto
         Point csResolution = new Point();
         GameState GameState = new GameState(null);
         GameStateListener GameStateListener;
-        NetCon netCon = null;
+        //NetCon netCon = null;
         int frame = 0;
         bool csRunning = false;
         bool inGame = false;
@@ -438,41 +438,41 @@ namespace CSAuto
             dateTime = dateTime.AddSeconds(unixTimeStamp);
             return dateTime;
         }
-        public void NetConEstablishConnection()
-        {
-            netCon = new NetCon("127.0.0.1", int.Parse(NETCON_PORT));
-            netCon.MatchFound += NetCon_MatchFound;
-            acceptButtonTimer.Interval = TimeSpan.FromMilliseconds(1000);
-            acceptButtonTimer.Tick += AcceptButtonTimer_Tick;
-        }
+        //public void NetConEstablishConnection()
+        //{
+        //    netCon = new NetCon("127.0.0.1", int.Parse(NETCON_PORT));
+        //    netCon.MatchFound += NetCon_MatchFound;
+        //    acceptButtonTimer.Interval = TimeSpan.FromMilliseconds(1000);
+        //    acceptButtonTimer.Tick += AcceptButtonTimer_Tick;
+        //}
 
-        private void AcceptButtonTimer_Tick(object sender, EventArgs e)
-        {
-            if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame && csActive)
-                _ = AutoAcceptMatchAsync();
-            else if (inGame || !Properties.Settings.Default.autoAcceptMatch)
-                acceptButtonTimer.Stop();
-        }
+        //private void AcceptButtonTimer_Tick(object sender, EventArgs e)
+        //{
+        //    if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame && csActive)
+        //        _ = AutoAcceptMatchAsync();
+        //    else if (inGame || !Properties.Settings.Default.autoAcceptMatch)
+        //        acceptButtonTimer.Stop();
+        //}
 
-        private void NetCon_MatchFound(object sender, EventArgs e)
-        {
-            Log.WriteLine("Match Found!");
-            if (acceptButtonTimer.IsEnabled) acceptButtonTimer.Stop();
-            if (!acceptButtonTimer.IsEnabled && !acceptedGame && !inGame)
-            {
-                Log.WriteLine("Starting searching for accept button...");
-                acceptButtonTimer.Start();
-            }
-        }
+        //private void NetCon_MatchFound(object sender, EventArgs e)
+        //{
+        //    Log.WriteLine("Match Found!");
+        //    if (acceptButtonTimer.IsEnabled) acceptButtonTimer.Stop();
+        //    if (!acceptButtonTimer.IsEnabled && !acceptedGame && !inGame)
+        //    {
+        //        Log.WriteLine("Starting searching for accept button...");
+        //        acceptButtonTimer.Start();
+        //    }
+        //}
 
-        public void NetConCloseConnection()
-        {
-            if (netCon != null)
-            {
-                netCon.Close();
-                netCon = null;
-            }
-        }
+        //public void NetConCloseConnection()
+        //{
+        //    if (netCon != null)
+        //    {
+        //        netCon.Close();
+        //        netCon = null;
+        //    }
+        //}
         public string FormatString(string original, GameState gameState)
         {
             if (gameState.Player != null)
@@ -791,7 +791,7 @@ namespace CSAuto
                         steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
                         steamAPIServer.Start();
                     }
-                    NativeMethods.OptimizeMemory(-1,-1);
+                    NativeMethods.OptimizeMemory();
                 }
                 else if (!csRunning)
                 {
@@ -808,9 +808,9 @@ namespace CSAuto
                     {
                         Log.WriteLine("Stopping GSI Server");
                         GameStateListener.StopGSIServer();
-                        NetConCloseConnection();
+                        //NetConCloseConnection();
                         SendMessageToServer("<CLS>", onlyServer: true);
-                        NativeMethods.OptimizeMemory(0, 13);
+                        NativeMethods.OptimizeMemory();
                     }
                     if (steamAPIServer != null)
                     {
@@ -1209,7 +1209,7 @@ namespace CSAuto
                     SendMessageToServer($"<CNT>{AppLanguage.Language["server_computer"]} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Language["server_online"]} (CSAuto v{FULL_VER})");
                 if (current.StartWidnow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
-                NativeMethods.OptimizeMemory(0,13);
+                NativeMethods.OptimizeMemory();
             }
             catch (Exception ex)
             {

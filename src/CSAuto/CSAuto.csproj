@@ -138,6 +138,7 @@
     <Compile Include="Utils\CSGO\NetCon.cs" />
     <Compile Include="Utils\Github.cs" />
     <Compile Include="Utils\InputBox.cs" />
+    <Compile Include="Utils\RegistrySettings.cs" />
     <Compile Include="Utils\Spotify.cs" />
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />

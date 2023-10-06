@@ -14,10 +14,10 @@ namespace CSAuto
 {
     public static class NativeMethods
     {
-        public static void OptimizeMemory(int min,int max)
+        public static void OptimizeMemory()
         {
             IntPtr pHandle = GetCurrentProcess();
-            SetProcessWorkingSetSize(pHandle, min, max);
+            //SetProcessWorkingSetSize(pHandle, min, max);
             EmptyWorkingSet(pHandle);
         }
         [DllImport("psapi")]
