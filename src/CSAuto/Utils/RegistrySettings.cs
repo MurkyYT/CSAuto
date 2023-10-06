@@ -154,6 +154,16 @@ namespace Murky.Utils
                     return false;
             }
         }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1330260032;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(type);
+            hashCode = hashCode * -1521134295 + EqualityComparer<byte[]>.Default.GetHashCode(data);
+            return hashCode;
+        }
+
         public static bool operator ==(Setting lhs, object rhs)
         {
             return lhs.Equals(rhs);
