@@ -30,6 +30,7 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using System.Configuration;
 #endregion
 namespace CSAuto
 {
@@ -220,16 +221,16 @@ namespace CSAuto
                     throw new WebException("Couldn't load button colors");
                 string[] lines = data.Split(new char[] { '\n' });
                 string path = DiscordRPCButtonSerializer.Path + "\\colors";
-                File.WriteAllText(path, data);
+                (App.Current as App).settings.Set("ButtonColors", data);
                 return SplitColorsLines(lines);
             }
             catch 
             {
                 Log.WriteLine("Couldn't load colors from web, trying to load latest loaded colors");
                 string path = DiscordRPCButtonSerializer.Path + "\\colors";
-                if (File.Exists(path))
+                if ((App.Current as App).settings["ButtonColors"] != null)
                 {
-                    string data = File.ReadAllText(path);
+                    string data = (App.Current as App).settings["ButtonColors"];
                     if (data != "")
                     {
                         string[] lines = data.Split(new char[] { '\n' });

@@ -12,11 +12,19 @@ namespace CSAuto
         {
             string output = JsonConvert.SerializeObject(buttons);
             File.WriteAllText(Path + "\\buttons.json", output);
+            (App.Current as App).settings.Set("DiscordButtons", output);
         }
-        public static List<DiscordRPCButton> Deserialize()
+        public static List<DiscordRPCButton> DeserializeOld()
         {
             if (File.Exists(Path + "\\buttons.json"))
                 return JsonConvert.DeserializeObject<List<DiscordRPCButton>>(File.ReadAllText(Path + "\\buttons.json"));
+            else
+                return new List<DiscordRPCButton>();
+        }
+        public static List<DiscordRPCButton> Deserialize()
+        {
+            if ((App.Current as App).settings["DiscordButtons"] != null)
+                return JsonConvert.DeserializeObject<List<DiscordRPCButton>>((App.Current as App).settings["DiscordButtons"]);
             else
                 return new List<DiscordRPCButton>();
         }

@@ -86,6 +86,7 @@ namespace CSAuto
             main.debugWind = null;
             Log.debugWind = null;
             Properties.Settings.Default.Save();
+            main.current.MoveSettings();
             GameState.Dispose();
             NativeMethods.OptimizeMemory();
             Close();
