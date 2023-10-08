@@ -2,6 +2,7 @@
 using CSAuto.Properties;
 using Murky.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace CSAuto
 {
@@ -21,8 +23,12 @@ namespace CSAuto
         public bool AlwaysMaximized;
         public bool Restarted;
         public RegistrySettings settings = new RegistrySettings();
+
+        private bool crashed;
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             if (settings["FirstRun"] == null || settings["FirstRun"])
             {
                 Log.WriteLine("First run of new settings, moving old ones to registry");
@@ -37,12 +43,12 @@ namespace CSAuto
                 LoadSettings();
             }
             base.OnStartup(e);
-            if (CSAuto.Properties.Settings.Default.darkTheme)
+            if (Settings.Default.darkTheme)
                 // Set the application theme to Dark + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Dark.{CSAuto.Properties.Settings.Default.currentColor}");
+                ThemeManager.Current.ChangeTheme(this, $"Dark.{Settings.Default.currentColor}");
             else
                 // Set the application theme to Light + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Light.{CSAuto.Properties.Settings.Default.currentColor}");
+                ThemeManager.Current.ChangeTheme(this, $"Light.{Settings.Default.currentColor}");
             foreach (string arg in e.Args)
             {
                 if (arg == "--maximized")
@@ -82,5 +88,29 @@ namespace CSAuto
                 throw new ArgumentException("ARGH!");
             return input.First().ToString().ToUpper() + String.Join("", input.Skip(1));
         }
+        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            CurrentDomain_UnhandledException(
+                sender,
+                new UnhandledExceptionEventArgs(e.Exception, e.Handled));
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (crashed)
+                return;
+            crashed = true;
+            StackFrame frame = new StackFrame(1, false);
+            Exception ex = ((Exception)e.ExceptionObject);
+            Log.Error(
+                $"{ex.Message}\n" +
+                $"StackTrace:{ex.StackTrace}\n" +
+                $"Source: {ex.Source}\n" +
+                $"Inner Exception: {ex.InnerException}");
+            MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"] + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
+            Process.Start("Error_Log.txt");
+            Current.Shutdown();
+        }
+
     }
 }

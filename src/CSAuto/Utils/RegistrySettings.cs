@@ -15,7 +15,7 @@ namespace Murky.Utils
     /// <summary>
     /// Class to save settings into the registry, supported types are <see langword="bool" />,<see langword="string" />,<see langword="int" /> and <see langword="long" />
     /// <code></code>
-    /// The settings are saved in HKEY_CURRENT_USER\SOFTWARE\Company\App, they are saved in binary form
+    /// The settings are saved in HKEY_CURRENT_USER\SOFTWARE\Company\App
     /// </summary>
     public class RegistrySettings
     {
@@ -34,44 +34,43 @@ namespace Murky.Utils
         {
             get 
             { 
-                byte[] value = (byte[])settingsKey.GetValue(name, null);
+                object value = settingsKey.GetValue(name, null);
                 if (value == null)
                     return new Setting() { name = null, type = null, data = null };
                 Type type = null;
-                byte[] data = value.Skip(1).ToArray();
-                switch (value[0])
+                switch (settingsKey.GetValueKind(name))
                 {
-                    case 0:
+                    case RegistryValueKind.String:
                         type = typeof(string);
                         break;
-                    case 1:
+                    case RegistryValueKind.DWord:
                         type = typeof(int);
                         break;
-                    case 2:
+                    case RegistryValueKind.QWord:
                         type = typeof(long);
                         break;
-                    case 3:
+                    case RegistryValueKind.Binary:
                         type = typeof(bool);
                         break;
                 }
-                return new Setting() { name = name, type = type, data = data };
+                return new Setting() { name = name, type = type, data = value };
             }
         }
         public void Set(string name,object value)
         {
             switch (value)
             {
-                case string str:
-                    settingsKey.SetValue(name,new byte[] { 0 }.Concat(Encoding.UTF8.GetBytes(str)).ToArray(), RegistryValueKind.Binary);
+                case string _:
+                    settingsKey.SetValue(name,value, RegistryValueKind.String);
                     break;
-                case int num:
-                    settingsKey.SetValue(name, new byte[] { 1 }.Concat(BitConverter.GetBytes(num)).ToArray(), RegistryValueKind.Binary);
+                case int _:
+                    settingsKey.SetValue(name, value, RegistryValueKind.DWord);
                     break;
-                case long num:
-                    settingsKey.SetValue(name, new byte[] { 2 }.Concat(BitConverter.GetBytes(num)).ToArray(), RegistryValueKind.Binary);
+                case long _:
+                    settingsKey.SetValue(name, value, RegistryValueKind.QWord);
                     break;
                 case bool boolean:
-                    settingsKey.SetValue(name, new byte[] { 3 }.Concat(BitConverter.GetBytes(boolean)).ToArray(), RegistryValueKind.Binary);
+                    settingsKey.SetValue(name, BitConverter.GetBytes(boolean), RegistryValueKind.Binary);
                     break;
             }
         }
@@ -80,23 +79,23 @@ namespace Murky.Utils
     {
         public string name;
         public Type type;
-        public byte[] data;
+        public object data;
         public object GetValue()
         {
             object value;
             switch (type.Name)
             {
                 case "String":
-                    value = Encoding.UTF8.GetString(data);
+                    value = (string)data;
                     break;
                 case "Int32":
-                    value = BitConverter.ToInt32(data, 0);
+                    value = (int)data;
                     break;
                 case "Int64":
-                    value = BitConverter.ToInt64(data, 0);
+                    value = (long)data;
                     break;
                 case "Boolean":
-                    value = BitConverter.ToBoolean(data, 0);
+                    value = BitConverter.ToBoolean((byte[])data, 0);
                     break;
                 default:
                     return null;
@@ -109,16 +108,16 @@ namespace Murky.Utils
             switch (obj.type.Name)
             {
                 case "String":
-                    value = Encoding.UTF8.GetString(obj.data);
+                    value = (string)obj.data;
                     break;
                 case "Int32":
-                    value = BitConverter.ToInt32(obj.data, 0);
+                    value = (int)obj.data;
                     break;
                 case "Int64":
-                    value = BitConverter.ToInt64(obj.data, 0);
+                    value = (long)obj.data;
                     break;
                 case "Boolean":
-                    value = BitConverter.ToBoolean(obj.data, 0);
+                    value = BitConverter.ToBoolean((byte[])obj.data, 0);
                     break;
                 default:
                     return null;
@@ -135,21 +134,16 @@ namespace Murky.Utils
                 return true;
             if (obj == null || type != obj.GetType())
                 return false;
-            object value;
             switch (obj)
             {
                 case string str:
-                    value = Encoding.UTF8.GetString(data);
-                    return (string)value == str;
+                    return (string)data == str;
                 case int num:
-                    value = BitConverter.ToInt32(data,0);
-                    return (int)value == num;
+                    return (int)data == num;
                 case long num:
-                    value = BitConverter.ToInt64(data, 0);
-                    return (long)value == num;
+                    return (long)data == num;
                 case bool boolean:
-                    value = BitConverter.ToBoolean(data, 0);
-                    return (bool)value == boolean;
+                    return (bool)GetValue() == boolean;
                 default:
                     return false;
             }
@@ -160,7 +154,7 @@ namespace Murky.Utils
             int hashCode = 1330260032;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(name);
             hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(type);
-            hashCode = hashCode * -1521134295 + EqualityComparer<byte[]>.Default.GetHashCode(data);
+            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(data);
             return hashCode;
         }
 

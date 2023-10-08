@@ -30,7 +30,6 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
-using System.Configuration;
 #endregion
 namespace CSAuto
 {
@@ -81,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string ONLINE_BRANCH_NAME = "dev";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
@@ -181,8 +180,6 @@ namespace CSAuto
         #endregion
         public MainApp()
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             InitializeComponent();
             try
             {
@@ -259,25 +256,6 @@ namespace CSAuto
             }
             return res;
         }
-        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            CurrentDomain_UnhandledException(
-                sender,
-                new UnhandledExceptionEventArgs(e.Exception,e.Handled));
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            StackFrame frame = new StackFrame(1, false);
-            Exception ex = ((Exception)e.ExceptionObject);
-            Log.Error(
-                $"{ex.Message}\n" +
-                $"StackTrace:{ex.StackTrace}");
-            MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"] + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
-            Process.Start("Error_Log.txt");
-            Application.Current.Shutdown();
-        }
-
         private void GameStateListener_OnReceive(object sender, EventArgs e)
         {
             try
