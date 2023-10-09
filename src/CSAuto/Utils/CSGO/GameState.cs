@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.AxHost;
@@ -94,21 +95,30 @@ namespace Murky.Utils.CSGO
                 CurrentRound = GetRound(),
                 Bombstate = GetRoundBombState()
             };
-            Player = new Player()
+            if (HasPlayer())
             {
-                CurrentActivity = GetActivity(),
-                SteamID = GetSteamID(),
-                Team = GetTeam(),
-                Health = GetHealth(),
-                Armor = GetArmor(),
-                Money = GetMoney(),
-                HasHelmet = GetHelmetState(),
-                HasDefuseKit = HasDefuseKit()
-            };
-            Player.SetWeapons(JSON);
-            IsDead = Player.SteamID != MySteamID;
+                Player = new Player()
+                {
+                    CurrentActivity = GetActivity(),
+                    SteamID = GetSteamID(),
+                    Team = GetTeam(),
+                    Health = GetHealth(),
+                    Armor = GetArmor(),
+                    Money = GetMoney(),
+                    HasHelmet = GetHelmetState(),
+                    HasDefuseKit = HasDefuseKit()
+                };
+                Player.SetWeapons(JSON);
+                IsDead = Player.SteamID != MySteamID;
+            }
             IsSpectating = CheckIfSpectator();
         }
+
+        private bool HasPlayer()
+        {
+            return _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None).Length > 1;
+        }
+
         public GameState(string JSON)
         {
             UpdateJson(JSON);

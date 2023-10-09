@@ -78,9 +78,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.2";
+        public const string VER = "2.0.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
@@ -114,12 +114,12 @@ namespace CSAuto
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
         readonly Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
         readonly Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
-        readonly string[] AVAILABLE_MAP_ICONS;
         #endregion
         #region Privates
         private DiscordRpcClient RPCClient;
         private string integrationPath = null;
         private string IN_LOBBY_STATE = "Chilling in lobby";
+        private string CURRENT_MAP_ICON = null;
         #endregion
         #region Members
         Point csResolution = new Point();
@@ -188,7 +188,6 @@ namespace CSAuto
                 ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1];
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
-                AVAILABLE_MAP_ICONS = Properties.Resources.AVAILABLE_MAPS_STRING.Split(',');
                 CSGOFriendCode.Encode("76561198341800115");
                 InitializeDiscordRPC();
                 CheckForDuplicates();
@@ -315,6 +314,7 @@ namespace CSAuto
                 {
                     inLobby = false;
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
+                    CURRENT_MAP_ICON = CSGOMap.GetMapIcon(GameState.Match.Map);
                     RPCClient.SetPresence(new RichPresence()
                     {
                         Details = FormatString(Properties.Settings.Default.inGameDetails, GameState),
@@ -322,7 +322,7 @@ namespace CSAuto
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
-                            LargeImageKey = AVAILABLE_MAP_ICONS.Contains(GameState.Match.Map) ? $"map_icon_{GameState.Match.Map}" : "cs2_icon",
+                            LargeImageKey = CURRENT_MAP_ICON != null ? CURRENT_MAP_ICON : "cs2_icon",
                             LargeImageText = GameState.Match.Map,
                             SmallImageKey = null,
                             SmallImageText = null
@@ -345,6 +345,7 @@ namespace CSAuto
                 else if (GameState.Match.Map == null && (inLobby == false || inLobby == null))
                 {
                     inLobby = true;
+                    CURRENT_MAP_ICON = null;
                     IN_LOBBY_STATE = FormatString(Properties.Settings.Default.lobbyState, GameState);
                     Log.WriteLine($"Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
@@ -647,48 +648,21 @@ namespace CSAuto
 
         private void UpdateDiscordRPC()
         {
-            if (csRunning && inGame)
+            try
             {
-                RPCClient.SetPresence(new RichPresence()
+                if (csRunning && inGame)
                 {
-                    Details = RPCClient.CurrentPresence.Details,
-                    State = FormatString(Properties.Settings.Default.inGameState, GameState),
-                    Party = new Party(),
-                    Assets = new Assets()
-                    {
-                        LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
-                        LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
-                        SmallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower(),
-                        SmallImageText = GameState.IsSpectating ? "Watching CSTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
-                    },
-                    Timestamps = new Timestamps()
-                    {
-                        Start = RPCClient.CurrentPresence.Timestamps.Start,
-                        End = null
-                    },
-                    Buttons = GetDiscordRPCButtons()
-                });
-            }
-            else if (csRunning && !inGame)
-            {
-                if (Properties.Settings.Default.enableLobbyCount)
-                {
-                    string steamworksRes = GetLobbyInfoFromSteamworks();
-                    string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
-                    string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
-                    string partysize = steamworksRes.Split('/')[0];
                     RPCClient.SetPresence(new RichPresence()
                     {
                         Details = RPCClient.CurrentPresence.Details,
-                        State = RPCClient.CurrentPresence.State,
-                        Party = new Party()
-                        { ID= lobbyid == "0" ? "0" : lobbyid ,Max= int.Parse(partyMax) ,Size= int.Parse(partysize) },
+                        State = FormatString(Properties.Settings.Default.inGameState, GameState),
+                        Party = new Party(),
                         Assets = new Assets()
                         {
-                            LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
+                            LargeImageKey = CURRENT_MAP_ICON != null ? CURRENT_MAP_ICON : "cs2_icon",
                             LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
-                            SmallImageKey = RPCClient.CurrentPresence.Assets.SmallImageKey,
-                            SmallImageText = RPCClient.CurrentPresence.Assets.SmallImageText
+                            SmallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower(),
+                            SmallImageText = GameState.IsSpectating ? "Watching CSTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
                         },
                         Timestamps = new Timestamps()
                         {
@@ -698,12 +672,43 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                 }
+                else if (csRunning && !inGame)
+                {
+                    if (Properties.Settings.Default.enableLobbyCount)
+                    {
+                        string steamworksRes = GetLobbyInfoFromSteamworks();
+                        string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
+                        string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
+                        string partysize = steamworksRes.Split('/')[0];
+                        RPCClient.SetPresence(new RichPresence()
+                        {
+                            Details = RPCClient.CurrentPresence.Details,
+                            State = RPCClient.CurrentPresence.State,
+                            Party = new Party()
+                            { ID = lobbyid == "0" ? "0" : lobbyid, Max = int.Parse(partyMax), Size = int.Parse(partysize) },
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
+                                LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
+                                SmallImageKey = RPCClient.CurrentPresence.Assets.SmallImageKey,
+                                SmallImageText = RPCClient.CurrentPresence.Assets.SmallImageText
+                            },
+                            Timestamps = new Timestamps()
+                            {
+                                Start = RPCClient.CurrentPresence.Timestamps.Start,
+                                End = null
+                            },
+                            Buttons = GetDiscordRPCButtons()
+                        });
+                    }
+                }
+                else if (RPCClient.IsInitialized && !csRunning)
+                {
+                    RPCClient.Deinitialize();
+                    Log.WriteLine("DiscordRpc.Shutdown();");
+                }
             }
-            else if (RPCClient.IsInitialized && !csRunning)
-            {
-                RPCClient.Deinitialize();
-                Log.WriteLine("DiscordRpc.Shutdown();");
-            }
+            catch(NullReferenceException) { }
         }
 
         private void AutoPauseResumeSpotify()
