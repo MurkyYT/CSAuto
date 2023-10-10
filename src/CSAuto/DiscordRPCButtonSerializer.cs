@@ -11,7 +11,11 @@ namespace CSAuto
         public static void Serialize(List<DiscordRPCButton> buttons)
         {
             string output = JsonConvert.SerializeObject(buttons);
-            File.WriteAllText(Path + "\\buttons.json", output);
+            try
+            {
+                File.WriteAllText(Path + "\\buttons.json", output);
+            }
+            catch { }
             (App.Current as App).settings.Set("DiscordButtons", output);
         }
         public static List<DiscordRPCButton> DeserializeOld()
