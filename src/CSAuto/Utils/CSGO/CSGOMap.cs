@@ -25,7 +25,7 @@ namespace Murky.Utils.CSGO
         {
             try
             {
-                string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media/File:de_mirage.png");
+                string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media");
                 string[] splt = info.Split(new string[] { "src=\"/w/images/thumb/" }, StringSplitOptions.None);
                 for (int i = 1; i < splt.Length; i++)
                 {
