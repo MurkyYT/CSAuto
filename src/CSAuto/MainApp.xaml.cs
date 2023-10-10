@@ -80,8 +80,8 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
-        const string ONLINE_BRANCH_NAME = "master";
+        const string DEBUG_REVISION = "2";
+        const string ONLINE_BRANCH_NAME = "dev";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
         const string NETCON_PORT = "21823";
@@ -189,6 +189,7 @@ namespace CSAuto
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 CSGOFriendCode.Encode("76561198341800115");
+                CSGOMap.LoadMapIcons();
                 InitializeDiscordRPC();
                 CheckForDuplicates();
                 GameStateListener = new GameStateListener(ref GameState, GAMESTATE_PORT);
@@ -314,7 +315,8 @@ namespace CSAuto
                 {
                     inLobby = false;
                     Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
-                    CURRENT_MAP_ICON = CSGOMap.GetMapIcon(GameState.Match.Map);
+                    if (CSGOMap.MapIcons.ContainsKey(GameState.Match.Map))
+                        CURRENT_MAP_ICON = CSGOMap.MapIcons[GameState.Match.Map];
                     RPCClient.SetPresence(new RichPresence()
                     {
                         Details = FormatString(Properties.Settings.Default.inGameDetails, GameState),
