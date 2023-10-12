@@ -11,7 +11,7 @@ namespace Murky.Utils
         static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         public static void Pause()
         {
-            if (IsPlaying() && IsRunning())
+            if (IsPlaying())
             {
                 SendMediaPauseResume();
                 Log.WriteLine("Pausing Spotify");
@@ -26,7 +26,7 @@ namespace Murky.Utils
 
         public static void Resume()
         {
-            if (!IsPlaying() && IsRunning())
+            if (!IsPlaying())
             {
                 SendMediaPauseResume();
                 Log.WriteLine("Resuming Spotify");
@@ -60,6 +60,7 @@ namespace Murky.Utils
         }
         private static Process GetProcess()
         {
+            if (!IsRunning()) return null;
             Process spotifyProc = Process.GetProcessesByName("Spotify").Where(p => p.MainWindowTitle != "").ToArray()[0];
             return spotifyProc;
         }

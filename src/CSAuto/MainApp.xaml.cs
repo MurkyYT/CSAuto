@@ -717,17 +717,17 @@ namespace CSAuto
         {
             if (GameState.Player.CurrentActivity == Activity.Playing)
             {
-                if (GameState.Player.Health > 0 && GameState.Player.SteamID == GameState.MySteamID && Spotify.IsPlaying())
+                if (GameState.Player.Health > 0 && GameState.Player.SteamID == GameState.MySteamID)
                 {
                     Spotify.Pause();
                 }
-                else if (!Spotify.IsPlaying() && GameState.Player.SteamID != GameState.MySteamID ||
+                else if (GameState.Player.SteamID != GameState.MySteamID ||
                     (GameState.Player.Health <= 0 && GameState.Player.SteamID == GameState.MySteamID))
                 {
                     Spotify.Resume();
                 }
             }
-            else if (!Spotify.IsPlaying() && GameState.Player.CurrentActivity != Activity.Textinput)
+            else if (GameState.Player.CurrentActivity != Activity.Textinput)
             {
                 Spotify.Resume();
             }
@@ -758,6 +758,7 @@ namespace CSAuto
         {
             try
             {
+                Log.WriteLine(Spotify.IsPlaying());
                 Process[] prcs = new Process[0];
                 if (csProcess == null)
                     prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
