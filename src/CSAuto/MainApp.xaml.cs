@@ -78,9 +78,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.3";
+        public const string VER = "2.0.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";

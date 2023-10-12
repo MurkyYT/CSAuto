@@ -1,31 +1,34 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using System.Runtime.InteropServices;
 
 namespace Murky.Utils
 {
     public static class Spotify
     {
+        [DllImport("user32.dll")]
+        static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         public static void Pause()
         {
             if (IsPlaying() && IsRunning())
             {
-                Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
+                SendMediaPauseResume();
                 Log.WriteLine("Pausing Spotify");
             }
         }
+
+        private static void SendMediaPauseResume()
+        {
+            Process prc = GetProcess();
+            SendMessageW(prc.MainWindowHandle, 0x0319, prc.MainWindowHandle, (IntPtr)(14 << 16));
+        }
+
         public static void Resume()
         {
             if (!IsPlaying() && IsRunning())
             {
-                Keyboard.PressKey(Keyboard.VirtualKeyStates.VK_MEDIA_PLAY_PAUSE);
+                SendMediaPauseResume();
                 Log.WriteLine("Resuming Spotify");
             }
         }
