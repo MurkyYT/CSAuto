@@ -24,8 +24,6 @@ body:
       description: How did this happen?
       placeholder: If you dont know how leave as is
       value: N/A
-    validations:
-      required: true
   - type: textarea
     id: logs
     attributes:
