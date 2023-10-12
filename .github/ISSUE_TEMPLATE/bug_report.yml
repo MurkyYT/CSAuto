@@ -17,12 +17,12 @@ body:
       placeholder: Tell us what you see!
     validations:
       required: true
-   - type: textarea
+  - type: textarea
     id: steps
     attributes:
-      label: Steps to recreate
+      label: Steps to reproduce
       description: How did this happen?
-      placeholder: If you don't know leave blank
+      placeholder: If you dont know how leave as is
       value: N/A
     validations:
       required: true
