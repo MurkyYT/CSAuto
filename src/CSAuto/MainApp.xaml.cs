@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
@@ -493,31 +493,6 @@ namespace CSAuto
                 }
             }
         }
-
-        public void TelegramSendMessage(string text)
-        {
-            try
-            {
-                string urlString = $"https://api.telegram.org/bot{APIKeys.APIKeys.TelegramBotToken}/sendMessage?chat_id={Properties.Settings.Default.telegramChatId}&text={text}";
-
-                using (WebClient webclient = new WebClient())
-                {
-                    webclient.DownloadString(urlString);
-                }
-                Log.WriteLine($"Sent telegram message \"{text}\" to \"{Properties.Settings.Default.telegramChatId}\"");
-            }
-            catch (WebException ex) 
-            { 
-                if (!ex.Message.Contains("(429)") &&
-                    ex.Message != "Unable to connect to the remote server") 
-                {
-                    MessageBox.Show($"{AppLanguage.Language["error_telegrammessage"]}\n'{ex.Message}'\n'{text}'",
-                        AppLanguage.Language["title_error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error); 
-                } 
-            }
-        }
         private void Current_Exit(object sender, ExitEventArgs e)
         {
             Exited();
@@ -738,7 +713,7 @@ namespace CSAuto
             new Thread(() =>
             {
                 if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
-                    TelegramSendMessage(message.Substring(5));
+                    Telegram.SendMessage(message.Substring(5), Properties.Settings.Default.telegramChatId, APIKeys.APIKeys.TelegramBotToken);
                 if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
                     return;
                 try // Try connecting and send the message bytes  
@@ -1084,6 +1059,8 @@ namespace CSAuto
                                 acceptedGame = true;
                                 if (acceptButtonTimer.IsEnabled)
                                     acceptButtonTimer.Stop();
+                                if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
+                                    Telegram.SendPhoto(bitmap, Properties.Settings.Default.telegramChatId, APIKeys.APIKeys.TelegramBotToken);
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
                         }

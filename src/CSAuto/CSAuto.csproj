@@ -140,6 +140,7 @@
     <Compile Include="Utils\InputBox.cs" />
     <Compile Include="Utils\RegistrySettings.cs" />
     <Compile Include="Utils\Spotify.cs" />
+    <Compile Include="Utils\Telegram.cs" />
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Page Include="GUIWindow.xaml">

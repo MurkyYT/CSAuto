@@ -118,7 +118,8 @@ namespace CSAuto.Languages
             ["error_appcrashed"] = "An unexpected error has accured!, i will open Error_Log.txt, please open an issue on github with the log Attached!",
             ["error_discordselecttemplate"] = "Please select a button template",
             ["discord_createtemplate"] = "Use template",
-            ["error_loadcolors"] = "Couldn't load colors for button, be aware that auto accept wont work!"
+            ["error_loadcolors"] = "Couldn't load colors for button, be aware that auto accept wont work!",
+            ["menu_sendacceptbutton"] = "Send capture to telegram on accept"
         };
         public static string Get(string category)
         {

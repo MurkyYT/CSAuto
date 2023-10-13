@@ -98,6 +98,7 @@
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="menu_savedebugframes" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveDebugFrames}"/>
                                 <CheckBox Content="menu_savedebuglogs" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveLogs}"/>
+                                <CheckBox Content="menu_sendacceptbutton" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=sendAcceptImage}"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
                     </TabControl>

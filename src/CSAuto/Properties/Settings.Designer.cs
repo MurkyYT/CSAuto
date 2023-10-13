@@ -428,5 +428,17 @@ namespace CSAuto.Properties {
                 this["oldAutoBuy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool sendAcceptImage {
+            get {
+                return ((bool)(this["sendAcceptImage"]));
+            }
+            set {
+                this["sendAcceptImage"] = value;
+            }
+        }
     }
 }

@@ -67,6 +67,8 @@ namespace CSAuto
                 if (currentProperty.Name == "availableColors")
                     continue;
                 string res = FirstCharToUpper(currentProperty.Name);
+                if (settings[res] == null)
+                    settings.Set(res, Settings.Default[currentProperty.Name]);
                 Settings.Default[currentProperty.Name] = settings[res].GetValue();
                 Settings.Default.Save();
             }
