@@ -758,7 +758,6 @@ namespace CSAuto
         {
             try
             {
-                Log.WriteLine(Spotify.IsPlaying());
                 Process[] prcs = new Process[0];
                 if (csProcess == null)
                     prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
