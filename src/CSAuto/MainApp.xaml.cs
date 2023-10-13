@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
@@ -1060,7 +1060,12 @@ namespace CSAuto
                                 if (acceptButtonTimer.IsEnabled)
                                     acceptButtonTimer.Stop();
                                 if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
-                                    Telegram.SendPhoto(bitmap, Properties.Settings.Default.telegramChatId, APIKeys.APIKeys.TelegramBotToken);
+                                    Telegram.SendPhoto(bitmap,
+                                        Properties.Settings.Default.telegramChatId,
+                                        APIKeys.APIKeys.TelegramBotToken,
+                                        $"{csResolution.X}X{csResolution.Y}\n" +
+                                        $"({X},{Y})\n" +
+                                        $"{DateTime.Now}");
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
                         }

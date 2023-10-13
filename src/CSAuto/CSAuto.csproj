@@ -117,7 +117,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DiscordRPCButton.cs" />
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Languages\AppLanguage.cs" />

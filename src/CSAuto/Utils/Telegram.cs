@@ -34,7 +34,7 @@ namespace Murky.Utils
                 }
             }
         }
-        public static async void SendPhoto(Image photo, string chatID, string token)
+        public static async void SendPhoto(Image photo, string chatID, string token,string caption=null)
         {
             try
             {
@@ -42,9 +42,11 @@ namespace Murky.Utils
                 using (var form = new MultipartFormDataContent())
                 {
                     form.Add(new StringContent(chatID, Encoding.UTF8), "chat_id");
+                    if(caption != null)
+                        form.Add(new StringContent(caption, Encoding.UTF8), "caption");
                     using (MemoryStream stream = LoadImageStream(photo))
                     {
-                        form.Add(new StreamContent(stream), "photo", "Test_photo.png");
+                        form.Add(new StreamContent(stream), "photo", "photo.png");
                         using (HttpClient client = new HttpClient())
                         {
                             var response = await client.PostAsync(url, form);

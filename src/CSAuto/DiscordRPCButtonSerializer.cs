@@ -5,6 +5,11 @@ using System.IO;
 
 namespace CSAuto
 {
+    public class DiscordRPCButton
+    {
+        public string Label { get; set; }
+        public string Url { get; set; }
+    }
     public static class DiscordRPCButtonSerializer
     {
         public static string Path { get { return Directory.GetParent(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath).FullName; } }
