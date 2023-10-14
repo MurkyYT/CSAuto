@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "4";
+        const string DEBUG_REVISION = "";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
@@ -243,17 +243,21 @@ namespace CSAuto
         private static Color[] SplitColorsLines(string[] lines)
         {
             Color[] res = new Color[lines.Length];
-            for (int i = 0; i < lines.Length; i++)
+            try
             {
-                //This gives us an array of 3 strings each representing a number in text form.
-                var splitString = lines[i].Split(',');
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    //This gives us an array of 3 strings each representing a number in text form.
+                    var splitString = lines[i].Split(',');
 
-                //converts the array of 3 strings in to an array of 3 ints.
-                var splitInts = splitString.Select(item => int.Parse(item)).ToArray();
+                    //converts the array of 3 strings in to an array of 3 ints.
+                    var splitInts = splitString.Select(item => int.Parse(item)).ToArray();
 
-                //takes each element of the array of 3 and passes it in to the correct slot
-                res[i] = Color.FromArgb(splitInts[0], splitInts[1], splitInts[2]);
+                    //takes each element of the array of 3 and passes it in to the correct slot
+                    res[i] = Color.FromArgb(splitInts[0], splitInts[1], splitInts[2]);
+                }
             }
+            catch { }
             return res;
         }
         private void GameStateListener_OnReceive(object sender, EventArgs e)
