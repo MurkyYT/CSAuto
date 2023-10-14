@@ -252,13 +252,14 @@ namespace CSAuto
             new Thread(() =>
             {
                 Steam.GetLaunchOptions(730, out string launchOpt);
-                Dispatcher.InvokeAsync(() => {
-                steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
-                    $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
-                    $"StemID64: {Steam.GetSteamID64()}\n" +
-                    $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
-                    $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
-                    $"CS:GO LaunchOptions: \"{launchOpt}\"";
+                Dispatcher.InvokeAsync(() =>
+                {
+                    steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
+                        $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
+                        $"StemID64: {Steam.GetSteamID64()}\n" +
+                        $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
+                        $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
+                        $"CS:GO LaunchOptions: \"{launchOpt}\"";
                     GenerateLanguages();
                     DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
                     string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
@@ -270,13 +271,10 @@ namespace CSAuto
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;
                     LoadLanguages(this);
-                     VersionText.Text = $"ver {MainApp.FULL_VER}";
+                    VersionText.Text = $"ver {MainApp.FULL_VER}";
                     UpdateDiscordRPCResult(true);
                     LoadDiscordButtons();
                 });
-#if !DEBUG
-                LoadChangelog();
-#endif
             }).Start();
         }
 
@@ -295,14 +293,20 @@ namespace CSAuto
         {
             string[] res = Github.GetReleasesDescription("murkyyt", "csauto");
             if (res.Length == 0)
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    _ = ShowMessage(AppLanguage.Language["title_error"], AppLanguage.Language["error_loadchangelog"], MessageDialogStyle.Affirmative);
+                });
                 return;
+            }
             string finalRes = "";
             foreach (var item in res)
             {
                 finalRes += item.Split(new string[] { "🛡" }, StringSplitOptions.None)[0] + "\r\n";
             }
-            
-           
+
+
             Dispatcher.InvokeAsync(() => {
                 TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
                 FlowDocument document = (FlowDocument)converter.Convert(finalRes, null, null, null);
@@ -413,8 +417,14 @@ namespace CSAuto
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2)
+            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2 && CategoriesTabControl.SelectedIndex != 1)
                 LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
+            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
+            {
+#if !DEBUG
+                new Thread(() =>{LoadChangelog();}).Start();
+#endif
+            }
         }
 
         private void InGameDetailsText_TextChanged(object sender, TextChangedEventArgs e)

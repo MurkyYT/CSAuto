@@ -119,7 +119,8 @@ namespace CSAuto.Languages
             ["error_discordselecttemplate"] = "Please select a button template",
             ["discord_createtemplate"] = "Use template",
             ["error_loadcolors"] = "Couldn't load colors for button, be aware that auto accept wont work!",
-            ["menu_sendacceptbutton"] = "Send capture to telegram on accept"
+            ["menu_sendacceptbutton"] = "Send capture to telegram on accept",
+            ["error_loadchangelog"] = "Couldn't load the changelog, please check your internet connection"
         };
         public static string Get(string category)
         {

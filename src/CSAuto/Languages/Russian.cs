@@ -119,7 +119,8 @@ namespace CSAuto.Languages
             ["error_discordselecttemplate"] = "Пожалуйста, выберите шаблон кнопки",
             ["discord_createtemplate"] = "Использовать шаблон",
             ["error_loadcolors"] = "Не удалось загрузить цвета для кнопки, имейте в виду, что автоматическое принятие не будет работать!",
-            ["menu_sendacceptbutton"] = "Отправить снимок в telegram при принятии"
+            ["menu_sendacceptbutton"] = "Отправить снимок в telegram при принятии",
+            ["error_loadchangelog"] = "Не удалось загрузить список изменений, пожалуйста, проверьте ваше подключение к Интернету"
         };
         public static string Get(string category)
         {
