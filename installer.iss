@@ -3,7 +3,7 @@
 
 #define NAME "CSAuto"
 #define EXE_NAME "CSAuto.exe"
-#define InstallPath "C:\Program Files (x86)\"
+#define InstallPath "{userappdata}"
 #define AppWebsite "https://csauto.netlify.app"
 
 [Setup]
@@ -19,9 +19,9 @@ AppPublisher=Murky
 Compression=lzma
 LicenseFile=LICENSE
 DisableProgramGroupPage=yes
-DefaultDirName={#InstallPath}{#NAME}
+DefaultDirName={#InstallPath}\{#NAME}
 OutputBaseFilename={#NAME}_Installer
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
 SolidCompression=yes
 SetupIconFile=src\CSAuto\Icons\main.ico
 UninstallDisplayIcon={app}\{#EXE_NAME}
