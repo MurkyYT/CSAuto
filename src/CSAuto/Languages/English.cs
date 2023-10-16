@@ -120,7 +120,9 @@ namespace CSAuto.Languages
             ["discord_createtemplate"] = "Use template",
             ["error_loadcolors"] = "Couldn't load colors for button, be aware that auto accept wont work!",
             ["menu_sendacceptbutton"] = "Send capture to telegram on accept",
-            ["error_loadchangelog"] = "Couldn't load the changelog, please check your internet connection"
+            ["error_loadchangelog"] = "Couldn't load the changelog, please check your internet connection",
+            ["title_warning"] = "Warning",
+            ["error_createfiles"] = "Can't create files, logs and debug stuff wont be saved"
         };
         public static string Get(string category)
         {

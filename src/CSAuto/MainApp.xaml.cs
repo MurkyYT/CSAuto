@@ -78,9 +78,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.4";
+        public const string VER = "2.0.5";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAMESTATE_PORT = "11523";
@@ -560,7 +560,7 @@ namespace CSAuto
                 File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt").Close();
                 RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt", DiscordRPC.Logging.LogLevel.Error);
             }
-            catch { }
+            catch { MessageBox.Show(AppLanguage.Language["error_createfiles"], AppLanguage.Language["title_warning"], MessageBoxButton.OK, MessageBoxImage.Warning); }
 #endif
             RPCClient.OnReady += (sender, e) =>
             {
@@ -1032,8 +1032,12 @@ namespace CSAuto
                 //    }
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
-                    Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
-                    bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                    try
+                    {
+                        Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
+                        bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                    }
+                    catch { }
                 }
                 if(debugWind != null)
                 {

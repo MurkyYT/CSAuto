@@ -29,7 +29,7 @@ namespace Murky.Utils
                     dir.Create();
                 }
             }
-            catch (Exception ex) { MessageBox.Show(ex.StackTrace); }
+            catch {  }
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Write(object lines, string level = "Info", string caller = "")
