@@ -21,7 +21,7 @@ namespace Murky.Utils
         private static extern bool IsEnabled();
         public bool Enabled => IsEnabled();
         public void Init() => InitCapture();
-        public IntPtr GetCapture() => UpdateFrame();
+        public IntPtr GetCapture() => Enabled ? UpdateFrame() : IntPtr.Zero;
         public void DeInit() => DeInitCapture();
     }
 }
