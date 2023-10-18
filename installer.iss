@@ -31,8 +31,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags:
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags:
 
 [Files]
 Source: "src\CSAuto\bin\Release\*.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -44,4 +44,4 @@ Name: "{autoprograms}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"
 Name: "{autodesktop}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"; Comment: "Software to automate usual CS in game tasks, such as accepting match, buying items and much more!"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#EXE_NAME}"; Description: "{cm:LaunchProgram,{#StringChange(NAME, '&', '&&')}}"; Flags: nowait postinstall skipifsilent unchecked
+Filename: "{app}\{#EXE_NAME}"; Description: "{cm:LaunchProgram,{#StringChange(NAME, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
