@@ -1012,83 +1012,86 @@ namespace CSAuto
         }
         private async Task AutoAcceptMatchAsync()
         {
-            IntPtr _handle = DXGIcapture.GetCapture();
-            if (_handle == IntPtr.Zero)
+            if (inLobby == true && DXGIcapture.Enabled)
             {
-                DXGIcapture.DeInit();
-                Log.WriteLine("Deinit DXGI Capture");
-                DXGIcapture.Init();
-                Log.WriteLine("Init DXGI Capture");
-            }
-            using (Bitmap bitmap = Image.FromHbitmap(_handle))
-            {
-                //    using (Graphics g = Graphics.FromImage(bitmap))
-                //    {
-                //        g.CopyFromScreen(new Point(
-                //            csResolution.X / 2,
-                //            0),
-                //            Point.Empty,
-                //            new System.Drawing.Size(1, csResolution.Y));
-                //    }
-                if (Properties.Settings.Default.saveDebugFrames)
+                IntPtr _handle = DXGIcapture.GetCapture();
+                if (_handle == IntPtr.Zero)
                 {
-                    try
+                    DXGIcapture.DeInit();
+                    Log.WriteLine("Deinit DXGI Capture");
+                    DXGIcapture.Init();
+                    Log.WriteLine("Init DXGI Capture");
+                }
+                using (Bitmap bitmap = Image.FromHbitmap(_handle))
+                {
+                    //    using (Graphics g = Graphics.FromImage(bitmap))
+                    //    {
+                    //        g.CopyFromScreen(new Point(
+                    //            csResolution.X / 2,
+                    //            0),
+                    //            Point.Empty,
+                    //            new System.Drawing.Size(1, csResolution.Y));
+                    //    }
+                    if (Properties.Settings.Default.saveDebugFrames)
                     {
-                        Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
-                        bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                        try
+                        {
+                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
+                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                        }
+                        catch { }
                     }
-                    catch { }
-                }
-                if(debugWind != null)
-                {
-                    debugWind.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
-                    Point pixelPos = new Point(csResolution.X / 2, (int)(csResolution.Y / (1050f / 473f)) + 1);
-                    Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
-                    debugWind.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}"; 
-                }
-                bool found = false;
-                int count = 0;
-                for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
-                {
-                    Color pixelColor = bitmap.GetPixel(csResolution.X/2, y);
-                    if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                    if (debugWind != null)
                     {
-                        
-                        if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
+                        debugWind.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
+                        Point pixelPos = new Point(csResolution.X / 2, (int)(csResolution.Y / (1050f / 473f)) + 1);
+                        Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
+                        debugWind.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}";
+                    }
+                    bool found = false;
+                    int count = 0;
+                    for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
+                    {
+                        Color pixelColor = bitmap.GetPixel(csResolution.X / 2, y);
+                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                        {
+
+                            if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                          * just in case the program finds the 0:20 timer tick
                                          * didnt happen for a while but can happen still
                                          * happend while trying to create a while loop to search for button
                                          */
-                        {
-                            var clickpoint = new Point(
-                                csResolution.X / 2,
-                                y);
-                            int X = clickpoint.X;
-                            int Y = clickpoint.Y;
-                            Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
-                            if (Properties.Settings.Default.acceptedNotification)
-                                SendMessageToServer($"<ACP>{AppLanguage.Language["server_acceptmatch"]}");
-                            LeftMouseClick(X, Y);
-                            found = true;
-                            if (CheckIfAccepted(bitmap, Y))
                             {
-                                acceptedGame = true;
-                                if (acceptButtonTimer.IsEnabled)
-                                    acceptButtonTimer.Stop();
-                                if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
-                                    Telegram.SendPhoto(bitmap,
-                                        Properties.Settings.Default.telegramChatId,
-                                        APIKeys.APIKeys.TelegramBotToken,
-                                        $"{csResolution.X}X{csResolution.Y}\n" +
-                                        $"({X},{Y})\n" +
-                                        $"{DateTime.Now}");
-                                acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                                var clickpoint = new Point(
+                                    csResolution.X / 2,
+                                    y);
+                                int X = clickpoint.X;
+                                int Y = clickpoint.Y;
+                                Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
+                                if (Properties.Settings.Default.acceptedNotification)
+                                    SendMessageToServer($"<ACP>{AppLanguage.Language["server_acceptmatch"]}");
+                                LeftMouseClick(X, Y);
+                                found = true;
+                                if (CheckIfAccepted(bitmap, Y))
+                                {
+                                    acceptedGame = true;
+                                    if (acceptButtonTimer.IsEnabled)
+                                        acceptButtonTimer.Stop();
+                                    if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
+                                        Telegram.SendPhoto(bitmap,
+                                            Properties.Settings.Default.telegramChatId,
+                                            APIKeys.APIKeys.TelegramBotToken,
+                                            $"{csResolution.X}X{csResolution.Y}\n" +
+                                            $"({X},{Y})\n" +
+                                            $"{DateTime.Now}");
+                                    acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                                }
                             }
+                            count++;
                         }
-                        count++;
                     }
+                    NativeMethods.DeleteObject(_handle);
                 }
-                NativeMethods.DeleteObject(_handle);
             }
             //}
         }
