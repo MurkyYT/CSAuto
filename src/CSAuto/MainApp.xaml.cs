@@ -78,11 +78,13 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.5a";
+        public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string ONLINE_BRANCH_NAME = "master";
-        const string GAME_PROCCES_NAME = "cs2";
+        //const string GAME_PROCCES_NAME = "cs2";
+        const string GAME_WINDOW_NAME = "Counter-Strike 2";
+        const string GAME_CLASS_NAME = "SDL_app";
         const string GAMESTATE_PORT = "11523";
         const string NETCON_PORT = "21823";
         const string TIMEOUT = "5.0";
@@ -504,6 +506,7 @@ namespace CSAuto
 
         private void InitializeContextMenu()
         {
+            exitcm.Closed += Exitcm_Closed;
             MenuItem exit = new MenuItem
             {
                 Header = AppLanguage.Language["menu_exit"]
@@ -745,57 +748,78 @@ namespace CSAuto
         {
             try
             {
-                Process[] prcs = new Process[0];
+                //Process[] prcs = new Process[0];
                 if (csProcess == null)
-                    prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
-                if (csProcess == null && prcs.Length > 0)
                 {
-                    csProcess = prcs[0];
-                    csRunning = true;
-                    csProcess.Exited += CsProcess_Exited;
-                    csProcess.EnableRaisingEvents = true;
-                    if (!GameStateListener.ServerRunning)
+                    //prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
+                    NativeMethods.GetProccesByWindowName(out Process prc, GAME_WINDOW_NAME, GAME_CLASS_NAME);
+                    csProcess = prc;
+                    if(csProcess != null)
                     {
-                        Log.WriteLine("Starting GSI Server");
-                        GameStateListener.StartGSIServer();
-                    }
-                    if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
-                    {
-                        steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
-                        steamAPIServer.Start();
-                    }
-                    NativeMethods.OptimizeMemory();
-                }
-                else if (!csRunning)
-                {
-                    if (RPCClient.IsInitialized)
-                    {
-                        RPCClient.Deinitialize();
-                        Log.WriteLine("DiscordRpc.Shutdown();");
-                    }
-                    if (GameState.Timestamp != 0)
-                    {
-                        GameState.UpdateJson(null);
-                    }
-                    if (GameStateListener.ServerRunning)
-                    {
-                        Log.WriteLine("Stopping GSI Server");
-                        GameStateListener.StopGSIServer();
-                        //NetConCloseConnection();
-                        SendMessageToServer("<CLS>", onlyServer: true);
+                        csRunning = true;
+                        csProcess.Exited += CsProcess_Exited;
+                        csProcess.EnableRaisingEvents = true;
+                        if (!GameStateListener.ServerRunning)
+                        {
+                            Log.WriteLine("Starting GSI Server");
+                            GameStateListener.StartGSIServer();
+                        }
+                        if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
+                        {
+                            steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
+                            steamAPIServer.Start();
+                        }
                         NativeMethods.OptimizeMemory();
                     }
-                    if (steamAPIServer != null)
-                    {
-                        steamAPIServer.Kill();
-                        steamAPIServer = null;
-                    }
-                    if (DXGIcapture.Enabled)
-                    {
-                        DXGIcapture.DeInit();
-                        Log.WriteLine("Deinit DXGI Capture");
-                    }
                 }
+                //if (csProcess == null && prcs.Length > 0)
+                //{
+                //    //csProcess = prcs[0];
+                //    //csRunning = true;
+                //    //csProcess.Exited += CsProcess_Exited;
+                //    //csProcess.EnableRaisingEvents = true;
+                //    //if (!GameStateListener.ServerRunning)
+                //    //{
+                //    //    Log.WriteLine("Starting GSI Server");
+                //    //    GameStateListener.StartGSIServer();
+                //    //}
+                //    //if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
+                //    //{
+                //    //    steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
+                //    //    steamAPIServer.Start();
+                //    //}
+                //    //NativeMethods.OptimizeMemory();
+                //}
+                //else if (!csRunning)
+                //{
+                //    if (RPCClient.IsInitialized)
+                //    {
+                //        RPCClient.Deinitialize();
+                //        Log.WriteLine("DiscordRpc.Shutdown();");
+                //    }
+                //    if (GameState.Timestamp != 0)
+                //    {
+                //        GameState.UpdateJson(null);
+                //    }
+                //    if (GameStateListener.ServerRunning)
+                //    {
+                //        Log.WriteLine("Stopping GSI Server");
+                //        GameStateListener.StopGSIServer();
+                //        //NetConCloseConnection();
+                //        SendMessageToServer("<CLS>", onlyServer: true);
+                //        NativeMethods.OptimizeMemory();
+                //    }
+                //    if (steamAPIServer != null)
+                //    {
+                //        steamAPIServer.Kill();
+                //        steamAPIServer = null;
+                //    }
+                //    if (DXGIcapture.Enabled)
+                //    {
+                //        DXGIcapture.DeInit();
+                //        Log.WriteLine("Deinit DXGI Capture");
+                //    }
+                //}
                 csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
                 if (csActive)
                 {
@@ -862,6 +886,33 @@ namespace CSAuto
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{AppLanguage.Language["server_gamecrash"]}");
             csProcess = null;
+            if (RPCClient.IsInitialized)
+            {
+                RPCClient.Deinitialize();
+                Log.WriteLine("DiscordRpc.Shutdown();");
+            }
+            if (GameState.Timestamp != 0)
+            {
+                GameState.UpdateJson(null);
+            }
+            if (GameStateListener.ServerRunning)
+            {
+                Log.WriteLine("Stopping GSI Server");
+                GameStateListener.StopGSIServer();
+                //NetConCloseConnection();
+                SendMessageToServer("<CLS>", onlyServer: true);
+            }
+            if (steamAPIServer != null)
+            {
+                steamAPIServer.Kill();
+                steamAPIServer = null;
+            }
+            if (DXGIcapture.Enabled)
+            {
+                DXGIcapture.DeInit();
+                Log.WriteLine("Deinit DXGI Capture");
+            }
+            NativeMethods.OptimizeMemory();
         }
 
         private void AutoBuyArmor()
@@ -1127,6 +1178,12 @@ namespace CSAuto
             exitcm.IsOpen = true;
             Activate();
         }
+
+        private void Exitcm_Closed(object sender, RoutedEventArgs e)
+        {
+            NativeMethods.OptimizeMemory();
+        }
+
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();

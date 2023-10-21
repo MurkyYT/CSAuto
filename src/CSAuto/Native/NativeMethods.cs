@@ -14,12 +14,25 @@ namespace CSAuto
 {
     public static class NativeMethods
     {
+        public static bool GetProccesByWindowName(out Process proc,string windowName = null,string className = null)
+        {
+            IntPtr hwnd = FindWindow(className, windowName);
+            proc = null;
+            if (hwnd == IntPtr.Zero)
+                return false;
+            GetWindowThreadProcessId(hwnd, out uint pid);
+            proc = Process.GetProcessById((int)pid);
+            return true;
+        }
         public static void OptimizeMemory()
         {
             IntPtr pHandle = GetCurrentProcess();
             //SetProcessWorkingSetSize(pHandle, min, max);
             EmptyWorkingSet(pHandle);
         }
+        // For Windows Mobile, replace user32.dll with coredll.dll
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
         [DllImport("psapi")]
         public static extern bool EmptyWorkingSet(IntPtr hProcess);
         [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
