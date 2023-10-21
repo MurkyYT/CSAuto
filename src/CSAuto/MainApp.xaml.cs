@@ -82,7 +82,7 @@ namespace CSAuto
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
         const string DEBUG_REVISION = "1";
         const string ONLINE_BRANCH_NAME = "master";
-        //const string GAME_PROCCES_NAME = "cs2";
+        const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
         const string GAMESTATE_PORT = "11523";
@@ -752,8 +752,7 @@ namespace CSAuto
                 if (csProcess == null)
                 {
                     //prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
-                    NativeMethods.GetProccesByWindowName(out Process prc, GAME_WINDOW_NAME, GAME_CLASS_NAME);
-                    csProcess = prc;
+                    csProcess = NativeMethods.GetProccesByWindowName(GAME_PROCCES_NAME,GAME_WINDOW_NAME, GAME_CLASS_NAME); ;
                     if(csProcess != null)
                     {
                         csRunning = true;

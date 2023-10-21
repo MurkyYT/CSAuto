@@ -14,15 +14,16 @@ namespace CSAuto
 {
     public static class NativeMethods
     {
-        public static bool GetProccesByWindowName(out Process proc,string windowName = null,string className = null)
+        public static Process GetProccesByWindowName(string processName,string windowName,string className = null)
         {
             IntPtr hwnd = FindWindow(className, windowName);
-            proc = null;
             if (hwnd == IntPtr.Zero)
-                return false;
+                return null;
             GetWindowThreadProcessId(hwnd, out uint pid);
-            proc = Process.GetProcessById((int)pid);
-            return true;
+            Process res = Process.GetProcessById((int)pid);
+            if (res.ProcessName == processName)
+                return res;
+            return null;
         }
         public static void OptimizeMemory()
         {
