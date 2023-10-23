@@ -108,13 +108,13 @@ namespace CSAuto
                     Type type = pi.PropertyType;
                     switch (type.ToString())
                     {
-                        case "CSAuto.Player":
+                        case "Murky.Utils.CSGO.Player":
                             ParsePlayerGSI(gs, pi);
                             break;
-                        case "CSAuto.Match":
+                        case "Murky.Utils.CSGO.Match":
                             ParseMatchGSI(gs, pi);
                             break;
-                        case "CSAuto.Round":
+                        case "Murky.Utils.CSGO.Round":
                             ParseRoundGSI(gs, pi);
                             break;
                     }
@@ -167,7 +167,7 @@ namespace CSAuto
                 Type type = pi2.PropertyType;
                 switch (type.ToString())
                 {
-                    case "CSAuto.Weapon[]":
+                    case "Murky.Utils.CSGO.Weapon[]":
                         ParseWeaponsGSI(player);
                         break;
                 }
