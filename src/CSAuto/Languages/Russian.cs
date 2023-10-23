@@ -122,7 +122,11 @@ namespace CSAuto.Languages
             ["menu_sendacceptbutton"] = "Отправить снимок в telegram при принятии",
             ["error_loadchangelog"] = "Не удалось загрузить список изменений, пожалуйста, проверьте ваше подключение к Интернету",
             ["title_warning"] = "Предупреждение",
-            ["error_createfiles"] = "Невозможно создавать файлы, журналы и отладочные материалы не будут сохранены"
+            ["error_createfiles"] = "Невозможно создавать файлы, журналы и отладочные материалы не будут сохранены",
+            ["discord_name"] = "{Name} - Текущее имя игрока",
+            ["discord_kills"] = "{Kills} - Количество убийств текущего игрока",
+            ["discord_deaths"] = "{Deaths} - Количество смертей  текущего игрока",
+            ["discord_mvps"] = "{MVPS} - Количество MVP текущего игрока",
         };
         public static string Get(string category)
         {

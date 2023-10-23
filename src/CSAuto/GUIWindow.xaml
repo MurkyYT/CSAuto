@@ -226,6 +226,10 @@
                             <TextBlock Text="discord_tscore"/>
                             <TextBlock Text="discord_ctscore"/>
                             <TextBlock Text="discord_steamid"/>
+                            <TextBlock Text="discord_name"/>
+                            <TextBlock Text="discord_kills"/>
+                            <TextBlock Text="discord_deaths"/>
+                            <TextBlock Text="discord_mvps"/>
                         </StackPanel>
                     </StackPanel>
                     <TextBlock Text="discord_result" HorizontalAlignment="Center"/>

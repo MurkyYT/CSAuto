@@ -99,12 +99,16 @@ namespace Murky.Utils.CSGO
             {
                 Player = new Player()
                 {
+                    Name = GetPlayerName(),
                     CurrentActivity = GetActivity(),
                     SteamID = GetSteamID(),
                     Team = GetTeam(),
                     Health = GetHealth(),
                     Armor = GetArmor(),
                     Money = GetMoney(),
+                    Kills = GetPlayerKills(),
+                    Deaths = GetPlayerDeaths(),
+                    MVPS = GetPlayerMVPS(),
                     HasHelmet = GetHelmetState(),
                     HasDefuseKit = HasDefuseKit()
                 };
@@ -112,6 +116,39 @@ namespace Murky.Utils.CSGO
                 IsDead = Player.SteamID != MySteamID;
             }
             IsSpectating = CheckIfSpectator();
+        }
+
+        private int GetPlayerMVPS()
+        {
+            string[] split = _JSON.Split(new string[] { "\"mvps\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            return int.Parse(split[1].Split(',')[0]);
+        }
+
+        private int GetPlayerDeaths()
+        {
+            string[] split = _JSON.Split(new string[] { "\"deaths\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            return int.Parse(split[1].Split(',')[0]);
+        }
+
+        private int GetPlayerKills()
+        {
+            string[] split = _JSON.Split(new string[] { "\"kills\": " }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return -1;
+            return int.Parse(split[1].Split(',')[0]);
+        }
+
+        private string GetPlayerName()
+        {
+            string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] split = splitStr.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None);
+            if (split.Length < 2)
+                return null;
+            return split[1].Split('"')[0];
         }
 
         private bool HasPlayer()
@@ -442,9 +479,13 @@ namespace Murky.Utils.CSGO
         public int Health { get; internal set; }
         public int Armor { get; internal set; }
         public int Money { get; internal set; }
+        public int Kills { get; internal set; }
+        public int Deaths { get; internal set; }
+        public int MVPS { get; internal set; }
         public bool HasHelmet { get; internal set; }
         public bool HasDefuseKit { get; internal set; }
         public string SteamID { get; internal set; }
+        public string Name { get; internal set; }
         public void Dispose()
         {
             ActiveWeapon.Dispose();

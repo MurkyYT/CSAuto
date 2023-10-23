@@ -122,7 +122,11 @@ namespace CSAuto.Languages
             ["menu_sendacceptbutton"] = "Send capture to telegram on accept",
             ["error_loadchangelog"] = "Couldn't load the changelog, please check your internet connection",
             ["title_warning"] = "Warning",
-            ["error_createfiles"] = "Can't create files, logs and debug stuff wont be saved"
+            ["error_createfiles"] = "Can't create files, logs and debug stuff wont be saved",
+            ["discord_name"] = "{Name} - Current player name",
+            ["discord_kills"] = "{Kills} - Current player kills",
+            ["discord_deaths"] = "{Deaths} - Current player deaths",
+            ["discord_mvps"] = "{MVPS} - Current player mvps",
         };
         public static string Get(string category)
         {

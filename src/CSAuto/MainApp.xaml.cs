@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -477,7 +477,11 @@ namespace CSAuto
                     .Replace("{EnemyTeam}", gameState.Player.Team == Team.CT ? Team.T.ToString() : Team.CT.ToString())
                     .Replace("{TScore}", gameState.Match.TScore.ToString())
                     .Replace("{CTScore}", gameState.Match.CTScore.ToString())
-                    .Replace("{SteamID}", gameState.MySteamID);
+                    .Replace("{SteamID}", gameState.MySteamID)
+                    .Replace("{Name}", gameState.Player.Name)
+                    .Replace("{Kills}", gameState.Player.Kills.ToString())
+                    .Replace("{Deaths}",gameState.Player.Deaths.ToString())
+                    .Replace("{MVPS}", gameState.Player.MVPS.ToString());
             }
             return original;
         }
@@ -646,7 +650,7 @@ namespace CSAuto
                 {
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = RPCClient.CurrentPresence.Details,
+                        Details = FormatString(Properties.Settings.Default.inGameDetails, GameState),
                         State = FormatString(Properties.Settings.Default.inGameState, GameState),
                         Party = new Party(),
                         Assets = new Assets()
