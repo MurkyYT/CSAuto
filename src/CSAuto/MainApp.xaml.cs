@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -193,6 +193,7 @@ namespace CSAuto
                 CSGOFriendCode.Encode("76561198341800115");
                 CSGOMap.LoadMapIcons();
                 InitializeDiscordRPC();
+                RPCClient.Deinitialize();
                 CheckForDuplicates();
                 GameStateListener = new GameStateListener(ref GameState, GAMESTATE_PORT);
                 GameStateListener.OnReceive += GameStateListener_OnReceive;
