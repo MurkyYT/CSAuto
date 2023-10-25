@@ -35,7 +35,6 @@ namespace CSAuto
 {
     public class StreamString
     {
-
         private Stream ioStream;
         private UnicodeEncoding streamEncoding;
 
