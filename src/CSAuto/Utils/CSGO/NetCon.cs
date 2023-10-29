@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Threading;
@@ -22,11 +23,14 @@ namespace Murky.Utils.CSGO
                 _port = port;
                 _client = new TcpClient();
                 _client.Connect(_ip, _port);
+                if (!_client.IsConnected)
+                    throw new WebException("Couldn't connect to the netcon");
                 _client.DataReceived += OnDataReceived;
                 Log.WriteLine($"[NetCon] : Successfully connected to netCon");
             }
             catch (Exception ex)
             {
+                _client.Dispose();
                 Log.WriteLine($"[NetCon] : Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}");
             }
         }

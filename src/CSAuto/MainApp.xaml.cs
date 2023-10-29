@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -127,7 +127,7 @@ namespace CSAuto
         Point csResolution = new Point();
         GameState GameState = new GameState(null);
         GameStateListener GameStateListener;
-        //NetCon netCon = null;
+        NetCon netCon = null;
         int frame = 0;
         bool csRunning = false;
         bool inGame = false;
@@ -326,8 +326,8 @@ namespace CSAuto
                         CURRENT_MAP_ICON = CSGOMap.MapIcons[GameState.Match.Map];
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = FormatString(Properties.Settings.Default.inGameDetails, GameState),
-                        State = FormatString(Properties.Settings.Default.inGameState, GameState),
+                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, GameState), 128),
+                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, GameState), 128),
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
@@ -359,8 +359,8 @@ namespace CSAuto
                     Log.WriteLine($"Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = FormatString(Properties.Settings.Default.lobbyDetails, GameState),
-                        State = IN_LOBBY_STATE,
+                        Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, GameState), 128),
+                        State = LimitLength(IN_LOBBY_STATE,128),
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
@@ -485,6 +485,11 @@ namespace CSAuto
                     .Replace("{MVPS}", gameState.Player.MVPS.ToString());
             }
             return original;
+        }
+
+        private string LimitLength(string v,int length)
+        {
+            return v?.Substring(0, Math.Min(v.Length, length));
         }
 
         private void MakeSureStartupIsOn()
@@ -651,8 +656,8 @@ namespace CSAuto
                 {
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = FormatString(Properties.Settings.Default.inGameDetails, GameState),
-                        State = FormatString(Properties.Settings.Default.inGameState, GameState),
+                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, GameState),128),
+                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, GameState),128),
                         Party = new Party(),
                         Assets = new Assets()
                         {
