@@ -454,13 +454,13 @@ namespace CSAuto
                 return;
             if (lobby) 
             {
-                DiscordRpcDetails.Text = main.FormatString(Properties.Settings.Default.lobbyDetails, GameState);
-                DiscordRpcState.Text = main.FormatString(Properties.Settings.Default.lobbyState, GameState);
+                DiscordRpcDetails.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.lobbyDetails, GameState),128);
+                DiscordRpcState.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.lobbyState, GameState),128);
             }
             else
             {
-                DiscordRpcDetails.Text = main.FormatString(Properties.Settings.Default.inGameDetails, GameState);
-                DiscordRpcState.Text = main.FormatString(Properties.Settings.Default.inGameState, GameState);
+                DiscordRpcDetails.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.inGameDetails, GameState),128);
+                DiscordRpcState.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.inGameState, GameState),128);
             }
         }
 

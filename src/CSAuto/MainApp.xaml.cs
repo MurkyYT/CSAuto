@@ -487,7 +487,7 @@ namespace CSAuto
             return original;
         }
 
-        private string LimitLength(string v,int length)
+        public string LimitLength(string v,int length)
         {
             return v?.Substring(0, Math.Min(v.Length, length));
         }
