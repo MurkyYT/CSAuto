@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -58,6 +59,9 @@ namespace CSAuto
                 if (arg == "--restart")
                     Restarted = true;
             }
+            //Clear error log
+            if(File.Exists("Error_Log.txt"))
+                File.Delete("Error_Log.txt");
             new MainApp().Show();
         }
         private void LoadSettings()

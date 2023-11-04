@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "4";
+        const string DEBUG_REVISION = "5";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -127,7 +127,8 @@ namespace CSAuto
         Point csResolution = new Point();
         GameState GameState = new GameState(null);
         GameStateListener GameStateListener;
-        NetCon netCon = null;
+        //Only workshop tools have netconport? (probably because vconsole2.exe uses it)
+        //NetCon netCon = null;
         int frame = 0;
         bool csRunning = false;
         bool inGame = false;
@@ -143,6 +144,7 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
+        // Looks like the old way is working now?
         DXGICapture DXGIcapture = new DXGICapture();
         #endregion
         #region ToImageSource
@@ -191,7 +193,7 @@ namespace CSAuto
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 CSGOFriendCode.Encode("76561198341800115");
-                CSGOMap.LoadMapIcons();
+                new Thread(() => { CSGOMap.LoadMapIcons(); }).Start();
                 InitializeDiscordRPC();
                 RPCClient.Deinitialize();
                 CheckForDuplicates();
@@ -207,7 +209,12 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{AppLanguage.Language["error_startup1"]}\n'{ex.Message}'\n{AppLanguage.Language["error_startup2"]}", AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(AppLanguage.Language["error_startup"],ex.Message), AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
+                Log.Error(
+                    $"{ex.Message}\n" +
+                    $"StackTrace:{ex.StackTrace}\n" +
+                    $"Source: {ex.Source}\n" +
+                    $"Inner Exception: {ex.InnerException}");
                 Application.Current.Shutdown();
             }
         }
@@ -344,7 +351,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer($"<MAP>{AppLanguage.Language["server_loadedmap"]} {GameState.Match.Map} {AppLanguage.Language["server_mode"]} {GameState.Match.Mode}");
+                        SendMessageToServer(string.Format($"<MAP>{AppLanguage.Language["server_loadedmap"]}",GameState.Match.Map,GameState.Match.Mode));
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -378,7 +385,7 @@ namespace CSAuto
                     });
                     if (Properties.Settings.Default.lobbyNotification)
                         SendMessageToServer($"<LBY>{AppLanguage.Language["server_loadedlobby"]}");
-                    if (!DXGIcapture.Enabled)
+                    if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
                         DXGIcapture.Init();
                         Log.WriteLine("Init DXGI Capture");
@@ -614,7 +621,7 @@ namespace CSAuto
                     else
                     {
                         Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
-                        MessageBoxResult result = MessageBox.Show($"{AppLanguage.Language["msgbox_newerversion1"]} ({latestVersion}) {AppLanguage.Language["msgbox_newerversion2"]}", AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show(string.Format(AppLanguage.Language["msgbox_newerversion"],latestVersion), AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("Downloading latest version");
@@ -916,11 +923,11 @@ namespace CSAuto
                 steamAPIServer.Kill();
                 steamAPIServer = null;
             }
-            if (DXGIcapture.Enabled)
-            {
-                DXGIcapture.DeInit();
-                Log.WriteLine("Deinit DXGI Capture");
-            }
+            //if (DXGIcapture.Enabled)
+            //{
+            //    DXGIcapture.DeInit();
+            //    Log.WriteLine("Deinit DXGI Capture");
+            //}
             NativeMethods.OptimizeMemory();
         }
 
@@ -1072,26 +1079,40 @@ namespace CSAuto
         }
         private async Task AutoAcceptMatchAsync()
         {
-            if (inLobby == true && DXGIcapture.Enabled)
+            if(!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
             {
-                IntPtr _handle = DXGIcapture.GetCapture();
-                if (_handle == IntPtr.Zero)
+                DXGIcapture.Init();
+                Log.WriteLine("Init DXGI Capture");
+            }
+            if ((DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay && inLobby == true) ||
+                (inLobby == true && Properties.Settings.Default.oldScreenCaptureWay))
+            {
+                IntPtr _handle = IntPtr.Zero;
+                if (!Properties.Settings.Default.oldScreenCaptureWay)
                 {
-                    DXGIcapture.DeInit();
-                    Log.WriteLine("Deinit DXGI Capture");
-                    DXGIcapture.Init();
-                    Log.WriteLine("Init DXGI Capture");
+                    _handle = DXGIcapture.GetCapture();
+                    if (_handle == IntPtr.Zero)
+                    {
+                        DXGIcapture.DeInit();
+                        Log.WriteLine("Deinit DXGI Capture");
+                        DXGIcapture.Init();
+                        Log.WriteLine("Init DXGI Capture");
+                    }
                 }
-                using (Bitmap bitmap = Image.FromHbitmap(_handle))
+                using (Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ? 
+                    new Bitmap(csResolution.X, csResolution.Y) : Image.FromHbitmap(_handle))
                 {
-                    //    using (Graphics g = Graphics.FromImage(bitmap))
-                    //    {
-                    //        g.CopyFromScreen(new Point(
-                    //            csResolution.X / 2,
-                    //            0),
-                    //            Point.Empty,
-                    //            new System.Drawing.Size(1, csResolution.Y));
-                    //    }
+                    if (Properties.Settings.Default.oldScreenCaptureWay)
+                    {
+                        using (Graphics g = Graphics.FromImage(bitmap))
+                        {
+                            g.CopyFromScreen(new Point(
+                                0,
+                                0),
+                                Point.Empty,
+                                new System.Drawing.Size(csResolution.X, csResolution.Y));
+                        }
+                    }
                     if (Properties.Settings.Default.saveDebugFrames)
                     {
                         try
@@ -1150,10 +1171,15 @@ namespace CSAuto
                             count++;
                         }
                     }
-                    NativeMethods.DeleteObject(_handle);
+                    if(!Properties.Settings.Default.oldScreenCaptureWay)
+                     NativeMethods.DeleteObject(_handle);
                 }
             }
-            //}
+            else if (inLobby == true && !DXGIcapture.Enabled && Properties.Settings.Default.oldScreenCaptureWay)
+            {
+                DXGIcapture.Init();
+                Log.WriteLine("Init DXGI Capture");
+            }
         }
         private bool CheckIfAccepted(Bitmap bitmap, int maxY)
         {
@@ -1248,21 +1274,20 @@ namespace CSAuto
                 InitializeTimer();
                 Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
+#if !DEBUG
+                if (Properties.Settings.Default.autoCheckForUpdates)
+                    AutoCheckUpdate();
+#endif
+                if (Properties.Settings.Default.connectedNotification && !current.Restarted)
+                    SendMessageToServer(string.Format($"<CNT>{AppLanguage.Language["server_computeronline"]}", Environment.MachineName, GetLocalIPAddress(),FULL_VER));
+                if (current.StartWidnow)
+                    Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException(AppLanguage.Language["exception_csgonotfound"]/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
                 //InitializeGameStateLaunchOption();
                 //InitializeNetConLaunchOption();
-#if !DEBUG
-                if (Properties.Settings.Default.autoCheckForUpdates)
-                    AutoCheckUpdate();
-#endif
-                if (Properties.Settings.Default.connectedNotification && !current.Restarted)
-                    SendMessageToServer($"<CNT>{AppLanguage.Language["server_computer"]} {Environment.MachineName} ({GetLocalIPAddress()}) {AppLanguage.Language["server_online"]} (CSAuto v{FULL_VER})");
-                if (current.StartWidnow)
-                    Notifyicon_LeftMouseButtonDoubleClick(null, null);
-                NativeMethods.OptimizeMemory();
             }
             catch (Exception ex)
             {
@@ -1276,8 +1301,9 @@ namespace CSAuto
                     //discordMenu.IsEnabled = false;
                     hadError = true;
                 }
-                MessageBox.Show($"{ex.Message}", AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{ex.Message}", AppLanguage.Language["title_warning"], MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+            NativeMethods.OptimizeMemory();
         }
 
         private void InitializeNetConLaunchOption()
@@ -1390,7 +1416,7 @@ namespace CSAuto
                     else
                     {
                         Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
-                        MessageBoxResult result = MessageBox.Show($"{AppLanguage.Language["msgbox_newerversion1"]} ({latestVersion}) {AppLanguage.Language["msgbox_newerversion2"]}", AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show(string.Format(AppLanguage.Language["msgbox_newerversion"], latestVersion), AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("Downloading latest version");

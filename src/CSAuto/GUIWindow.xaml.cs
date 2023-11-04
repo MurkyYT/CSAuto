@@ -88,8 +88,8 @@ namespace CSAuto
             Properties.Settings.Default.Save();
             main.current.MoveSettings();
             GameState.Dispose();
-            NativeMethods.OptimizeMemory();
             Close();
+            NativeMethods.OptimizeMemory();
         }
         void ParseGameState(string JSON)
         {
@@ -264,10 +264,7 @@ namespace CSAuto
                     DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
                     string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                     if (File.Exists(finalPath))
-                    {
                         debugBox.Text = File.ReadAllText(finalPath);
-                        debugBox.ScrollToEnd();
-                    }
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;
                     LoadLanguages(this);
@@ -422,8 +419,13 @@ namespace CSAuto
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
             {
 #if !DEBUG
-                new Thread(() =>{LoadChangelog();}).Start();
+                new Thread(() => { LoadChangelog(); }).Start();
 #endif
+            }
+            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
+            {
+                debugBox.ScrollToEnd();
+                OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
             }
         }
 

@@ -48,7 +48,7 @@ namespace Murky.Utils
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                 try
                 {
-                    System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
+                    StreamWriter file = new StreamWriter(path + fileName, true);
                     file.Write(lines);
                     file.Close();
 
@@ -73,7 +73,7 @@ namespace Murky.Utils
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                 try
                 {
-                    System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
+                    StreamWriter file = new StreamWriter(path + fileName, true);
                     file.WriteLine(lines);
                     file.Close();
 
@@ -84,7 +84,6 @@ namespace Murky.Utils
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Error(object lines, string level = "Info", string caller = "")
         {
-            StackFrame frm = new StackFrame(1, false);
             lines = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} CRITICAL - {lines}";
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
@@ -92,7 +91,7 @@ namespace Murky.Utils
             string fileName = "Error_Log.txt";
             try
             {
-                System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, false);
+                StreamWriter file = new StreamWriter(fileName, true);
                 file.WriteLine(lines);
                 file.Close();
             }
