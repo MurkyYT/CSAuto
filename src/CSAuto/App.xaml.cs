@@ -62,8 +62,56 @@ namespace CSAuto
             //Clear error log
             if(File.Exists("Error_Log.txt"))
                 File.Delete("Error_Log.txt");
+            LoadLanguage();
             new MainApp().Show();
         }
+
+        private void LoadLanguage()
+        {
+            string[] englishFile = File.ReadAllLines($"resource\\language_english.txt");
+            string[] file = null;
+            try { file = File.ReadAllLines($"resource\\{Settings.Default.currentLanguage}.txt"); }
+            catch (FileNotFoundException) 
+            { 
+                MessageBox.Show($"Couldn't load {Settings.Default.currentLanguage}, the app will fallback to english", 
+                    "Warning", 
+                    MessageBoxButton.OK, 
+                    MessageBoxImage.Warning); 
+            }
+            if(file!= null)
+            {
+                for (int i = 0; i < file.Length; i++)
+                {
+                    string[] values = GetValues(file[i]);
+                    if(values != null && values[0] != null && values[1] != null)
+                        Languages._Language.translation.Add(values[0], values[1]);
+                }
+            }
+            for (int i = 0; i < englishFile.Length; i++)
+            {
+                string[] values = GetValues(englishFile[i]);
+                if (values != null && values[0] != null && values[1] != null)
+                    Languages._Language.englishTranslation.Add(values[0], values[1]);
+            }
+        }
+
+        private string[] GetValues(string v)
+        {
+            string[] res = new string[2];
+            int count = 0;
+            string oneRes = "";
+            foreach(char ch in v)
+            {
+                if (ch == '"') { count++; continue; }
+                if ((count == 2 && res[0] == null) || (count == 4 && res[1] == null)) 
+                {
+                    res[count / 2 - 1] = oneRes; oneRes = ""; 
+                }
+                if(count%2 == 1) oneRes += ch;
+            }
+            return res;
+        }
+
         private void LoadSettings()
         {
             foreach (SettingsProperty currentProperty in Settings.Default.Properties)

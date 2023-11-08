@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "5";
+        const string DEBUG_REVISION = "6";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -923,11 +923,11 @@ namespace CSAuto
                 steamAPIServer.Kill();
                 steamAPIServer = null;
             }
-            //if (DXGIcapture.Enabled)
-            //{
-            //    DXGIcapture.DeInit();
-            //    Log.WriteLine("Deinit DXGI Capture");
-            //}
+            if (DXGIcapture.Enabled)
+            {
+                DXGIcapture.DeInit();
+                Log.WriteLine("Deinit DXGI Capture");
+            }
             NativeMethods.OptimizeMemory();
         }
 

@@ -1,8 +1,4 @@
-﻿using CSAuto.Languages;
-using Murky.Utils;
-using System;
-using System.Reflection;
-
+﻿
 namespace CSAuto
 {
     public class AppLanguage
@@ -13,15 +9,8 @@ namespace CSAuto
             "language_english",
             "language_russian"
         };
-        AppLanguage()
-        {
-            languageType = Type.GetType("CSAuto.Languages." + char.ToUpper(Properties.Settings.Default.currentLanguage[9]) + Properties.Settings.Default.currentLanguage.Substring(10));
-            getMethod = languageType.GetMethod("Get");
-        }
         //singleton instance
         private static AppLanguage _instance = new AppLanguage();
-        private Type languageType;
-        private MethodInfo getMethod;
         public string this[string category]
         {
             get { return _instance.Get(category); }
@@ -30,7 +19,7 @@ namespace CSAuto
         {
             if (category == null)
                 return "";
-            return (string)getMethod.Invoke(null, new object[] { category });
+            return Languages._Language.Get(category);
         }
     }
 }

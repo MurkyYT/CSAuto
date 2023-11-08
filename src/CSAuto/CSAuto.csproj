@@ -113,6 +113,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resource\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,8 +125,7 @@
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
-    <Compile Include="Languages\English.cs" />
-    <Compile Include="Languages\Russian.cs" />
+    <Compile Include="Languages\_Language.cs" />
     <Compile Include="Utils\DXGICapture.cs" />
     <Compile Include="Utils\Markdown.Xaml\Markdown.cs" />
     <Compile Include="Utils\Markdown.Xaml\TextToFlowDocumentConverter.cs" />
