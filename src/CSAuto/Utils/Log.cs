@@ -34,6 +34,8 @@ namespace Murky.Utils
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Write(object lines, string level = "Info", string caller = "")
         {
+            if (lines == null)
+                lines = "";
             StackFrame frm = new StackFrame(1, false);
             lines = lineTemplate.Replace("%date%", DateTime.Now.ToString("HH:mm:ss")).
                 Replace("%level%", level).
@@ -59,6 +61,8 @@ namespace Murky.Utils
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void WriteLine(object lines,string level = "Info",string caller = "")
         {
+            if (lines == null)
+                lines = "";
             StackFrame frm = new StackFrame(1, false);
             lines = lineTemplate.Replace("%date%", DateTime.Now.ToString("HH:mm:ss")).
                 Replace("%level%", level).
@@ -84,6 +88,8 @@ namespace Murky.Utils
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Error(object lines, string level = "Info", string caller = "")
         {
+            if (lines == null)
+                lines = "";
             lines = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} CRITICAL - {lines}";
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
@@ -91,7 +97,7 @@ namespace Murky.Utils
             string fileName = "Error_Log.txt";
             try
             {
-                StreamWriter file = new StreamWriter(fileName, true);
+                StreamWriter file = new StreamWriter(strWorkPath + "\\"+fileName, true);
                 file.WriteLine(lines);
                 file.Close();
             }

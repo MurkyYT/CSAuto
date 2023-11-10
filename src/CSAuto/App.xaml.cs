@@ -9,6 +9,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -23,6 +24,7 @@ namespace CSAuto
         public bool StartWidnow;
         public bool AlwaysMaximized;
         public bool Restarted;
+        public string Args = "";
         public RegistrySettings settings = new RegistrySettings();
 
         private bool crashed;
@@ -30,6 +32,7 @@ namespace CSAuto
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            string languageName = null;
             if (settings["FirstRun"] == null || settings["FirstRun"])
             {
                 Log.WriteLine("First run of new settings, moving old ones to registry");
@@ -52,28 +55,32 @@ namespace CSAuto
                 ThemeManager.Current.ChangeTheme(this, $"Light.{Settings.Default.currentColor}");
             foreach (string arg in e.Args)
             {
+                if(arg != "--show" && arg != "--restart")
+                    Args += arg + " ";
                 if (arg == "--maximized")
                     AlwaysMaximized = true;
                 if (arg == "--show")
                     StartWidnow = true;
                 if (arg == "--restart")
                     Restarted = true;
+                if (arg == "--language" && e.Args.ToList().IndexOf(arg) + 1 < e.Args.Length)
+                    languageName = e.Args[e.Args.ToList().IndexOf(arg) + 1];
             }
             //Clear error log
             if(File.Exists("Error_Log.txt"))
                 File.Delete("Error_Log.txt");
-            LoadLanguage();
+            LoadLanguage(languageName);
             new MainApp().Show();
         }
 
-        private void LoadLanguage()
+        private void LoadLanguage(string languageName)
         {
-            string[] englishFile = File.ReadAllLines($"resource\\language_english.txt");
+            string[] englishFile = File.ReadAllLines($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\language_english.txt");
             string[] file = null;
-            try { file = File.ReadAllLines($"resource\\{Settings.Default.currentLanguage}.txt"); }
+            try { file = File.ReadAllLines($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\{(languageName == null ? Settings.Default.currentLanguage : "language_"+languageName)}.txt"); }
             catch (FileNotFoundException) 
             { 
-                MessageBox.Show($"Couldn't load {Settings.Default.currentLanguage}, the app will fallback to english", 
+                MessageBox.Show($"Couldn't load {(languageName == null ? Settings.Default.currentLanguage : "language_" + languageName)}, the app will fallback to english", 
                     "Warning", 
                     MessageBoxButton.OK, 
                     MessageBoxImage.Warning); 

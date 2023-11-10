@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "6";
+        const string DEBUG_REVISION = "7";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -507,8 +507,8 @@ namespace CSAuto
             {
                 if (Properties.Settings.Default.runAtStartUp)
                 {
-                    rk.SetValue(appname , executablePath + (current.AlwaysMaximized ? " --maximized" : ""));
-                    Log.WriteLine(executablePath + (current.AlwaysMaximized ? " --maximized" : ""));
+                    rk.SetValue(appname , executablePath + " "+current.Args);
+                    Log.WriteLine(executablePath + " " +current.Args);
                 }
                 else
                 {
