@@ -69,7 +69,7 @@ namespace CSAuto
             //Clear error log
             if(File.Exists("Error_Log.txt"))
                 File.Delete("Error_Log.txt");
-            LoadLanguage(languageName);
+            LoadLanguage(languageName?.ToLower());
             new MainApp().Show();
         }
 

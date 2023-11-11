@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "7";
+        const string DEBUG_REVISION = "8";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -90,7 +90,7 @@ namespace CSAuto
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
         const string THROTTLE = "0.0";
-        const string HEARTBEAT = "10.0";
+        const string HEARTBEAT = "5.0";
         const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "," + DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + GAMESTATE_PORT +
             "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
@@ -766,11 +766,11 @@ namespace CSAuto
             try
             {
                 //Process[] prcs = new Process[0];
-                if (csProcess == null)
+                if (!csRunning)
                 {
                     //prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
-                    csProcess = NativeMethods.GetProccesByWindowName(GAME_PROCCES_NAME,GAME_WINDOW_NAME, GAME_CLASS_NAME); ;
-                    if(csProcess != null)
+                    csProcess = NativeMethods.GetProccesByWindowName(GAME_PROCCES_NAME,GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME);
+                    if(suc)
                     {
                         csRunning = true;
                         csProcess.Exited += CsProcess_Exited;
@@ -786,6 +786,18 @@ namespace CSAuto
                             steamAPIServer.Start();
                         }
                         NativeMethods.OptimizeMemory();
+                    }
+                }
+                else
+                {
+                    csActive = NativeMethods.IsForegroundProcess((uint)csProcess.Id);
+                    if (csActive)
+                    {
+                        csResolution = new Point(
+                                (int)SystemParameters.PrimaryScreenWidth,
+                                (int)SystemParameters.PrimaryScreenHeight);
+                        if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
+                            _ = AutoAcceptMatchAsync();
                     }
                 }
                 //if (csProcess == null && prcs.Length > 0)
@@ -836,21 +848,12 @@ namespace CSAuto
                 //        Log.WriteLine("Deinit DXGI Capture");
                 //    }
                 //}
-                csActive = NativeMethods.IsForegroundProcess(csProcess != null ? (uint)csProcess.Id : 0);
-                if (csActive)
-                {
-                    csResolution = new Point(
-                            (int)SystemParameters.PrimaryScreenWidth,
-                            (int)SystemParameters.PrimaryScreenHeight);
-                    if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
-                        _ = AutoAcceptMatchAsync();
-                }
             }
             catch (Exception ex)
             {
                 Log.WriteLine($"{ex}");
             }
-            GC.Collect();
+            //GC.Collect();
         }
 
         private string GetLobbyInfoFromSteamworks()
