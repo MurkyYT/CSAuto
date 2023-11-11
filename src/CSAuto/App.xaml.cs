@@ -90,7 +90,7 @@ namespace CSAuto
                 for (int i = 0; i < file.Length; i++)
                 {
                     string[] values = GetValues(file[i]);
-                    if(values != null && values[0] != null && values[1] != null)
+                    if (values != null && values[0] != null && values[1] != null)
                         Languages._Language.translation.Add(values[0], values[1]);
                 }
             }
@@ -109,12 +109,14 @@ namespace CSAuto
             string oneRes = "";
             foreach(char ch in v)
             {
-                if (ch == '"') { count++; continue; }
-                if ((count == 2 && res[0] == null) || (count == 4 && res[1] == null)) 
+                if (ch == '"') { count++; }
+                if (count > 0 && 
+                    count % 2 == 0 && 
+                    res[count / 2 - 1] == null) 
                 {
-                    res[count / 2 - 1] = oneRes; oneRes = ""; 
+                    res[count / 2 - 1] = oneRes; oneRes = "";
                 }
-                if(count%2 == 1) oneRes += ch;
+                if(count%2 == 1 && ch != '"') oneRes += ch;
             }
             return res;
         }
