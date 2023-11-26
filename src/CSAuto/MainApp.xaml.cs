@@ -78,9 +78,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.6";
+        public const string VER = "2.0.7";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string ONLINE_BRANCH_NAME = "master";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -528,12 +528,17 @@ namespace CSAuto
             {
                 Header = AppLanguage.Language["menu_exit"]
             };
+            MenuItem launchCS = new MenuItem
+            {
+                Header = AppLanguage.Language["menu_launchcs"]
+            };
             MenuItem options = new MenuItem
             {
                 Header = AppLanguage.Language["menu_options"]
             };
             exit.Click += Exit_Click;
             options.Click += Options_Click;
+            launchCS.Click += LaucnhCs_Click;
             MenuItem about = new MenuItem
             {
                 Header = $"{typeof(MainApp).Namespace} - {FULL_VER}",
@@ -550,11 +555,17 @@ namespace CSAuto
             checkForUpdates.Click += CheckForUpdates_Click;
             exitcm.Items.Add(about);
             exitcm.Items.Add(new Separator());
+            exitcm.Items.Add(launchCS);
             exitcm.Items.Add(options);
             exitcm.Items.Add(new Separator());
             exitcm.Items.Add(checkForUpdates);
             exitcm.Items.Add(exit);
             exitcm.StaysOpen = false;
+        }
+
+        private void LaucnhCs_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("steam://rungameid/730");
         }
 
         private void Options_Click(object sender, RoutedEventArgs e)
@@ -783,7 +794,11 @@ namespace CSAuto
                         if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
                         {
                             steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
-                            steamAPIServer.Start();
+                            if (!steamAPIServer.Start())
+                            {
+                                Log.WriteLine("Couldn't launch 'steamapi.exe'");
+                                steamAPIServer = null;
+                            }
                         }
                         NativeMethods.OptimizeMemory();
                     }
@@ -900,8 +915,9 @@ namespace CSAuto
         private void CsProcess_Exited(object sender, EventArgs e)
         {
             csRunning = false;
-            Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
             inLobby = false;
+            Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
+
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{AppLanguage.Language["server_gamecrash"]}");
             csProcess = null;
@@ -923,7 +939,11 @@ namespace CSAuto
             }
             if (steamAPIServer != null)
             {
-                steamAPIServer.Kill();
+                try
+                {
+                    steamAPIServer.Kill();
+                }
+                catch { }
                 steamAPIServer = null;
             }
             if (DXGIcapture.Enabled)

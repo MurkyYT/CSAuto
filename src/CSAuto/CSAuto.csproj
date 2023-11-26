@@ -101,6 +101,7 @@
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\_Language.cs" />
+    <Compile Include="Utils\CSGO\ConDump.cs" />
     <Compile Include="Utils\DXGICapture.cs" />
     <Compile Include="Utils\Markdown.Xaml\Markdown.cs" />
     <Compile Include="Utils\Markdown.Xaml\TextToFlowDocumentConverter.cs" />

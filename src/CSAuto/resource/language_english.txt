@@ -115,3 +115,4 @@
 ["discord_deaths"] = "{Deaths} - Current player deaths",
 ["discord_mvps"] = "{MVPS} - Current player mvps",
 ["ckbox_oldscreencapture"] = "Use old screen capture technique",
+"menu_launchcs" "Launch CS2"

@@ -115,3 +115,4 @@
 ["discord_deaths"] = "{Deaths} - Количество смертей  текущего игрока",
 ["discord_mvps"] = "{MVPS} - Количество MVP текущего игрока",
 ["ckbox_oldscreencapture"] = "Использовать старую технику захвата экрана",
+"menu_launchcs" "Запустить CS2"
