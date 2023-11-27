@@ -14,7 +14,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/язык-англ-red.svg?style=for-the-badge"></a>
-  <a href="https://github.com/MurkyYT/CSAuto/blob/master/README_ru.md"><img src="https://img.shields.io/badge/язык-рус-yellow.svg?style=for-the-badge"></a>
+  <a href="https://github.com/MurkyYT/CSAuto/blob/master/Docs/README_ru.md"><img src="https://img.shields.io/badge/язык-рус-yellow.svg?style=for-the-badge"></a>
 </p>
 
 <h1 align="center">Описание</h1>
@@ -33,13 +33,13 @@
 * Отправлять время, оставшееся до взрыва бомбы, на мобильный телефон! (не точно на данный момент)
 
 **Фотографии приложения:**  
-![right-click-menu](Images/menuimage.png)
-![gui-menu](Images/appimage.png)
+![right-click-menu](../Images/menuimage.png)
+![gui-menu](../Images/appimage.png)
 ## Установка
 <p align="center">    
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip"><img src="Images/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="Images/android-badge.png" height ="80" alt="Get On Android"></a>
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="Images/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip"><img src="../Images/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="../Images/android-badge.png" height ="80" alt="Get On Android"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="../Images/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
 </p>
 
 ## FAQ
