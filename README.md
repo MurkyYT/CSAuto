@@ -14,7 +14,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/lang-en-red.svg?style=for-the-badge"></a>
-  <a href="https://github.com/MurkyYT/CSAuto/blob/master/README_ru.md"><img src="https://img.shields.io/badge/lang-ru-yellow.svg?style=for-the-badge"></a>
+  <a href="https://github.com/MurkyYT/CSAuto/blob/master/Docs/README_ru.md"><img src="https://img.shields.io/badge/lang-ru-yellow.svg?style=for-the-badge"></a>
 </p>
 
 <h1 align="center">Description</h1>
