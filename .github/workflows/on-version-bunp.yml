@@ -1,0 +1,29 @@
+name: Update Changelog & Version
+
+on:
+  release:
+  # Don't use published, cuz VirusTotal edit release anyway
+    types: [edited, deleted]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.12
+      with:
+        python-version: "3.12"
+    - name: Generate FullChangelog.MD
+      run: python scripts/full_changelog.py
+    - name: Generate version
+      run: python scripts/version.py
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: 'Docs Data'
+        message: 'Update FullChangelog and Version'
+        default_author: github_actions
+        push: true
