@@ -7,7 +7,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "Data")
 VERSION_FILEPATH = os.path.join(DATA_DIR, "version")
 MAIN_APP_FILEPATH = os.path.join(ROOT_DIR, "src", "CSAuto", "MainApp.xaml.cs")
-REGEX_PATTERN = re.compile(r"^\s+public const string VER = \"(?P<version>.+)\";$")
+REGEX_PATTERN = re.compile(r"\s+public const string VER = \"(?P<version>.+)\";")
 
 
 def get_version() -> t.Optional[str]:
@@ -15,7 +15,7 @@ def get_version() -> t.Optional[str]:
         match = REGEX_PATTERN.findall(f.read())
     if not match:
         return
-    return match.group("version")
+    return match[0]
 
 
 def main():
