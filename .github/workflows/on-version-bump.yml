@@ -2,8 +2,9 @@ name: Update Changelog & Version
 
 on:
   release:
-  # Don't use published, cuz VirusTotal edit release anyway
-    types: [edited, deleted]
+   types:
+      - edited
+      - deleted
   workflow_dispatch: {}
 
 jobs:
