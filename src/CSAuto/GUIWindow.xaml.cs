@@ -288,7 +288,7 @@ namespace CSAuto
 
         private void LoadChangelog()
         {
-            string[] res = Github.GetReleasesDescription("murkyyt", "csauto");
+            string res = Github.GetWebInfo($"https://raw.githubusercontent.com/MurkyYT/CSAuto/{MainApp.ONLINE_BRANCH_NAME}/Docs/FullChangelog.MD");
             if (res.Length == 0)
             {
                 Dispatcher.InvokeAsync(() =>
@@ -297,16 +297,9 @@ namespace CSAuto
                 });
                 return;
             }
-            string finalRes = "";
-            foreach (var item in res)
-            {
-                finalRes += item.Split(new string[] { "🛡" }, StringSplitOptions.None)[0] + "\r\n";
-            }
-
-
             Dispatcher.InvokeAsync(() => {
                 TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
-                FlowDocument document = (FlowDocument)converter.Convert(finalRes, null, null, null);
+                FlowDocument document = (FlowDocument)converter.Convert(res, null, null, null);
                 ChangeLogFlowDocument.Document = document;
                 });
         }
@@ -418,9 +411,7 @@ namespace CSAuto
                 LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
             {
-#if !DEBUG
                 new Thread(() => { LoadChangelog(); }).Start();
-#endif
             }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {

@@ -116,3 +116,4 @@
 ["discord_mvps"] = "{MVPS} - Количество MVP текущего игрока",
 ["ckbox_oldscreencapture"] = "Использовать старую технику захвата экрана",
 "menu_launchcs" "Запустить CS2"
+"menu_autoclosecsauto" "Закрыть CSAuto при выходе из CS2"

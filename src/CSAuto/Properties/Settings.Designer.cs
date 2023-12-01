@@ -452,5 +452,17 @@ namespace CSAuto.Properties {
                 this["oldScreenCaptureWay"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoCloseCSAuto {
+            get {
+                return ((bool)(this["autoCloseCSAuto"]));
+            }
+            set {
+                this["autoCloseCSAuto"] = value;
+            }
+        }
     }
 }

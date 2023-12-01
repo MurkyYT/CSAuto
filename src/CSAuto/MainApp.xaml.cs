@@ -80,8 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.7";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
-        const string ONLINE_BRANCH_NAME = "master";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -108,6 +107,7 @@ namespace CSAuto
         public List<DiscordRPCButton> discordRPCButtons;
         public readonly Color[] BUTTON_COLORS;
         public readonly App current = (Application.Current as App);
+        public const string ONLINE_BRANCH_NAME = "master";
         #endregion
         #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
@@ -622,7 +622,7 @@ namespace CSAuto
                 try
                 {
                     Log.WriteLine("Checking for updates");
-                    string latestVersion = Github.GetLatestStringTag("murkyyt", "csauto");
+                    string latestVersion = Github.GetWebInfo($"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/version");
                     Log.WriteLine($"The latest version is {latestVersion}");
                     if (latestVersion == VER)
                     {
@@ -917,7 +917,6 @@ namespace CSAuto
             csRunning = false;
             inLobby = false;
             Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
-
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{AppLanguage.Language["server_gamecrash"]}");
             csProcess = null;
@@ -951,6 +950,8 @@ namespace CSAuto
                 DXGIcapture.DeInit();
                 Log.WriteLine("Deinit DXGI Capture");
             }
+            if (Properties.Settings.Default.autoCloseCSAuto)
+                Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
             NativeMethods.OptimizeMemory();
         }
 
@@ -1261,6 +1262,8 @@ namespace CSAuto
                 RPCClient.Dispose();
 
             DiscordRPCButtonSerializer.Serialize(discordRPCButtons);
+            Properties.Settings.Default.Save();
+            current.MoveSettings();
 
             //Application.Current.Shutdown();
         }
@@ -1427,7 +1430,7 @@ namespace CSAuto
                 try
                 {
                     Log.WriteLine("Auto Checking for Updates");
-                    string latestVersion = Github.GetLatestStringTag("murkyyt", "csauto");
+                    string latestVersion = Github.GetWebInfo($"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/version");
                     //string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
                     //string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
                     //string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
