@@ -8,11 +8,12 @@
 - Saving to error log when there is an exception on startup so it would be easier to investigate the issue
 - Updated startup error message 
 - Looks like the old way of capturing screen works, the app defaults to the new one, if the new one does not work try to enable the old way
-- Languages are now saved in .txt files in a folder named "resource"
+- Languages are now saved in .txt files in a folder named `resource`
 - New launch option
   - `--language [language name]` - Change app language to the one specifed, doesn't change the settings
 - Optimized memory and cpu usage even more
 - Auto buy now should work better after half change and on match start
+- 
 
 ### Version 2.0.5a changelog
 - I feel very ashamed but screen capture still crashes so **now** hopefully it will not as the DXGICapture lib doesn't use pointers anymore and i did some security precautions in the app itself, if it will still crash i will probably port the native c++ code to c#, unfortunately
