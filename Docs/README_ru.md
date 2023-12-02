@@ -1,4 +1,7 @@
-<h1 align="center">CSAuto</h1>
+<div align="center">
+    <a href="https://csauto.vercel.app"><img width=150 src=https://raw.githubusercontent.com/MurkyYT/CSAuto/master/src/CSAuto/Icons/main.ico alt="logo"/></a>
+   <h1>CSAuto</h1>
+</div>
 <!--
 <p align="center">
    <a href="https://www.virustotal.com/gui/file/f68ba52499a4158e2d72876c33ea8ee5ade3ab496b2da4bbcb109383a29a61ed?nocache=1"><img src="https://github.com/MurkyYT/CSAuto/blob/dev/virustotal_icon.png?raw=true" height="40" alt="VirusTotal scan"></a>
