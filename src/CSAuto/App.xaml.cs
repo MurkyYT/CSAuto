@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using CSAuto.Properties;
+using Microsoft.Win32;
 using Murky.Utils;
 using System;
 using System.Collections;
@@ -36,6 +37,10 @@ namespace CSAuto
             if (settings["FirstRun"] == null || settings["FirstRun"])
             {
                 Log.WriteLine("First run of new settings, moving old ones to registry");
+                if (WindowsDarkMode())
+                    Settings.Default.darkTheme = true;
+                else
+                    Settings.Default.darkTheme = false;
                 MoveSettings();
                 List<DiscordRPCButton> discordRPCButtonsOld = DiscordRPCButtonSerializer.DeserializeOld();
                 DiscordRPCButtonSerializer.Serialize(discordRPCButtonsOld);
@@ -71,6 +76,26 @@ namespace CSAuto
                 File.Delete("Error_Log.txt");
             LoadLanguage(languageName?.ToLower());
             new MainApp().Show();
+        }
+
+        private bool WindowsDarkMode()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                {
+                    object registryValueObject = key?.GetValue("AppsUseLightTheme");
+                    if (registryValueObject == null)
+                    {
+                        return false;
+                    }
+
+                    int registryValue = (int)registryValueObject;
+
+                    return registryValue > 0 ? false : true;
+                }
+            }
+            catch { return false; }
         }
 
         private void LoadLanguage(string languageName)

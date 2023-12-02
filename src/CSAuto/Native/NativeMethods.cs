@@ -14,7 +14,7 @@ namespace CSAuto
 {
     public static class NativeMethods
     {
-        public static Process GetProccesByWindowName(string processName,string windowName,out bool success, string className = null)
+        public static Process GetProccesByWindowName(string windowName,out bool success, string className = null, string processName = null)
         {
             success = false;
             IntPtr hwnd = FindWindow(className, windowName);
@@ -22,6 +22,11 @@ namespace CSAuto
                 return null;
             GetWindowThreadProcessId(hwnd, out uint pid);
             Process res = Process.GetProcessById((int)pid);
+            if (processName == null)
+            {
+                success = true;
+                return res;
+            }
             if (res.ProcessName == processName)
             {
                 success = true;

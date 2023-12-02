@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.7";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -776,11 +776,9 @@ namespace CSAuto
         {
             try
             {
-                //Process[] prcs = new Process[0];
                 if (!csRunning)
                 {
-                    //prcs = Process.GetProcessesByName(GAME_PROCCES_NAME);
-                    csProcess = NativeMethods.GetProccesByWindowName(GAME_PROCCES_NAME,GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME);
+                    csProcess = NativeMethods.GetProccesByWindowName(GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME, GAME_PROCCES_NAME);
                     if(suc)
                     {
                         csRunning = true;
@@ -814,61 +812,12 @@ namespace CSAuto
                         if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
                             _ = AutoAcceptMatchAsync();
                     }
-                }
-                //if (csProcess == null && prcs.Length > 0)
-                //{
-                //    //csProcess = prcs[0];
-                //    //csRunning = true;
-                //    //csProcess.Exited += CsProcess_Exited;
-                //    //csProcess.EnableRaisingEvents = true;
-                //    //if (!GameStateListener.ServerRunning)
-                //    //{
-                //    //    Log.WriteLine("Starting GSI Server");
-                //    //    GameStateListener.StartGSIServer();
-                //    //}
-                //    //if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
-                //    //{
-                //    //    steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
-                //    //    steamAPIServer.Start();
-                //    //}
-                //    //NativeMethods.OptimizeMemory();
-                //}
-                //else if (!csRunning)
-                //{
-                //    if (RPCClient.IsInitialized)
-                //    {
-                //        RPCClient.Deinitialize();
-                //        Log.WriteLine("DiscordRpc.Shutdown();");
-                //    }
-                //    if (GameState.Timestamp != 0)
-                //    {
-                //        GameState.UpdateJson(null);
-                //    }
-                //    if (GameStateListener.ServerRunning)
-                //    {
-                //        Log.WriteLine("Stopping GSI Server");
-                //        GameStateListener.StopGSIServer();
-                //        //NetConCloseConnection();
-                //        SendMessageToServer("<CLS>", onlyServer: true);
-                //        NativeMethods.OptimizeMemory();
-                //    }
-                //    if (steamAPIServer != null)
-                //    {
-                //        steamAPIServer.Kill();
-                //        steamAPIServer = null;
-                //    }
-                //    if (DXGIcapture.Enabled)
-                //    {
-                //        DXGIcapture.DeInit();
-                //        Log.WriteLine("Deinit DXGI Capture");
-                //    }
-                //}
+                } 
             }
             catch (Exception ex)
             {
                 Log.WriteLine($"{ex}");
             }
-            //GC.Collect();
         }
 
         private string GetLobbyInfoFromSteamworks()
@@ -1431,9 +1380,6 @@ namespace CSAuto
                 {
                     Log.WriteLine("Auto Checking for Updates");
                     string latestVersion = Github.GetWebInfo($"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/version");
-                    //string latestVersion = (await Github.GetLatestTagAsyncBySemver("MurkyYT", "CSAuto")).Name;
-                    //string webInfo = await client.DownloadStringTaskAsync("https://api.github.com/repos/MurkyYT/CSAuto/tags");
-                    //string latestVersion = webInfo.Split(new string[] { "{\"name\":\"" }, StringSplitOptions.None)[1].Split('"')[0].Trim();
                     Log.WriteLine($"The latest version is {latestVersion}");
                     if (latestVersion == VER)
                     {
