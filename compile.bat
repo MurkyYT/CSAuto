@@ -1,4 +1,4 @@
-@echo off
+@echo OFF
 rm -r Output
 @echo Cleaning csauto project...
 msbuild src\CSAuto\CSAuto.csproj /t:Clean /property:Configuration=Release > nul

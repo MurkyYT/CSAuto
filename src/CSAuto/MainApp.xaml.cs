@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.7";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -580,7 +580,7 @@ namespace CSAuto
                 Directory.CreateDirectory(Log.WorkPath + "\\DEBUG\\DISCORD");
             }
             catch { }
-            RPCClient = new DiscordRpcClient(APIKeys.APIKeys.DiscordAppID);
+            RPCClient = new DiscordRpcClient(APIKeys.DISCORD_BOT_ID);
             //Subscribe to events
 #if DEBUG
             File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt").Close();
@@ -756,7 +756,7 @@ namespace CSAuto
             new Thread(() =>
             {
                 if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
-                    Telegram.SendMessage(message.Substring(5), Properties.Settings.Default.telegramChatId, APIKeys.APIKeys.TelegramBotToken);
+                    Telegram.SendMessage(message.Substring(5), Properties.Settings.Default.telegramChatId, APIKeys.TELEGRAM_BOT_TOKEN);
                 if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
                     return;
                 try // Try connecting and send the message bytes  
@@ -1134,7 +1134,7 @@ namespace CSAuto
                                     if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
                                         Telegram.SendPhoto(bitmap,
                                             Properties.Settings.Default.telegramChatId,
-                                            APIKeys.APIKeys.TelegramBotToken,
+                                            APIKeys.TELEGRAM_BOT_TOKEN,
                                             $"{csResolution.X}X{csResolution.Y}\n" +
                                             $"({X},{Y})\n" +
                                             $"{DateTime.Now}");

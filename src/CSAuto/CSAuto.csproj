@@ -97,6 +97,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="APIKeys.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>APIKeys.resx</DependentUpon>
+    </Compile>
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
@@ -168,6 +173,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="APIKeys.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>APIKeys.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -207,12 +216,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\APIKeys\APIKeys.csproj">
-      <Project>{7db4be0d-bb99-4ce7-aa57-b5b8777bd95c}</Project>
-      <Name>APIKeys</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="DiscordRichPresence">
       <Version>1.2.1.24</Version>
     </PackageReference>
@@ -231,7 +234,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>call $(SolutionDir)prebuild.bat $(SolutionDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>

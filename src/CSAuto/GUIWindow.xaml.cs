@@ -467,7 +467,7 @@ namespace CSAuto
 
         private void TelegramTestMessage_Click(object sender, RoutedEventArgs e)
         {
-            Telegram.SendMessage("Test Message!",Properties.Settings.Default.telegramChatId,APIKeys.APIKeys.TelegramBotToken);
+            Telegram.SendMessage("Test Message!",Properties.Settings.Default.telegramChatId,APIKeys.TELEGRAM_BOT_TOKEN);
         }
 
         private void RemoveDiscordButton_Click(object sender, RoutedEventArgs e)
