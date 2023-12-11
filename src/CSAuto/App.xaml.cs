@@ -9,8 +9,10 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -100,9 +102,9 @@ namespace CSAuto
 
         private void LoadLanguage(string languageName)
         {
-            string[] englishFile = File.ReadAllLines($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\language_english.txt");
+            string[] englishFile = ReadLanguageFile($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\language_english.pac");
             string[] file = null;
-            try { file = File.ReadAllLines($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\{(languageName == null ? Settings.Default.currentLanguage : "language_"+languageName)}.txt"); }
+            try { file = ReadLanguageFile($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\{(languageName == null ? Settings.Default.currentLanguage : "language_"+languageName)}.pac"); }
             catch (FileNotFoundException) 
             { 
                 MessageBox.Show($"Couldn't load {(languageName == null ? Settings.Default.currentLanguage : "language_" + languageName)}, the app will fallback to english", 
@@ -127,6 +129,36 @@ namespace CSAuto
             }
         }
 
+        private string[] ReadLanguageFile(string path)
+        {
+            string file = Unzip(File.ReadAllBytes(path));
+            return file.Split('\n');
+        }
+        void CopyTo(Stream src, Stream dest)
+        {
+            byte[] bytes = new byte[4096];
+
+            int cnt;
+
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                dest.Write(bytes, 0, cnt);
+            }
+        }
+        string Unzip(byte[] bytes)
+        {
+            using (var msi = new MemoryStream(bytes))
+            using (var mso = new MemoryStream())
+            {
+                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+                {
+                    //gs.CopyTo(mso);
+                    CopyTo(gs, mso);
+                }
+
+                return Encoding.UTF8.GetString(mso.ToArray());
+            }
+        }
         private string[] GetValues(string v)
         {
             string[] res = new string[2];

@@ -8,12 +8,12 @@ namespace Murky.Utils.CSGO
 {
     public static class ConDump
     {
-        public static event EventHandler SearchStarted;
-        public static event EventHandler OnChange;
+        //public static event EventHandler SearchStarted;
+        //public static event EventHandler OnChange;
         public static int Delay = 500;
         private static IEnumerable<string> oldFile = Enumerable.Empty<string>();
-        private static string path;
-        private static Thread workThread;
+        private static readonly string path;
+        private static readonly Thread workThread;
         static ConDump()
         {
             string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");

@@ -51,6 +51,9 @@ Generated\ Files/
 TestResult.xml
 nunit-*.xml
 
+#Language compress results
+*.pac
+
 # Build Results of an ATL Project
 [Dd]ebugPS/
 [Rr]eleasePS/

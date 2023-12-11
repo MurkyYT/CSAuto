@@ -88,9 +88,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resource\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <!-- <Content Include="resource\**"> -->
+    <!-- <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> -->
+    <!-- </Content> -->
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -234,6 +234,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>call $(SolutionDir)prebuild.bat $(SolutionDir)</PreBuildEvent>
+    <PreBuildEvent>call $(SolutionDir)prebuild.bat $(SolutionDir)
+call $(SolutionDir)stcmprs.exe $(OutDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>

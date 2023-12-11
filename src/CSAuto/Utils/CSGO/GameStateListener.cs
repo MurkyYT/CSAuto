@@ -11,9 +11,9 @@ namespace Murky.Utils.CSGO
 {
     public class GameStateListener
     {
-        private GameState _gameState;
+        private readonly GameState _gameState;
         private HttpListener _listener;
-        private string GAMESTATE_PORT = "";
+        private readonly string GAMESTATE_PORT = "";
         private bool _serverRunning = false;
         private readonly AutoResetEvent _waitForConnection = new AutoResetEvent(false);
         public bool ServerRunning { get { return _serverRunning; } }

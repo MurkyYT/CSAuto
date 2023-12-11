@@ -35,8 +35,8 @@ namespace CSAuto
 {
     public class StreamString
     {
-        private Stream ioStream;
-        private UnicodeEncoding streamEncoding;
+        private readonly Stream ioStream;
+        private readonly UnicodeEncoding streamEncoding;
 
         public StreamString(Stream ioStream)
         {
@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.7";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "4";
+        const string DEBUG_REVISION = "5";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -103,30 +103,32 @@ namespace CSAuto
         const int BOMB_TIMER_DELAY = 950;
         #endregion
         #region Publics
-        public GUIWindow debugWind = null;
+        public GUIWindow guiWindow = null;
         public List<DiscordRPCButton> discordRPCButtons;
         public readonly Color[] BUTTON_COLORS;
-        public readonly App current = (Application.Current as App);
+        public readonly App current = Application.Current as App;
         public const string ONLINE_BRANCH_NAME = "master";
         #endregion
         #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
-        readonly ContextMenu exitcm = new ContextMenu();
+        readonly ContextMenu exitCm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
+        readonly GameState gameState = new GameState(null);
+        readonly GameStateListener GameStateListener;
+        // Looks like the old way is working now?
+        readonly DXGICapture DXGIcapture = new DXGICapture();
         readonly Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
         readonly Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         #endregion
         #region Privates
         private DiscordRpcClient RPCClient;
         private string integrationPath = null;
-        private string IN_LOBBY_STATE = "Chilling in lobby";
-        private string CURRENT_MAP_ICON = null;
+        private string inLobbyState = "Chilling in lobby";
+        private string currentMapIcon = null;
         #endregion
         #region Members
         Point csResolution = new Point();
-        GameState GameState = new GameState(null);
-        GameStateListener GameStateListener;
         //Only workshop tools have netconport? (probably because vconsole2.exe uses it)
         //NetCon netCon = null;
         int frame = 0;
@@ -144,8 +146,6 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
-        // Looks like the old way is working now?
-        DXGICapture DXGIcapture = new DXGICapture();
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -197,7 +197,7 @@ namespace CSAuto
                 InitializeDiscordRPC();
                 RPCClient.Deinitialize();
                 CheckForDuplicates();
-                GameStateListener = new GameStateListener(ref GameState, GAMESTATE_PORT);
+                GameStateListener = new GameStateListener(ref gameState, GAMESTATE_PORT);
                 GameStateListener.OnReceive += GameStateListener_OnReceive;
                 InitializeContextMenu();
 #if !DEBUG
@@ -205,7 +205,7 @@ namespace CSAuto
 #endif
                 Top = -1000;
                 Left = -1000;
-                IN_LOBBY_STATE = FormatString(Properties.Settings.Default.lobbyState, GameState);
+                inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
             }
             catch (Exception ex)
             {
@@ -234,7 +234,7 @@ namespace CSAuto
             catch 
             {
                 Log.WriteLine("Couldn't load colors from web, trying to load latest loaded colors");
-                string path = DiscordRPCButtonSerializer.Path + "\\colors";
+                //string path = DiscordRPCButtonSerializer.Path + "\\colors";
                 if ((App.Current as App).settings["ButtonColors"] != null)
                 {
                     string data = (App.Current as App).settings["ButtonColors"];
@@ -284,13 +284,12 @@ namespace CSAuto
                     RPCClient.Deinitialize();
                     Log.WriteLine("DiscordRpc.Shutdown();");
                 }
-                Activity? activity = GameState.Player.CurrentActivity;
-                Phase? currentMatchState = GameState.Match.Phase;
-                Phase? currentRoundState = GameState.Round.Phase;
-                BombState? currentBombState = GameState.Round.Bombstate;
-                Weapon currentWeapon = GameState.Player.ActiveWeapon;
-                if (debugWind != null)
-                    debugWind.UpdateText(GameState.JSON);
+                Activity? activity = gameState.Player.CurrentActivity;
+                Phase? currentMatchState = gameState.Match.Phase;
+                Phase? currentRoundState = gameState.Round.Phase;
+                BombState? currentBombState = gameState.Round.Bombstate;
+                Weapon currentWeapon = gameState.Player.ActiveWeapon;
+                guiWindow?.UpdateText(gameState.JSON);
                 //if (lastActivity != activity)
                 //    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
                 //if (currentMatchState != matchState)
@@ -311,8 +310,7 @@ namespace CSAuto
                 }
                 if (bombState == BombState.Planted && currentBombState != BombState.Planted && Properties.Settings.Default.bombNotification)
                 {
-                    if (bombTimerThread != null)
-                        bombTimerThread.Abort();
+                    bombTimerThread?.Abort();
                     bombTimerThread = null;
                     switch (currentBombState)
                     {
@@ -325,49 +323,49 @@ namespace CSAuto
                     }
 
                 }
-                if (GameState.Match.Map != null && (inLobby == true || inLobby == null))
+                if (gameState.Match.Map != null && (inLobby == true || inLobby == null))
                 {
                     inLobby = false;
-                    Log.WriteLine($"Player loaded on map {GameState.Match.Map} in mode {GameState.Match.Mode}");
-                    if (CSGOMap.MapIcons.ContainsKey(GameState.Match.Map))
-                        CURRENT_MAP_ICON = CSGOMap.MapIcons[GameState.Match.Map];
+                    Log.WriteLine($"Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
+                    if (CSGOMap.MapIcons.ContainsKey(gameState.Match.Map))
+                        currentMapIcon = CSGOMap.MapIcons[gameState.Match.Map];
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, GameState), 128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, GameState), 128),
+                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
+                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
-                            LargeImageKey = CURRENT_MAP_ICON != null ? CURRENT_MAP_ICON : "cs2_icon",
-                            LargeImageText = GameState.Match.Map,
+                            LargeImageKey = currentMapIcon ?? "cs2_icon",
+                            LargeImageText = gameState.Match.Map,
                             SmallImageKey = null,
                             SmallImageText = null
                         },
                         Timestamps = new Timestamps()
                         {
-                            Start = UnixTimeStampToDateTime(GameState.Timestamp),
+                            Start = UnixTimeStampToDateTime(gameState.Timestamp),
                             End = null
                         },
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer(string.Format($"<MAP>{AppLanguage.Language["server_loadedmap"]}",GameState.Match.Map,GameState.Match.Mode));
+                        SendMessageToServer(string.Format($"<MAP>{AppLanguage.Language["server_loadedmap"]}",gameState.Match.Map,gameState.Match.Mode));
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
                         Log.WriteLine("Deinit DXGI Capture");
                     }
                 }
-                else if (GameState.Match.Map == null && (inLobby == false || inLobby == null))
+                else if (gameState.Match.Map == null && (inLobby == false || inLobby == null))
                 {
                     inLobby = true;
-                    CURRENT_MAP_ICON = null;
-                    IN_LOBBY_STATE = FormatString(Properties.Settings.Default.lobbyState, GameState);
+                    currentMapIcon = null;
+                    inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
                     Log.WriteLine($"Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, GameState), 128),
-                        State = LimitLength(IN_LOBBY_STATE,128),
+                        Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                        State = LimitLength(inLobbyState,128),
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
@@ -378,7 +376,7 @@ namespace CSAuto
                         },
                         Timestamps = new Timestamps()
                         {
-                            Start = UnixTimeStampToDateTime(GameState.Timestamp),
+                            Start = UnixTimeStampToDateTime(gameState.Timestamp),
                             End = null
                         },
                         Buttons = GetDiscordRPCButtons()
@@ -396,8 +394,8 @@ namespace CSAuto
                 roundState = currentRoundState;
                 weapon = currentWeapon;
                 bombState = currentBombState;
-                inGame = GameState.Match.Map != null;
-                if (csActive && !GameState.IsSpectating)
+                inGame = gameState.Match.Map != null;
+                if (csActive && !gameState.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
                     {
@@ -419,7 +417,7 @@ namespace CSAuto
                     }
                 }
                 UpdateDiscordRPC();
-                SendMessageToServer($"<GSI>{GameState.JSON}{inGame}", onlyServer: true);
+                SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
             }
             catch (Exception ex)
@@ -523,7 +521,7 @@ namespace CSAuto
 
         private void InitializeContextMenu()
         {
-            exitcm.Closed += Exitcm_Closed;
+            exitCm.Closed += Exitcm_Closed;
             MenuItem exit = new MenuItem
             {
                 Header = AppLanguage.Language["menu_exit"]
@@ -553,14 +551,14 @@ namespace CSAuto
                 Header = AppLanguage.Language["menu_checkforupdates"]
             };
             checkForUpdates.Click += CheckForUpdates_Click;
-            exitcm.Items.Add(about);
-            exitcm.Items.Add(new Separator());
-            exitcm.Items.Add(launchCS);
-            exitcm.Items.Add(options);
-            exitcm.Items.Add(new Separator());
-            exitcm.Items.Add(checkForUpdates);
-            exitcm.Items.Add(exit);
-            exitcm.StaysOpen = false;
+            exitCm.Items.Add(about);
+            exitCm.Items.Add(new Separator());
+            exitCm.Items.Add(launchCS);
+            exitCm.Items.Add(options);
+            exitCm.Items.Add(new Separator());
+            exitCm.Items.Add(checkForUpdates);
+            exitCm.Items.Add(exit);
+            exitCm.StaysOpen = false;
         }
 
         private void LaucnhCs_Click(object sender, RoutedEventArgs e)
@@ -606,7 +604,7 @@ namespace CSAuto
             res[0] = new DiscordRPC.Button() { Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto" };
             for (int i = 1; i < res.Length; i++)
             {
-                res[i] = new DiscordRPC.Button() { Label = discordRPCButtons[i - 1].Label, Url = FormatString(discordRPCButtons[i - 1].Url,GameState) };
+                res[i] = new DiscordRPC.Button() { Label = discordRPCButtons[i - 1].Label, Url = FormatString(discordRPCButtons[i - 1].Url,gameState) };
             }
             return res;
         }
@@ -652,7 +650,7 @@ namespace CSAuto
             DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
-            int diff = (int)(GameState.Timestamp - result);
+            int diff = (int)(gameState.Timestamp - result);
             SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombplanted"]} ({DateTime.Now})", onlyTelegram: true);
             bombTimerThread = new Thread(() =>
             {
@@ -674,15 +672,15 @@ namespace CSAuto
                 {
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, GameState),128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, GameState),128),
+                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState),128),
+                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState),128),
                         Party = new Party(),
                         Assets = new Assets()
                         {
-                            LargeImageKey = CURRENT_MAP_ICON != null ? CURRENT_MAP_ICON : "cs2_icon",
+                            LargeImageKey = currentMapIcon ?? "cs2_icon",
                             LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
-                            SmallImageKey = GameState.IsSpectating ? "gotv_icon" : GameState.IsDead ? "spectator" : GameState.Player.Team.ToString().ToLower(),
-                            SmallImageText = GameState.IsSpectating ? "Watching CSTV" : GameState.IsDead ? "Spectating" : GameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
+                            SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team.ToString().ToLower(),
+                            SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
                         },
                         Timestamps = new Timestamps()
                         {
@@ -733,19 +731,19 @@ namespace CSAuto
 
         private void AutoPauseResumeSpotify()
         {
-            if (GameState.Player.CurrentActivity == Activity.Playing)
+            if (gameState.Player.CurrentActivity == Activity.Playing)
             {
-                if (GameState.Player.Health > 0 && GameState.Player.SteamID == GameState.MySteamID)
+                if (gameState.Player.Health > 0 && gameState.Player.SteamID == gameState.MySteamID)
                 {
                     Spotify.Pause();
                 }
-                else if (GameState.Player.SteamID != GameState.MySteamID ||
-                    (GameState.Player.Health <= 0 && GameState.Player.SteamID == GameState.MySteamID))
+                else if (gameState.Player.SteamID != gameState.MySteamID ||
+                    (gameState.Player.Health <= 0 && gameState.Player.SteamID == gameState.MySteamID))
                 {
                     Spotify.Resume();
                 }
             }
-            else if (GameState.Player.CurrentActivity != Activity.Textinput)
+            else if (gameState.Player.CurrentActivity != Activity.Textinput)
             {
                 Spotify.Resume();
             }
@@ -854,7 +852,7 @@ namespace CSAuto
             string KEY = Properties.Settings.Default.steamAPIkey;
             if (KEY == "" || KEY == null)
                 return "0";
-            string apiURL = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={KEY}&steamids={GameState.MySteamID}&appids=730";
+            string apiURL = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={KEY}&steamids={gameState.MySteamID}&appids=730";
             string webInfo = Github.GetWebInfo(apiURL);
             string[] split = webInfo.Split(new string[] { "\"lobbysteamid\":\"" }, StringSplitOptions.None);
             if (split.Length < 2)
@@ -874,9 +872,9 @@ namespace CSAuto
                 RPCClient.Deinitialize();
                 Log.WriteLine("DiscordRpc.Shutdown();");
             }
-            if (GameState.Timestamp != 0)
+            if (gameState.Timestamp != 0)
             {
-                GameState.UpdateJson(null);
+                gameState.UpdateJson(null);
             }
             if (GameStateListener.ServerRunning)
             {
@@ -908,9 +906,9 @@ namespace CSAuto
         {
             if (!Properties.Settings.Default.autoBuyArmor || lastActivity == Activity.Menu)
                 return;
-            int armor = GameState.Player.Armor;
-            bool hasHelmet = GameState.Player.HasHelmet;
-            int money = GameState.Player.Money;
+            int armor = gameState.Player.Armor;
+            bool hasHelmet = gameState.Player.HasHelmet;
+            int money = gameState.Player.Money;
             if ((matchState == Phase.Live
                 && roundState == Phase.Freezetime)
                 &&
@@ -943,13 +941,13 @@ namespace CSAuto
         {
             if (!Properties.Settings.Default.autoBuyDefuseKit || lastActivity == Activity.Menu)
                 return;
-            bool hasDefuseKit = GameState.Player.HasDefuseKit;
-            int money = GameState.Player.Money;
+            bool hasDefuseKit = gameState.Player.HasDefuseKit;
+            int money = gameState.Player.Money;
             if (matchState == Phase.Live
                 && roundState == Phase.Freezetime
                 && money >= 400
                 && !hasDefuseKit
-                && GameState.Player.Team == Team.CT)
+                && gameState.Player.Team == Team.CT)
             {
                 //if (Properties.Settings.Default.oldAutoBuy)
                 //    DisableTextinput();
@@ -970,7 +968,7 @@ namespace CSAuto
         }
         private void DisableTextinput()
         {
-            Activity? activity = GameState.Player.CurrentActivity;
+            Activity? activity = gameState.Player.CurrentActivity;
             if (activity == Activity.Textinput)
             {
                 PressKey(Keyboard.DirectXKeyStrokes.DIK_ESCAPE);
@@ -1095,12 +1093,12 @@ namespace CSAuto
                         }
                         catch { }
                     }
-                    if (debugWind != null)
+                    if (guiWindow != null)
                     {
-                        debugWind.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
+                        guiWindow.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
                         Point pixelPos = new Point(csResolution.X / 2, (int)(csResolution.Y / (1050f / 473f)) + 1);
                         Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
-                        debugWind.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}";
+                        guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}";
                     }
                     bool found = false;
                     int count = 0;
@@ -1183,7 +1181,7 @@ namespace CSAuto
         }
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
-            exitcm.IsOpen = true;
+            exitCm.IsOpen = true;
             Activate();
         }
 
@@ -1198,17 +1196,14 @@ namespace CSAuto
         }
         private void Exited()
         {
-            if(notifyIcon != null)
-                notifyIcon.Close();
+            notifyIcon?.Close();
 
-            if (GameStateListener != null)
-                GameStateListener.StopGSIServer();
+            GameStateListener?.StopGSIServer();
             
             if (steamAPIServer != null && !steamAPIServer.HasExited)
                 steamAPIServer.Kill();
 
-            if(RPCClient != null)
-                RPCClient.Dispose();
+            RPCClient?.Dispose();
 
             DiscordRPCButtonSerializer.Serialize(discordRPCButtons);
             Properties.Settings.Default.Save();
@@ -1416,16 +1411,16 @@ namespace CSAuto
         internal void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             //open debug menu
-            if (debugWind == null)
+            if (guiWindow == null)
             {
-                debugWind = new GUIWindow();
-                Log.debugWind = debugWind;
-                debugWind.Show();
-                debugWind.Activate();
+                guiWindow = new GUIWindow();
+                Log.debugWind = guiWindow;
+                guiWindow.Show();
+                guiWindow.Activate();
             }
             else
             {
-                debugWind.Activate();
+                guiWindow.Activate();
             }
         }
     }

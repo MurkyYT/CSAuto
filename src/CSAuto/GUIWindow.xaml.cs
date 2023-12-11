@@ -83,7 +83,7 @@ namespace CSAuto
 
         private void GUIWindow_Closed(object sender, EventArgs e)
         {
-            main.debugWind = null;
+            main.guiWindow = null;
             Log.debugWind = null;
             Properties.Settings.Default.Save();
             main.current.MoveSettings();
@@ -234,7 +234,7 @@ namespace CSAuto
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
             string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + $" - {DateTime.Now.ToString("HH;mm;ss")}.txt";
+            string fileName = $"{DateTime.Now.Day}.{DateTime.Now.Month}.{DateTime.Now.Year} - {DateTime.Now:HH;mm;ss}.txt";
             string path = strWorkPath + "/DEBUG/GSI_OUTPUT/"+ fileName;
             if (outputBox.Text != "None")
             {
@@ -280,8 +280,10 @@ namespace CSAuto
             DiscordRPCButtonsListView.Items.Clear();
             foreach (DiscordRPCButton button in main.discordRPCButtons)
             {
-                ListViewItem item = new ListViewItem();
-                item.Content = button;
+                ListViewItem item = new ListViewItem
+                {
+                    Content = button
+                };
                 DiscordRPCButtonsListView.Items.Add(item);
             }
         }

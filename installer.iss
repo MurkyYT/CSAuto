@@ -5,13 +5,13 @@
 #define EXE_NAME "CSAuto.exe"
 #define InstallPath "{userappdata}"
 #define AppWebsite "https://csauto.netlify.app"
-
+#define APP_VERSION GetStringFileInfo("src\CSAuto\bin\release\CSAuto.exe",PRODUCT_VERSION)
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{F5E4D811-7A92-47F9-BEEC-B6751463D69B}
 AppName={#NAME}
-AppVersion={#VERSION_NAME}
+AppVersion={#APP_VERSION}
 AppPublisherURL={#AppWebsite}
 AppSupportURL={#AppWebsite}
 AppUpdatesURL={#AppWebsite}
@@ -24,7 +24,9 @@ OutputBaseFilename={#NAME}_Installer
 PrivilegesRequired=lowest
 SolidCompression=yes
 SetupIconFile=src\CSAuto\Icons\main.ico
+WizardSmallImageFile=Images\smallimage.bmp
 UninstallDisplayIcon={app}\{#EXE_NAME}
+UninstallDisplayName={#NAME} {#APP_VERSION}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
