@@ -1,3 +1,5 @@
+###Testing
+
 ### Version 2.0.7 changelog
 - Fix with app crashing when `steamapi.exe` cant be launched
 - Added menu item in right click menu to launch `CS2` from `CSAuto`
