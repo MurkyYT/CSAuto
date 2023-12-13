@@ -3,7 +3,7 @@ name: Update Changelog & Version
 on:
   release:
    types:
-      - edited
+      - published
       - deleted
   workflow_dispatch: {}
 
