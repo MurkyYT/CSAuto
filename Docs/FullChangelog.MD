@@ -1,3 +1,14 @@
+### Version 2.0.7 changelog
+- Fix with app crashing when `steamapi.exe` cant be launched
+- Added menu item in right click menu to launch `CS2` from `CSAuto`
+- Added an option to shutdown `CSAuto` after exiting `CS2`
+- Using raw data to load changelog and version, github api limits shouldn't be hit now
+- `CSAuto` now checks whether your `Windows` installation is in dark theme and if so applies dark theme to it self as well
+- Language files are being compressed with [`GZip`](https://en.wikipedia.org/wiki/Gzip) compression to save space
+
+## What's Changed
+* Add FullChangelog and Version + GH Actions by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/26
+
 ### Version 2.0.6 changelog
 - Optimzation of program idle state
 - Fix with parsing GSI file
@@ -13,7 +24,6 @@
   - `--language [language name]` - Change app language to the one specifed, doesn't change the settings
 - Optimized memory and cpu usage even more
 - Auto buy now should work better after half change and on match start
-- 
 
 ### Version 2.0.5a changelog
 - I feel very ashamed but screen capture still crashes so **now** hopefully it will not as the DXGICapture lib doesn't use pointers anymore and i did some security precautions in the app itself, if it will still crash i will probably port the native c++ code to c#, unfortunately
