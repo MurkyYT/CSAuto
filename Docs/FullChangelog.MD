@@ -9,6 +9,8 @@
 ## What's Changed
 * Add FullChangelog and Version + GH Actions by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/26
 
+#Test changelog
+
 ### Version 2.0.6 changelog
 - Optimzation of program idle state
 - Fix with parsing GSI file
