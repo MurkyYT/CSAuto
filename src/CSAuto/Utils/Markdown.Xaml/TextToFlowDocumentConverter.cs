@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace Markdown.Xaml
 {
-    public class TextToFlowDocumentConverter : DependencyObject, IValueConverter
+    public class TextToFlowDocumentConverter : MarkupExtension, IValueConverter
     {
-        public Markdown Markdown
-        {
-            get { return (Markdown)GetValue(MarkdownProperty); }
-            set { SetValue(MarkdownProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Markdown.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MarkdownProperty =
-            DependencyProperty.Register("Markdown", typeof(Markdown), typeof(TextToFlowDocumentConverter), new PropertyMetadata(null));
+        public Markdown Markdown { get; set; }
 
         /// <summary>
         /// Converts a value. 
@@ -58,5 +50,10 @@ namespace Markdown.Xaml
 
         private readonly Lazy<Markdown> mMarkdown
             = new Lazy<Markdown>(() => new Markdown());
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
+        }
     }
 }
