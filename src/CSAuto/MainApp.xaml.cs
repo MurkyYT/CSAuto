@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.8";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -560,6 +560,21 @@ namespace CSAuto
             exitCm.Items.Add(exit);
             exitCm.StaysOpen = false;
         }
+
+        // Making the context menu rounded leaves some trasparent artifacts :(
+        //private void ExitCm_Opened(object sender, RoutedEventArgs e)
+        //{
+        //    if (current.IsWindows11)
+        //    {
+        //        PresentationSource src = HwndSource.FromDependencyObject(exitCm);
+        //        IntPtr handle = ((HwndSource)src).Handle;
+        //        var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
+        //        var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+        //        NativeMethods.DwmSetWindowAttribute(handle, attribute, ref preference, sizeof(uint));
+        //        NativeMethods.SetWindowPos(handle, IntPtr.Zero, 0, 0, (int)(exitCm.Width + 50), (int)(exitCm.Height + 50), 2);
+        //        NativeMethods.UpdateWindow(handle);
+        //    }
+        //}
 
         private void LaucnhCs_Click(object sender, RoutedEventArgs e)
         {

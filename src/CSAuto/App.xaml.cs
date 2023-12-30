@@ -27,6 +27,7 @@ namespace CSAuto
         public bool StartWidnow;
         public bool AlwaysMaximized;
         public bool Restarted;
+        public bool IsWindows11;
         public string Args = "";
         public RegistrySettings settings = new RegistrySettings();
 
@@ -77,6 +78,9 @@ namespace CSAuto
             if(File.Exists("Error_Log.txt"))
                 File.Delete("Error_Log.txt");
             LoadLanguage(languageName?.ToLower());
+            WinVersion.GetVersion(out VersionInfo ver);
+            if (ver.BuildNum >= (uint)BuildNumber.Windows_11_21H2)
+                IsWindows11 = true;
             new MainApp().Show();
         }
 

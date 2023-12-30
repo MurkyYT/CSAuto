@@ -16,7 +16,8 @@
         Loaded="GUIWindow_Loaded"
         WindowState="Normal"
         WindowTitleBrush="Black"
-        GlowBrush="Black"
+        GlowBrush="Transparent"
+        NonActiveGlowBrush="Transparent"
         TitleCharacterCasing="Normal">
     <mahapps:MetroWindow.LeftWindowCommands>
         <mahapps:WindowCommands>
