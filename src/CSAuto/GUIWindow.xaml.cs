@@ -35,6 +35,7 @@ namespace CSAuto
         readonly MainApp main = (MainApp)Application.Current.MainWindow;
         readonly StringCollection Colors = Properties.Settings.Default.availableColors;
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
+        //AutoBuyMenu buyMenu = new AutoBuyMenu();
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -56,6 +57,7 @@ namespace CSAuto
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
+            //AutoBuyImage.Source = buyMenu.Src;
         }
         private async Task RestartMessageBox()
         {
@@ -552,5 +554,18 @@ namespace CSAuto
         {
             Process.Start("https://discord.gg/57ZEVZgm5W");
         }
+
+        //private void AutoBuyImage_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    Point pos = e.GetPosition(AutoBuyImage);
+        //    Size size = AutoBuyImage.RenderSize;
+        //    double x_ratio = size.Width / buyMenu.size.Width;
+        //    double y_ratio = size.Height / buyMenu.size.Height;
+        //    BuyItem item = buyMenu.GetItem(new Point(pos.X / x_ratio,pos.Y / y_ratio));
+            
+        //    Log.WriteLine(item?.Name);
+        //    item?.SetEnabled(!item.IsEnabled());
+        //    AutoBuyImage.Source = buyMenu.GetImage();
+        //}
     }
 }

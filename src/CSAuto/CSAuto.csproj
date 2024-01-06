@@ -87,11 +87,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
-  <ItemGroup>
-    <!-- <Content Include="resource\**"> -->
-    <!-- <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> -->
+  <!-- <ItemGroup> -->
+    <!-- <Content Include="resource\images\**"> -->
+      <!-- <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> -->
     <!-- </Content> -->
-  </ItemGroup>
+  <!-- </ItemGroup> -->
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +102,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>APIKeys.resx</DependentUpon>
     </Compile>
+    <Compile Include="AutoBuyMenu.cs" />
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
