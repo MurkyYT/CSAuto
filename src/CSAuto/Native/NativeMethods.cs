@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ControlzEx.Standard;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,12 +9,46 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using Point = System.Drawing.Point;
 
 namespace CSAuto
 {
     public static class NativeMethods
     {
+        [DllImport("user32.dll")]
+        static extern bool SetSystemCursor(IntPtr hcur, uint id);
+
+        [DllImport("user32.dll", EntryPoint = "GetCursorInfo")]
+        public static extern bool GetCursorInfo(out CURSORINFO pci);
+
+        [DllImport("user32.dll", EntryPoint = "CopyIcon")]
+        public static extern IntPtr CopyIcon(IntPtr hIcon);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct CURSORINFO
+        {
+            public Int32 cbSize;        // Specifies the size, in bytes, of the structure. 
+            public Int32 flags;         // Specifies the cursor state. This parameter can be one of the following values:
+            public IntPtr hCursor;          // Handle to the cursor. 
+            public POINT ptScreenPos;       // A POINT structure that receives the screen coordinates of the cursor. 
+        }
+
+        public static CURSORINFO GetCursorInfo()
+        {
+            CURSORINFO curin = new CURSORINFO();
+            curin.cbSize = Marshal.SizeOf(curin);
+            if (GetCursorInfo(out curin))
+                return curin;
+            return curin;
+        }
+        public static IntPtr GetCursorHandle()
+        {
+            CURSORINFO curin = GetCursorInfo();
+            if(curin.hCursor != IntPtr.Zero)
+                return curin.hCursor;
+            return IntPtr.Zero;
+        }
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, UInt32 uFlags);
 

@@ -117,3 +117,7 @@
 ["ckbox_oldscreencapture"] = "Use old screen capture technique",
 "menu_launchcs" "Launch CS2"
 "menu_autoclosecsauto" "Close CSAuto when exiting CS2"
+"error_notimplemented" "Not implemented yet"
+"button_apply" "Apply"
+"text_enabled" "Enabled"
+"text_itempriority" "Priority (the lower, the more chance it will be bought)"

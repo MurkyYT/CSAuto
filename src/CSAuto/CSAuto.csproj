@@ -87,11 +87,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
-  <!-- <ItemGroup> -->
-    <!-- <Content Include="resource\images\**"> -->
-      <!-- <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> -->
-    <!-- </Content> -->
-  <!-- </ItemGroup> -->
+  <ItemGroup>
+    <Content Include="resource\images\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>

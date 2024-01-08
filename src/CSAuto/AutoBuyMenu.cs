@@ -1,4 +1,5 @@
 ﻿using Murky.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,14 +12,21 @@ using System.Windows.Media.Imaging;
 
 namespace CSAuto
 {
-    class BuyItem
+    class BuyItem : IComparable<BuyItem>
     {
+        [JsonProperty]
         private bool isEnabled;
-        private string name;
+        [JsonProperty]
+        private AutoBuyMenu.NAMES name;
+        [JsonProperty]
         private Point position;
+        [JsonProperty]
         private Size size;
+        [JsonProperty]
         private bool isGrenade;
-        public BuyItem(string name, Point position, Size size, bool isGrenade)
+        [JsonProperty]
+        private int priority;
+        public BuyItem(AutoBuyMenu.NAMES name, Point position, Size size, bool isGrenade)
         {
             this.name = name;
             this.position = position;
@@ -27,10 +35,21 @@ namespace CSAuto
             this.isGrenade = isGrenade;
         }
         public void SetEnabled(bool isEnabled) { this.isEnabled = isEnabled; }
+        public void SetPriority(int priority) { this.priority = priority; }
+        public int GetPriority() { return priority; }
         public bool IsEnabled() { return isEnabled; }
         public bool IsGrenade() { return isGrenade; }
-        public string Name { get { return name; } }
+
+        public int CompareTo(BuyItem other)
+        {
+            return priority.CompareTo(other.priority);
+        }
+
+        [JsonIgnore]
+        public AutoBuyMenu.NAMES Name { get { return name; } }
+        [JsonIgnore]
         public Point Position { get { return position; } }
+        [JsonIgnore]
         public Size Size { get { return size; } }
     }
     class AutoBuyMenu
@@ -39,6 +58,7 @@ namespace CSAuto
         static readonly int OFFSET_Y = 9;
         static readonly int OFFSET_X = 14;
         private BitmapImage src = new BitmapImage();
+        private Color[] colors = new Color[16];
         public BitmapImage Src { get { return src.Clone(); } }
         public Size size { get { return new Size(src.PixelWidth,src.PixelHeight); } }
         // Equip  - 4
@@ -46,38 +66,40 @@ namespace CSAuto
         // Mid-Tier - 5
         // Rifles - 5
         // Grenades - 5
-        private BuyItem[] items = new BuyItem[4 + 5];
+        const int AMOUNT = 4 + 5;
+        private List<BuyItem> items = new List<BuyItem>();
 
-        enum NAMES { KevlarVest, KevlarAndHelmet, Zeus, DefuseKit,Flashbang,Smoke,HE,Molotov,Decoy };
+        public enum NAMES { KevlarVest, KevlarAndHelmet, Zeus, DefuseKit,Flashbang,Smoke,HE,Molotov,Decoy };
         public AutoBuyMenu()
         {
             src.BeginInit();
             src.UriSource = new Uri("resource\\images\\auto_buy.png", UriKind.Relative);
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.EndInit();
-            InitBuyItems();
+            for (int i = 0; i < colors.Length; i++)
+                colors[i] = Color.FromArgb(50 + i, 50 + i, 50 + i);
         }
 
         private void InitBuyItems()
         {
             for (int i = 0; i < 4; i++)
             {
-                BuyItem item = new BuyItem(((NAMES)i).ToString(),
+                BuyItem item = new BuyItem(((NAMES)i),
                     new Point(OFFSET_X, 43 + OFFSET_Y * i + (ITEM_SIZE.Height * i)), ITEM_SIZE
                     ,false);
-                items[i] = item;
+                items.Add(item);
             }
             for (int i = 0; i < 5; i++)
             {
-                BuyItem item = new BuyItem(((NAMES)4+i).ToString(),
+                BuyItem item = new BuyItem(((NAMES)4+i),
                     new Point(692 + OFFSET_X, 43 + OFFSET_Y * i + (ITEM_SIZE.Height * i)), ITEM_SIZE
                     ,true);
-                items[4+i] = item;
+                items.Add(item);
             }
         }
         public BuyItem GetItem(Point place)
         {
-            for (int i = 0; i < items.Length; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 BuyItem item = items[i];
                 Point pos = item.Position;
@@ -111,32 +133,31 @@ namespace CSAuto
         }
         public BitmapSource GetImage()
         {
-            Bitmap copy = BitmapImage2Bitmap(src);
-            List<BuyItem> enabled = new List<BuyItem>();
-            for (int i = 0; i < items.Length; i++)
+            using (Bitmap copy = BitmapImage2Bitmap(src))
             {
-                if (items[i].IsEnabled())
-                    enabled.Add(items[i]);
-            }
-            if (copy != null) 
-            {
-                for (int i = 0; i < enabled.Count; i++)
+                BuyItem[] enabled = GetEnabled();
+                if (copy != null)
                 {
-                    BuyItem item = enabled[i];
-                    for (int y = item.Position.Y + item.Size.Height / 4; y < item.Size.Height + item.Position.Y; y++)
+                    for (int i = 0; i < enabled.Length; i++)
                     {
-                        for (int x = item.Position.X; x < item.Size.Width /(item.IsGrenade() ? 1.7 : 1.5) + item.Position.X; x++)
+                        BuyItem item = enabled[i];
+                        for (int y = item.Position.Y + item.Size.Height / 4; y < item.Size.Height + item.Position.Y; y++)
                         {
-                            if (copy.GetPixel(x,y) == Color.FromArgb(65, 65, 65))
+                            for (int x = item.Position.X; x < item.Size.Width / (item.IsGrenade() ? 1.72 : 1.485) + item.Position.X; x++)
                             {
-                                copy.SetPixel(x, y, Color.FromArgb(255, 255, 255));
+                                Color pixelColor = copy.GetPixel(x, y);
+                                if (colors.Contains(pixelColor))
+                                {
+                                    copy.SetPixel(x, y, Color.FromArgb(255 - ((65 - pixelColor.R) * 10), 255 - ((65 - pixelColor.G) * 10), 255 - ((65 - pixelColor.B) * 10)));
+                                }
                             }
                         }
+
                     }
-                    
                 }
+                items.Sort();
+                return Bitmap2BitmapImage(copy);
             }
-            return Bitmap2BitmapImage(copy);
         }
         private BitmapSource Bitmap2BitmapImage(Bitmap bitmap)
         {
@@ -157,6 +178,44 @@ namespace CSAuto
             }
 
             return retval;
+        }
+        public void Save(RegistrySettings settings)
+        {
+            settings.Set("AutoBuyConfig",JsonConvert.SerializeObject(items));
+        }
+        public void Load(RegistrySettings settings) 
+        {
+            InitBuyItems();
+            if (settings["AutoBuyConfig"] != null)
+            {
+                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["AutoBuyConfig"]);
+                BuyItem[] temp = ar.ToObject<BuyItem[]>();
+                for (int i = 0; i < temp.Length && i < AMOUNT; i++)
+                    items[i] = temp[i];
+            }
+        }
+        public static BuyItem[] GetEnabled(RegistrySettings settings)
+        {
+            List<BuyItem> enabled = new List<BuyItem>();
+            if (settings["AutoBuyConfig"] != null)
+            {
+                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["AutoBuyConfig"]);
+                BuyItem[] temp = ar.ToObject<BuyItem[]>();
+                for (int i = 0; i < temp.Length && i < AMOUNT; i++)
+                    if (temp[i].IsEnabled())
+                        enabled.Add(temp[i]);
+            }
+            return enabled.ToArray();
+        }
+        public BuyItem[] GetEnabled()
+        {
+            List<BuyItem> enabled = new List<BuyItem>();
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i].IsEnabled())
+                    enabled.Add(items[i]);
+            }
+            return enabled.ToArray();
         }
     }
 }

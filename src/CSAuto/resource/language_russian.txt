@@ -117,3 +117,7 @@
 ["ckbox_oldscreencapture"] = "Использовать старую технику захвата экрана",
 "menu_launchcs" "Запустить CS2"
 "menu_autoclosecsauto" "Закрыть CSAuto при выходе из CS2"
+"error_notimplemented" "Еще не реализовано"
+"button_apply" "Применить"
+"text_enabled" "Включён"
+"text_itempriority" "Приоритет (чем ниже, тем больше шансов, что он будет куплен)"

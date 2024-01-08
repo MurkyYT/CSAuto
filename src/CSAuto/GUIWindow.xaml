@@ -258,9 +258,20 @@
                     <TextBlock Text="discord_restartneeded"/>
                 </StackPanel>
             </mahapps:MetroTabItem>
-            <!--<mahapps:MetroTabItem Header="menu_autobuy">
-                <Image x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDown"/>
-            </mahapps:MetroTabItem>-->
+            <mahapps:MetroTabItem Header="menu_autobuy">
+                <Grid>
+                    <Image x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDownAsync" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Grid x:Name="BuyItemProperties" Visibility="Hidden">
+                        <StackPanel>
+                            <TextBlock x:Name="BuyItemName" Text="Name"></TextBlock>
+                            <CheckBox  x:Name="BuyItemEnabledCheckBox" Content="text_enabled"></CheckBox>
+                            <TextBlock Text="text_itempriority"></TextBlock>
+                            <mahapps:NumericUpDown x:Name="BuyItemPriority"/>
+                        </StackPanel>
+                        <Button Content="button_apply" VerticalAlignment="Bottom" Click="ApplyBuyItemButton_Click"/>
+                    </Grid>
+                </Grid>
+            </mahapps:MetroTabItem>
         </TabControl>
         <TextBlock x:Name="VersionText" Text="ver smthn" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="Gray"/>
     </Grid>

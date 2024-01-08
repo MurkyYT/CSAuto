@@ -35,7 +35,8 @@ namespace CSAuto
         readonly MainApp main = (MainApp)Application.Current.MainWindow;
         readonly StringCollection Colors = Properties.Settings.Default.availableColors;
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
-        //AutoBuyMenu buyMenu = new AutoBuyMenu();
+        readonly AutoBuyMenu buyMenu = new AutoBuyMenu();
+        private BuyItem selectedItem = null;
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -57,7 +58,8 @@ namespace CSAuto
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
-            //AutoBuyImage.Source = buyMenu.Src;
+            buyMenu.Load(main.current.settings);
+            AutoBuyImage.Source = buyMenu.GetImage();
         }
         private async Task RestartMessageBox()
         {
@@ -100,6 +102,7 @@ namespace CSAuto
             main.current.MoveSettings();
             GameState.Dispose();
             Close();
+            buyMenu.Save(main.current.settings);
             NativeMethods.OptimizeMemory();
         }
         void ParseGameState(string JSON)
@@ -555,17 +558,42 @@ namespace CSAuto
             Process.Start("https://discord.gg/57ZEVZgm5W");
         }
 
-        //private void AutoBuyImage_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        //{
-        //    Point pos = e.GetPosition(AutoBuyImage);
-        //    Size size = AutoBuyImage.RenderSize;
-        //    double x_ratio = size.Width / buyMenu.size.Width;
-        //    double y_ratio = size.Height / buyMenu.size.Height;
-        //    BuyItem item = buyMenu.GetItem(new Point(pos.X / x_ratio,pos.Y / y_ratio));
-            
-        //    Log.WriteLine(item?.Name);
-        //    item?.SetEnabled(!item.IsEnabled());
-        //    AutoBuyImage.Source = buyMenu.GetImage();
-        //}
+        private async void AutoBuyImage_MouseDownAsync(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Left && e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                Point pos = e.GetPosition(AutoBuyImage);
+                Size size = AutoBuyImage.RenderSize;
+                double x_ratio = size.Width / buyMenu.size.Width;
+                double y_ratio = size.Height / buyMenu.size.Height;
+                BuyItem item = buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio));
+                if(item != null)
+                {
+                    selectedItem = item;
+                    BuyItemProperties.Visibility = Visibility.Visible;
+                    AutoBuyImage.Visibility = Visibility.Hidden;
+                    BuyItemName.Text = item.Name.ToString();
+                    BuyItemPriority.Value = item.GetPriority();
+                    BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
+                }
+                else
+                    await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);
+            }
+        }
+
+        private void ApplyBuyItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(selectedItem != null)
+            {
+                selectedItem.SetEnabled((bool)BuyItemEnabledCheckBox.IsChecked);
+                selectedItem.SetPriority((int)BuyItemPriority.Value);
+                selectedItem = null;
+                BuyItemProperties.Visibility = Visibility.Hidden;
+                AutoBuyImage.Visibility = Visibility.Visible;
+                AutoBuyImage.Source = buyMenu.GetImage();
+                NativeMethods.OptimizeMemory();
+            }
+            buyMenu.Save(main.current.settings);
+        }
     }
 }

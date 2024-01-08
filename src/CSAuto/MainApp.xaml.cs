@@ -30,6 +30,7 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using System.Runtime.InteropServices;
 #endregion
 namespace CSAuto
 {
@@ -80,7 +81,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.8";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -89,7 +90,7 @@ namespace CSAuto
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
         const string THROTTLE = "0.0";
-        const string HEARTBEAT = "5.0";
+        const string HEARTBEAT = "6.0";
         const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "," + DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + GAMESTATE_PORT +
             "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
@@ -146,6 +147,7 @@ namespace CSAuto
         Process csProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
+        IntPtr hCursorOriginal = IntPtr.Zero;
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -272,159 +274,272 @@ namespace CSAuto
         }
         private void GameStateListener_OnReceive(object sender, EventArgs e)
         {
-            try
+            lock (gameState)
             {
-                if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
+                try
                 {
-                    InitializeDiscordRPC();
-                    Log.WriteLine("DiscordRpc.Initialize();");
-                }
-                else if (RPCClient.IsInitialized && !Properties.Settings.Default.enableDiscordRPC)
-                {
-                    RPCClient.Deinitialize();
-                    Log.WriteLine("DiscordRpc.Shutdown();");
-                }
-                Activity? activity = gameState.Player.CurrentActivity;
-                Phase? currentMatchState = gameState.Match.Phase;
-                Phase? currentRoundState = gameState.Round.Phase;
-                BombState? currentBombState = gameState.Round.Bombstate;
-                Weapon currentWeapon = gameState.Player.ActiveWeapon;
-                guiWindow?.UpdateText(gameState.JSON);
-                //if (lastActivity != activity)
-                //    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
-                //if (currentMatchState != matchState)
-                //    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState.ToString())} -> {(currentMatchState == null ? "None" : currentMatchState.ToString())}");
-                //if (currentRoundState != roundState)
-                //    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState.ToString())} -> {(currentRoundState == null ? "None" : currentRoundState.ToString())}");
-                //if (round != currentRound)
-                //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
-                //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
-                //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                //if (netCon == null)
-                //{
-                //    NetConEstablishConnection();
-                //}
-                if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
-                {
-                    StartBombTimer();
-                }
-                if (bombState == BombState.Planted && currentBombState != BombState.Planted && Properties.Settings.Default.bombNotification)
-                {
-                    bombTimerThread?.Abort();
-                    bombTimerThread = null;
-                    switch (currentBombState)
+                    if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
                     {
-                        case BombState.Defused:
-                            SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombdefuse"]}");
-                            break;
-                        case BombState.Exploded:
-                            SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombexplode"]}");
-                            break;
+                        InitializeDiscordRPC();
+                        Log.WriteLine("DiscordRpc.Initialize();");
                     }
+                    else if (RPCClient.IsInitialized && !Properties.Settings.Default.enableDiscordRPC)
+                    {
+                        RPCClient.Deinitialize();
+                        Log.WriteLine("DiscordRpc.Shutdown();");
+                    }
+                    Activity? activity = gameState.Player.CurrentActivity;
+                    Phase? currentMatchState = gameState.Match.Phase;
+                    Phase? currentRoundState = gameState.Round.Phase;
+                    BombState? currentBombState = gameState.Round.Bombstate;
+                    Weapon currentWeapon = gameState.Player.ActiveWeapon;
+                    guiWindow?.UpdateText(gameState.JSON);
+                    //if (lastActivity != activity)
+                    //    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
+                    //if (currentMatchState != matchState)
+                    //    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState.ToString())} -> {(currentMatchState == null ? "None" : currentMatchState.ToString())}");
+                    //if (currentRoundState != roundState)
+                    //    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState.ToString())} -> {(currentRoundState == null ? "None" : currentRoundState.ToString())}");
+                    //if (round != currentRound)
+                    //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
+                    //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
+                    //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
+                    //if (netCon == null)
+                    //{
+                    //    NetConEstablishConnection();
+                    //}
+                    if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
+                    {
+                        StartBombTimer();
+                    }
+                    if (bombState == BombState.Planted && currentBombState != BombState.Planted && Properties.Settings.Default.bombNotification)
+                    {
+                        bombTimerThread?.Abort();
+                        bombTimerThread = null;
+                        switch (currentBombState)
+                        {
+                            case BombState.Defused:
+                                SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombdefuse"]}");
+                                break;
+                            case BombState.Exploded:
+                                SendMessageToServer($"<BMB>{AppLanguage.Language["server_bombexplode"]}");
+                                break;
+                        }
 
+                    }
+                    if (gameState.Match.Map != null && (inLobby == true || inLobby == null))
+                    {
+                        inLobby = false;
+                        Log.WriteLine($"Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
+                        if (CSGOMap.MapIcons.ContainsKey(gameState.Match.Map))
+                            currentMapIcon = CSGOMap.MapIcons[gameState.Match.Map];
+                        RPCClient.SetPresence(new RichPresence()
+                        {
+                            Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
+                            State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
+                            Party = new Party() { ID = "", Size = 0, Max = 0 },
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = currentMapIcon ?? "cs2_icon",
+                                LargeImageText = gameState.Match.Map,
+                                SmallImageKey = null,
+                                SmallImageText = null
+                            },
+                            Timestamps = new Timestamps()
+                            {
+                                Start = UnixTimeStampToDateTime(gameState.Timestamp),
+                                End = null
+                            },
+                            Buttons = GetDiscordRPCButtons()
+                        });
+                        if (Properties.Settings.Default.mapNotification)
+                            SendMessageToServer(string.Format($"<MAP>{AppLanguage.Language["server_loadedmap"]}", gameState.Match.Map, gameState.Match.Mode));
+                        if (DXGIcapture.Enabled)
+                        {
+                            DXGIcapture.DeInit();
+                            Log.WriteLine("Deinit DXGI Capture");
+                        }
+                    }
+                    else if (gameState.Match.Map == null && (inLobby == false || inLobby == null))
+                    {
+                        inLobby = true;
+                        currentMapIcon = null;
+                        inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
+                        Log.WriteLine($"Player is back in main menu");
+                        RPCClient.SetPresence(new RichPresence()
+                        {
+                            Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                            State = LimitLength(inLobbyState, 128),
+                            Party = new Party() { ID = "", Size = 0, Max = 0 },
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = "cs2_icon",
+                                LargeImageText = "Menu",
+                                SmallImageKey = null,
+                                SmallImageText = null
+                            },
+                            Timestamps = new Timestamps()
+                            {
+                                Start = UnixTimeStampToDateTime(gameState.Timestamp),
+                                End = null
+                            },
+                            Buttons = GetDiscordRPCButtons()
+                        });
+                        if (Properties.Settings.Default.lobbyNotification)
+                            SendMessageToServer($"<LBY>{AppLanguage.Language["server_loadedlobby"]}");
+                        if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
+                        {
+                            DXGIcapture.Init();
+                            Log.WriteLine("Init DXGI Capture");
+                        }
+                    }
+                    lastActivity = activity;
+                    matchState = currentMatchState;
+                    roundState = currentRoundState;
+                    weapon = currentWeapon;
+                    bombState = currentBombState;
+                    inGame = gameState.Match.Map != null;
+                    if (csActive && !gameState.IsSpectating)
+                    {
+                        if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu && csActive)
+                            TryToAutoReload();
+                        if (lastActivity == Activity.Playing && csActive)
+                            AutoBuy();
+                        if (Properties.Settings.Default.autoPausePlaySpotify)
+                            AutoPauseResumeSpotify();
+                    }
+                    if (lastActivity != Activity.Playing && hCursorOriginal == IntPtr.Zero && csActive)
+                    {
+                        hCursorOriginal = NativeMethods.GetCursorHandle();
+                        Log.WriteLine($"hCurosr when in CS -> {hCursorOriginal}");
+                    }
+                    UpdateDiscordRPC();
+                    SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
+                    //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
                 }
-                if (gameState.Match.Map != null && (inLobby == true || inLobby == null))
+                catch (Exception ex)
                 {
-                    inLobby = false;
-                    Log.WriteLine($"Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
-                    if (CSGOMap.MapIcons.ContainsKey(gameState.Match.Map))
-                        currentMapIcon = CSGOMap.MapIcons[gameState.Match.Map];
-                    RPCClient.SetPresence(new RichPresence()
-                    {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
-                        Party = new Party() { ID = "", Size = 0, Max = 0 },
-                        Assets = new Assets()
-                        {
-                            LargeImageKey = currentMapIcon ?? "cs2_icon",
-                            LargeImageText = gameState.Match.Map,
-                            SmallImageKey = null,
-                            SmallImageText = null
-                        },
-                        Timestamps = new Timestamps()
-                        {
-                            Start = UnixTimeStampToDateTime(gameState.Timestamp),
-                            End = null
-                        },
-                        Buttons = GetDiscordRPCButtons()
-                    });
-                    if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer(string.Format($"<MAP>{AppLanguage.Language["server_loadedmap"]}",gameState.Match.Map,gameState.Match.Mode));
-                    if (DXGIcapture.Enabled)
-                    {
-                        DXGIcapture.DeInit();
-                        Log.WriteLine("Deinit DXGI Capture");
-                    }
+                    Log.WriteLine("Error happend while getting GSI Info\n" + ex);
                 }
-                else if (gameState.Match.Map == null && (inLobby == false || inLobby == null))
-                {
-                    inLobby = true;
-                    currentMapIcon = null;
-                    inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
-                    Log.WriteLine($"Player is back in main menu");
-                    RPCClient.SetPresence(new RichPresence()
-                    {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                        State = LimitLength(inLobbyState,128),
-                        Party = new Party() { ID = "", Size = 0, Max = 0 },
-                        Assets = new Assets()
-                        {
-                            LargeImageKey = "cs2_icon",
-                            LargeImageText = "Menu",
-                            SmallImageKey = null,
-                            SmallImageText = null
-                        },
-                        Timestamps = new Timestamps()
-                        {
-                            Start = UnixTimeStampToDateTime(gameState.Timestamp),
-                            End = null
-                        },
-                        Buttons = GetDiscordRPCButtons()
-                    });
-                    if (Properties.Settings.Default.lobbyNotification)
-                        SendMessageToServer($"<LBY>{AppLanguage.Language["server_loadedlobby"]}");
-                    if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
-                    {
-                        DXGIcapture.Init();
-                        Log.WriteLine("Init DXGI Capture");
-                    }
-                }
-                lastActivity = activity;
-                matchState = currentMatchState;
-                roundState = currentRoundState;
-                weapon = currentWeapon;
-                bombState = currentBombState;
-                inGame = gameState.Match.Map != null;
-                if (csActive && !gameState.IsSpectating)
-                {
-                    if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
-                    {
-                        TryToAutoReload();
-                    }
-                    if (Properties.Settings.Default.preferArmor)
-                    {
-                        AutoBuyArmor();
-                        AutoBuyDefuseKit();
-                    }
-                    else
-                    {
-                        AutoBuyDefuseKit();
-                        AutoBuyArmor();
-                    }
-                    if (Properties.Settings.Default.autoPausePlaySpotify)
-                    {
-                        AutoPauseResumeSpotify();
-                    }
-                }
-                UpdateDiscordRPC();
-                SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
-                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
-            }
-            catch (Exception ex)
-            {
-                Log.WriteLine("Error happend while getting GSI Info\n" + ex);
             }
         }
+
+        private void AutoBuy()
+        {
+            if(matchState == Phase.Live && roundState == Phase.Freezetime)
+            {
+                BuyItem[] items = AutoBuyMenu.GetEnabled(current.settings);
+                if (NeedToBuy(items))
+                {
+                    if (items.Length != 0 && !BuyMenuOpen())
+                    {
+                        PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                        Thread.Sleep(100);
+                    }
+                    foreach (BuyItem item in items)
+                    {
+                        Log.WriteLine($"Auto buying {item.Name}");
+                        switch (item.Name)
+                        {
+                            case AutoBuyMenu.NAMES.KevlarVest:
+                                {
+                                        PressKeys(new Keyboard.DirectXKeyStrokes[]
+                                        {
+                                    Keyboard.DirectXKeyStrokes.DIK_1,
+                                    Keyboard.DirectXKeyStrokes.DIK_1
+                                        });
+                                }
+                                break;
+                            case AutoBuyMenu.NAMES.KevlarAndHelmet:
+                                {
+                                        PressKeys(new Keyboard.DirectXKeyStrokes[]
+                                        {
+                                    Keyboard.DirectXKeyStrokes.DIK_1,
+                                    Keyboard.DirectXKeyStrokes.DIK_2
+                                        });
+                                }
+                                break;
+                            case AutoBuyMenu.NAMES.Zeus:
+                                {
+                                        PressKeys(new Keyboard.DirectXKeyStrokes[]
+                                        {
+                                    Keyboard.DirectXKeyStrokes.DIK_1,
+                                    Keyboard.DirectXKeyStrokes.DIK_3
+                                        });
+                                }
+                                break;
+                            case AutoBuyMenu.NAMES.DefuseKit:
+                                {
+                                        PressKeys(new Keyboard.DirectXKeyStrokes[]
+                                        {
+                                    Keyboard.DirectXKeyStrokes.DIK_1,
+                                    Keyboard.DirectXKeyStrokes.DIK_4
+                                        });
+                                }
+                                break;
+                        }
+                    }
+                    if (items.Length != 0)
+                        PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                }
+            }
+        }
+
+        private bool BuyMenuOpen()
+        {
+            IntPtr res = NativeMethods.GetCursorHandle();
+            Log.WriteLine($"Original hCurosr: {hCursorOriginal} || {hCursorOriginal - 2}: new one {res}");
+            return hCursorOriginal == res || hCursorOriginal - 2 == res;
+        }
+
+        private bool NeedToBuy(BuyItem[] items)
+        {
+            int armor = gameState.Player.Armor;
+            bool hasHelmet = gameState.Player.HasHelmet;
+            bool hasDefuseKit = gameState.Player.HasDefuseKit;
+            int money = gameState.Player.Money;
+            foreach (BuyItem item in items)
+            {
+                switch (item.Name)
+                {
+                    case AutoBuyMenu.NAMES.KevlarVest:
+                        {
+                            if (money >= 650 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY)
+                            {
+                                return true;
+                            }
+                        }
+                        break;
+                    case AutoBuyMenu.NAMES.KevlarAndHelmet:
+                        {
+                            if ((money >= 350 && armor == 100 && !hasHelmet) ||
+                                    (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet))
+                            {
+                                return true;
+                            }
+                        }
+                        break;
+                    case AutoBuyMenu.NAMES.Zeus:
+                        {
+                            if (money >= 200 && !gameState.Player.HasWeapon("weapon_taser"))
+                            {
+                                return true;
+                            }
+                        }
+                        break;
+                    case AutoBuyMenu.NAMES.DefuseKit:
+                        {
+                            if (money >= 400 && !hasDefuseKit && gameState.Player.Team == Team.CT)
+                            {
+                                return true;
+                            }
+                        }
+                        break;
+                }
+            }
+            return false;
+        }
+
         private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
@@ -811,6 +926,7 @@ namespace CSAuto
                                 steamAPIServer = null;
                             }
                         }
+                        hCursorOriginal = IntPtr.Zero;
                         NativeMethods.OptimizeMemory();
                     }
                 }
@@ -1038,6 +1154,7 @@ namespace CSAuto
         {
             Keyboard.SendKey(key, false, Keyboard.InputType.Keyboard);
             Keyboard.SendKey(key, true, Keyboard.InputType.Keyboard);
+            Log.WriteLine($"Pressed: {key}");
         }
         void PressKeys(Keyboard.DirectXKeyStrokes[] keys)
         {
@@ -1045,6 +1162,7 @@ namespace CSAuto
             {
                 Keyboard.SendKey(keys[i], false, Keyboard.InputType.Keyboard);
                 Keyboard.SendKey(keys[i], true, Keyboard.InputType.Keyboard);
+                Log.WriteLine($"Pressed: {keys[i]}");
             }
         }
 

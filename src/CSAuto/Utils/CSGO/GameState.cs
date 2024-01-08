@@ -36,7 +36,8 @@ namespace Murky.Utils.CSGO
         SniperRifle,
         SubmachineGun,
         MachineGun,
-        Shotgun
+        Shotgun,
+        Grenade
     }
     public enum WeaponState
     {
@@ -486,6 +487,16 @@ namespace Murky.Utils.CSGO
         public bool HasDefuseKit { get; internal set; }
         public string SteamID { get; internal set; }
         public string Name { get; internal set; }
+        public bool HasWeapon(string name)
+        {
+            for (int i = 0; i < Weapons.Length; i++)
+            {
+                Weapon wep = Weapons[i];
+                if (wep.Name == name)
+                    return true;
+            }
+            return false;
+        }
         public void Dispose()
         {
             ActiveWeapon.Dispose();
@@ -514,7 +525,8 @@ namespace Murky.Utils.CSGO
                 {
                     string weapon = splitted[1].Split('}')[0];
                     string name = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-                    string type = weapon.Split(new string[] { "\"type\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+                    string[] typeSplit = weapon.Split(new string[] { "\"type\": \"" }, StringSplitOptions.None);
+                    string type = typeSplit.Length > 1 ? typeSplit[1].Split('"')[0] : "None";
                     string state = weapon.Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
                     int bullets = GetBullets(weapon);
                     int reserveBullets = GetReserveBullets(weapon);
@@ -534,16 +546,19 @@ namespace Murky.Utils.CSGO
                         ActiveWeapon = res;
                     return res;
                 }
-                catch { return new Weapon()
+                catch
                 {
-                    Index = index,
-                    Name = "NULL",
-                    Type = null,
-                    State = null,
-                    Bullets = -1,
-                    ReserveBullets = -1,
-                    ClipSize = -1
-                };  }
+                    return new Weapon()
+                    {
+                        Index = index,
+                        Name = "NULL",
+                        Type = null,
+                        State = null,
+                        Bullets = -1,
+                        ReserveBullets = -1,
+                        ClipSize = -1
+                    };
+                }
             }
             throw new IndexOutOfRangeException("Weapon index was out of bounds");
         }
@@ -610,6 +625,8 @@ namespace Murky.Utils.CSGO
                     return WeaponType.MachineGun;
                 case "Shotgun":
                     return WeaponType.Shotgun;
+                case "Grenade":
+                    return WeaponType.Grenade;
             }
             return null;
         }
