@@ -56,6 +56,10 @@ namespace Murky.Utils
                 return new Setting() { name = name, type = type, data = value };
             }
         }
+        public void Delete(string name)
+        {
+            settingsKey.DeleteValue(name);
+        }
         public void Set(string name,object value)
         {
             switch (value)

@@ -74,42 +74,6 @@ namespace CSAuto.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool preferArmor {
-            get {
-                return ((bool)(this["preferArmor"]));
-            }
-            set {
-                this["preferArmor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool autoBuyDefuseKit {
-            get {
-                return ((bool)(this["autoBuyDefuseKit"]));
-            }
-            set {
-                this["autoBuyDefuseKit"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool autoBuyArmor {
-            get {
-                return ((bool)(this["autoBuyArmor"]));
-            }
-            set {
-                this["autoBuyArmor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool saveLogs {
             get {
                 return ((bool)(this["saveLogs"]));

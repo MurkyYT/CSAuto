@@ -87,11 +87,11 @@
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="menu_autoaccept" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoAcceptMatch}"/>
                                 <CheckBox Content="menu_autospotify" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoPausePlaySpotify}"/>
-                                <TextBlock Text="menu_autobuy" FontSize="20" FontWeight="Bold"/>
-                                <!-- <CheckBox Content="menu_oldautobuy" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldAutoBuy}"/>-->
+                                <!--<TextBlock Text="menu_autobuy" FontSize="20" FontWeight="Bold"/>
+                                --><!-- <CheckBox Content="menu_oldautobuy" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldAutoBuy}"/>--><!--
                                 <CheckBox Content="menu_preferarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=preferArmor}"/>
                                 <CheckBox Content="menu_autobuyarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyArmor}"/>
-                                <CheckBox Content="menu_autobuydefuse" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyDefuseKit}"/>
+                                <CheckBox Content="menu_autobuydefuse" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyDefuseKit}"/>-->
                                 <TextBlock Text="menu_autoreload" FontSize="20" FontWeight="Bold"/>
                                 <CheckBox Content="menu_enabled" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoReload}"/>
                                 <CheckBox Content="menu_continuespray" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ContinueSpraying}"/>

@@ -29,6 +29,7 @@ namespace CSAuto
         public bool Restarted;
         public bool IsWindows11;
         public string Args = "";
+        public readonly AutoBuyMenu buyMenu = new AutoBuyMenu();
         public RegistrySettings settings = new RegistrySettings();
 
         private bool crashed;
@@ -53,6 +54,24 @@ namespace CSAuto
             {
                 Log.WriteLine("Loading registry settings to properties");
                 LoadSettings();
+            }
+            buyMenu.Load(settings);
+            if (settings["AutoBuyArmor"] != null && settings["AutoBuyArmor"])
+            {
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet).SetEnabled(true);
+                settings.Delete("AutoBuyArmor");
+            }
+            if (settings["AutoBuyDefuseKit"] != null && settings["AutoBuyDefuseKit"])
+            {
+                buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit).SetEnabled(true);
+                settings.Delete("AutoBuyDefuseKit");
+            }
+            if (settings["PreferArmor"] != null && settings["PreferArmor"])
+            {
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest).SetPriority(-2);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet).SetPriority(-1);
+                settings.Delete("PreferArmor");
             }
             base.OnStartup(e);
             if (Settings.Default.darkTheme)

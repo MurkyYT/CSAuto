@@ -35,7 +35,6 @@ namespace CSAuto
         readonly MainApp main = (MainApp)Application.Current.MainWindow;
         readonly StringCollection Colors = Properties.Settings.Default.availableColors;
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
-        readonly AutoBuyMenu buyMenu = new AutoBuyMenu();
         private BuyItem selectedItem = null;
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
@@ -58,8 +57,7 @@ namespace CSAuto
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
-            buyMenu.Load(main.current.settings);
-            AutoBuyImage.Source = buyMenu.GetImage();
+            AutoBuyImage.Source = main.current.buyMenu.GetImage();
         }
         private async Task RestartMessageBox()
         {
@@ -102,7 +100,7 @@ namespace CSAuto
             main.current.MoveSettings();
             GameState.Dispose();
             Close();
-            buyMenu.Save(main.current.settings);
+            main.current.buyMenu.Save(main.current.settings);
             NativeMethods.OptimizeMemory();
         }
         void ParseGameState(string JSON)
@@ -564,9 +562,9 @@ namespace CSAuto
             {
                 Point pos = e.GetPosition(AutoBuyImage);
                 Size size = AutoBuyImage.RenderSize;
-                double x_ratio = size.Width / buyMenu.size.Width;
-                double y_ratio = size.Height / buyMenu.size.Height;
-                BuyItem item = buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio));
+                double x_ratio = size.Width / main.current.buyMenu.size.Width;
+                double y_ratio = size.Height / main.current.buyMenu.size.Height;
+                BuyItem item = main.current.buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio));
                 if(item != null)
                 {
                     selectedItem = item;
@@ -590,10 +588,10 @@ namespace CSAuto
                 selectedItem = null;
                 BuyItemProperties.Visibility = Visibility.Hidden;
                 AutoBuyImage.Visibility = Visibility.Visible;
-                AutoBuyImage.Source = buyMenu.GetImage();
+                AutoBuyImage.Source = main.current.buyMenu.GetImage();
                 NativeMethods.OptimizeMemory();
             }
-            buyMenu.Save(main.current.settings);
+            main.current.buyMenu.Save(main.current.settings);
         }
     }
 }

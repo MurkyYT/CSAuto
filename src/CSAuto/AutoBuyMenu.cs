@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace CSAuto
 {
-    class BuyItem : IComparable<BuyItem>
+    public class BuyItem : IComparable<BuyItem>
     {
         [JsonProperty]
         private bool isEnabled;
@@ -52,7 +52,7 @@ namespace CSAuto
         [JsonIgnore]
         public Size Size { get { return size; } }
     }
-    class AutoBuyMenu
+    public class AutoBuyMenu
     {
         static readonly Size ITEM_SIZE = new Size(126,80);
         static readonly int OFFSET_Y = 9;
@@ -113,6 +113,15 @@ namespace CSAuto
         public BuyItem GetItem(int index)
         {
             return items[index];
+        }
+        public BuyItem GetItem(NAMES itemName)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                BuyItem item = items[i];
+                if(item.Name == itemName) return item;
+            }
+            return null;
         }
 
         public BuyItem GetItem(System.Windows.Point pos)
