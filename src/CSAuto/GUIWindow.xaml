@@ -260,13 +260,21 @@
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="menu_autobuy">
                 <Grid>
-                    <Image x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDownAsync" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom">
+                        <mahapps:MetroTabItem Header="team_ct"/>
+                        <mahapps:MetroTabItem Header="team_t"/>
+                    </TabControl>
+                    <Image Panel.ZIndex="0" x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDownAsync" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Grid x:Name="BuyItemProperties" Visibility="Hidden">
                         <StackPanel>
                             <TextBlock x:Name="BuyItemName" Text="Name"></TextBlock>
                             <CheckBox  x:Name="BuyItemEnabledCheckBox" Content="text_enabled"></CheckBox>
                             <TextBlock Text="text_itempriority"></TextBlock>
                             <mahapps:NumericUpDown x:Name="BuyItemPriority"/>
+                            <StackPanel Orientation="Horizontal" x:Name="SelectedCustomItemPropery" Visibility="Hidden">
+                                <TextBlock Text="text_selecteditem"></TextBlock>
+                                <ComboBox Margin="15,0,0,0"/>
+                            </StackPanel>
                         </StackPanel>
                         <Button Content="button_apply" VerticalAlignment="Bottom" Click="ApplyBuyItemButton_Click"/>
                     </Grid>

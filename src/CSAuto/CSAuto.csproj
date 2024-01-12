@@ -69,6 +69,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -88,11 +89,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resource\images\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -105,6 +101,8 @@
     <Compile Include="AutoBuyMenu.cs" />
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
+    <Compile Include="Extentions.cs" />
+    <Compile Include="ImageLoader.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\_Language.cs" />
     <Compile Include="Utils\CSGO\ConDump.cs" />
@@ -237,6 +235,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call $(SolutionDir)prebuild.bat $(SolutionDir)
-call $(SolutionDir)stcmprs.exe $(OutDir)</PreBuildEvent>
+call $(SolutionDir)stcmprs.exe $(OutDir)
+call $(SolutionDir)impack.exe $(OutDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>

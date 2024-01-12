@@ -36,6 +36,8 @@ namespace CSAuto
         readonly StringCollection Colors = Properties.Settings.Default.availableColors;
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
         private BuyItem selectedItem = null;
+        private CustomBuyItem customSelectedItem = null;
+        bool isCt = true;
         IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -57,7 +59,7 @@ namespace CSAuto
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
-            AutoBuyImage.Source = main.current.buyMenu.GetImage();
+            AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
         }
         private async Task RestartMessageBox()
         {
@@ -564,22 +566,51 @@ namespace CSAuto
                 Size size = AutoBuyImage.RenderSize;
                 double x_ratio = size.Width / main.current.buyMenu.size.Width;
                 double y_ratio = size.Height / main.current.buyMenu.size.Height;
-                BuyItem item = main.current.buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio));
+                BuyItem item = main.current.buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio), isCt);
                 if(item != null)
                 {
                     selectedItem = item;
+                    SelectedCustomItemPropery.Visibility = Visibility.Hidden;
                     BuyItemProperties.Visibility = Visibility.Visible;
                     AutoBuyImage.Visibility = Visibility.Hidden;
-                    BuyItemName.Text = item.Name.ToString();
+                    AutoBuyTab.Visibility = Visibility.Hidden;
+                    BuyItemName.Text = AppLanguage.Language[$"buyitem_{item.Name.ToString().ToLower()}"];
                     BuyItemPriority.Value = item.GetPriority();
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
+                    CheckIsCustom(item);
                 }
                 else
                     await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);
             }
         }
 
-        private void ApplyBuyItemButton_Click(object sender, RoutedEventArgs e)
+        private void CheckIsCustom(BuyItem item)
+        {
+            if (item is CustomBuyItem)
+            {
+                CustomBuyItem customItem = item as CustomBuyItem;
+                SelectedCustomItemPropery.Visibility = Visibility.Visible;
+                ComboBox box = SelectedCustomItemPropery.Children[1] as ComboBox;
+                box.Items.Clear();
+                if (isCt)
+                {
+                    AutoBuyMenu.NAMES[] options = customItem.GetCTOptions();
+                    foreach (AutoBuyMenu.NAMES option in options)
+                        box.Items.Add(AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"]);
+                    box.SelectedIndex = options.IndexOf(customItem.GetName());
+                }
+                else
+                {
+                    AutoBuyMenu.NAMES[] options = customItem.GetTOptions();
+                    foreach (AutoBuyMenu.NAMES option in options)
+                        box.Items.Add(AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"]);
+                    box.SelectedIndex = options.IndexOf(customItem.GetName());
+                }
+                customSelectedItem = customItem;
+            }
+        }
+
+        private async void ApplyBuyItemButton_Click(object sender, RoutedEventArgs e)
         {
             if(selectedItem != null)
             {
@@ -588,10 +619,38 @@ namespace CSAuto
                 selectedItem = null;
                 BuyItemProperties.Visibility = Visibility.Hidden;
                 AutoBuyImage.Visibility = Visibility.Visible;
-                AutoBuyImage.Source = main.current.buyMenu.GetImage();
-                NativeMethods.OptimizeMemory();
+                AutoBuyTab.Visibility = Visibility.Visible;
+                if (customSelectedItem != null)
+                {
+                    int selectedIndex = (SelectedCustomItemPropery.Children[1] as ComboBox).SelectedIndex;
+                    if (!main.current.buyMenu.ContainsCustom(isCt, customSelectedItem.GetCTOptions()[selectedIndex]))
+                    {
+                        CustomBuyItem item = customSelectedItem;
+                        if (isCt)
+                            item.SetName(item.GetCTOptions()[selectedIndex]);
+                        else
+                            item.SetName(item.GetTOptions()[selectedIndex]);
+                        customSelectedItem = null;
+                    }
+                    else
+                        await ShowMessage("title_error", "error_alreadycontainscustom", MessageDialogStyle.Affirmative);
+                }
+                UpdateImage();
             }
             main.current.buyMenu.Save(main.current.settings);
+        }
+
+        private void UpdateImage()
+        {
+            AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
+            NativeMethods.OptimizeMemory();
+        }
+
+        private void AutoBuyTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabControl control = (TabControl)sender;
+            isCt = control.SelectedIndex == 0;
+            UpdateImage();
         }
     }
 }

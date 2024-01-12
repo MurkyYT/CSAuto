@@ -29,7 +29,7 @@ namespace CSAuto
         public bool Restarted;
         public bool IsWindows11;
         public string Args = "";
-        public readonly AutoBuyMenu buyMenu = new AutoBuyMenu();
+        public AutoBuyMenu buyMenu;
         public RegistrySettings settings = new RegistrySettings();
 
         private bool crashed;
@@ -38,6 +38,21 @@ namespace CSAuto
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             string languageName = null;
+            foreach (string arg in e.Args)
+            {
+                if (arg != "--show" && arg != "--restart")
+                    Args += arg + " ";
+                if (arg == "--maximized")
+                    AlwaysMaximized = true;
+                if (arg == "--show")
+                    StartWidnow = true;
+                if (arg == "--restart")
+                    Restarted = true;
+                if (arg == "--language" && e.Args.ToList().IndexOf(arg) + 1 < e.Args.Length)
+                    languageName = e.Args[e.Args.ToList().IndexOf(arg) + 1];
+            }
+            LoadLanguage(languageName?.ToLower());
+            buyMenu = new AutoBuyMenu();
             if (settings["FirstRun"] == null || settings["FirstRun"])
             {
                 Log.WriteLine("First run of new settings, moving old ones to registry");
@@ -58,19 +73,23 @@ namespace CSAuto
             buyMenu.Load(settings);
             if (settings["AutoBuyArmor"] != null && settings["AutoBuyArmor"])
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest).SetEnabled(true);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest,true).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetEnabled(true);
                 settings.Delete("AutoBuyArmor");
             }
             if (settings["AutoBuyDefuseKit"] != null && settings["AutoBuyDefuseKit"])
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit, true).SetEnabled(true);
                 settings.Delete("AutoBuyDefuseKit");
             }
             if (settings["PreferArmor"] != null && settings["PreferArmor"])
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest).SetPriority(-2);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet).SetPriority(-1);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetPriority(-2);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetPriority(-1);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetPriority(-2);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetPriority(-1);
                 settings.Delete("PreferArmor");
             }
             base.OnStartup(e);
@@ -80,27 +99,14 @@ namespace CSAuto
             else
                 // Set the application theme to Light + selected color
                 ThemeManager.Current.ChangeTheme(this, $"Light.{Settings.Default.currentColor}");
-            foreach (string arg in e.Args)
-            {
-                if(arg != "--show" && arg != "--restart")
-                    Args += arg + " ";
-                if (arg == "--maximized")
-                    AlwaysMaximized = true;
-                if (arg == "--show")
-                    StartWidnow = true;
-                if (arg == "--restart")
-                    Restarted = true;
-                if (arg == "--language" && e.Args.ToList().IndexOf(arg) + 1 < e.Args.Length)
-                    languageName = e.Args[e.Args.ToList().IndexOf(arg) + 1];
-            }
             //Clear error log
             if(File.Exists("Error_Log.txt"))
                 File.Delete("Error_Log.txt");
-            LoadLanguage(languageName?.ToLower());
             WinVersion.GetVersion(out VersionInfo ver);
             if (ver.BuildNum >= (uint)BuildNumber.Windows_11_21H2)
                 IsWindows11 = true;
             new MainApp().Show();
+            NativeMethods.OptimizeMemory();
         }
 
         private bool WindowsDarkMode()
@@ -157,7 +163,7 @@ namespace CSAuto
             string file = Unzip(File.ReadAllBytes(path));
             return file.Split('\n');
         }
-        void CopyTo(Stream src, Stream dest)
+        static void CopyTo(Stream src, Stream dest)
         {
             byte[] bytes = new byte[4096];
 
@@ -168,7 +174,7 @@ namespace CSAuto
                 dest.Write(bytes, 0, cnt);
             }
         }
-        string Unzip(byte[] bytes)
+        public static string Unzip(byte[] bytes)
         {
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
@@ -251,7 +257,7 @@ namespace CSAuto
                 $"Source: {ex.Source}\n" +
                 $"Inner Exception: {ex.InnerException}");
             MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"] + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
-            Process.Start("Error_Log.txt");
+            Process.Start(Log.WorkPath + "\\Error_Log.txt");
             Current.Shutdown();
         }
 
