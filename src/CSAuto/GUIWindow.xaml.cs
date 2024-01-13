@@ -423,7 +423,7 @@ namespace CSAuto
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2 && CategoriesTabControl.SelectedIndex != 1)
+            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2 && CategoriesTabControl.SelectedIndex != 1 && CategoriesTabControl.SelectedIndex != 4)
                 LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
             {
@@ -433,6 +433,10 @@ namespace CSAuto
             {
                 debugBox.ScrollToEnd();
                 OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
+            }
+            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
+            {
+                AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
             }
         }
 
@@ -622,18 +626,14 @@ namespace CSAuto
                 AutoBuyTab.Visibility = Visibility.Visible;
                 if (customSelectedItem != null)
                 {
+                    CustomBuyItem item = customSelectedItem;
                     int selectedIndex = (SelectedCustomItemPropery.Children[1] as ComboBox).SelectedIndex;
+                    AutoBuyMenu.NAMES[] options = isCt ? item.GetCTOptions() : item.GetTOptions();
                     if (!main.current.buyMenu.ContainsCustom(isCt, customSelectedItem.GetCTOptions()[selectedIndex]))
-                    {
-                        CustomBuyItem item = customSelectedItem;
-                        if (isCt)
-                            item.SetName(item.GetCTOptions()[selectedIndex]);
-                        else
-                            item.SetName(item.GetTOptions()[selectedIndex]);
-                        customSelectedItem = null;
-                    }
-                    else
+                        item.SetName(options[selectedIndex]);
+                    else if(item.GetName() != options[selectedIndex])
                         await ShowMessage("title_error", "error_alreadycontainscustom", MessageDialogStyle.Affirmative);
+                    customSelectedItem = null;
                 }
                 UpdateImage();
             }

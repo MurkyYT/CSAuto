@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.8";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "5";
+        const string DEBUG_REVISION = "6";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -437,7 +437,7 @@ namespace CSAuto
         {
             if (matchState == Phase.Live && roundState == Phase.Freezetime)
             {
-                List<BuyItem> items = GetItemsToBuy();
+                List<BuyItem> items = current.buyMenu.GetItemsToBuy(gameState,MAX_ARMOR_AMOUNT_TO_REBUY);
                 if (items.Count != 0 && !BuyMenuOpen())
                 {
                     PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
@@ -448,101 +448,14 @@ namespace CSAuto
                     Log.WriteLine($"Auto buying {item.Name}");
                     //Have to press b after buying grenades because the buy menu stays at the grenades category
                     PressKeys(new Keyboard.DirectXKeyStrokes[]
-                                    {
-                                  (Keyboard.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
-                                    (Keyboard.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
-                                    });
+                    {
+                        //Category key
+                        (Keyboard.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
+                        //Weapon key
+                        (Keyboard.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
+                    });
                     if (item.IsGrenade())
                         PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
-                    //switch (item.Name)
-                    //{
-                    //    case AutoBuyMenu.NAMES.KevlarVest:
-                    //        {
-                    //                PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_1,
-                    //            Keyboard.DirectXKeyStrokes.DIK_1
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.KevlarAndHelmet:
-                    //        {
-                    //                PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_1,
-                    //            Keyboard.DirectXKeyStrokes.DIK_2
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.Zeus:
-                    //        {
-                    //                PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_1,
-                    //            Keyboard.DirectXKeyStrokes.DIK_3
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.DefuseKit:
-                    //        {
-                    //                PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_1,
-                    //            Keyboard.DirectXKeyStrokes.DIK_4
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.Flashbang:
-                    //        {
-                    //            PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_5,
-                    //            Keyboard.DirectXKeyStrokes.DIK_1,
-                    //            Keyboard.DirectXKeyStrokes.DIK_B
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.HE:
-                    //        {
-                    //            PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_5,
-                    //            Keyboard.DirectXKeyStrokes.DIK_3,
-                    //            Keyboard.DirectXKeyStrokes.DIK_B
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.Molotov:
-                    //        {
-                    //            PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_5,
-                    //            Keyboard.DirectXKeyStrokes.DIK_4,
-                    //            Keyboard.DirectXKeyStrokes.DIK_B
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.Smoke:
-                    //        {
-                    //            PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_5,
-                    //            Keyboard.DirectXKeyStrokes.DIK_2,
-                    //            Keyboard.DirectXKeyStrokes.DIK_B
-                    //                });
-                    //        }
-                    //        break;
-                    //    case AutoBuyMenu.NAMES.Decoy:
-                    //        {
-                    //            PressKeys(new Keyboard.DirectXKeyStrokes[]
-                    //                {
-                    //            Keyboard.DirectXKeyStrokes.DIK_5,
-                    //            Keyboard.DirectXKeyStrokes.DIK_5,
-                    //            Keyboard.DirectXKeyStrokes.DIK_B
-                    //                });
-                    //        }
-                    //        break;
-                    //}
                 }
                 if (items.Count != 0)
                     PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
@@ -555,233 +468,6 @@ namespace CSAuto
             Log.WriteLine($"Original hCurosr: {hCursorOriginal} || {hCursorOriginal - 2}: new one {res}");
             return (hCursorOriginal == res || hCursorOriginal - 2 == res) && gameState.Player.CurrentActivity == Activity.Playing;
         }
-
-        private List<BuyItem> GetItemsToBuy()
-        {
-            BuyItem[] items = current.buyMenu.GetEnabled(gameState.Player.Team == Team.CT);
-            int armor = gameState.Player.Armor;
-            bool hasHelmet = gameState.Player.HasHelmet;
-            bool hasDefuseKit = gameState.Player.HasDefuseKit;
-            int money = gameState.Player.Money;
-            bool hasTaser = gameState.Player.HasWeapon("weapon_taser");
-            bool hasSmoke = gameState.Player.HasWeapon("weapon_smokegrenade");
-            bool hasHE = gameState.Player.HasWeapon("weapon_hegrenade");
-            bool hasDecoy = gameState.Player.HasWeapon("weapon_decoy");
-            bool hasFlash = gameState.Player.HasWeapon("weapon_flashbang");
-            bool hasP2000 = gameState.Player.HasWeapon("weapon_hkp2000");
-            bool hasUSP = gameState.Player.HasWeapon("weapon_usp_silencer");
-            bool hasMolotov =
-                (gameState.Player.HasWeapon("weapon_molotov") && gameState.Player.Team == Team.T)
-                ||
-                (gameState.Player.HasWeapon("weapon_incgrenade") && gameState.Player.Team == Team.CT);
-            int grenadeCount = 0
-                + (hasSmoke ? 1 : 0)
-                + (hasHE ? 1 : 0)
-                + (hasDecoy ? 1 : 0)
-                + (hasFlash ? 1 : 0)
-                + (hasMolotov ? 1 : 0);
-            List<BuyItem> res = new List<BuyItem>();
-            foreach (BuyItem item in items)
-            {
-                switch (item.Name)
-                {
-                    case AutoBuyMenu.NAMES.KevlarVest:
-                        {
-                            if (money >= 650 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet)
-                            {
-                                res.Add(item);
-                                money -= 650;
-                                armor = 100;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.KevlarAndHelmet:
-                        {
-                            if(money >= 350 && armor == 100 && !hasHelmet)
-                            {
-                                res.Add(item);
-                                money -= 350;
-                                hasHelmet = true;
-                            }
-                            else if (money >= 1000 && armor <= MAX_ARMOR_AMOUNT_TO_REBUY && !hasHelmet)
-                            {
-                                res.Add(item);
-                                money -= 1000;
-                                armor = 100;
-                                hasHelmet = true;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Zeus:
-                        {
-                            if (money >= 200 && !hasTaser)
-                            {
-                                res.Add(item);
-                                money -= 200;
-                                hasTaser = true;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.DefuseKit:
-                        {
-                            if (money >= 400 && !hasDefuseKit && gameState.Player.Team == Team.CT)
-                            {
-                                res.Add(item);
-                                money -= 400;
-                                hasDefuseKit = true;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Flashbang:
-                        {
-                            if (money >= 200 && !hasFlash && grenadeCount < 4)
-                            {
-                                res.Add(item);
-                                money -= 200;
-                                hasFlash = true;
-                                grenadeCount++;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.HE:
-                        {
-                            if (money >= 300 && !hasHE && grenadeCount < 4)
-                            {
-                                res.Add(item);
-                                money -= 300;
-                                hasHE = true;
-                                grenadeCount++;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Molotov:
-                        {
-                            if (money >= 400 && !hasMolotov && gameState.Player.Team == Team.T && grenadeCount < 4)
-                            {
-                                res.Add(item);
-                                money -= 400;
-                                hasMolotov = true;
-                                grenadeCount++;
-                            }
-                            if (money >= 600 && !hasMolotov && gameState.Player.Team == Team.CT && grenadeCount < 4)
-                            {
-                                res.Add(item);
-                                money -= 400;
-                                hasMolotov = true;
-                                grenadeCount++;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Smoke:
-                        {
-                            if (money >= 300 && !hasSmoke && grenadeCount < 4)
-                            {
-                                res.Add(item);
-                                money -= 300;
-                                hasSmoke = true;
-                                grenadeCount++;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Decoy:
-                        {
-                            if (money >= 50 && !hasDecoy && grenadeCount < 4)
-                            {
-                                res.Add(item);
-                                money -= 50;
-                                hasDecoy = true;
-                                grenadeCount++;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.USP_S:
-                        {
-                            if(money >= 200 && !hasUSP && !hasP2000)
-                            {
-                                money -= 200;
-                                res.Add(item);
-                                hasUSP = true;
-                                hasP2000 = true;
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Glock18:
-                        {
-                            if (money >= 200 && !gameState.Player.HasWeapon("weapon_glock"))
-                            {
-                                money -= 200;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.CZ75Auto:
-                        {
-                            if (money >= 500 && !gameState.Player.HasWeapon("weapon_cz75a"))
-                            {
-                                money -= 500;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Deagle:
-                        {
-                            if (money >= 700 && !gameState.Player.HasWeapon("weapon_deagle"))
-                            {
-                                money -= 700;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.FiveSeven:
-                        {
-                            if (money >= 500 && !gameState.Player.HasWeapon("weapon_fiveseven"))
-                            {
-                                money -= 500;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.Tec9:
-                        {
-                            if (money >= 500 && !gameState.Player.HasWeapon("weapon_tec9"))
-                            {
-                                money -= 500;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.DualBerettas:
-                        {
-                            if (money >= 300 && !gameState.Player.HasWeapon("weapon_elite"))
-                            {
-                                money -= 300;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.P250:
-                        {
-                            if (money >= 300 && !gameState.Player.HasWeapon("weapon_p250"))
-                            {
-                                money -= 300;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                    case AutoBuyMenu.NAMES.R8Revolver:
-                        {
-                            if (money >= 600 && !gameState.Player.HasWeapon("weapon_revolver"))
-                            {
-                                money -= 600;
-                                res.Add(item);
-                            }
-                        }
-                        break;
-                }
-            }
-            return res;
-        }
-
         private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch

@@ -134,5 +134,59 @@ namespace CSAuto
 
             return (foregroundPid == pid);
         }
+        public static unsafe void ReplaceColor(Bitmap target,
+                          int x,
+                          int y,
+                          Color color)
+        {
+            const int pixelSize = 4; // 32 bits per pixel
+
+            BitmapData targetData = null;
+
+            try
+            {
+                targetData = target.LockBits(
+                  new Rectangle(0, 0, target.Width, target.Height),
+                  ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                byte* targetRow = (byte*)targetData.Scan0 + (y * targetData.Stride);
+
+
+                targetRow[x * pixelSize + 0] = color.B;
+                targetRow[x * pixelSize + 1] = color.G;
+                targetRow[x * pixelSize + 2] = color.R;
+                targetRow[x * pixelSize + 3] = color.A;
+            }
+            finally
+            {
+                target.UnlockBits(targetData);
+            }
+        }
+        public unsafe static Color GetPixel(Bitmap target, int x, int y)
+        {
+            const int pixelSize = 4; // 32 bits per pixel
+
+            BitmapData targetData = null;
+            Color res;
+            try
+            {
+                targetData = target.LockBits(
+                    new Rectangle(0, 0, target.Width, target.Height),
+                    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                byte* targetRow = (byte*)targetData.Scan0 + (y * targetData.Stride);
+
+                res = Color.FromArgb(targetRow[x * pixelSize + 2],
+                    targetRow[x * pixelSize + 1],
+                    targetRow[x * pixelSize + 0]);
+                //targetRow[x * pixelSize + 0] = color.B;
+                //targetRow[x * pixelSize + 1] = color.G;
+                //targetRow[x * pixelSize + 2] = color.R;
+                //targetRow[x * pixelSize + 3] = color.A;
+            }
+            finally
+            {
+                target.UnlockBits(targetData);
+            }
+            return res;
+        }
     }
 }

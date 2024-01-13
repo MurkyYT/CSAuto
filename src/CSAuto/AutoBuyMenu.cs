@@ -1,8 +1,12 @@
-﻿using Murky.Utils;
+﻿using ControlzEx.Theming;
+using CSAuto.Properties;
+using Murky.Utils;
+using Murky.Utils.CSGO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,6 +61,8 @@ namespace CSAuto
         public Point Position { get { return position; } }
         [JsonIgnore]
         public Size Size { get { return size; } }
+
+        public BuyItem Copy() => MemberwiseClone() as BuyItem;
     }
     public class CustomBuyItem : BuyItem
     {
@@ -72,6 +78,8 @@ namespace CSAuto
         }
         public AutoBuyMenu.NAMES[] GetCTOptions() { return ctOptions; }
         public AutoBuyMenu.NAMES[] GetTOptions() { return tOptions; }
+
+        public new CustomBuyItem Copy() => MemberwiseClone() as CustomBuyItem;
     }
     public class AutoBuyMenu
     {
@@ -93,7 +101,6 @@ namespace CSAuto
         private readonly List<BuyItem> tItems = new List<BuyItem>();
         private readonly List<CustomBuyItem> ctCustomItems = new List<CustomBuyItem>();
         private readonly List<CustomBuyItem> tCustomItems = new List<CustomBuyItem>();
-
         public enum NAMES {
             None,
             KevlarVest, 
@@ -114,8 +121,51 @@ namespace CSAuto
             Tec9,
             FiveSeven,
             Deagle,
-        };
 
+            Nova,
+            MP7,
+            Negev,
+            MAG7,
+            PPBizon,
+            UMP45,
+            M249,
+            XM1014,
+            MP5SD,
+            P90,
+            MP9,
+            MAC10,
+            SawedOff
+
+        };
+        private readonly Dictionary<NAMES, object[]> weaponsInfo = new Dictionary<NAMES, object[]>()
+        {
+            { NAMES.SawedOff,new object[] { "weapon_sawedoff", 1100 } },
+            { NAMES.MAC10,new object[] { "weapon_mac_10", 1050 } },
+            { NAMES.R8Revolver,new object[] { "weapon_revolver", 600 } },
+            { NAMES.CZ75Auto,new object[] { "weapon_cz75a", 500 } },
+            { NAMES.Deagle,new object[] { "weapon_deagle", 700 } },
+            { NAMES.FiveSeven,new object[] { "weapon_fiveseven", 500 } },
+            { NAMES.Tec9,new object[] { "weapon_tec9", 500 } },
+            { NAMES.DualBerettas,new object[] { "weapon_elite", 300 } },
+            { NAMES.P250,new object[] { "weapon_p250", 300 } },
+            { NAMES.Glock18,new object[] { "weapon_glock", 200 } },
+            { NAMES.Zeus,new object[] { "weapon_taser", 200 } },
+            { NAMES.Flashbang,new object[] { "weapon_flashbang", 200 } },
+            { NAMES.HE,new object[] { "weapon_hegrenade", 300 } },
+            { NAMES.Smoke,new object[] { "weapon_smokegrenade", 300 } },
+            { NAMES.Decoy,new object[] { "weapon_decoy", 50 } },
+            { NAMES.Nova,new object[] { "weapon_nova", 1050 } },
+            { NAMES.MP7,new object[] { "weapon_mp7", 1500 } },
+            { NAMES.Negev,new object[] { "weapon_negev", 1700 } },
+            { NAMES.MAG7,new object[] { "weapon_mag7", 1300 } },
+            { NAMES.PPBizon,new object[] { "weapon_bizon", 1400 } },
+            { NAMES.UMP45,new object[] { "weapon_ump45", 1200 } },
+            { NAMES.M249,new object[] { "weapon_m249", 5200 } },
+            { NAMES.XM1014,new object[] { "weapon_xm1014", 2000 } },
+            { NAMES.MP5SD,new object[] { "weapon_mp5sd", 1500 } },
+            { NAMES.P90,new object[] { "weapon_p90", 2350 } },
+            { NAMES.MP9,new object[] { "weapon_mp9", 1250 } }
+        };
         public AutoBuyMenu()
         {
             ctSrc = ImageLoader.LoadBitmapImage("ct_auto_buy.png");
@@ -129,31 +179,23 @@ namespace CSAuto
             //Equipment
             for (int i = 0; i < 4; i++)
             {
-                BuyItem itemT = new BuyItem(((NAMES)i + 1),
+                BuyItem item = new BuyItem(((NAMES)i + 1),
                     new Point(OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
                     ,false,
                     $"1{i+1}");
-                BuyItem itemCt = new BuyItem(((NAMES)i + 1),
-                    new Point(OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
-                    , false,
-                    $"1{i + 1}");
                 if (i != 3)
-                    tItems.Add(itemT);
-                ctItems.Add(itemCt);
+                    tItems.Add(item);
+                ctItems.Add(item.Copy());
             }
             //Grenades
             for (int i = 0; i < 5; i++)
             {
-                BuyItem itemCt = new BuyItem(((NAMES)5+i),
+                BuyItem item = new BuyItem(((NAMES)5+i),
                     new Point(692 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
                     ,true,
                     $"5{i + 1}");
-                BuyItem itemT = new BuyItem(((NAMES)5 + i),
-                    new Point(692 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
-                    , true,
-                    $"5{i + 1}");
-                tItems.Add(itemCt);
-                ctItems.Add(itemT);
+                tItems.Add(item);
+                ctItems.Add(item.Copy());
             }
             // Pistols
             BuyItem usp_s = new BuyItem(NAMES.USP_S,
@@ -164,18 +206,22 @@ namespace CSAuto
             tItems.Add(glock18);
             for (int i = 1; i < 5; i++)
             {
-                CustomBuyItem itemT = new CustomBuyItem(NAMES.None,
+                CustomBuyItem item = new CustomBuyItem(NAMES.None,
                     new Point(152 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE, $"2{i+1}", new NAMES[]
                     { NAMES.None, NAMES.R8Revolver,NAMES.CZ75Auto,NAMES.DualBerettas,NAMES.P250,NAMES.FiveSeven,NAMES.Deagle }, new NAMES[]
                     { NAMES.None, NAMES.R8Revolver,NAMES.CZ75Auto,NAMES.DualBerettas,NAMES.P250,NAMES.Tec9,NAMES.Deagle });
-                CustomBuyItem itemCt = new CustomBuyItem(NAMES.None,
-                   new Point(152 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE, $"2{i + 1}", new NAMES[]
-                   { NAMES.None, NAMES.R8Revolver,NAMES.CZ75Auto,NAMES.DualBerettas,NAMES.P250,NAMES.FiveSeven,NAMES.Deagle }, new NAMES[]
-                   { NAMES.None, NAMES.R8Revolver,NAMES.CZ75Auto,NAMES.DualBerettas,NAMES.P250,NAMES.Tec9,NAMES.Deagle });
-                ctItems.Add(itemCt);
-                tItems.Add(itemT);
-                tCustomItems.Add(itemT);
-                ctCustomItems.Add(itemCt);
+                tCustomItems.Add(item);
+                ctCustomItems.Add(item.Copy());
+            }
+            //Mid-tier
+            for (int i = 0; i < 5; i++)
+            {
+                CustomBuyItem item = new CustomBuyItem(NAMES.None,
+                    new Point(304 + OFFSET_X, 43 + OFFSET_Y * i + (MIDTIER_ITEM_SIZE.Height * i)), MIDTIER_ITEM_SIZE, $"3{i + 1}", new NAMES[]
+                    {  NAMES.None, NAMES.Nova,NAMES.MP7,NAMES.MAG7,NAMES.Negev,NAMES.PPBizon,NAMES.UMP45,NAMES.M249,NAMES.XM1014,NAMES.MP5SD,NAMES.P90,NAMES.MP9 }, new NAMES[]
+                    {  NAMES.None, NAMES.Nova,NAMES.MP7,NAMES.SawedOff,NAMES.Negev,NAMES.PPBizon,NAMES.UMP45,NAMES.M249,NAMES.XM1014,NAMES.MP5SD,NAMES.P90,NAMES.MAC10 });
+                tCustomItems.Add(item);
+                ctCustomItems.Add(item.Copy());
             }
         }
         public BuyItem GetItem(Point place,bool isCt)
@@ -244,7 +290,6 @@ namespace CSAuto
                 BuyItem[] enabled = GetEnabled(isCt);
                 LoadCustomImages(customItems, copy);
                 ColorEnabled(copy, enabled);
-                (isCt ? ctItems : tItems).Sort();
                 return Bitmap2BitmapImage(copy);
             }
         }
@@ -258,16 +303,28 @@ namespace CSAuto
                 {
                     for (int x = item.Position.X; x < item.Size.Width / (item.IsGrenade() ? 1.72 : 1) + item.Position.X; x++)
                     {
-                        Color pixelColor = copy.GetPixel(x, y);
+                        Color pixelColor = NativeMethods.GetPixel(copy,x,y);
                         if (colors.Contains(pixelColor))
                         {
-                            copy.SetPixel(x, y, Color.FromArgb(255 - ((65 - pixelColor.R) * 10), 255 - ((65 - pixelColor.G) * 10), 255 - ((65 - pixelColor.B) * 10)));
+                            System.Windows.Media.Color accent = ThemeManager.Current.GetTheme($"Dark.{Settings.Default.currentColor}").PrimaryAccentColor;
+                            float ratio = (float)(accent.R + accent.G + accent.B)/(pixelColor.R + pixelColor.G + pixelColor.B) * 2;
+                            NativeMethods.ReplaceColor(copy, x, y,
+                                Color.FromArgb(
+                                    Math.Max((int)(accent.R - ((65 - pixelColor.R) * ratio)),0),
+                                    Math.Max((int)(accent.G - ((65 - pixelColor.G) * ratio)),0),
+                                    Math.Max((int)(accent.B - ((65 - pixelColor.B) * ratio)),0)));
                         }
                     }
                 }
             }
         }
-
+        public void CopyRegionIntoImage(Bitmap srcBitmap, RectangleF srcRegion, ref Bitmap destBitmap, RectangleF destRegion)
+        {
+            using (Graphics grD = Graphics.FromImage(destBitmap))
+            {
+                grD.DrawImage(srcBitmap, destRegion, srcRegion, GraphicsUnit.Pixel);
+            }
+        }
         private void LoadCustomImages(List<CustomBuyItem> customItems, Bitmap copy)
         {
             foreach (CustomBuyItem customItem in customItems)
@@ -278,15 +335,18 @@ namespace CSAuto
                     {
                         using (Bitmap customImg = BitmapImage2Bitmap(ImageLoader.LoadBitmapImage($"weapon_{customItem.Name.ToString().ToLower()}.png")))
                         {
-                            for (int y = customItem.Position.Y; y < customItem.Size.Height + customItem.Position.Y; y++)
+                            GraphicsUnit units = GraphicsUnit.Pixel;
+                            RectangleF destReg = new RectangleF()
                             {
-                                for (int x = customItem.Position.X + 25; x < customItem.Size.Width + customItem.Position.X; x++)
-                                {
-                                    copy.SetPixel(x, y,
-                                        customImg.GetPixel(x - customItem.Position.X
-                                        , y - customItem.Position.Y));
-                                }
-                            }
+                                Width = customItem.Size.Width - 25,
+                                Height = customItem.Size.Height,
+                                X = customItem.Position.X + 25,
+                                Y = customItem.Position.Y
+                            };
+                            RectangleF srcReg = customImg.GetBounds(ref units);
+                            srcReg.Width -= 25;
+                            srcReg.X += 25;
+                            CopyRegionIntoImage(customImg, srcReg, ref copy, destReg);
                         }
                     }
                     catch
@@ -327,13 +387,6 @@ namespace CSAuto
         public void Load(RegistrySettings settings) 
         {
             InitBuyItems();
-            if (settings["CTAutoBuyConfig"] != null)
-            {
-                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["CTAutoBuyConfig"]);
-                BuyItem[] temp = ar.ToObject<BuyItem[]>();
-                for (int i = 0; i < temp.Length && i < ctItems.Count; i++)
-                    ctItems[i] = temp[i];
-            }
             if (settings["CTCustomAutoBuyConfig"] != null)
             {
                 Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["CTCustomAutoBuyConfig"]);
@@ -341,6 +394,14 @@ namespace CSAuto
                 for (int i = 0; i < temp.Length && i < ctCustomItems.Count; i++)
                     ctCustomItems[i] = temp[i];
             }
+            if (settings["CTAutoBuyConfig"] != null)
+            {
+                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["CTAutoBuyConfig"]);
+                BuyItem[] temp = ar.ToObject<BuyItem[]>();
+                for (int i = 0; i < temp.Length && i < ctItems.Count; i++)
+                    ctItems[i] = temp[i];
+            }
+            
             if (settings["TAutoBuyConfig"] != null)
             {
                 Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["TAutoBuyConfig"]);
@@ -372,12 +433,19 @@ namespace CSAuto
         public BuyItem[] GetEnabled(bool isCt)
         {
             List<BuyItem> items = isCt ? ctItems : tItems;
+            List<CustomBuyItem> customItems = isCt ? ctCustomItems : tCustomItems;
             List<BuyItem> enabled = new List<BuyItem>();
             for (int i = 0; i < items.Count; i++)
             {
                 if (items[i].IsEnabled())
                     enabled.Add(items[i]);
             }
+            for (int i = 0; i < customItems.Count; i++)
+            {
+                if (customItems[i].IsEnabled())
+                    enabled.Add(customItems[i]);
+            }
+            enabled.Sort();
             return enabled.ToArray();
         }
 
@@ -390,6 +458,127 @@ namespace CSAuto
                     return true;
             }
             return false;
+        }
+
+        public List<BuyItem> GetItemsToBuy(GameState gameState,int armorAmountToRebuy)
+        {
+            BuyItem[] items = GetEnabled(gameState.Player.Team == Team.CT);
+            int armor = gameState.Player.Armor;
+            bool hasHelmet = gameState.Player.HasHelmet;
+            bool hasDefuseKit = gameState.Player.HasDefuseKit;
+            int money = gameState.Player.Money;
+            bool hasSmoke = gameState.Player.HasWeapon("weapon_smokegrenade");
+            bool hasHE = gameState.Player.HasWeapon("weapon_hegrenade");
+            bool hasDecoy = gameState.Player.HasWeapon("weapon_decoy");
+            bool hasFlash = gameState.Player.HasWeapon("weapon_flashbang");
+            bool hasP2000 = gameState.Player.HasWeapon("weapon_hkp2000");
+            bool hasUSP = gameState.Player.HasWeapon("weapon_usp_silencer");
+            bool hasMolotov =
+                gameState.Player.HasWeapon("weapon_molotov")
+                ||
+                gameState.Player.HasWeapon("weapon_incgrenade");
+            int grenadeCount = 0
+                + (hasSmoke ? 1 : 0)
+                + (hasHE ? 1 : 0)
+                + (hasDecoy ? 1 : 0)
+                + (hasFlash ? 1 : 0)
+                + (hasMolotov ? 1 : 0);
+            List<BuyItem> res = new List<BuyItem>();
+            foreach (BuyItem item in items)
+            {
+                switch (item.Name)
+                {
+                    case NAMES.KevlarVest:
+                        {
+                            if (money >= 650 && armor <= armorAmountToRebuy && !hasHelmet)
+                            {
+                                res.Add(item);
+                                money -= 650;
+                                armor = 100;
+                            }
+                        }
+                        break;
+                    case NAMES.KevlarAndHelmet:
+                        {
+                            if (money >= 350 && armor == 100 && !hasHelmet)
+                            {
+                                res.Add(item);
+                                money -= 350;
+                                hasHelmet = true;
+                            }
+                            else if (money >= 1000 && armor <= armorAmountToRebuy && !hasHelmet)
+                            {
+                                res.Add(item);
+                                money -= 1000;
+                                armor = 100;
+                                hasHelmet = true;
+                            }
+                        }
+                        break;
+                    case NAMES.DefuseKit:
+                        {
+                            if (money >= 400 && !hasDefuseKit)
+                            {
+                                res.Add(item);
+                                money -= 400;
+                                hasDefuseKit = true;
+                            }
+                        }
+                        break;
+                    case NAMES.USP_S:
+                        {
+                            if (money >= 200 && !hasUSP && !hasP2000)
+                            {
+                                money -= 200;
+                                res.Add(item);
+                                hasUSP = true;
+                                hasP2000 = true;
+                            }
+                        }
+                        break;
+                    case NAMES.Molotov:
+                        {
+                            if (money >= 400 && !hasMolotov && gameState.Player.Team == Team.T && grenadeCount < 4)
+                            {
+                                res.Add(item);
+                                money -= 400;
+                                hasMolotov = true;
+                                grenadeCount++;
+                            }
+                            if (money >= 600 && !hasMolotov && gameState.Player.Team == Team.CT && grenadeCount < 4)
+                            {
+                                res.Add(item);
+                                money -= 400;
+                                hasMolotov = true;
+                                grenadeCount++;
+                            }
+                        }
+                        break;
+                    default:
+                        object[] info = weaponsInfo[item.Name];
+                        int price = (int)info[1];
+                        string weaponName = (string)info[0];
+                        if (money >= price && !gameState.Player.HasWeapon(weaponName))
+                        {
+                            if (item.IsGrenade())
+                            {
+                                if (grenadeCount < 4)
+                                {
+                                    money -= price;
+                                    res.Add(item);
+                                    grenadeCount++;
+                                }
+                            }
+                            else
+                            {
+                                money -= price;
+                                res.Add(item);
+                            }
+                        }
+                        break;
+                }
+            }
+            return res;
         }
     }
 }
