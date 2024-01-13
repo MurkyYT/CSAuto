@@ -7,11 +7,13 @@ using Murky.Utils;
 using Murky.Utils.CSGO;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
@@ -423,7 +425,7 @@ namespace CSAuto
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2 && CategoriesTabControl.SelectedIndex != 1 && CategoriesTabControl.SelectedIndex != 4)
+            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2 && CategoriesTabControl.SelectedIndex != 1)
                 LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
             {
@@ -434,7 +436,7 @@ namespace CSAuto
                 debugBox.ScrollToEnd();
                 OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
             }
-            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
+            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
             {
                 AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
             }
@@ -584,39 +586,56 @@ namespace CSAuto
                     CheckIsCustom(item);
                 }
                 else
-                    await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);
+                    await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);         
             }
         }
 
         private void CheckIsCustom(BuyItem item)
         {
-            if (item is CustomBuyItem)
+            Dispatcher.InvokeAsync(() =>
             {
-                CustomBuyItem customItem = item as CustomBuyItem;
-                SelectedCustomItemPropery.Visibility = Visibility.Visible;
-                ComboBox box = SelectedCustomItemPropery.Children[1] as ComboBox;
-                box.Items.Clear();
-                if (isCt)
+                if (item is CustomBuyItem)
                 {
-                    AutoBuyMenu.NAMES[] options = customItem.GetCTOptions();
-                    foreach (AutoBuyMenu.NAMES option in options)
-                        box.Items.Add(AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"]);
-                    box.SelectedIndex = options.IndexOf(customItem.GetName());
+                    CustomBuyItem customItem = item as CustomBuyItem;
+                    SelectedCustomItemPropery.Visibility = Visibility.Visible;
+                    StackPanel box = SelectedCustomItemPropery.Children[1] as StackPanel;
+                    box.Children.Clear();
+                    if (isCt)
+                    {
+                        AutoBuyMenu.NAMES[] options = customItem.GetCTOptions();
+                        foreach (AutoBuyMenu.NAMES option in options)
+                        {
+                            RadioButton rb = new RadioButton
+                            {
+                                Content = AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"],
+                                IsChecked = option == customItem.GetName(),
+                                Tag = option
+                            };
+                            box.Children.Add(rb);
+                        }
+                    }
+                    else
+                    {
+                        AutoBuyMenu.NAMES[] options = customItem.GetTOptions();
+                        foreach (AutoBuyMenu.NAMES option in options)
+                        {
+                            RadioButton rb = new RadioButton
+                            {
+                                Content = AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"],
+                                IsChecked = option == customItem.GetName(),
+                                Tag = option
+                            };
+                            box.Children.Add(rb);
+                        }
+                    }
+                    customSelectedItem = customItem;
                 }
-                else
-                {
-                    AutoBuyMenu.NAMES[] options = customItem.GetTOptions();
-                    foreach (AutoBuyMenu.NAMES option in options)
-                        box.Items.Add(AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"]);
-                    box.SelectedIndex = options.IndexOf(customItem.GetName());
-                }
-                customSelectedItem = customItem;
-            }
+            });
         }
 
         private async void ApplyBuyItemButton_Click(object sender, RoutedEventArgs e)
         {
-            if(selectedItem != null)
+            if (selectedItem != null)
             {
                 selectedItem.SetEnabled((bool)BuyItemEnabledCheckBox.IsChecked);
                 selectedItem.SetPriority((int)BuyItemPriority.Value);
@@ -627,7 +646,17 @@ namespace CSAuto
                 if (customSelectedItem != null)
                 {
                     CustomBuyItem item = customSelectedItem;
-                    int selectedIndex = (SelectedCustomItemPropery.Children[1] as ComboBox).SelectedIndex;
+                    int selectedIndex = 0;
+                    StackPanel box = SelectedCustomItemPropery.Children[1] as StackPanel;
+                    for (int i = 0;i<box.Children.Count;i++)
+                    {
+                        object child = box.Children[i];
+                        if ((bool)((RadioButton)child).IsChecked)
+                        {
+                            selectedIndex = i;
+                            break;
+                        }
+                    }
                     AutoBuyMenu.NAMES[] options = isCt ? item.GetCTOptions() : item.GetTOptions();
                     if (!main.current.buyMenu.ContainsCustom(isCt, customSelectedItem.GetCTOptions()[selectedIndex]))
                         item.SetName(options[selectedIndex]);

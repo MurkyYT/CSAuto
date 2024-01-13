@@ -5,6 +5,7 @@ using Murky.Utils.CSGO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -78,7 +79,6 @@ namespace CSAuto
         }
         public AutoBuyMenu.NAMES[] GetCTOptions() { return ctOptions; }
         public AutoBuyMenu.NAMES[] GetTOptions() { return tOptions; }
-
         public new CustomBuyItem Copy() => MemberwiseClone() as CustomBuyItem;
     }
     public class AutoBuyMenu
@@ -121,7 +121,6 @@ namespace CSAuto
             Tec9,
             FiveSeven,
             Deagle,
-
             Nova,
             MP7,
             Negev,
@@ -135,7 +134,6 @@ namespace CSAuto
             MP9,
             MAC10,
             SawedOff
-
         };
         private readonly Dictionary<NAMES, object[]> weaponsInfo = new Dictionary<NAMES, object[]>()
         {

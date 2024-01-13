@@ -271,9 +271,9 @@
                             <CheckBox  x:Name="BuyItemEnabledCheckBox" Content="text_enabled"></CheckBox>
                             <TextBlock Text="text_itempriority"></TextBlock>
                             <mahapps:NumericUpDown x:Name="BuyItemPriority"/>
-                            <StackPanel Orientation="Horizontal" x:Name="SelectedCustomItemPropery" Visibility="Hidden">
+                            <StackPanel Orientation="Vertical" x:Name="SelectedCustomItemPropery" Visibility="Hidden">
                                 <TextBlock Text="text_selecteditem"></TextBlock>
-                                <ComboBox Margin="15,0,0,0"/>
+                                <StackPanel Margin="15,0,0,0"/>
                             </StackPanel>
                         </StackPanel>
                         <Button Content="button_apply" VerticalAlignment="Bottom" Click="ApplyBuyItemButton_Click"/>
