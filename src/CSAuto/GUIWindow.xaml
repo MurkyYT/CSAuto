@@ -260,18 +260,18 @@
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="menu_autobuy">
                 <Grid>
-                    <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom">
+                    <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom" Height="48">
                         <mahapps:MetroTabItem Header="team_ct"/>
                         <mahapps:MetroTabItem Header="team_t"/>
                     </TabControl>
-                    <Image Panel.ZIndex="0" x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDownAsync" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Panel.ZIndex="0" x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,48,0,0"/>
                     <Grid x:Name="BuyItemProperties" Visibility="Hidden">
                         <StackPanel>
                             <TextBlock x:Name="BuyItemName" Text="Name"></TextBlock>
                             <CheckBox  x:Name="BuyItemEnabledCheckBox" Content="text_enabled"></CheckBox>
                             <TextBlock Text="text_itempriority"></TextBlock>
                             <mahapps:NumericUpDown x:Name="BuyItemPriority"/>
-                            <StackPanel Orientation="Vertical" x:Name="SelectedCustomItemPropery" Visibility="Hidden">
+                            <StackPanel Orientation="Vertical" x:Name="SelectedCustomItemPropery" Visibility="Hidden" HorizontalAlignment="Center" Margin="0,15,0,0">
                                 <TextBlock Text="text_selecteditem"></TextBlock>
                                 <StackPanel Margin="15,0,0,0"/>
                             </StackPanel>

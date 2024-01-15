@@ -188,5 +188,38 @@ namespace CSAuto
             }
             return res;
         }
+        public static unsafe void CopyRegionIntoImage(Bitmap srcBitmap, Rectangle srcRegion, ref Bitmap destBitmap, Rectangle destRegion)
+        {
+            const int pixelSize = 4; // 32 bits per pixel
+
+            BitmapData targetData = null,sourceData = null;
+            try
+            {
+                targetData = destBitmap.LockBits(
+                    new Rectangle(0, 0, destBitmap.Width, destBitmap.Height),
+                    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                sourceData = srcBitmap.LockBits(
+                    new Rectangle(0, 0, srcBitmap.Width, srcBitmap.Height),
+                    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                for (int y = srcRegion.Y; y < srcRegion.Height + srcRegion.Y; y++)
+                {
+                    for (int x = srcRegion.X; x < srcRegion.Width + srcRegion.X; x++)
+                    {
+                        byte* targetRow = (byte*)targetData.Scan0 + ((destRegion.Y + y - srcRegion.Y) * targetData.Stride);
+                        byte* source = (byte*)sourceData.Scan0 + (y * sourceData.Stride);
+
+                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 0] = source[x * pixelSize + 0];
+                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 1] = source[x * pixelSize + 1];
+                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 2] = source[x * pixelSize + 2];
+                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 3] = source[x * pixelSize + 3];
+                    }
+                }
+            }
+            finally
+            {
+                destBitmap.UnlockBits(targetData);
+                srcBitmap.UnlockBits(sourceData);
+            }
+        }
     }
 }

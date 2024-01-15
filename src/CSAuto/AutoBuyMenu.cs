@@ -5,13 +5,9 @@ using Murky.Utils.CSGO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
@@ -133,10 +129,32 @@ namespace CSAuto
             P90,
             MP9,
             MAC10,
-            SawedOff
+            SawedOff,
+            Famas,
+            GalilAR,
+            M4A4,
+            M4A1S,
+            AK47,
+            AUG,
+            SG553,
+            SSG08,
+            AWP,
+            SCAR20,
+            G3SG1
         };
         private readonly Dictionary<NAMES, object[]> weaponsInfo = new Dictionary<NAMES, object[]>()
         {
+            { NAMES.G3SG1,new object[] { "weapon_g3sg1", 5000 } },
+            { NAMES.SCAR20,new object[] { "weapon_scar20", 5000 } },
+            { NAMES.AWP,new object[] { "weapon_awp", 4750 } },
+            { NAMES.SSG08,new object[] { "weapon_ssg08", 1700 } },
+            { NAMES.SG553,new object[] { "weapon_sg556", 3000 } },
+            { NAMES.AUG,new object[] { "weapon_aug", 3300 } },
+            { NAMES.AK47,new object[] { "weapon_ak47", 2700 } },
+            { NAMES.M4A1S,new object[] { "weapon_m4a1_silencer", 2900 } },
+            { NAMES.M4A4,new object[] { "weapon_m4a1", 3100 } },
+            { NAMES.GalilAR,new object[] { "weapon_galilar", 1800 } },
+            { NAMES.Famas,new object[] { "weapon_famas", 2050 } },
             { NAMES.SawedOff,new object[] { "weapon_sawedoff", 1100 } },
             { NAMES.MAC10,new object[] { "weapon_mac_10", 1050 } },
             { NAMES.R8Revolver,new object[] { "weapon_revolver", 600 } },
@@ -185,16 +203,6 @@ namespace CSAuto
                     tItems.Add(item);
                 ctItems.Add(item.Copy());
             }
-            //Grenades
-            for (int i = 0; i < 5; i++)
-            {
-                BuyItem item = new BuyItem(((NAMES)5+i),
-                    new Point(692 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
-                    ,true,
-                    $"5{i + 1}");
-                tItems.Add(item);
-                ctItems.Add(item.Copy());
-            }
             // Pistols
             BuyItem usp_s = new BuyItem(NAMES.USP_S,
                    new Point(152 + OFFSET_X, 43), SMALL_ITEM_SIZE,false, "21");
@@ -220,6 +228,26 @@ namespace CSAuto
                     {  NAMES.None, NAMES.Nova,NAMES.MP7,NAMES.SawedOff,NAMES.Negev,NAMES.PPBizon,NAMES.UMP45,NAMES.M249,NAMES.XM1014,NAMES.MP5SD,NAMES.P90,NAMES.MAC10 });
                 tCustomItems.Add(item);
                 ctCustomItems.Add(item.Copy());
+            }
+            //Rifles
+            for (int i = 0; i < 5; i++)
+            {
+                CustomBuyItem item = new CustomBuyItem(NAMES.None,
+                    new Point(490 + OFFSET_X, 43 + OFFSET_Y * i + (RIFLES_ITEM_SIZE.Height * i)), RIFLES_ITEM_SIZE, $"4{i + 1}", new NAMES[]
+                    {  NAMES.None, NAMES.Famas,NAMES.M4A4,NAMES.M4A1S,NAMES.AUG,NAMES.SSG08,NAMES.SCAR20,NAMES.AWP }, new NAMES[]
+                    {  NAMES.None, NAMES.GalilAR,NAMES.AK47,NAMES.SG553,NAMES.SSG08,NAMES.G3SG1,NAMES.AWP });
+                tCustomItems.Add(item);
+                ctCustomItems.Add(item.Copy());
+            }
+            //Grenades
+            for (int i = 0; i < 5; i++)
+            {
+                BuyItem item = new BuyItem(((NAMES)5 + i),
+                    new Point(692 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
+                    , true,
+                    $"5{i + 1}");
+                tItems.Add(item);
+                ctItems.Add(item.Copy());
             }
         }
         public BuyItem GetItem(Point place,bool isCt)
@@ -316,13 +344,13 @@ namespace CSAuto
                 }
             }
         }
-        public void CopyRegionIntoImage(Bitmap srcBitmap, RectangleF srcRegion, ref Bitmap destBitmap, RectangleF destRegion)
-        {
-            using (Graphics grD = Graphics.FromImage(destBitmap))
-            {
-                grD.DrawImage(srcBitmap, destRegion, srcRegion, GraphicsUnit.Pixel);
-            }
-        }
+        //public void CopyRegionIntoImage(Bitmap srcBitmap, RectangleF srcRegion, ref Bitmap destBitmap, RectangleF destRegion)
+        //{
+        //    using (Graphics grD = Graphics.FromImage(destBitmap))
+        //    {
+        //        grD.DrawImage(srcBitmap, destRegion, srcRegion, GraphicsUnit.Pixel);
+        //    }
+        //}
         private void LoadCustomImages(List<CustomBuyItem> customItems, Bitmap copy)
         {
             foreach (CustomBuyItem customItem in customItems)
@@ -333,18 +361,27 @@ namespace CSAuto
                     {
                         using (Bitmap customImg = BitmapImage2Bitmap(ImageLoader.LoadBitmapImage($"weapon_{customItem.Name.ToString().ToLower()}.png")))
                         {
+                            
                             GraphicsUnit units = GraphicsUnit.Pixel;
-                            RectangleF destReg = new RectangleF()
+                            Rectangle destReg = new Rectangle()
                             {
                                 Width = customItem.Size.Width - 25,
                                 Height = customItem.Size.Height,
                                 X = customItem.Position.X + 25,
                                 Y = customItem.Position.Y
                             };
-                            RectangleF srcReg = customImg.GetBounds(ref units);
+                            RectangleF srcRegF = customImg.GetBounds(ref units);
+                            Rectangle srcReg = new Rectangle()
+                            {
+                                Width = (int)srcRegF.Size.Width,
+                                Height = (int)srcRegF.Size.Height,
+                                X = (int)srcRegF.X,
+                                Y = (int)srcRegF.Y,
+                            };
                             srcReg.Width -= 25;
                             srcReg.X += 25;
-                            CopyRegionIntoImage(customImg, srcReg, ref copy, destReg);
+                            NativeMethods.CopyRegionIntoImage(customImg, srcReg, ref copy, destReg);
+                            //CopyRegionIntoImage(customImg, srcReg, ref copy, destReg);
                         }
                     }
                     catch
@@ -352,7 +389,7 @@ namespace CSAuto
                         Log.WriteLine($"weapon_{customItem.Name.ToString().ToLower()}.png isn't found");
                     }
                 }
-            }
+            } 
         }
 
         private BitmapSource Bitmap2BitmapImage(Bitmap bitmap)

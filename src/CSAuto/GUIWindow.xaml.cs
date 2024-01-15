@@ -438,7 +438,7 @@ namespace CSAuto
             }
             if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
             {
-                AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
+               UpdateImage();
             }
         }
 
@@ -564,7 +564,7 @@ namespace CSAuto
             Process.Start("https://discord.gg/57ZEVZgm5W");
         }
 
-        private async void AutoBuyImage_MouseDownAsync(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void AutoBuyImage_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left && e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
             {
@@ -573,7 +573,7 @@ namespace CSAuto
                 double x_ratio = size.Width / main.current.buyMenu.size.Width;
                 double y_ratio = size.Height / main.current.buyMenu.size.Height;
                 BuyItem item = main.current.buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio), isCt);
-                if(item != null)
+                if (item != null)
                 {
                     selectedItem = item;
                     SelectedCustomItemPropery.Visibility = Visibility.Hidden;
@@ -585,8 +585,8 @@ namespace CSAuto
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
                     CheckIsCustom(item);
                 }
-                else
-                    await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);         
+                //else
+                //    await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);         
             }
         }
 
@@ -658,7 +658,7 @@ namespace CSAuto
                         }
                     }
                     AutoBuyMenu.NAMES[] options = isCt ? item.GetCTOptions() : item.GetTOptions();
-                    if (!main.current.buyMenu.ContainsCustom(isCt, customSelectedItem.GetCTOptions()[selectedIndex]))
+                    if (options[selectedIndex] == AutoBuyMenu.NAMES.None || !main.current.buyMenu.ContainsCustom(isCt, options[selectedIndex]))
                         item.SetName(options[selectedIndex]);
                     else if(item.GetName() != options[selectedIndex])
                         await ShowMessage("title_error", "error_alreadycontainscustom", MessageDialogStyle.Affirmative);
@@ -671,6 +671,9 @@ namespace CSAuto
 
         private void UpdateImage()
         {
+            //BitmapSource src = main.current.buyMenu.GetImage(isCt);
+            //src.Freeze();
+            //await Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = src; });
             AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
             NativeMethods.OptimizeMemory();
         }
@@ -679,7 +682,6 @@ namespace CSAuto
         {
             TabControl control = (TabControl)sender;
             isCt = control.SelectedIndex == 0;
-            UpdateImage();
         }
     }
 }

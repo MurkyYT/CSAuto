@@ -15,8 +15,9 @@ namespace CSAuto
 {
     public static class ImageLoader
     {
-        static string IMAGES_PATH = Log.WorkPath + "\\resource\\images.pac";
-        static string fileData = App.Unzip(File.ReadAllBytes(IMAGES_PATH));
+        static readonly string IMAGES_PATH = Log.WorkPath + "\\resource\\images.pac";
+        static readonly string fileData = App.Unzip(File.ReadAllBytes(IMAGES_PATH));
+        static readonly Dictionary<string,BitmapImage> cachedImages = new Dictionary<string,BitmapImage>();
         public static BitmapImage Base64StringToBitmap(string base64String)
         {
             byte[] byteBuffer = Convert.FromBase64String(base64String);
@@ -29,21 +30,21 @@ namespace CSAuto
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.EndInit();
 
-            memoryStream = null;
-            byteBuffer = null;
-
             return bitmapImage;
         }
         public static BitmapImage LoadBitmapImage(string image)
         {
-
             string actualImageName = $"[{image.ToUpper()}]";
+            if (cachedImages.ContainsKey(actualImageName))
+                return cachedImages[actualImageName];
             if (!fileData.Contains(actualImageName))
                 return null;
             string imageData = fileData.Split(new string[] { actualImageName }, StringSplitOptions.None)[1].
                 Split(new string[] { "[END]" }, StringSplitOptions.None)[0];
 
-            return Base64StringToBitmap(imageData);
+            BitmapImage res = Base64StringToBitmap(imageData);
+            cachedImages[actualImageName] = res;
+            return res;
         }
     }
 }
