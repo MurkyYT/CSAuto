@@ -207,7 +207,7 @@ namespace CSAuto
             return res;
         }
 
-        private void LoadSettings()
+        public void LoadSettings()
         {
             foreach (SettingsProperty currentProperty in Settings.Default.Properties)
             {

@@ -1,14 +1,10 @@
-﻿using ControlzEx.Standard;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
+using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Murky.Utils
 {
@@ -20,15 +16,97 @@ namespace Murky.Utils
     public class RegistrySettings
     {
         private RegistryKey softwareKey = Registry.CurrentUser.OpenSubKey("Software", true);
+        string company;
+        string product;
         private RegistryKey settingsKey;
         public RegistrySettings()
         {
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location);
             settingsKey = softwareKey.CreateSubKey($"{versionInfo.CompanyName}\\{versionInfo.ProductName}", true);
+            company = versionInfo.CompanyName;
+            product = versionInfo.ProductName;
         }
         public RegistrySettings(string companyName,string productName)
         {
             settingsKey = softwareKey.CreateSubKey($"{companyName}\\{productName}", true);
+            company = companyName;
+            product = productName;
+        }
+        public override string ToString()
+        {
+            string res = $"{company} - {product} - RegSet\n\n";
+            foreach (var item in settingsKey.GetValueNames())
+            {
+                object obj = this[item];
+                switch (settingsKey.GetValueKind(item))
+                {
+                    case RegistryValueKind.String:
+                        res += "0";
+                        break;
+                    case RegistryValueKind.DWord:
+                        res += "1";
+                        break;
+                    case RegistryValueKind.QWord:
+                        res += "2";
+                        break;
+                    case RegistryValueKind.Binary:
+                        res += "3";
+                        break;
+                }
+                res += $"\"{item}\"\t\"{obj}\"\r\n";
+            }
+            return res;
+        }
+        public bool Import(string path)
+        {
+            try
+            {
+                string file = File.ReadAllText(path, Encoding.Default);
+                file = file.Split(new string[] { "RegSet" }, StringSplitOptions.None)[1];
+                string[] lines = file.Split(new string[] { "\"\r\n" },StringSplitOptions.None);
+
+                for (int i =0; i< lines.Length; i++)
+                {
+                    string line = lines[i].Trim();
+                    line += '"';
+                    string[] values = GetValues(line);
+                    if (values[0] == null || values[1] == null)
+                        continue;
+                    switch (line[0])
+                    {
+                        case '0':
+                            Set(values[0], values[1]); break;
+                        case '1':
+                            Set(values[0], int.Parse(values[1])); break;
+                        case '2':
+                            Set(values[0], long.Parse(values[1])); break;
+                        case '3':
+                            Set(values[0], bool.Parse(values[1])); break;
+                    }
+                }
+                return true;
+            }
+            catch { }
+            return false;
+        }
+        private string[] GetValues(string v)
+        {
+            string[] res = new string[2];
+            string firstVal = null;
+            try
+            {
+                firstVal = v.Split('"')[1].Split('\t')[0].Trim(new char[] { '"' });
+            }
+            catch { }
+            string secVal = null;
+            try
+            {
+                secVal = v.Split(new char[] { '"' },3)[2].Split('\t')[1].Trim(new char[] { '"' });
+            }
+            catch { }
+            res[0] = firstVal;
+            res[1] = secVal;
+            return res;
         }
         public Setting this[string name] 
         {

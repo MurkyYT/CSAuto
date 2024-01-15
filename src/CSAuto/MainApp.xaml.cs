@@ -577,8 +577,26 @@ namespace CSAuto
             {
                 Header = AppLanguage.Language["menu_options"]
             };
+            MenuItem optionsOpen = new MenuItem
+            {
+                Header = AppLanguage.Language["menu_open"]
+            };
+            MenuItem optionsExport = new MenuItem
+            {
+                Header = AppLanguage.Language["menu_optionsexport"]
+            };
+            MenuItem optionsImport = new MenuItem
+            {
+                Header = AppLanguage.Language["menu_optionsimport"]
+            };
             exit.Click += Exit_Click;
-            options.Click += Options_Click;
+            options.Items.Add(optionsOpen);
+            options.Items.Add(new Separator());
+            options.Items.Add(optionsImport);
+            options.Items.Add(optionsExport);
+            optionsImport.Click += OptionsImport_Click;
+            optionsExport.Click += OptionsExport_Click;
+            optionsOpen.Click += Options_Click;
             launchCS.Click += LaucnhCs_Click;
             MenuItem about = new MenuItem
             {
@@ -604,6 +622,59 @@ namespace CSAuto
             exitCm.StaysOpen = false;
         }
 
+        private void OptionsExport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "CSAuto config file| *.csauto",
+                    DefaultExt = "csauto"
+                };
+                if ((bool)saveFileDialog.ShowDialog())
+                {
+                    File.WriteAllText(saveFileDialog.FileName, current.settings.ToString());
+                }
+                MessageBox.Show(string.Format(AppLanguage.Language["file_savesucess"], saveFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OptionsImport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "CSAuto config file| *.csauto",
+                    DefaultExt = "csauto"
+                };
+                if ((bool)openFileDialog.ShowDialog())
+                {
+                    current.settings.Import(openFileDialog.FileName);
+                    current.LoadSettings();
+                    current.buyMenu.Load(current.settings);
+                }
+                MessageBox.Show(string.Format(AppLanguage.Language["file_importsucess"], openFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
+                RestartMessageBox();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), AppLanguage.Language["title_error"], MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void RestartMessageBox()
+        {
+            var restart = MessageBox.Show(AppLanguage.Language["msgbox_restartneeded"], AppLanguage.Language["title_restartneeded"], MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            if (restart == MessageBoxResult.OK)
+            {
+                Process.Start(Assembly.GetExecutingAssembly().Location, "--restart --show " + current.Args);
+                Application.Current.Shutdown();
+            }
+        }
         // Making the context menu rounded leaves some trasparent artifacts :(
         //private void ExitCm_Opened(object sender, RoutedEventArgs e)
         //{
