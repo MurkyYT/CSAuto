@@ -1,3 +1,21 @@
+### Version 2.0.8 changelog
+- Markdown parser updated, changelog now looks a bit different
+- Notify icon text now shows only `CSAuto`
+- Added support for rounded corners in settings window _(right click menu with rounded corners is broken)_
+- Fixed mobile app crashing when getting `GSI` info
+- Fix `GSI` parsing bug when weapon has no type
+- You can import and export settings
+- New Auto Buy menu!
+  - The new `auto buy menu` looks like the actual `buy menu`
+  - You can enable as of right now auto buying of `Kevlar` `Kevlar & Helmet` `Zeus` `Decoy` `Molotov\Incendiary` `HE Grenade` `Flashbang` `Smoke` and `Defuse Kit`
+  - You can arrange custom order of weapons such as `Pistols` `Mid Tier` and `Rifles` and enable auto buying of them!
+  - Every team has different config for auto buy!
+  - Enabled items will be highlighted in color
+  - There are priority settings
+  - The lower the priority, the auto buy will try to buy it before the others
+  - Auto buy checks if in buy menu already, so if you refund, it will buy it back
+  - Auto buy works only in freezetime, so if you need to sell something you can sell it after the freezetime
+
 ### Version 2.0.7 changelog
 - Fix with app crashing when `steamapi.exe` cant be launched
 - Added menu item in right click menu to launch `CS2` from `CSAuto`
