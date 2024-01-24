@@ -29,8 +29,7 @@ Or have you ever forgot to buy armor or defuse kit as ct?
 **CSAuto** is the software for you, CSAuto can:
 * Auto accept matches for you
 * Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)
-* Auto buy armor for you or auto refill it when you have less then 70 left!
-* Auto buy defuse kit for you as a CT
+* Auto buy selected items in customizable menu!
 * Auto pause/resume spotify song
 * Show customizable game info in Discord Rich Presence (show amount of players in lobby can be banable!)
 * Send time left till bomb exploded to mobile! (not accurate as of right now)
