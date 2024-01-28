@@ -75,14 +75,14 @@
                                 <CheckBox Content="menu_bombnotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=bombNotification}"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="menu_discord">
+                        <!--<mahapps:MetroTabItem Header="menu_discord">
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="menu_discordrpc" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableDiscordRPC}"/>
                                 <CheckBox Content="menu_lobbycount" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableLobbyCount}"/>
                                 <TextBlock Text="inputtitle_steamkey" FontSize="20" FontWeight="Bold"/>
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=steamAPIkey}"/>
                             </StackPanel>
-                        </mahapps:MetroTabItem>
+                        </mahapps:MetroTabItem>-->
                         <mahapps:MetroTabItem Header="menu_automation">
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="menu_autoaccept" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoAcceptMatch}"/>
@@ -164,7 +164,7 @@
                     <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,30"/>
                 </Grid>
             </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem Header="menu_discordcustomization">
+            <mahapps:MetroTabItem Header="menu_discordrpc">
                 <StackPanel Orientation="Vertical">
                     <TabControl x:Name="DiscordTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" SelectionChanged="DiscordTabControl_SelectionChanged">
                         <mahapps:MetroTabItem Header="menu_discordlobby">
@@ -256,6 +256,12 @@
                         </StackPanel>
                     </Border>
                     <TextBlock Text="discord_restartneeded"/>
+                    <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                        <CheckBox Content="menu_enabled" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableDiscordRPC}"/>
+                        <CheckBox Content="menu_lobbycount" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableLobbyCount}"/>
+                        <TextBlock Text="inputtitle_steamkey" FontSize="20" FontWeight="Bold"/>
+                        <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=steamAPIkey}"/>
+                    </StackPanel>
                 </StackPanel>
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="menu_autobuy">

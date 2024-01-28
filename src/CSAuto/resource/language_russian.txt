@@ -69,7 +69,6 @@
 "title_color"  "Цвет: ",
 "inputtext_linkbutton"  "Ссылка на бота",
 "server_bombplanted"  "Бомба заложена",
-"menu_discordcustomization"  "Кастомизация Discord RPC",
 "title_discordstate"  "Шаблон состояния",
 "title_discorddetails"  "Шаблон сведений",
 "menu_discordlobby"  "Лобби RPC",
