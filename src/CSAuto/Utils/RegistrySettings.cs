@@ -37,7 +37,7 @@ namespace Murky.Utils
             string res = $"{company} - {product} - RegSet\n\n";
             foreach (var item in settingsKey.GetValueNames())
             {
-                object obj = this[item];
+                Setting obj = this[item];
                 switch (settingsKey.GetValueKind(item))
                 {
                     case RegistryValueKind.String:

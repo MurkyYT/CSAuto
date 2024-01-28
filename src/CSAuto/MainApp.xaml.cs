@@ -633,7 +633,7 @@ namespace CSAuto
                 };
                 if ((bool)saveFileDialog.ShowDialog())
                 {
-                    File.WriteAllText(saveFileDialog.FileName, current.settings.ToString());
+                    File.WriteAllText(saveFileDialog.FileName, current.settings.ToString(),Encoding.UTF8);
                     MessageBox.Show(string.Format(AppLanguage.Language["file_savesucess"], saveFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
                 }  
             }
