@@ -33,11 +33,40 @@ namespace CSAuto
         public RegistrySettings settings = new RegistrySettings();
 
         private bool crashed;
+        private string languageName = null;
         protected override void OnStartup(StartupEventArgs e)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-            string languageName = null;
+            ParseArgs(e);
+            LoadLanguage(languageName?.ToLower());
+            buyMenu = new AutoBuyMenu();
+            ImportSettings();
+            ImportAutoBuy();
+
+            base.OnStartup(e);
+
+            if (Settings.Default.darkTheme)
+                // Set the application theme to Dark + selected color
+                ThemeManager.Current.ChangeTheme(this, $"Dark.{Settings.Default.currentColor}");
+            else
+                // Set the application theme to Light + selected color
+                ThemeManager.Current.ChangeTheme(this, $"Light.{Settings.Default.currentColor}");
+
+            //Clear error log
+            if (File.Exists("Error_Log.txt"))
+                File.Delete("Error_Log.txt");
+
+            WinVersion.GetVersion(out VersionInfo ver);
+            if (ver.BuildNum >= (uint)BuildNumber.Windows_11_21H2)
+                IsWindows11 = true;
+
+            new MainApp().Show();
+            NativeMethods.OptimizeMemory();
+        }
+
+        private void ParseArgs(StartupEventArgs e)
+        {
             foreach (string arg in e.Args)
             {
                 if (arg != "--show" && arg != "--restart")
@@ -51,8 +80,10 @@ namespace CSAuto
                 if (arg == "--language" && e.Args.ToList().IndexOf(arg) + 1 < e.Args.Length)
                     languageName = e.Args[e.Args.ToList().IndexOf(arg) + 1];
             }
-            LoadLanguage(languageName?.ToLower());
-            buyMenu = new AutoBuyMenu();
+        }
+
+        private void ImportSettings()
+        {
             if (settings["FirstRun"] == null || settings["FirstRun"])
             {
                 Log.WriteLine("First run of new settings, moving old ones to registry");
@@ -70,10 +101,14 @@ namespace CSAuto
                 Log.WriteLine("Loading registry settings to properties");
                 LoadSettings();
             }
+        }
+
+        private void ImportAutoBuy()
+        {
             buyMenu.Load(settings);
             if (settings["AutoBuyArmor"] != null && settings["AutoBuyArmor"])
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest,true).SetEnabled(true);
+                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetEnabled(true);
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetEnabled(true);
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetEnabled(true);
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetEnabled(true);
@@ -92,21 +127,6 @@ namespace CSAuto
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetPriority(-1);
                 settings.Delete("PreferArmor");
             }
-            base.OnStartup(e);
-            if (Settings.Default.darkTheme)
-                // Set the application theme to Dark + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Dark.{Settings.Default.currentColor}");
-            else
-                // Set the application theme to Light + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Light.{Settings.Default.currentColor}");
-            //Clear error log
-            if(File.Exists("Error_Log.txt"))
-                File.Delete("Error_Log.txt");
-            WinVersion.GetVersion(out VersionInfo ver);
-            if (ver.BuildNum >= (uint)BuildNumber.Windows_11_21H2)
-                IsWindows11 = true;
-            new MainApp().Show();
-            NativeMethods.OptimizeMemory();
         }
 
         private bool WindowsDarkMode()

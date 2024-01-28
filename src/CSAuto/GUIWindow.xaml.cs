@@ -315,6 +315,7 @@ namespace CSAuto
                 });
                 return;
             }
+            res = res.Replace("<!--Version split-->\n", "");
             Dispatcher.InvokeAsync(() => {
                 TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
                 FlowDocument document = (FlowDocument)converter.Convert(res, null, null, null);

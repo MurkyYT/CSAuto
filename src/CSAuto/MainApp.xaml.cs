@@ -78,9 +78,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.0.8";
+        public const string VER = "2.0.9";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -634,8 +634,8 @@ namespace CSAuto
                 if ((bool)saveFileDialog.ShowDialog())
                 {
                     File.WriteAllText(saveFileDialog.FileName, current.settings.ToString());
-                }
-                MessageBox.Show(string.Format(AppLanguage.Language["file_savesucess"], saveFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(string.Format(AppLanguage.Language["file_savesucess"], saveFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
+                }  
             }
             catch(Exception ex)
             {
@@ -657,9 +657,9 @@ namespace CSAuto
                     current.settings.Import(openFileDialog.FileName);
                     current.LoadSettings();
                     current.buyMenu.Load(current.settings);
+                    MessageBox.Show(string.Format(AppLanguage.Language["file_importsucess"], openFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
+                    RestartMessageBox();
                 }
-                MessageBox.Show(string.Format(AppLanguage.Language["file_importsucess"], openFileDialog.FileName), AppLanguage.Language["title_success"], MessageBoxButton.OK, MessageBoxImage.Information);
-                RestartMessageBox();
             }
             catch (Exception ex)
             {
