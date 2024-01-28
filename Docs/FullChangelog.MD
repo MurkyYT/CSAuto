@@ -16,6 +16,8 @@
   - Auto buy checks if in buy menu already, so if you refund, it will buy it back
   - Auto buy works only in freezetime, so if you need to sell something you can sell it after the freezetime
 
+<!--Version split-->
+
 ### Version 2.0.7 changelog
 - Fix with app crashing when `steamapi.exe` cant be launched
 - Added menu item in right click menu to launch `CS2` from `CSAuto`
@@ -26,6 +28,8 @@
 
 ## What's Changed
 * Add FullChangelog and Version + GH Actions by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/26
+
+<!--Version split-->
 
 ### Version 2.0.6 changelog
 - Optimzation of program idle state
@@ -43,8 +47,12 @@
 - Optimized memory and cpu usage even more
 - Auto buy now should work better after half change and on match start
 
+<!--Version split-->
+
 ### Version 2.0.5a changelog
 - I feel very ashamed but screen capture still crashes so **now** hopefully it will not as the DXGICapture lib doesn't use pointers anymore and i did some security precautions in the app itself, if it will still crash i will probably port the native c++ code to c#, unfortunately
+
+<!--Version split-->
 
 ### Version 2.0.5 changelog
 - Changed default intaller location because can't create files in admin protected folders
@@ -53,6 +61,8 @@
 - Fix #24 
 - Fix #25
 
+<!--Version split-->
+
 ### Version 2.0.4 changelog
 - Fix bug with spotify auto play
 - Fix bug with color loading
@@ -60,18 +70,26 @@
 - Added sending auto accept image debug to telegram
 - Changelog now loads only when opening the changelog category
 
+<!--Version split-->
+
 ### Version 2.0.3 changelog
 - Discord Rich Presence map image now loads from the web
 - Fixed a bug with [GSI](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration) which happens when GSI doesn't have the player category in it (for some reason?) which crashed the parsing
 - Fixes #23 
+
+<!--Version split-->
 
 ### Version 2.0.2 changelog
 - App crash handling should be better now
 - Settings now are saved per-user, and not per-location + per-user
 - Optimized cpu usage of aplication after gui window opening and after closing cs2 when app was running
 
+<!--Version split-->
+
 ### Version 2.0.1 changelog
 - Fixes #22
+
+<!--Version split-->
 
 ### Version 2.0.0 changelog
 
@@ -105,10 +123,14 @@
 * Redisigned logo by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/21
 * Getting CSAuto to work with Counter-Strike 2 by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/14
 
+<!--Version split-->
+
 ### 2.0.0-beta.6 Changelog
 - Loading button colors from web, if cant load latest colors
 - Some bug fixes
 - Added button colors to debug window
+
+<!--Version split-->
 
 ### 2.0.0-beta.5 Changelog
 - More fixes with DXGICapture (help)
@@ -122,9 +144,13 @@
 ## What's Changed
 * Make GitHub logo vector by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/19
 
+<!--Version split-->
+
 ### 2.0.0-beta.4 Changelog
 - Latest CS2 Update changed accept button color, corrected for that
 - Fixes with frame capture again, should work flawlessly now
+
+<!--Version split-->
 
 ### 2.0.0-beta.3 Changelog
 - Some more memory optimizations!
@@ -134,6 +160,8 @@
 - Added discord rpc error logging as well
 - Updated mobiles app in app title from ```CS:GO``` to ```Counter-Strike 2```
 
+<!--Version split-->
+
 ### 2.0.0-beta.2 Changelog
 - Optimized app even more
 - App should use less memory
@@ -141,6 +169,8 @@
 - Added customizing buttons to discord rpc
 - Fixed the readme
 - Some fixes with translation
+
+<!--Version split-->
 
 ### 2.0.0-beta.1 Changelog
 - Bug fix with frame capture
@@ -150,11 +180,15 @@
 - Changed to an actual [Discord RPC .NET Library](https://github.com/Lachee/discord-rpc-csharp)
 - Changed from CS:GO icon to CS2 icon
 
+<!--Version split-->
+
 ### Version 2.0.0-beta changelog
 **As Counter-Strike 2 is in kinda open beta, i decided to release 2.0.0-beta so that i can eliminate all bugs before cs2's full release!**
 **I would like you to send an issue if you encounter any bug or unusual behaviour, thanks in advance!**
 # ⚠️Important Notice⚠️
 ### You will need to set all the settings again as i added company name to the assembly!
+
+<!--Version split-->
 
 ### Version 1.1.2 changelog
 1. Changed how bomb notifications work in telegram (#16 )
@@ -163,11 +197,15 @@
 * VirusTotal detection fixes + new class for api keys by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/12
 * Fix telegram notifications + compilation fix by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/13
 
+<!--Version split-->
+
 ### Version 1.1.1 changelog
 1. Languages now work differently in app
 2. Checking if really accepted match
 3. Added Telegram notifications!
 4. Fixed bomb notifications
+
+<!--Version split-->
 
 ### Version 1.1.0 changelog
 1. Added mobile notification menu where you can disable different notifications
@@ -183,6 +221,8 @@
 * Moved all csauto project to a folder by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/9
 * Improvments of application by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/10
 
+<!--Version split-->
+
 ### Version 1.0.9 changelog
 1. Added languages to the application, available languages right now are: English and Russian.
 2. Added icon to the installer (thanks @NoPlagiarism)
@@ -195,6 +235,8 @@
 
 ## New Contributors
 * @NoPlagiarism made their first contribution in https://github.com/MurkyYT/CSAuto/pull/8
+
+<!--Version split-->
 
 ### Version 1.0.8 changelog
 1. Discord RPC and GameState Server are now started when cs is started and disabled when cs is closed
@@ -211,11 +253,15 @@
 After you have done that you will see a notification with your ip address, in the desktop app go to "Mobile App", enable it, and then select "Enter Ip Address", you should see an input box, in the input box enter the ip address you see in the notification.
 After that you should be good to go.
 
+<!--Version split-->
+
 ### Version 1.0.7 changelog
 1. Made button search on all screen height and not half of it
 2. After pressing the accept button the app now waits 20 seconds before starting to search again
 3. Added discord rpc logging
 4. Various bug fixes and quality of life improvements
+
+<!--Version split-->
 
 ### Version 1.0.6 changelog
 1. When auto buying stuff chat and console are closed
@@ -223,12 +269,18 @@ After that you should be good to go.
 3. Unfortunately the app is now more then just an executable
 4. Various bug fixes
 
+<!--Version split-->
+
 ### Version 1.0.5a changes
 1. Discord rpc now shows time elapsed from match start/time in lobby
 2. Discord rpc shows round state in the place where time elapsed was before, if in warmup it shows 'Warmup'
 
+<!--Version split-->
+
 ### Version 1.0.5 fixes
 1. Using latest release github api to find the latest tag
+
+<!--Version split-->
 
 ### Version 1.0.4 updates
 1. Discord RPC now shows time elapsed from match started
@@ -238,10 +290,14 @@ After that you should be good to go.
 3. Fixed Discord RPC timestamp for time elapsed
 4. Fixed checking for updates by using github's api
 
+<!--Version split-->
+
 ### Version 1.0.3 updates
 1. Added DiscordRPC implementation
 2. You can now open gsi output text to parse it
 3. You can save gsi output
+
+<!--Version split-->
 
 ### Version 1.0.2a updates
 1. You have an option to enable checking for updates on startup
@@ -252,11 +308,14 @@ After that you should be good to go.
 1. Fixed the title in the Debug window from "CSAUto" to "CSAuto"
 2. Fixed the log time format
 
+<!--Version split-->
+
 ### Version 1.0.2 updates
 1. Added automatic resuming or pausing of spotify song (when you are alive the song is paused)
+
+<!--Version split-->
 
 ### Version 1.0.1 fixes
 1. Fixed a bug when logging wont turn on with app on windows startup
 2. App now shows a correct error message when CS:GO or Steam path isn't found
 3. If CS:GO or Steam path isn't found disable Auto Buy and Auto Reload options as it is dependant on [CS:GO GSI](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration)
-

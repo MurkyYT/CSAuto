@@ -76,13 +76,15 @@ def main():
     github_vars = GitHubVars()
     github_api = GitHubAPI(token=github_vars.token)
     releases = github_api.get_all_releases(github_vars.repository)
-    changelog_vers = [prepare_changelog(x["body"]) for x in releases]
+    changelog_vers = [prepare_changelog(x["body"]) for x in releases if x["body"]]
+    full_changelog_md = "\n\n<!--Version split-->\n\n".join(changelog_vers)
+    full_changelog_md = full_changelog_md + "\n"  # Add single newline
     try:
         os.remove(CHANGELOG_PATH)
     except FileNotFoundError:
         pass
-    with open(CHANGELOG_PATH, mode="w+", encoding="utf-8") as f:
-        f.write("\n\n".join(changelog_vers))
+    with open(CHANGELOG_PATH, mode="w+", encoding="utf-8", newline="\n") as f:
+        f.write(full_changelog_md)
 
 
 if __name__ == '__main__':
