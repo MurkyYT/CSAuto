@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -31,6 +32,10 @@ namespace Murky.Utils
             settingsKey = softwareKey.CreateSubKey($"{companyName}\\{productName}", true);
             company = companyName;
             product = productName;
+        }
+        public bool Exists()
+        {
+            return softwareKey.OpenSubKey(company,false).GetSubKeyNames().Contains(product);
         }
         public void DeleteSettings()
         {

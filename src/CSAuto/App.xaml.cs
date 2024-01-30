@@ -42,11 +42,22 @@ namespace CSAuto
             if (File.Exists(Log.WorkPath + "\\resource\\.portable"))
                 IsPortable = true;
             ParseArgs(e);
+            
             if (IsPortable)
             {
+                bool oldSettingsExist = settings.Exists();
+                if (oldSettingsExist)
+                    File.WriteAllText(Log.WorkPath + "\\.tmp", settings.ToString(), Encoding.UTF8);
                 settings = new RegistrySettings("Murky", "CSAuto-Portable");
                 if (File.Exists(Log.WorkPath + "\\.conf"))
                     settings.Import(Log.WorkPath + "\\.conf");
+                else if (oldSettingsExist)
+                {
+                    Log.WriteLine("Loading original settings to portable, first run of portable, but has old settings");
+                    settings.Import(Log.WorkPath + "\\.tmp");
+                }
+                if(oldSettingsExist)
+                    File.Delete(Log.WorkPath + "\\.tmp");
             }
             LoadLanguage(languageName?.ToLower());
             buyMenu = new AutoBuyMenu();
