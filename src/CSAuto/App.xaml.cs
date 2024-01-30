@@ -28,6 +28,7 @@ namespace CSAuto
         public bool AlwaysMaximized;
         public bool Restarted;
         public bool IsWindows11;
+        public bool IsPortable = false;
         public string Args = "";
         public AutoBuyMenu buyMenu;
         public RegistrySettings settings = new RegistrySettings();
@@ -38,7 +39,15 @@ namespace CSAuto
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            if (File.Exists(Log.WorkPath + "\\resource\\.portable"))
+                IsPortable = true;
             ParseArgs(e);
+            if (IsPortable)
+            {
+                settings = new RegistrySettings("Murky", "CSAuto-Portable");
+                if (File.Exists(Log.WorkPath + "\\.conf"))
+                    settings.Import(Log.WorkPath + "\\.conf");
+            }
             LoadLanguage(languageName?.ToLower());
             buyMenu = new AutoBuyMenu();
             ImportSettings();
@@ -79,6 +88,8 @@ namespace CSAuto
                     Restarted = true;
                 if (arg == "--language" && e.Args.ToList().IndexOf(arg) + 1 < e.Args.Length)
                     languageName = e.Args[e.Args.ToList().IndexOf(arg) + 1];
+                if (arg == "--portable")
+                    IsPortable = true;
             }
         }
 

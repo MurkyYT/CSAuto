@@ -238,6 +238,10 @@
   <PropertyGroup>
     <PreBuildEvent>call $(SolutionDir)prebuild.bat $(SolutionDir)
 call $(SolutionDir)stcmprs.exe $(OutDir)
-call $(SolutionDir)impack.exe $(OutDir)</PreBuildEvent>
+call $(SolutionDir)impack.exe $(OutDir)
+rm -r $(ProjectDir)$(OutDir)resource\.portable
+copy $(ProjectDir)resource\.portable $(ProjectDir)$(OutDir)resource\.portable
+attrib +H $(ProjectDir)$(OutDir)resource\.portable
+echo Copied .portable and added +H attrib</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -39,7 +39,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: "src\CSAuto\bin\Release\*.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "src\CSAuto\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "src\CSAuto\bin\Release\resource\*"; DestDir: "{app}\resource"; Flags: ignoreversion
+Source: "src\CSAuto\bin\Release\resource\*.pac"; DestDir: "{app}\resource"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

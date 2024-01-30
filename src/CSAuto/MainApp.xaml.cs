@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.9";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -1265,6 +1265,11 @@ namespace CSAuto
             Properties.Settings.Default.Save();
             current.MoveSettings();
 
+            if (current.IsPortable)
+            {
+                File.WriteAllText(Log.WorkPath+"\\.conf", current.settings.ToString(), Encoding.UTF8);
+                current.settings.DeleteSettings();
+            }
             //Application.Current.Shutdown();
         }
         private void CheckForDuplicates()

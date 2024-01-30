@@ -32,6 +32,10 @@ namespace Murky.Utils
             company = companyName;
             product = productName;
         }
+        public void DeleteSettings()
+        {
+            softwareKey.DeleteSubKey($"{company}\\{product}");
+        }
         public override string ToString()
         {
             string res = $"{company} - {product} - RegSet\n\n";
