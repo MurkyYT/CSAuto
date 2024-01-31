@@ -173,3 +173,6 @@
 "menu_open" "Open"
 "menu_optionsexport" "Export settings"
 "menu_optionsimport" "Import settings"
+"menu_alternativelocations" "Alternative Locations"
+"menu_website" "Website"
+"menu_portablemode" "Portable Mode"

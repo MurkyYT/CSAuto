@@ -1,7 +1,7 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Markdown.Xaml;
+using MdXaml;
 using Microsoft.Win32;
 using Murky.Utils;
 using Murky.Utils.CSGO;
@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Button = System.Windows.Controls.Button;
@@ -62,6 +63,8 @@ namespace CSAuto
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
             AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
+            PortableModeCheck.IsChecked = File.Exists(Log.WorkPath + "\\resource\\.portable");
+            IsPortableText.Text = $"Portable: {PortableModeCheck.IsChecked}";
         }
         private async Task RestartMessageBox()
         {
@@ -316,6 +319,7 @@ namespace CSAuto
                 return;
             }
             res = res.Replace("<!--Version split-->\n", "");
+            res = res.Replace("  ", "    ");
             Dispatcher.InvokeAsync(() => {
                 TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
                 FlowDocument document = (FlowDocument)converter.Convert(res, null, null, null);
@@ -344,6 +348,8 @@ namespace CSAuto
                 foreach (Button ch in FindVisualChildren<Button>(obj))
                     if (ch.Content != null && ch.Content.GetType().Name == "String")
                         ch.Content = AppLanguage.Language[(string)ch.Content];
+                foreach (DropDownButton ch in FindVisualChildren<DropDownButton>(obj))
+                    ch.Content = AppLanguage.Language[(string)ch.Content];
             });
         }
 
@@ -431,6 +437,8 @@ namespace CSAuto
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
             {
                 new Thread(() => { LoadChangelog(); }).Start();
+                LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
+                ((TextBlock)ChangeLogAlternatives.Items[1]).Text = AppLanguage.Language["menu_website"];
             }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {
@@ -683,6 +691,33 @@ namespace CSAuto
         {
             TabControl control = (TabControl)sender;
             isCt = control.SelectedIndex == 0;
+        }
+
+        private async void PortableModeCheck_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(bool)PortableModeCheck.IsChecked)
+            {
+                if(File.Exists(Log.WorkPath + "\\resource\\.portable"))
+                {
+                    File.Delete(Log.WorkPath + "\\resource\\.portable");
+                    await RestartMessageBox();
+                }
+            }
+            else
+            {
+                File.Create(Log.WorkPath + "\\resource\\.portable");
+                await RestartMessageBox();
+            }
+        }
+
+        private void OpenWebSite_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start("https://csauto.vercel.app/changelog");
+        }
+
+        private void OpenGithubChangelog_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start("https://github.com/MurkyYT/CSAuto/blob/master/Docs/FullChangelog.MD");
         }
     }
 }

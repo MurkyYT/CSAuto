@@ -173,3 +173,6 @@
 "menu_open" "Открыть"
 "menu_optionsexport" "Загрузить настройки"
 "menu_optionsimport" "Импортировать настройки"
+"menu_alternativelocations" "Альтернативные местоположения"
+"menu_website" "Сайт"
+"menu_portablemode" "Портативный режим"
