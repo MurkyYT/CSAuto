@@ -67,6 +67,8 @@
                                     <Button Content="inputtext_testmessagetelegram" Margin="20,0,0,0" Click="TelegramTestMessage_Click"/>
                                 </StackPanel>
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=telegramChatId}"/>
+                                <TextBlock Text="inputtitle_telegramcustomtoken" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"/>
+                                <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=customTelegramToken}" ToolTip="tooltip_telegramcustomtoken"/>
                                 <TextBlock Text="menu_notifications" FontSize="20" FontWeight="Bold"/>
                                 <CheckBox Content="menu_acceptednotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=acceptedNotification}"/>
                                 <CheckBox Content="menu_mapnotification" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mapNotification}"/>
@@ -166,7 +168,7 @@
                             </MenuItem>
                         </Menu>
                     </DockPanel>
-                    <TextBlock x:Name="IsPortableText" Text="Portable: {}" Grid.Row="1" Grid.ColumnSpan="2"  VerticalAlignment="Bottom" Margin="0,0,0,15"/>
+                    <TextBlock x:Name="IsPortableText" Text="Portable: {}" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Bottom" Margin="0,0,0,30"/>
                     <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom"/>
                     <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto"/>
                     <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto"/>

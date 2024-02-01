@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.9";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "4";
+        const string DEBUG_REVISION = "5";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -883,7 +883,9 @@ namespace CSAuto
             new Thread(() =>
             {
                 if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
-                    Telegram.SendMessage(message.Substring(5), Properties.Settings.Default.telegramChatId, APIKeys.TELEGRAM_BOT_TOKEN);
+                    Telegram.SendMessage(message.Substring(5), Properties.Settings.Default.telegramChatId,
+                        Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ? 
+                        Properties.Settings.Default.customTelegramToken : APIKeys.TELEGRAM_BOT_TOKEN);
                 if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
                     return;
                 try // Try connecting and send the message bytes  

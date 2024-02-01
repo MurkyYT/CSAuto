@@ -176,3 +176,5 @@
 "menu_alternativelocations" "Альтернативные местоположения"
 "menu_website" "Сайт"
 "menu_portablemode" "Портативный режим"
+"inputtitle_telegramcustomtoken" "Пользовательский токен Telegram-бота"
+"tooltip_telegramcustomtoken" "Введите здесь свой токен бота, который будет отправлять вам сообщения, если токен неверен или не существует, приложение вернется к токену по умолчанию"

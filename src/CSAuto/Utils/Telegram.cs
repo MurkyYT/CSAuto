@@ -1,4 +1,8 @@
 ﻿using CSAuto;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -62,6 +66,26 @@ namespace Murky.Utils
                 {
                    
                 }
+            }
+        }
+
+        public static bool CheckToken(string token)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(token)) return false;
+                string url = $"https://api.telegram.org/bot{token}/getMe";
+                using (WebClient webclient = new WebClient())
+                {
+                    string res = webclient.DownloadString(url);
+                    JObject jo = JObject.Parse(res);
+                    bool isOk = (bool)jo["ok"];
+                    return isOk;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
 

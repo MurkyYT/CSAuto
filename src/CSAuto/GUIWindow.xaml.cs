@@ -318,7 +318,9 @@ namespace CSAuto
                 });
                 return;
             }
+            // Remove uneeded thing
             res = res.Replace("<!--Version split-->\n", "");
+            // Well MdXaml cant use only 2 spaces to add indetation so replace "  " with "    "
             res = res.Replace("  ", "    ");
             Dispatcher.InvokeAsync(() => {
                 TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
@@ -350,6 +352,8 @@ namespace CSAuto
                         ch.Content = AppLanguage.Language[(string)ch.Content];
                 foreach (DropDownButton ch in FindVisualChildren<DropDownButton>(obj))
                     ch.Content = AppLanguage.Language[(string)ch.Content];
+                foreach (TextBox tb in FindVisualChildren<TextBox>(obj))
+                    tb.ToolTip = tb.ToolTip != null ? tb.ToolTip = AppLanguage.Language[(string)tb.ToolTip] : null;
             });
         }
 
@@ -498,7 +502,9 @@ namespace CSAuto
 
         private void TelegramTestMessage_Click(object sender, RoutedEventArgs e)
         {
-            Telegram.SendMessage("Test Message!",Properties.Settings.Default.telegramChatId,APIKeys.TELEGRAM_BOT_TOKEN);
+            Telegram.SendMessage("Test Message!",Properties.Settings.Default.telegramChatId, 
+                Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ? 
+                Properties.Settings.Default.customTelegramToken : APIKeys.TELEGRAM_BOT_TOKEN);
         }
 
         private void RemoveDiscordButton_Click(object sender, RoutedEventArgs e)

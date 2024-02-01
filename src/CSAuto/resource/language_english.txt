@@ -176,3 +176,5 @@
 "menu_alternativelocations" "Alternative Locations"
 "menu_website" "Website"
 "menu_portablemode" "Portable Mode"
+"inputtitle_telegramcustomtoken" "Custom Telegram Bot Token"
+"tooltip_telegramcustomtoken" "Enter here your bot token which will send you messages, if the token is wrong or doesn't exist the app will fallback to the default token"

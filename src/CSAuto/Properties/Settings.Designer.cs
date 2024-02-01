@@ -428,5 +428,17 @@ namespace CSAuto.Properties {
                 this["autoCloseCSAuto"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string customTelegramToken {
+            get {
+                return ((string)(this["customTelegramToken"]));
+            }
+            set {
+                this["customTelegramToken"] = value;
+            }
+        }
     }
 }
