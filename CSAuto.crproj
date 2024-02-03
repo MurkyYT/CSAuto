@@ -1,6 +1,0 @@
-<project outputDir="Confused" baseDir="src\APIKeys\bin\Release" xmlns="http://confuser.codeplex.com">
-  <rule pattern="true" inherit="false">
-    <protection id="constants" />
-  </rule>
-  <module path="APIKeys.dll" />
-</project>

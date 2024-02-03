@@ -237,9 +237,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>call $(SolutionDir)prebuild.bat $(SolutionDir)
-call $(SolutionDir)stcmprs.exe $(OutDir)
-call $(SolutionDir)impack.exe $(OutDir)
+    <PreBuildEvent>call $(SolutionDir)Misc\prebuild.bat $(SolutionDir)
+call $(SolutionDir)Misc\stcmprs.exe $(ProjectDir)resource $(TargetDir)resource
+call $(SolutionDir)Misc\impack.exe $(ProjectDir)resource\images $(TargetDir)resource\images.pac
 rm -r $(ProjectDir)$(OutDir)resource\.portable
 copy $(ProjectDir)resource\.portable $(ProjectDir)$(OutDir)resource\.portable</PreBuildEvent>
   </PropertyGroup>
