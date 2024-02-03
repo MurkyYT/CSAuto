@@ -4,7 +4,7 @@
 #define NAME "CSAuto"
 #define EXE_NAME "CSAuto.exe"
 #define InstallPath "{userappdata}"
-#define AppWebsite "https://csauto.netlify.app"
+#define AppWebsite "https://csauto.vercel.app/"
 #define APP_VERSION GetStringFileInfo("src\CSAuto\bin\release\CSAuto.exe",PRODUCT_VERSION)
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
