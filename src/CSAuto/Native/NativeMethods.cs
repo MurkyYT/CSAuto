@@ -17,6 +17,9 @@ namespace CSAuto
     public static class NativeMethods
     {
         [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        [DllImport("user32.dll")]
         static extern bool SetSystemCursor(IntPtr hcur, uint id);
 
         [DllImport("user32.dll", EntryPoint = "GetCursorInfo")]

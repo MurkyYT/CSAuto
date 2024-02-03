@@ -94,6 +94,10 @@ namespace Murky.Utils
             }
             return steamID3;
         }
+        /// <summary>
+        /// Tries to get the active SteamID64.
+        /// </summary>
+        /// <returns>0 if not found, active SteamID64 if found</returns>
         public static long GetSteamID64() 
         {
             int steamid3 = GetCurrentSteamID3();

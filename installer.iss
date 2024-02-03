@@ -44,7 +44,7 @@ Source: "src\CSAuto\bin\Release\resource\*.pac"; DestDir: "{app}\resource"; Flag
 
 [Icons]
 Name: "{autoprograms}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"
-Name: "{autodesktop}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"; Comment: "Software to automate usual CS in game tasks, such as accepting match, buying items and much more!"; Tasks: desktopicon
+Name: "{autodesktop}\{#NAME}"; Filename: "{app}\{#EXE_NAME}"; Comment: "Counter-Strike 2 companion that automates in game tasks, such as, accepting match, buying items and many more!"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#EXE_NAME}"; Description: "{cm:LaunchProgram,{#StringChange(NAME, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

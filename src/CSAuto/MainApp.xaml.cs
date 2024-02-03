@@ -30,6 +30,7 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using Size = System.Windows.Size;
 #endregion
 namespace CSAuto
 {
@@ -80,7 +81,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.9";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "5";
+        const string DEBUG_REVISION = "6";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -128,7 +129,8 @@ namespace CSAuto
         private string currentMapIcon = null;
         #endregion
         #region Members
-        Point csResolution = new Point();
+        RECT csResolution = new RECT();
+        //Size screenResolution = new Size();
         //Only workshop tools have netconport? (probably because vconsole2.exe uses it)
         //NetCon netCon = null;
         int frame = 0;
@@ -936,9 +938,12 @@ namespace CSAuto
                     csActive = NativeMethods.IsForegroundProcess((uint)csProcess.Id);
                     if (csActive)
                     {
-                        csResolution = new Point(
-                                (int)SystemParameters.PrimaryScreenWidth,
-                                (int)SystemParameters.PrimaryScreenHeight);
+                        bool success = NativeMethods.GetWindowRect(csProcess.MainWindowHandle, out RECT windSize);
+                        //screenResolution = new Size(
+                        //        (int)SystemParameters.PrimaryScreenWidth,
+                        //        (int)SystemParameters.PrimaryScreenHeight);
+                        if (success)
+                            csResolution = windSize;
                         if (Properties.Settings.Default.autoAcceptMatch && !inGame && !acceptedGame)
                             _ = AutoAcceptMatchAsync();
                     }
@@ -1128,81 +1133,86 @@ namespace CSAuto
                         Log.WriteLine("Init DXGI Capture");
                     }
                 }
-                using (Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ? 
-                    new Bitmap(csResolution.X, csResolution.Y) : Image.FromHbitmap(_handle))
+                Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ?
+                    new Bitmap(csResolution.Width, csResolution.Height) : Image.FromHbitmap(_handle);
+                if (Properties.Settings.Default.oldScreenCaptureWay)
                 {
-                    if (Properties.Settings.Default.oldScreenCaptureWay)
+                    using (Graphics g = Graphics.FromImage(bitmap))
                     {
-                        using (Graphics g = Graphics.FromImage(bitmap))
-                        {
-                            g.CopyFromScreen(new Point(
-                                0,
-                                0),
-                                Point.Empty,
-                                new System.Drawing.Size(csResolution.X, csResolution.Y));
-                        }
+                        g.CopyFromScreen(new Point(
+                            csResolution.Left,
+                            csResolution.Top),
+                            Point.Empty,
+                            new System.Drawing.Size(csResolution.Width, csResolution.Height));
                     }
-                    if (Properties.Settings.Default.saveDebugFrames)
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
-                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
-                        }
-                        catch { }
-                    }
-                    if (guiWindow != null)
-                    {
-                        guiWindow.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
-                        Point pixelPos = new Point(csResolution.X / 2, (int)(csResolution.Y / (1050f / 473f)) + 1);
-                        Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
-                        guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}";
-                    }
-                    bool found = false;
-                    int count = 0;
-                    for (int y = bitmap.Height - 1; y >= 0 && !found && !acceptedGame; y--)
-                    {
-                        Color pixelColor = bitmap.GetPixel(csResolution.X / 2, y);
-                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
-                        {
-
-                            if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
-                                         * just in case the program finds the 0:20 timer tick
-                                         * didnt happen for a while but can happen still
-                                         * happend while trying to create a while loop to search for button
-                                         */
-                            {
-                                var clickpoint = new Point(
-                                    csResolution.X / 2,
-                                    y);
-                                int X = clickpoint.X;
-                                int Y = clickpoint.Y;
-                                Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
-                                if (Properties.Settings.Default.acceptedNotification)
-                                    SendMessageToServer($"<ACP>{AppLanguage.Language["server_acceptmatch"]}");
-                                LeftMouseClick(X, Y);
-                                found = true;
-                                if (CheckIfAccepted(bitmap, Y))
-                                {
-                                    acceptedGame = true;
-                                    if (acceptButtonTimer.IsEnabled)
-                                        acceptButtonTimer.Stop();
-                                    if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
-                                        Telegram.SendPhoto(bitmap,
-                                            Properties.Settings.Default.telegramChatId,
-                                            APIKeys.TELEGRAM_BOT_TOKEN,
-                                            $"{csResolution.X}X{csResolution.Y}\n" +
-                                            $"({X},{Y})\n" +
-                                            $"{DateTime.Now}");
-                                    acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
-                                }
-                            }
-                            count++;
-                        }
-                    }
-                    if(!Properties.Settings.Default.oldScreenCaptureWay)
-                        NativeMethods.DeleteObject(_handle);
                 }
+                else
+                    bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
+                if (Properties.Settings.Default.saveDebugFrames)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
+                        bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                    }
+                    catch { }
+                }
+                if (guiWindow != null)
+                {
+                    guiWindow.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
+                    Point pixelPos = new Point(csResolution.Width / 2, (int)(csResolution.Height / (1050f / 473f)) + 1);
+                    Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
+                    guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}";
+                }
+                bool found = false;
+                int count = 0;
+                int yStart = bitmap.Height - 1;
+                int xMiddle = csResolution.Width / 2;
+                for (int y = yStart; y >= 0 && !found && !acceptedGame; y--)
+                {
+                    Color pixelColor = bitmap.GetPixel(xMiddle, y);
+                    if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                    {
+
+                        if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
+                                        * just in case the program finds the 0:20 timer tick
+                                        * didnt happen for a while but can happen still
+                                        * happend while trying to create a while loop to search for button
+                                        */
+                        {
+                            var clickpoint = new Point(
+                                csResolution.X + xMiddle,
+                                y);
+                            int X = clickpoint.X;
+                            int Y = clickpoint.Y;
+                            Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
+                            if (Properties.Settings.Default.acceptedNotification)
+                                SendMessageToServer($"<ACP>{AppLanguage.Language["server_acceptmatch"]}");
+                            LeftMouseClick(X, Y);
+                            found = true;
+                            if (CheckIfAccepted(bitmap, Y))
+                            {
+                                acceptedGame = true;
+                                if (acceptButtonTimer.IsEnabled)
+                                    acceptButtonTimer.Stop();
+                                if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
+                                    Telegram.SendPhoto(bitmap,
+                                        Properties.Settings.Default.telegramChatId,
+                                        Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
+                                            Properties.Settings.Default.customTelegramToken 
+                                            : APIKeys.TELEGRAM_BOT_TOKEN,
+                                        $"{csResolution.Width}X{csResolution.Height}\n" +
+                                        $"({X},{Y})\n" +
+                                        $"{DateTime.Now}");
+                                acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                            }
+                        }
+                        count++;
+                    }
+                }
+                if(!Properties.Settings.Default.oldScreenCaptureWay)
+                    NativeMethods.DeleteObject(_handle);
+                bitmap.Dispose();
             }
             else if (inLobby == true && !DXGIcapture.Enabled && Properties.Settings.Default.oldScreenCaptureWay)
             {

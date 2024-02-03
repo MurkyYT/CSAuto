@@ -275,7 +275,7 @@ namespace CSAuto
                 {
                     steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
                         $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
-                        $"StemID64: {Steam.GetSteamID64()}\n" +
+                        $"SteamID64: {Steam.GetSteamID64()}\n" +
                         $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
                         $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                         $"CS:GO LaunchOptions: \"{launchOpt}\"";
