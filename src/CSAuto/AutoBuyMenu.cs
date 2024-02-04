@@ -300,7 +300,7 @@ namespace CSAuto
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage,null,null,null));
                 enc.Save(outStream);
                 Bitmap bitmap = new Bitmap(outStream);
 

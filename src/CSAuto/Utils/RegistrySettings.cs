@@ -50,16 +50,16 @@ namespace Murky.Utils
                 switch (settingsKey.GetValueKind(item))
                 {
                     case RegistryValueKind.String:
-                        res += "0";
+                        res += (char)1;
                         break;
                     case RegistryValueKind.DWord:
-                        res += "1";
+                        res += (char)2;
                         break;
                     case RegistryValueKind.QWord:
-                        res += "2";
+                        res += (char)3;
                         break;
                     case RegistryValueKind.Binary:
-                        res += "3";
+                        res += (char)4;
                         break;
                 }
                 res += $"\"{item}\"\t\"{obj}\"\r\n";
@@ -68,12 +68,15 @@ namespace Murky.Utils
         }
         public bool Import(string path)
         {
+            char[] oldValues = new char[]
+            {
+                '0','1','2','3'
+            };
             try
             {
                 string file = File.ReadAllText(path, Encoding.Default);
                 file = file.Split(new string[] { "RegSet" }, StringSplitOptions.None)[1];
                 string[] lines = file.Split(new string[] { "\"\r\n" },StringSplitOptions.None);
-
                 for (int i =0; i< lines.Length; i++)
                 {
                     string line = lines[i].Trim();
@@ -81,38 +84,65 @@ namespace Murky.Utils
                     string[] values = GetValues(line);
                     if (values[0] == null || values[1] == null)
                         continue;
-                    switch (line[0])
-                    {
-                        case '0':
-                            Set(values[0], values[1]); break;
-                        case '1':
-                            Set(values[0], int.Parse(values[1])); break;
-                        case '2':
-                            Set(values[0], long.Parse(values[1])); break;
-                        case '3':
-                            Set(values[0], bool.Parse(values[1])); break;
-                    }
+                    if (oldValues.Contains(line[0]))
+                        OldLoadValues(line, values);
+                    else
+                        NewLoadValues(line, values);
                 }
                 return true;
             }
             catch { }
             return false;
         }
+
+        private void NewLoadValues(string line, string[] values)
+        {
+            switch (line[0])
+            {
+                case (char)1:
+                    Set(values[0], values[1]); break;
+                case (char)2:
+                    Set(values[0], int.Parse(values[1])); break;
+                case (char)3:
+                    Set(values[0], long.Parse(values[1])); break;
+                case (char)4:
+                    Set(values[0], bool.Parse(values[1])); break;
+            }
+        }
+
+        private void OldLoadValues(string line, string[] values)
+        {
+            switch (line[0])
+            {
+                case '0':
+                    Set(values[0], values[1]); break;
+                case '1':
+                    Set(values[0], int.Parse(values[1])); break;
+                case '2':
+                    Set(values[0], long.Parse(values[1])); break;
+                case '3':
+                    Set(values[0], bool.Parse(values[1])); break;
+            }
+        }
+
         private string[] GetValues(string v)
         {
             string[] res = new string[2];
             string firstVal = null;
-            try
+            string[] splt = v.Split('"');
+            if(splt.Length > 1)
             {
-                firstVal = v.Split('"')[1].Split('\t')[0].Trim(new char[] { '"' });
+                splt = splt[1].Split('\t');
+                firstVal = splt[0].Trim(new char[] { '"' });
             }
-            catch { }
             string secVal = null;
-            try
+            splt = v.Split(new char[] { '"' }, 3);
+            if(splt.Length > 2)
             {
-                secVal = v.Split(new char[] { '"' },3)[2].Split('\t')[1].Trim(new char[] { '"' });
+                splt = splt[2].Split('\t');
+                if(splt.Length > 1)
+                    secVal = splt[1].Trim(new char[] { '"' });
             }
-            catch { }
             res[0] = firstVal;
             res[1] = secVal;
             return res;
