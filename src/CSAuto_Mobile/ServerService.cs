@@ -1,5 +1,4 @@
-﻿using Android.App;
-using Android.Content;
+﻿using Android.Content;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Preferences;
@@ -8,8 +7,6 @@ using AndroidX.Core.App;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Murky.Utils.CSGO;
-using GameState = Murky.Utils.CSGO.GameState;
 #pragma warning disable CS0618 // Type or member is obsolete
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -143,10 +140,6 @@ namespace CSAuto_Mobile
                                     });
                                 }
                                 break;
-                            //case "<GSI>":
-                            //    if (MainActivity.Active)
-                            //        ParseGameState(clearResponse);
-                            //    break;
                             case "<CLS>":
                                 if (MainActivity.Active)
                                 {
@@ -180,33 +173,8 @@ namespace CSAuto_Mobile
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
             MainActivity.Instance.StartService(stopServiceIntent);
         }
-
-        private void ParseGameState(string clearResponse)
-        {
-            string[] splt = clearResponse.Split('}');
-            bool inGame = splt[splt.Length-1][..4] == "True";
-            GameState? gs = new GameState(clearResponse);  
-            if (!inGame)
-            {
-                MainActivity.Instance.RunOnUiThread(() => {
-                    MainActivity.Instance.state.Text = $"FriendCode: {CSGOFriendCode.Encode(gs.MySteamID)}";
-                    MainActivity.Instance.details.Text = $"Chilling in lobby";
-                });
-            }
-            else
-            {
-                MainActivity.Instance.RunOnUiThread(() => {
-                    MainActivity.Instance.state.Text = $"{gs.Match.Mode} - {gs.Match.Map}";
-                    string? phase = gs.Match.Phase == Phase.Warmup ? "Warmup" : gs.Round.Phase.ToString();
-                    MainActivity.Instance.details.Text = gs.Player.Team == Team.T ?
-                        $"{gs.Match.TScore} [T] ({phase}) {gs.Match.CTScore} [CT]" :
-                        $"{gs.Match.CTScore} [CT] ({phase}) {gs.Match.TScore} [T]";
-                });
-            }
-        }
         private long GetMyIpAddress()
         {
-
             WifiManager? wifiManager = (WifiManager)Application.Context.GetSystemService(WifiService);
             return wifiManager.ConnectionInfo.IpAddress;
         }
