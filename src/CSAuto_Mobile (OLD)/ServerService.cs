@@ -1,21 +1,21 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Net.Wifi;
 using Android.OS;
-using Android.Preferences;
 using Android.Util;
-using AndroidX.Core.App;
-using System.Net;
+using System;
 using System.Net.Sockets;
-using System.Text;
+using System.Net;
+using Encoding = System.Text.Encoding;
+using Android.Net.Wifi;
+using Context = Android.Content.Context;
+using Xamarin.Essentials;
+using AndroidX.Core.App;
+using Android.Preferences;
+using CSAuto;
 using Murky.Utils.CSGO;
-using GameState = Murky.Utils.CSGO.GameState;
+using System.Threading;
+using System.Threading.Tasks;
 #pragma warning disable CS0618 // Type or member is obsolete
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CA1416 // Validate platform compatibility
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
-#pragma warning disable CA1422 // Validate platform compatibility
 namespace CSAuto_Mobile
 {
     /// <summary>
@@ -26,19 +26,18 @@ namespace CSAuto_Mobile
 	[Service]
     public class ServerService : Service
     {
-
         static readonly string TAG = typeof(ServerService).FullName;
 
         bool isStarted;
-        IPAddress? myIpAddress;
-        TcpListener? listener;
+        Context currentContext = Platform.CurrentActivity;
+        IPAddress myIpAddress;
+        TcpListener listener;
         public override void OnCreate()
         {
             base.OnCreate();
             Log.Info(TAG, "OnCreate: the service is initializing.");
             myIpAddress = new IPAddress(GetMyIpAddress());
         }
-
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
@@ -88,7 +87,7 @@ namespace CSAuto_Mobile
         {
             try
             {
-                IPEndPoint? ipEndPoint = new IPEndPoint(GetMyIpAddress(), 11_000);
+                IPEndPoint ipEndPoint = new IPEndPoint(GetMyIpAddress(), 11_000);
                 listener = new TcpListener(ipEndPoint);
                 listener.Start();
                 while (true)
@@ -173,14 +172,14 @@ namespace CSAuto_Mobile
             catch (Exception ex) { ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
             var stopServiceIntent = new Intent(this, GetType());
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
-            MainActivity.Instance.StartService(stopServiceIntent);
+            currentContext.StartService(stopServiceIntent);
         }
 
         private void ParseGameState(string clearResponse)
         {
             string[] splt = clearResponse.Split('}');
             bool inGame = splt[splt.Length-1][..4] == "True";
-            GameState? gs = new GameState(clearResponse);  
+            GameState gs = new GameState(clearResponse);  
             if (!inGame)
             {
                 MainActivity.Instance.RunOnUiThread(() => {
@@ -192,7 +191,7 @@ namespace CSAuto_Mobile
             {
                 MainActivity.Instance.RunOnUiThread(() => {
                     MainActivity.Instance.state.Text = $"{gs.Match.Mode} - {gs.Match.Map}";
-                    string? phase = gs.Match.Phase == Phase.Warmup ? "Warmup" : gs.Round.Phase.ToString();
+                    string phase = gs.Match.Phase == Phase.Warmup ? "Warmup" : gs.Round.Phase.ToString();
                     MainActivity.Instance.details.Text = gs.Player.Team == Team.T ?
                         $"{gs.Match.TScore} [T] ({phase}) {gs.Match.CTScore} [CT]" :
                         $"{gs.Match.CTScore} [CT] ({phase}) {gs.Match.TScore} [T]";
@@ -201,8 +200,7 @@ namespace CSAuto_Mobile
         }
         private long GetMyIpAddress()
         {
-
-            WifiManager? wifiManager = (WifiManager)Application.Context.GetSystemService(WifiService);
+            WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Service.WifiService);
             return wifiManager.ConnectionInfo.IpAddress;
         }
 
@@ -215,7 +213,7 @@ namespace CSAuto_Mobile
                           .SetSmallIcon(Resource.Mipmap.ic_launcher) // This is the icon to display
                           .SetContentText(description); // the message to display.
             builder.SetPriority((int)priority);
-            Notification? notification = builder.Build();
+            Notification notification = builder.Build();
             // Turn on sound if the sound switch is on:                 
             notification.Defaults |= NotificationDefaults.Sound;
             notification.Visibility = NotificationVisibility.Public;
@@ -225,7 +223,7 @@ namespace CSAuto_Mobile
             notificationManager.Notify(id, notification);
         }
 
-        public override IBinder? OnBind(Intent intent)
+        public override IBinder OnBind(Intent intent)
         {
             // Return null because this is a pure started service. A hybrid service would return a binder that would
             // allow access to the GetFormattedStamp() method.
@@ -245,8 +243,8 @@ namespace CSAuto_Mobile
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.Cancel(Constants.SERVICE_RUNNING_NOTIFICATION_ID);
             isStarted = false;
-            ISharedPreferences? prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
-            ISharedPreferencesEditor? editor = prefs.Edit();
+            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            ISharedPreferencesEditor editor = prefs.Edit();
             editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
             // editor.Commit();    // applies changes synchronously on older APIs
             editor.Apply();        // applies changes asynchronously on newer APIs
@@ -350,7 +348,7 @@ namespace CSAuto_Mobile
         /// user taps on the notification; it will take them to the main activity of the app.
         /// </summary>
         /// <returns>The content intent.</returns>
-        PendingIntent? BuildIntentToShowMainActivity()
+        PendingIntent BuildIntentToShowMainActivity()
         {
             var notificationIntent = new Intent(this, typeof(MainActivity));
             notificationIntent.SetAction(Constants.ACTION_MAIN_ACTIVITY);

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Murky.Utils.CSGO
+namespace CSAuto
 {
     public enum BombState
     {
@@ -55,16 +55,16 @@ namespace Murky.Utils.CSGO
     }
     public class GameState : IDisposable
     {
-        public Player? Player { get; private set; }
-        public Match? Match { get; private set; }
-        public Round? Round { get; private set; }
-        public long? Timestamp { get; private set; }
-        public string? MySteamID { get; private set; }
-        public bool? IsDead { get; private set; }
-        public bool? IsSpectating { get; private set; }
-        public string? JSON { get { return _JSON; } }
-        private string? _JSON;
-        internal void UpdateJson(string? JSON)
+        public Player Player { get; private set; }
+        public Match Match { get; private set; }
+        public Round Round { get; private set; }
+        public long Timestamp { get; private set; }
+        public string MySteamID { get; private set; }
+        public bool IsDead { get; private set; }
+        public bool IsSpectating { get; private set; }
+        public string JSON { get { return _JSON; } }
+        private string _JSON;
+        internal void UpdateJson(string JSON)
         {
             if (JSON == null)
                 return;
@@ -132,7 +132,7 @@ namespace Murky.Utils.CSGO
             return int.Parse(split[1].Split(',')[0]);
         }
 
-        private string? GetPlayerName()
+        private string GetPlayerName()
         {
             string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None);
@@ -146,7 +146,7 @@ namespace Murky.Utils.CSGO
             return _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None).Length > 1;
         }
 
-        public GameState(string? JSON)
+        public GameState(string JSON)
         {
             UpdateJson(JSON);
         }
@@ -183,7 +183,7 @@ namespace Murky.Utils.CSGO
             return long.Parse(split[1].Trim());
         }
 
-        private string? GetMap()
+        private string GetMap()
         {
             string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
@@ -239,7 +239,7 @@ namespace Murky.Utils.CSGO
             }
         }
 
-        private string? GetSteamID()
+        private string GetSteamID()
         {
             string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
@@ -248,7 +248,7 @@ namespace Murky.Utils.CSGO
             return split[1].Split('"')[0];
         }
 
-        private string? GetMySteamID()
+        private string GetMySteamID()
         {
             string splitStr = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
             string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
@@ -273,7 +273,7 @@ namespace Murky.Utils.CSGO
         {
             return GetBombState() != null;
         }
-        string? GetBombState()
+        string GetBombState()
         {
             string[] split = _JSON.Split(new string[] { "\"bomb\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
@@ -418,11 +418,11 @@ namespace Murky.Utils.CSGO
     }
     public class Weapon : IDisposable
     {
-        public int? Index { get; internal set; }
-        public int? Bullets { get; internal set; }
-        public int? ClipSize { get; internal set; }
-        public int? ReserveBullets { get; internal set; }
-        public string? Name { get; internal set; }
+        public int Index { get; internal set; }
+        public int Bullets { get; internal set; }
+        public int ClipSize { get; internal set; }
+        public int ReserveBullets { get; internal set; }
+        public string Name { get; internal set; }
         public WeaponType? Type { get; internal set; }
         public WeaponState? State { get; internal set; }
 
@@ -437,9 +437,9 @@ namespace Murky.Utils.CSGO
     {
         public Phase? Phase { get; internal set; }
         public Mode? Mode { get; internal set; }
-        public string? Map { get; internal set; }
-        public int? TScore { get; internal set; }
-        public int? CTScore { get; internal set; }
+        public string Map { get; internal set; }
+        public int TScore { get; internal set; }
+        public int CTScore { get; internal set; }
 
         public void Dispose()
         {
@@ -450,7 +450,7 @@ namespace Murky.Utils.CSGO
     }
     public class Round : IDisposable
     {
-        public int? CurrentRound { get; internal set; }
+        public int CurrentRound { get; internal set; }
         public Phase? Phase { get; internal set; }
         public BombState? Bombstate { get; internal set; }
 
@@ -462,20 +462,20 @@ namespace Murky.Utils.CSGO
     }
     public class Player : IDisposable
     {
-        public Weapon? ActiveWeapon { get; internal set; }
-        public Weapon[]? Weapons { get; internal set; }
+        public Weapon ActiveWeapon { get; internal set; }
+        public Weapon[] Weapons { get; internal set; }
         public Activity? CurrentActivity { get; internal set; }
         public Team? Team { get; internal set; }
-        public int? Health { get; internal set; }
-        public int? Armor { get; internal set; }
-        public int? Money { get; internal set; }
-        public int? Kills { get; internal set; }
-        public int? Deaths { get; internal set; }
-        public int? MVPS { get; internal set; }
-        public bool? HasHelmet { get; internal set; }
-        public bool? HasDefuseKit { get; internal set; }
-        public string? SteamID { get; internal set; }
-        public string? Name { get; internal set; }
+        public int Health { get; internal set; }
+        public int Armor { get; internal set; }
+        public int Money { get; internal set; }
+        public int Kills { get; internal set; }
+        public int Deaths { get; internal set; }
+        public int MVPS { get; internal set; }
+        public bool HasHelmet { get; internal set; }
+        public bool HasDefuseKit { get; internal set; }
+        public string SteamID { get; internal set; }
+        public string Name { get; internal set; }
         public void Dispose()
         {
             ActiveWeapon.Dispose();
@@ -487,7 +487,7 @@ namespace Murky.Utils.CSGO
         }
         internal void SetWeapons(string JSON)
         {
-            string? weapons = GetWeapons(JSON);
+            string weapons = GetWeapons(JSON);
             int amountOfWeapons = CountWeapons(weapons);
             Weapons = new Weapon[amountOfWeapons];
             for (int i = 0; i < amountOfWeapons; i++)
@@ -495,7 +495,7 @@ namespace Murky.Utils.CSGO
                 Weapons[i] = GetWeaponAt(weapons, i);
             }
         }
-        private Weapon GetWeaponAt(string? weapons, int index)
+        private Weapon GetWeaponAt(string weapons, int index)
         {
             string[] splitted = weapons.Split(new string[] { $"\"weapon_{index}\": {{" }, StringSplitOptions.None);
             if (splitted.Length > 1)
@@ -510,7 +510,7 @@ namespace Murky.Utils.CSGO
                     int reserveBullets = GetReserveBullets(weapon);
                     int clipSize = GetClipSize(weapon);
 
-                    Weapon? res = new Weapon()
+                    Weapon res = new Weapon()
                     {
                         Index = index,
                         Name = name,
@@ -607,7 +607,7 @@ namespace Murky.Utils.CSGO
             return null;
         }
 
-        private int CountWeapons(string? weapons)
+        private int CountWeapons(string weapons)
         {
             if (weapons == null)
                 return 0;
@@ -620,7 +620,7 @@ namespace Murky.Utils.CSGO
             }
             return count;
         }
-        private string? GetWeapons(string jSON)
+        private string GetWeapons(string jSON)
         {
             string[] splitted = jSON.Split(new string[] { "\"weapons\": {" }, StringSplitOptions.None);
             if (splitted.Length > 1)
