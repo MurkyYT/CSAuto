@@ -426,7 +426,7 @@ namespace CSAuto
                     Log.WriteLine($"hCurosr when in CS -> {hCursorOriginal}");
                 }
                 UpdateDiscordRPC();
-                SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
+                //SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
             }
             catch (Exception ex)

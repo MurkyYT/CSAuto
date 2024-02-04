@@ -75,7 +75,11 @@ namespace CSAuto_Mobile
             {
                 Log.Info(TAG, "OnStartCommand: Restarting the timer.");
             }
-
+            ISharedPreferences? prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            ISharedPreferencesEditor? editor = prefs.Edit();
+            editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
+            // editor.Commit();    // applies changes synchronously on older APIs
+            editor.Apply();        // applies changes asynchronously on newer APIs
             // This tells Android not to restart the service if it is killed to reclaim resources.
             return StartCommandResult.Sticky;
         }
@@ -108,6 +112,7 @@ namespace CSAuto_Mobile
                     sender.GetStream().Read(buffer, 0, bytesize);
                     message = cleanMessage(buffer);
                     var eom = "<|EOM|>";
+                    Log.Debug(TAG, message);
                     if (message.IndexOf(eom) > -1 /* is end of message */)
                     {
                         string clearResponse = message.Replace("<BMB>","").Replace("<CRS>","").Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
@@ -138,10 +143,10 @@ namespace CSAuto_Mobile
                                     });
                                 }
                                 break;
-                            case "<GSI>":
-                                if (MainActivity.Active)
-                                    ParseGameState(clearResponse);
-                                break;
+                            //case "<GSI>":
+                            //    if (MainActivity.Active)
+                            //        ParseGameState(clearResponse);
+                            //    break;
                             case "<CLS>":
                                 if (MainActivity.Active)
                                 {
