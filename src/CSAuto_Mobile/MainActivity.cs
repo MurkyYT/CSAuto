@@ -1,31 +1,26 @@
 using Android.Content;
 using Android.Net.Wifi;
 using Android.Preferences;
-using static Android.Telecom.Call;
 using System.Net;
-using Android.Nfc;
 using Android.OS;
 using Android.Util;
-using static Android.Provider.SyncStateContract;
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-#pragma warning disable CA1422 // Validate platform compatibility
+using Java.Util.Prefs;
+using Android.Net;
+
 namespace CSAuto_Mobile
 {
     [Activity(Label = "@string/app_name", MainLauncher = true)]
     public class MainActivity : Activity
     {
 
-        static readonly string TAG = typeof(MainActivity).FullName;
-        public required Button stopServiceButton;
-        public required Button startServiceButton;
-        public required TextView outputText;
-        public required TextView ipAdressText;
-        public required TextView details;
-        public required TextView state;
-        public required TextView bombState;
+        static readonly string? TAG = typeof(MainActivity).FullName;
+        public required Button? stopServiceButton;
+        public required Button? startServiceButton;
+        public required TextView? outputText;
+        public required TextView? ipAdressText;
+        public required TextView? details;
+        public required TextView? state;
+        public required TextView? bombState;
         public static MainActivity? Instance;
         public static bool Active = false;
         public required Intent startServiceIntent;
@@ -37,19 +32,18 @@ namespace CSAuto_Mobile
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-
-            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
-            isStarted = prefs.GetBoolean(Constants.SERVICE_STARTED_KEY, false);
-            WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(WifiService);
+            isStarted = IsStarted();
+            WifiManager? wifiManager = (WifiManager?)Application.Context.GetSystemService(WifiService);
 
 
-            int ip = wifiManager.ConnectionInfo.IpAddress;
+            byte[]? ip = GetMyIpAddress();
             ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
             outputText = FindViewById<TextView>(Resource.Id.OutputText);
             details = FindViewById<TextView>(Resource.Id.details);
             state = FindViewById<TextView>(Resource.Id.state);
             bombState = FindViewById<TextView>(Resource.Id.bomb_state);
-            ipAdressText.Text = $"Your IP Address: {new IPAddress(ip)}";
+            if(ip != null)
+                ipAdressText.Text = $"Your IP Address: {new IPAddress(ip)}";
             Instance = this;
             startServiceIntent = new Intent(this, typeof(ServerService));
             startServiceIntent.SetAction(Constants.ACTION_START_SERVICE);
@@ -76,7 +70,23 @@ namespace CSAuto_Mobile
             }
             Active = true;
         }
-        void StopServiceButton_Click(object sender, System.EventArgs e)
+        private static byte[]? GetMyIpAddress()
+        {
+            ConnectivityManager? connectivityManager = (ConnectivityManager?)Application.Context.GetSystemService(ConnectivityService);
+            if (connectivityManager != null && connectivityManager is ConnectivityManager)
+            {
+                IList<LinkAddress> addresses = connectivityManager.GetLinkProperties(connectivityManager.ActiveNetwork).LinkAddresses;
+                LinkAddress address = addresses.Where(x => x.Address.HostAddress.Contains('.')).ElementAt(0);
+                return address.Address.GetAddress();
+            }
+            return null;
+        }
+        private bool IsStarted()
+        {
+            Preferences? prefs = Preferences.UserRoot();
+            return prefs.GetBoolean(Constants.SERVICE_STARTED_KEY,false);
+        }
+        void StopServiceButton_Click(object? sender, System.EventArgs e)
         {
             stopServiceButton.Enabled = false;
             Log.Info(TAG, "User requested that the service be stopped.");
@@ -85,7 +95,7 @@ namespace CSAuto_Mobile
             startServiceButton.Enabled = true;
         }
 
-        void StartServiceButton_Click(object sender, System.EventArgs e)
+        void StartServiceButton_Click(object? sender, System.EventArgs e)
         {
             startServiceButton.Enabled = false;
             StartService(startServiceIntent);
@@ -93,8 +103,8 @@ namespace CSAuto_Mobile
             isStarted = true;
             stopServiceButton.Enabled = true;
             Intent intent = new Intent();
-            string packageName = PackageName;
-            PowerManager pm = (PowerManager)GetSystemService(PowerService);
+            string? packageName = PackageName;
+            PowerManager? pm = (PowerManager?)GetSystemService(PowerService);
             if (pm.IsIgnoringBatteryOptimizations(packageName))
                 Log.Info(TAG, "Already ignoring battery optimizations");
             else

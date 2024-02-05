@@ -1,18 +1,17 @@
 ﻿using Android.Content;
+using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Preferences;
+using Android.Systems;
 using Android.Util;
 using AndroidX.Core.App;
+using Java.Util.Prefs;
+using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-#pragma warning disable CS0618 // Type or member is obsolete
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CA1416 // Validate platform compatibility
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
-#pragma warning disable CA1422 // Validate platform compatibility
+
 namespace CSAuto_Mobile
 {
     /// <summary>
@@ -24,20 +23,22 @@ namespace CSAuto_Mobile
     public class ServerService : Service
     {
 
-        static readonly string TAG = typeof(ServerService).FullName;
+        static readonly string? TAG = typeof(ServerService).FullName;
 
         bool isStarted;
         IPAddress? myIpAddress;
         TcpListener? listener;
+        Thread? thread;
         public override void OnCreate()
         {
             base.OnCreate();
             Log.Info(TAG, "OnCreate: the service is initializing.");
-            myIpAddress = new IPAddress(GetMyIpAddress());
+            byte[]? addr = GetMyIpAddress();
+            if(addr != null) { myIpAddress = new IPAddress(addr); }
         }
 
 
-        public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
+        public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
         {
             if (intent == null)
                 return StartCommandResult.Sticky;
@@ -52,7 +53,8 @@ namespace CSAuto_Mobile
                     Log.Info(TAG, "OnStartCommand: The service is starting.");
                     CreateNotificationChannel();
                     RegisterForegroundService();
-                    new Thread(StartServer).Start();
+                    thread = new Thread(StartServer);
+                    thread.Start();
                     isStarted = true;
                 }
                 MainActivity.Instance.stopServiceButton.Enabled = true;
@@ -62,8 +64,9 @@ namespace CSAuto_Mobile
             {
                 Log.Info(TAG, "OnStartCommand: The service is stopping.");
                 StopServer();
-                StopForeground(true);
+                StopForeground(StopForegroundFlags.Remove);
                 StopSelf();
+                thread?.Join();
                 MainActivity.Instance.stopServiceButton.Enabled = false;
                 MainActivity.Instance.startServiceButton.Enabled = true;
                 isStarted = false;
@@ -72,90 +75,109 @@ namespace CSAuto_Mobile
             {
                 Log.Info(TAG, "OnStartCommand: Restarting the timer.");
             }
-            ISharedPreferences? prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
-            ISharedPreferencesEditor? editor = prefs.Edit();
-            editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
-            // editor.Commit();    // applies changes synchronously on older APIs
-            editor.Apply();        // applies changes asynchronously on newer APIs
-            // This tells Android not to restart the service if it is killed to reclaim resources.
+
+            SaveState();
+
             return StartCommandResult.Sticky;
         }
-        private static string cleanMessage(byte[] bytes)
+
+        private void SaveState()
+        {
+            Preferences? prefs = Preferences.UserRoot();
+            prefs.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
+        }
+
+        private static string CleanMessage(byte[] bytes)
         {
             string message = Encoding.UTF8.GetString(bytes);
             return message;
+        }
+        public long CastIp(byte[] ip)
+        {
+            // This restriction is implicit in your existing code, but
+            // it would currently just lose data...
+            if (ip.Length != 4)
+            {
+                throw new ArgumentException("Must be an IPv4 address");
+            }
+            int networkOrder = BitConverter.ToInt32(ip, 0);
+            networkOrder = BinaryPrimitives.ReverseEndianness(networkOrder);
+            return (uint)IPAddress.HostToNetworkOrder(networkOrder);
         }
         private void StartServer()
         {
             try
             {
-                IPEndPoint? ipEndPoint = new IPEndPoint(GetMyIpAddress(), 11_000);
-                listener = new TcpListener(ipEndPoint);
-                listener.Start();
-                while (true)
+                if (myIpAddress != null)
                 {
-                    if(isStarted && MainActivity.Instance.stopServiceButton != null && !MainActivity.Instance.stopServiceButton.Enabled)
+                    IPEndPoint? ipEndPoint = new IPEndPoint(CastIp(myIpAddress.GetAddressBytes()), 11_000);
+                    listener = new TcpListener(ipEndPoint);
+                    listener.Start();
+                    while (true)
                     {
-                        MainActivity.Instance.stopServiceButton.Enabled = true;
-                        MainActivity.Instance.startServiceButton.Enabled = false;
-                    }
-                    // Receive message.
-                    const int bytesize = 1024 * 1024;
-
-                    string message = null;
-                    byte[] buffer = new byte[bytesize];
-
-                    var sender = listener.AcceptTcpClient();
-                    sender.GetStream().Read(buffer, 0, bytesize);
-                    message = cleanMessage(buffer);
-                    var eom = "<|EOM|>";
-                    Log.Debug(TAG, message);
-                    if (message.IndexOf(eom) > -1 /* is end of message */)
-                    {
-                        string clearResponse = message.Replace("<BMB>","").Replace("<CRS>","").Replace("<GSI>","").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�","");
-                        switch (message.Substring(0, "<XXX>".Length))
+                        if (isStarted && MainActivity.Instance.stopServiceButton != null && !MainActivity.Instance.stopServiceButton.Enabled)
                         {
-                            case "<ACP>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.ACCEPTED_MATCH_NOTIFICATION_ID, Constants.ACCEPTED_MATCH_CHANNEL);
-                                break;
-                            case "<MAP>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.LOADED_ON_MAP_NOTIFICATION_ID, Constants.LOADED_ON_MAP_CHANNEL_ID);
-                                break;
-                            case "<LBY>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.IN_LOBBY_NOTIFICATION_ID, Constants.LOADED_TO_LOBBY_CHANNEL);
-                                break;
-                            case "<CNT>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
-                                break;
-                            case "<CRS>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CRASHED_NOTIFICATION_ID, Constants.CRASHED_CHANNEL);
-                                break;
-                            case "<BMB>":
-                                ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.BOMB_NOTIFICATION_ID, Constants.BOMB_CHANNEL,NotificationPriority.Default);
-                                if (MainActivity.Active)
-                                {
-                                    MainActivity.Instance.RunOnUiThread(() =>
-                                    {
-                                        MainActivity.Instance.bombState.Text = clearResponse;
-                                    });
-                                }
-                                break;
-                            case "<CLS>":
-                                if (MainActivity.Active)
-                                {
-                                    MainActivity.Instance.RunOnUiThread(() =>
-                                    {
-                                        MainActivity.Instance.state.Text = "";
-                                        MainActivity.Instance.details.Text = "";
-                                        MainActivity.Instance.bombState.Text = "";
-                                    });
-                                }
-                                break;
+                            MainActivity.Instance.stopServiceButton.Enabled = true;
+                            MainActivity.Instance.startServiceButton.Enabled = false;
                         }
-                        //MainActivity.Instance.RunOnUiThread(() => {
-                        //    MainActivity.Instance.outputText.Text = clearResponse;
-                        //});
-                    
+                        // Receive message.
+
+                        string? message = null;
+                        List<byte> buffer = new();
+                        var sender = listener.AcceptTcpClient();
+                        Stream stream = sender.GetStream();
+                        while (stream.CanRead && stream.IsDataAvailable())
+                            buffer.Add((byte)stream.ReadByte());
+                        message = CleanMessage(buffer.ToArray());
+                        var eom = "<|EOM|>";
+                        Log.Debug(TAG, message);
+                        if (message.IndexOf(eom) > -1 /* is end of message */)
+                        {
+                            string clearResponse = message.Replace("<BMB>", "").Replace("<CRS>", "").Replace("<GSI>", "").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�", "");
+                            switch (message.Substring(0, "<XXX>".Length))
+                            {
+                                case "<ACP>":
+                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.ACCEPTED_MATCH_NOTIFICATION_ID, Constants.ACCEPTED_MATCH_CHANNEL);
+                                    break;
+                                case "<MAP>":
+                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.LOADED_ON_MAP_NOTIFICATION_ID, Constants.LOADED_ON_MAP_CHANNEL_ID);
+                                    break;
+                                case "<LBY>":
+                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.IN_LOBBY_NOTIFICATION_ID, Constants.LOADED_TO_LOBBY_CHANNEL);
+                                    break;
+                                case "<CNT>":
+                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
+                                    break;
+                                case "<CRS>":
+                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CRASHED_NOTIFICATION_ID, Constants.CRASHED_CHANNEL);
+                                    break;
+                                case "<BMB>":
+                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.BOMB_NOTIFICATION_ID, Constants.BOMB_CHANNEL, NotificationPriority.Default);
+                                    if (MainActivity.Active)
+                                    {
+                                        MainActivity.Instance.RunOnUiThread(() =>
+                                        {
+                                            MainActivity.Instance.bombState.Text = clearResponse;
+                                        });
+                                    }
+                                    break;
+                                case "<CLS>":
+                                    if (MainActivity.Active)
+                                    {
+                                        MainActivity.Instance.RunOnUiThread(() =>
+                                        {
+                                            MainActivity.Instance.state.Text = "";
+                                            MainActivity.Instance.details.Text = "";
+                                            MainActivity.Instance.bombState.Text = "";
+                                        });
+                                    }
+                                    break;
+                            }
+                            //MainActivity.Instance.RunOnUiThread(() => {
+                            //    MainActivity.Instance.outputText.Text = clearResponse;
+                            //});
+
+                        }
                     }
                 }
             }
@@ -172,11 +194,18 @@ namespace CSAuto_Mobile
             var stopServiceIntent = new Intent(this, GetType());
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
             MainActivity.Instance.StartService(stopServiceIntent);
+            SaveState();
         }
-        private long GetMyIpAddress()
+        private static byte[]? GetMyIpAddress()
         {
-            WifiManager? wifiManager = (WifiManager)Application.Context.GetSystemService(WifiService);
-            return wifiManager.ConnectionInfo.IpAddress;
+            ConnectivityManager? connectivityManager = (ConnectivityManager?)Application.Context.GetSystemService(ConnectivityService);
+            if (connectivityManager != null && connectivityManager is ConnectivityManager)
+            {
+                IList<LinkAddress> addresses = connectivityManager.GetLinkProperties(connectivityManager.ActiveNetwork).LinkAddresses;
+                LinkAddress address = addresses.Where(x => x.Address.HostAddress.Contains('.')).ElementAt(0);
+                return address.Address.GetAddress();
+            }
+            return null;
         }
 
         void ShowNotification(string title,string description,int id,string channel_id, NotificationPriority priority= NotificationPriority.High)
@@ -190,15 +219,14 @@ namespace CSAuto_Mobile
             builder.SetPriority((int)priority);
             Notification? notification = builder.Build();
             // Turn on sound if the sound switch is on:                 
-            notification.Defaults |= NotificationDefaults.Sound;
             notification.Visibility = NotificationVisibility.Public;
             // Turn on vibrate if the sound switch is on:                 
-            notification.Defaults |= NotificationDefaults.Vibrate;
+            notification.Vibrate = new long[0];
             var notificationManager = NotificationManagerCompat.From(this);
             notificationManager.Notify(id, notification);
         }
 
-        public override IBinder? OnBind(Intent intent)
+        public override IBinder? OnBind(Intent? intent)
         {
             // Return null because this is a pure started service. A hybrid service would return a binder that would
             // allow access to the GetFormattedStamp() method.
@@ -215,14 +243,10 @@ namespace CSAuto_Mobile
             StopServer();
 
             // Remove the notification from the status bar.
-            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            NotificationManager? notificationManager = (NotificationManager?)GetSystemService(NotificationService);
             notificationManager.Cancel(Constants.SERVICE_RUNNING_NOTIFICATION_ID);
             isStarted = false;
-            ISharedPreferences? prefs = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
-            ISharedPreferencesEditor? editor = prefs.Edit();
-            editor.PutBoolean(Constants.SERVICE_STARTED_KEY, isStarted);
-            // editor.Commit();    // applies changes synchronously on older APIs
-            editor.Apply();        // applies changes asynchronously on newer APIs
+            SaveState();
             base.OnDestroy();
         }
 
@@ -230,12 +254,12 @@ namespace CSAuto_Mobile
         {
             try
             {
-                if (listener != null)
-                    listener.Stop();
+                listener?.Stop();
+                thread = null;
             }
             catch { }
         }
-
+#pragma warning disable CA1416 // Validate platform compatibility
         void CreateNotificationChannel()
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
@@ -248,12 +272,13 @@ namespace CSAuto_Mobile
 
             var name = "Service Status";
             var description = "No description";
+
             var channel = new NotificationChannel(Constants.SERVICE_CHANNEL_ID, name, NotificationImportance.Default)
             {
                 Description = description
             };
-
-            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            channel.SetSound(null, null);
+            NotificationManager? notificationManager = (NotificationManager?)GetSystemService(NotificationService);
             notificationManager.CreateNotificationChannel(channel);
             name = "Loaded on map";
             description = "No description";
@@ -261,7 +286,7 @@ namespace CSAuto_Mobile
             {
                 Description = description
             };
-
+            channel.SetSound(null, null);
             notificationManager.CreateNotificationChannel(channel);
             name = "Accepted match";
             description = "No description";
@@ -269,7 +294,7 @@ namespace CSAuto_Mobile
             {
                 Description = description
             };
-
+            channel.SetSound(null, null);
             notificationManager.CreateNotificationChannel(channel);
             name = "Back in lobby";
             description = "No description";
@@ -277,7 +302,7 @@ namespace CSAuto_Mobile
             {
                 Description = description
             };
-
+            channel.SetSound(null, null);
             notificationManager.CreateNotificationChannel(channel);
 
             name = "Game crahsed";
@@ -286,7 +311,7 @@ namespace CSAuto_Mobile
             {
                 Description = description
             };
-
+            channel.SetSound(null, null);
             notificationManager.CreateNotificationChannel(channel);
 
             name = "Bomb information";
@@ -295,9 +320,10 @@ namespace CSAuto_Mobile
             {
                 Description = description
             };
-
+            channel.SetSound(null, null);
             notificationManager.CreateNotificationChannel(channel);
         }
+#pragma warning restore CA1416 // Validate platform compatibility
         void RegisterForegroundService()
         {
             var notification = new NotificationCompat.Builder(this, Constants.SERVICE_CHANNEL_ID)
@@ -307,12 +333,9 @@ namespace CSAuto_Mobile
                 .SetContentIntent(BuildIntentToShowMainActivity())
                 .SetOngoing(true)
                 .AddAction(BuildStopServiceAction())
-                .Build();
-            // Turn on sound if the sound switch is on:                 
-            notification.Defaults = ~NotificationDefaults.Sound;
+                .Build();              
 
-            // Turn on vibrate if the sound switch is on:                 
-            notification.Defaults = ~NotificationDefaults.Vibrate;
+            notification.Vibrate = new long[0];
 
             // Enlist this instance of the service as a foreground service
             StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
