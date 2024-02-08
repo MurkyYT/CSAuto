@@ -5,7 +5,16 @@ on:
    types:
       - published
       - deleted
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      skip_version:
+        type: choice
+        required: true
+        description: "Update version?"
+        default: 'yes'
+        options:
+          - yes
+          - no
 
 jobs:
   build:
@@ -21,6 +30,7 @@ jobs:
     - name: Generate FullChangelog.MD
       run: python scripts/full_changelog.py
     - name: Generate version
+      if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_version == 'true' || inputs.skip_version == true }}
       run: python scripts/version.py
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
