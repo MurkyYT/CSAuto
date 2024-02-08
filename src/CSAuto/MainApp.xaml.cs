@@ -81,7 +81,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.9";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "7";
+        const string DEBUG_REVISION = "8";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -764,8 +764,21 @@ namespace CSAuto
                         MessageBoxResult result = MessageBox.Show(string.Format(AppLanguage.Language["msgbox_newerversion"],latestVersion), AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
-                            Log.WriteLine("Downloading latest version");
-                            Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
+                            Log.WriteLine("Launching updater");
+                            try
+                            {
+                                string path = Path.GetTempPath() + "CSAutoUpdate";
+                                if (Directory.Exists(path))
+                                    Directory.Delete(path, true);
+                                Directory.CreateDirectory(path);
+                                File.Copy(Log.WorkPath + "\\updater.exe", path + "\\updater.exe");
+                                Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} --restart\" .portable");
+                                Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+                            }
+                            catch
+                            {
+                                Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
+                            }
                         }
                     }
                 }
@@ -1459,8 +1472,21 @@ namespace CSAuto
                         MessageBoxResult result = MessageBox.Show(string.Format(AppLanguage.Language["msgbox_newerversion"], latestVersion), AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
-                            Log.WriteLine("Downloading latest version");
-                            Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
+                            Log.WriteLine("Launching updater");
+                            try
+                            {
+                                string path = Path.GetTempPath() + "CSAutoUpdate";
+                                if (Directory.Exists(path))
+                                    Directory.Delete(path, true);
+                                Directory.CreateDirectory(path);
+                                File.Copy(Log.WorkPath + "\\updater.exe", path + "\\updater.exe");
+                                Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} --restart\" .portable");
+                                Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+                            }
+                            catch
+                            {
+                                Process.Start("https://github.com/MurkyYT/CSAuto/releases/latest");
+                            }
                         }
                     }
                 }

@@ -21,12 +21,19 @@ msbuild src\CSAuto_Mobile\CSAuto_Mobile.csproj /t:Clean /property:Configuration=
 msbuild  src\CSAuto_Mobile\CSAuto_Mobile.csproj /verbosity:normal /t:Rebuild /t:PackageForAndroid /t:SignAndroidPackage /p:Configuration=Release
 @echo Compiled csauto_mobile project
 @echo ------------------------------------------------------------------
+@echo Cleaning updater project...
+msbuild src\Updater\Updater.csproj /t:Clean /property:Configuration=Release > nul
+@echo Cleaned updater project
+@echo Compiling updater project...
+msbuild src\Updater\Updater.csproj /property:Configuration=Release
+@echo Compiled steamapiserver project
+@echo ------------------------------------------------------------------
 @echo Compiling the installer...
 ISCC.exe installer.iss
 @echo Compiled the installer
 @echo ------------------------------------------------------------------
 @echo Copying the apk...
-echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net7.0-android\com.murky.csauto-Signed.apk Output\CSAuto_Android.apk > nul
+echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net7.0-android33.0\com.murky.csauto-Signed.apk Output\CSAuto_Android.apk > nul
 @echo Copied csauto_mobile apk
 @echo ------------------------------------------------------------------
 @echo Zipping csauto...
