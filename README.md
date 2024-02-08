@@ -106,7 +106,7 @@ Translation, design and app ideas
 
 ### Building the app
 
-1. Install Visual Studio 2022 with C# and Xamarin.
+1. Install Visual Studio 2022 with C# and .NET MAUI (Maybe you will need Xamarin as well).
 2. Install Inno Setup Compiler.
 3. Clone the repository and open the solution in Visual Studio 2022
 4. Build the app
