@@ -195,6 +195,11 @@ namespace Murky.Utils
                     break;
             }
         }
+
+        public bool KeyExists(string res)
+        {
+            return settingsKey.GetValue(res) != null;
+        }
     }
     public struct Setting
     {

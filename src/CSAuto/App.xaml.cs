@@ -38,7 +38,7 @@ namespace CSAuto
         protected override void OnStartup(StartupEventArgs e)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+            //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             if (File.Exists(Log.WorkPath + "\\resource\\.portable"))
                 IsPortable = true;
@@ -256,11 +256,11 @@ namespace CSAuto
                 if (currentProperty.Name == "availableColors")
                     continue;
                 string res = FirstCharToUpper(currentProperty.Name);
-                if (settings[res] == null)
+                if (!settings.KeyExists(res))
                     settings.Set(res, Settings.Default[currentProperty.Name]);
                 Settings.Default[currentProperty.Name] = settings[res].GetValue();
-                Settings.Default.Save();
             }
+            Settings.Default.Save();
         }
 
         public void MoveSettings()
@@ -302,11 +302,11 @@ namespace CSAuto
             Process.Start(Log.WorkPath + "\\Error_Log.txt");
             Current.Shutdown();
         }
-        private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
-        {
-            if (e.Exception.Message.Contains("Could not load file or assembly 'System.XmlSerializers"))
-                return;
-            Log.WriteLine($"EXCEPTION: {e.Exception.Message}, StackTrace: {e.Exception.StackTrace}");
-        }
+        //private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        //{
+        //    if (e.Exception.Message.Contains("Could not load file or assembly 'System.XmlSerializers"))
+        //        return;
+        //    Log.WriteLine($"EXCEPTION: {e.Exception.Message}, StackTrace: {e.Exception.StackTrace}");
+        //}
     }
 }

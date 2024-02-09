@@ -81,7 +81,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.0.9";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "8";
+        const string DEBUG_REVISION = "9";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -106,7 +106,7 @@ namespace CSAuto
         #region Publics
         public GUIWindow guiWindow = null;
         public List<DiscordRPCButton> discordRPCButtons;
-        public readonly Color[] BUTTON_COLORS;
+        public Color[] BUTTON_COLORS;
         public readonly App current = Application.Current as App;
         public const string ONLINE_BRANCH_NAME = "master";
         #endregion
@@ -119,14 +119,14 @@ namespace CSAuto
         readonly GameStateListener GameStateListener;
         // Looks like the old way is working now?
         readonly DXGICapture DXGIcapture = new DXGICapture();
-        readonly Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
-        readonly Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         #endregion
         #region Privates
         private DiscordRpcClient RPCClient;
         private string integrationPath = null;
         private string inLobbyState = "Chilling in lobby";
         private string currentMapIcon = null;
+        private Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
+        private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         #endregion
         #region Members
         RECT csResolution = new RECT();
@@ -190,9 +190,12 @@ namespace CSAuto
             InitializeComponent();
             try
             {
-                BUTTON_COLORS = LoadButtonColors();
-                BUTTON_COLOR = BUTTON_COLORS[0];
-                ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1];
+                Task.Run(() =>
+                {
+                    BUTTON_COLORS = LoadButtonColors();
+                    BUTTON_COLOR = BUTTON_COLORS[0];
+                    ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1];
+                });
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 CSGOFriendCode.Encode("76561198341800115");
