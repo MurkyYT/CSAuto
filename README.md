@@ -18,7 +18,7 @@
 
 ## Description
 
-Have you ever started searching for a game in CS2, left a keyboard for a bit, and noticed that you missed the accept button?
+Have you ever started searching for a game in CS2, left the keyboard for a bit, and noticed that you missed the accept button?
 frustrating isn't it?
 Or have you ever forgotten to buy armor or defuse kit as ct?
   
