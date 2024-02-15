@@ -26,7 +26,7 @@ msbuild src\Updater\Updater.csproj /t:Clean /property:Configuration=Release > nu
 @echo Cleaned updater project
 @echo Compiling updater project...
 msbuild src\Updater\Updater.csproj /property:Configuration=Release
-@echo Compiled steamapiserver project
+@echo Compiled updater project
 @echo ------------------------------------------------------------------
 @echo Compiling the installer...
 ISCC.exe installer.iss
