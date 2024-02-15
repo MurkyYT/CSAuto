@@ -1,7 +1,7 @@
 ### Version 2.0.8 changelog
 - Markdown parser updated, changelog now looks a bit different
 - Notify icon text now shows only `CSAuto`
-- Added support for rounded corners in settings window _(right click menu with rounded corners is broken)_
+- Added support for rounded corners in settings window *(right click menu with rounded corners is broken)*
 - Fixed mobile app crashing when getting `GSI` info
 - Fix `GSI` parsing bug when weapon has no type
 - You can import and export settings
