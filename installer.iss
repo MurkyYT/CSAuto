@@ -24,7 +24,7 @@ OutputBaseFilename={#NAME}_Installer
 PrivilegesRequired=lowest
 SolidCompression=yes
 SetupIconFile=src\CSAuto\Icons\main.ico
-WizardSmallImageFile=Images\smallimage.bmp
+WizardSmallImageFile=Docs\assets\smallimage.bmp
 UninstallDisplayIcon={app}\{#EXE_NAME}
 UninstallDisplayName={#NAME} {#APP_VERSION}
 
