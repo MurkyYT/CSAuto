@@ -1,107 +1,96 @@
 <div align="center">
-    <a href="https://csauto.vercel.app"><img width=150 src=https://raw.githubusercontent.com/MurkyYT/CSAuto/master/src/CSAuto/Icons/main.ico alt="logo"/></a>
+    <a href="https://csauto.vercel.app"><img width=150 src="https://raw.githubusercontent.com/MurkyYT/CSAuto/master/Docs/logo/CSAuto_logo.svg" alt="logo"/></a>
+
    <h1>CSAuto</h1>
-</div>
-<!--
-<p align="center">
-   <a href="https://www.virustotal.com/gui/file/f68ba52499a4158e2d72876c33ea8ee5ade3ab496b2da4bbcb109383a29a61ed?nocache=1"><img src="https://github.com/MurkyYT/CSAuto/blob/dev/virustotal_icon.png?raw=true" height="40" alt="VirusTotal scan"></a>
-</p>
--->
-<p align="center">
+   
   <a href="https://discord.gg/57ZEVZgm5W"><img src="https://dcbadge.vercel.app/api/server/57ZEVZgm5W"></a>
 </p>
-<p align="center">
+<p>
   <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release&style=for-the-badge" alt="Latest Release">
   <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version&style=for-the-badge" alt="Latest Version">
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads&style=for-the-badge" alt="Total Downloads">
 </p>
-<p align="center">
+<p>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/язык-англ-red.svg?style=for-the-badge"></a>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/Docs/README_ru.md"><img src="https://img.shields.io/badge/язык-рус-yellow.svg?style=for-the-badge"></a>
 </p>
+</div>
 
 <h1 align="center">Описание</h1>
-Вы когда нибудь начали искать игру в CS2 ушли на немного, и видите что вы не приняли игру?
-неприятно, не правда ли?
-Или вы забыли купить броню или дефуза за кт?
 
-*Не волнуйтесь!*  
-**CSAuto** это программа для вас, CSAuto может:
-* Принимать матчи для вас
-* Автоматически перезарядить ваше оружие когда осталось 0 патронов и продолжать стрелять дальше! (продолжать стрелять может залагат иногда пытаюсь найти фикс)
+Вы когда нибудь начинали искать игру в CS2, уходили ненадолго, а возвращаясь видите что не приняли игру?
+Неприятно, не правда ли? Или забыли купить броню или дефуза за кт?
+
+*Не волнуйтесь!*
+
+**CSAuto** это программа для вас
+
+## Возможности
+
+* Принимает матчи за вас
+* Автоматически перезаряжает ваше оружие когда осталось 0 патронов и продолжает стрелять дальше! (продолжение стрельбы может залагать иногда пытаюсь найти фикс)
 * Автоматическая покупка выбранных предметов в настраиваемом меню!
-* Автоматическая пауза/ возобновление песни spotify
-* Показывать настраиваемую информацию об игре в Discord Rich Presence (за показывать количество игроков в лобби могут забанит!)
+* Автоматическая пауза/возобновление в Spotify
+* Показывает настраиваемую информацию об игре в Discord Rich Presence (Могут забанить за отображение количества игроков в лобби!)
 * Отправлять время, оставшееся до взрыва бомбы, на мобильный телефон! (не точно на данный момент)
 
-**Фотографии приложения:**  
-![right-click-menu](../Images/menuimage.png)
-![gui-menu](../Images/appimage.png)
+## Скртны
+
+![right-click-menu](assets/menuimage.png)
+![discord-menu](assets/app_discord.png)
+
 ## Установка
-<p align="center">    
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip"><img src="../Images/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="../Images/android-badge.png" height ="80" alt="Get On Android"></a>
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="../Images/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
+
+<p align="center">
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip"><img src="assets/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="assets/android-badge.png" height ="80" alt="Get On Android"></a>
+<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="assets/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
 </p>
 
 ## FAQ
-### **Как подключиться к мобильному приложению**
+
+### Как подключиться к мобильному приложению
+
    1. Убедитесь, что вы установили приложение на свой телефон
    2. Убедитесь, что вы подключены к той же сети
    3. В мобильном приложении запустите сервер (и разрешите игнорировать оптимизацию заряда батареи)
    4. Перейдите в приложение в категорию "Уведомления по телефону" и убедитесь, что оно включено
    5. Снова перейдите в категорию "Уведомления по телефону" и введите IP-адрес, который вы видите в уведомлении на телефоне
+
 ### Приложению не удалось настроить параметры запуска, что делать?
-  1. Откройте библиотеку steam
+
+  1. Откройте библиотеку Steam
   2. Щелкните правой кнопкой мыши на CS2 и нажмите свойства
   3. На вкладке Общие внизу у вас есть параметры запуска
-  4. Добавьте -gamestateintegration в параметры запуска
+  4. Добавьте `-gamestateintegration` в параметры запуска
   5. Закройте и запустите игру
-### **Discord не показывает количество игроков в лобби**
+
+### Discord не показывает количество игроков в лобби
+
    1. Откройте категорию Discord
    2. Получите свой ключ Steam Web API [здесь](https://steamcommunity.com/dev)
    3. Введите свой ключ Steam Web API
-   5. После того, как вы ввели его, у вас должно сработать
-   6. Если у вас все еще его нет, убедитесь, что вы создали лобби, пригласив кого-нибудь, и то что вы вклюичли показывать количесвто игроков
-### **Как получать уведомления в Telegram**
-   1. Отправьте сообщение на [бот](https://t.me/csautonotification_bot)
+   4. После того, как вы ввели его, у вас должно сработать
+   5. Если у вас все еще его нет, убедитесь, что вы создали лобби, пригласив кого-нибудь, и то что вы включили показывать количество игроков
+
+### Как получать уведомления в Telegram
+
+   1. Отправьте сообщение [боту](https://t.me/csautonotification_bot)
    2. Получите свой идентификатор чата, отправив сообщение [этому боту](https://t.me/raw_info_bot)
    3. Скопируйте свой "Идентификатор чата"
    4. Перейдите в категорию "Уведомления по телефону" и введите полученный вами идентификатор чата
+
 ## Предложения
-*Если у вас есть какие-либо предложения, вы можете создать проблему / обсуждение с включенным в него предложением*
+
+*Если у вас есть какие-либо предложения, то вы можете создать проблему / обсуждение с включенным в него предложением или использовать [Discord сервер](https://discord.gg/57ZEVZgm5W)*
 
 **Заранее спасибо:)**
+
 ## Участники
-<table>
-<tr>
-<th align="center">
-<img width="441" height="0">
-<p> 
-<small>
-Имя
-</small>
-</p>
-</th>
-<th align="center">
-<img width="441" height="0">
-<p> 
-<small>
-Помог в..
-</small>
-</p>
-</th>
-</tr>
-<tr>
-<td align="center">
-<img src="https://github.com/NoPlagiarism.png?size=30" alt="NoPlagiarism"/>
-<a href="https://github.com/NoPlagiarism"> NoPlagiarism </a>
-</td>
-<td align="center">
-Переводе, дизайне и в идеях
-</td>
-</tr>
-</table>
+
+| Имя | Помощь |
+| ---- | ----------- |
+| ![NoPlagiarism's pfp](https://github.com/NoPlagiarism.png?size=30) [NoPlagiarsm](https://github.com/NoPlagiarism) | Перевод, дизайн и идеи |
 
 ## Разработка
 
