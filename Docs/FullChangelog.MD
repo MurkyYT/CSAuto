@@ -1,3 +1,24 @@
+### Version 2.0.9 changelog
+- All Discord settings are now in the same place
+- Fix with settings import/export message boxes being shown when not needed
+- Settings import/export now utilizes utf8 encoding which should fix all bugs with characters disappearing 
+- Portable version now saves config inside the app folder!
+- Added `--portable` launch option, if you installed the app without using the portable zip then you can use it to run in portable mode
+- Added alternative links to changelog in the changelog category
+- Added custom telegram bot token option
+- Auto accept now works with `Windowed` `Fullscreen` and `Windowed Fullscreen` modes
+- Reduced size of the mobile app
+- Optimizations in the mobile app
+- Added `updater.exe` that will update the app for you without you having to download it manually
+- Sped up application startup time
+
+## What's Changed
+* Changelog: Preparation for new website by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/27
+* Workflow: Optional version update by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/28
+* README: improvements, some refactor, new images by @NoPlagiarism in https://github.com/MurkyYT/CSAuto/pull/29
+
+<!--Version split-->
+
 ### Version 2.0.8 changelog
 - Markdown parser updated, changelog now looks a bit different
 - Notify icon text now shows only `CSAuto`
