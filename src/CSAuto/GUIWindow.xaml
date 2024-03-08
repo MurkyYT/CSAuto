@@ -19,6 +19,17 @@
         GlowBrush="Transparent"
         NonActiveGlowBrush="Transparent"
         TitleCharacterCasing="Normal">
+    <mahapps:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <TextBlock Text="{TemplateBinding Content}"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"
+                   FontSize="{DynamicResource WindowTitleFontSize}"
+                   FontFamily="{DynamicResource HeaderFontFamily}" />
+        </DataTemplate>
+    </mahapps:MetroWindow.TitleTemplate>
     <mahapps:MetroWindow.LeftWindowCommands>
         <mahapps:WindowCommands>
             <Button Click="LaunchGitHubSite" ToolTip="Opens GitHub repository">
@@ -306,6 +317,6 @@
                 </Grid>
             </mahapps:MetroTabItem>
         </TabControl>
-        <TextBlock x:Name="VersionText" Text="ver smthn" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="Gray"/>
+        <!--<TextBlock x:Name="VersionText" Text="ver smthn" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="Gray"/>-->
     </Grid>
 </mahapps:MetroWindow>

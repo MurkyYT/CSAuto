@@ -65,6 +65,7 @@ namespace CSAuto
             AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
             PortableModeCheck.IsChecked = File.Exists(Log.WorkPath + "\\resource\\.portable");
             IsPortableText.Text = $"Portable: {PortableModeCheck.IsChecked}";
+            Title += $" {MainApp.FULL_VER}";
         }
         private async Task RestartMessageBox()
         {
@@ -287,7 +288,7 @@ namespace CSAuto
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;
                     LoadLanguages(this);
-                    VersionText.Text = $"ver {MainApp.FULL_VER}";
+                    //VersionText.Text = $"ver {MainApp.FULL_VER}";
                     UpdateDiscordRPCResult(true);
                     LoadDiscordButtons();
                 });
