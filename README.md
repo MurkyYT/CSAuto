@@ -6,9 +6,13 @@
   <a href="https://discord.gg/57ZEVZgm5W"><img src="https://dcbadge.vercel.app/api/server/57ZEVZgm5W"></a>
 </p>
 <p>
-  <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release&style=for-the-badge" alt="Latest Release">
-  <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version&style=for-the-badge" alt="Latest Version">
+  <a href="https://github.com/MurkyYT/CSAuto/releases/latest"><img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release&style=for-the-badge" alt="Latest Release"></a>
+  <a href="https://github.com/MurkyYT/CSAuto/releases/latest"><img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version&style=for-the-badge" alt="Latest Version"></a>
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads&style=for-the-badge" alt="Total Downloads">
+</p>
+<p>
+  <a href="https://learn.microsoft.com/en-us/dotnet/csharp"><img width="auto" src="https://img.shields.io/github/languages/top/murkyyt/csauto?logo=csharp&logoColor=green&style=for-the-badge" alt="Language"></a>
+  <a href="https://en.wikipedia.org/wiki/BSD_licenses"><img width="auto" src="https://img.shields.io/github/license/murkyyt/csauto?style=for-the-badge" alt="License"></a>
 </p>
 <p>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/lang-en-red.svg?style=for-the-badge"></a>
@@ -101,3 +105,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 3. Clone the repository and open the solution in Visual Studio 2022
 4. Build the app
 5. If you want the installer you can run the compile.bat
+
+## Disclaimer
+
+CSAuto is not affiliated, endorsed by, or in any way officially connected with [Valve](https://www.valvesoftware.com/en/) and/or [Counter-Strike](https://www.counter-strike.net/)

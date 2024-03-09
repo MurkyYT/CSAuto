@@ -6,9 +6,13 @@
   <a href="https://discord.gg/57ZEVZgm5W"><img src="https://dcbadge.vercel.app/api/server/57ZEVZgm5W"></a>
 </p>
 <p>
-  <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release&style=for-the-badge" alt="Latest Release">
-  <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version&style=for-the-badge" alt="Latest Version">
-  <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads&style=for-the-badge" alt="Total Downloads">
+  <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=%D0%9F%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9%20%D1%80%D0%B5%D0%BB%D0%B8%D0%B7&style=for-the-badge" alt="Latest Release">
+  <img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=%D0%9F%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B0%D1%8F%20%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F&style=for-the-badge" alt="Latest Version">
+  <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=%D0%BA%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%82%D1%81%D0%B2%D0%BE%20%D1%81%D0%BA%D0%B0%D1%87%D0%B5%D0%BA&style=for-the-badge" alt="Total Downloads">
+</p>
+<p>
+  <a href="https://learn.microsoft.com/en-us/dotnet/csharp"><img width="auto" src="https://img.shields.io/github/languages/top/murkyyt/csauto?logo=csharp&logoColor=green&style=for-the-badge" alt="Language"></a>
+  <a href="https://en.wikipedia.org/wiki/BSD_licenses"><img width="auto" src="https://img.shields.io/github/license/murkyyt/csauto?style=for-the-badge&label=%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F" alt="License"></a>
 </p>
 <p>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/язык-англ-red.svg?style=for-the-badge"></a>
@@ -101,3 +105,7 @@
 3. Клонируйте репозиторий и откройте решение в Visual Studio 2022
 4. Скомпилируете приложения
 5. Если вам нужен установщик, вы можете запустить файл compile.bat
+
+## Дисклеймер
+
+CSAuto не является аффилированным лицом, не одобрено и никоим образом официально не связано с [Valve](https://www.valvesoftware.com/en/) и/или [Counter-Strike](https://www.counter-strike.net/)
