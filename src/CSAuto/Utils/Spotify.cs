@@ -121,7 +121,7 @@ public enum AppComandCode : uint
         private static Process GetProcess()
         {
             if (!IsRunning()) return null;
-            Process spotifyProc = Process.GetProcessesByName("Spotify").Where(p => p.MainWindowTitle != "").ToArray()[0];
+            Process spotifyProc = Process.GetProcessesByName("Spotify").Where(p => p.MainWindowTitle != "").ToList().FirstOrDefault();
             return spotifyProc;
         }
     }

@@ -77,16 +77,15 @@ namespace CSAuto
     /// </summary>
     public partial class MainApp : Window
     {
-
         #region Constants
         public const string VER = "2.1.0";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
         const string GAMESTATE_PORT = "11523";
-        const string NETCON_PORT = "21823";
+        //const string NETCON_PORT = "21823";
         const string TIMEOUT = "5.0";
         const string BUFFER = "0.1";
         const string THROTTLE = "0.0";
@@ -1365,53 +1364,53 @@ namespace CSAuto
             NativeMethods.OptimizeMemory();
         }
 
-        private void InitializeNetConLaunchOption()
-        {
-            try
-            {
-                Steam.GetLaunchOptions(730, out string launchOpt);
-                if (launchOpt != null && !HasNetCon(launchOpt))
-                    Steam.SetLaunchOptions(730, launchOpt + $" -netconport {NETCON_PORT}");
-                else if (launchOpt == null)
-                    Steam.SetLaunchOptions(730, $"-netconport {NETCON_PORT}");
-                else
-                    Log.WriteLine($"Already has \'-netconport {NETCON_PORT}\' in launch options.");
-            }
-            catch
-            {
-                throw new WriteException($"Couldn't add '-netconport {NETCON_PORT}' to launch options\n" +
-                "please add it manually");
-            }
-        }
-        private bool HasNetCon(string launchOpt)
-        {
-            string[] split = launchOpt.Split(' ');
-            for (int i = 0; i < split.Length; i++)
-            {
-                if (split[i].Trim() == "-netconport")
-                    if (i + 1 < split.Length && split[i + 1].Trim() == NETCON_PORT)
-                        return true;
-            }
-            return false;
-        }
-        private void InitializeGameStateLaunchOption()
-        {
-            try
-            {
-                Steam.GetLaunchOptions(730, out string launchOpt);
-                if (launchOpt != null && !HasGSILaunchOption(launchOpt))
-                    Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
-                else if (launchOpt == null)
-                    Steam.SetLaunchOptions(730, "-gamestateintegration");
-                else
-                    Log.WriteLine("Already has \'-gamestateintegration\' in launch options.");
-            }
-            catch
-            {
-                throw new WriteException("Couldn't add -gamestateintegration to launch options\n" +
-                "please refer the the FAQ at the git hub page");
-            }
-        }
+        //private void InitializeNetConLaunchOption()
+        //{
+        //    try
+        //    {
+        //        Steam.GetLaunchOptions(730, out string launchOpt);
+        //        if (launchOpt != null && !HasNetCon(launchOpt))
+        //            Steam.SetLaunchOptions(730, launchOpt + $" -netconport {NETCON_PORT}");
+        //        else if (launchOpt == null)
+        //            Steam.SetLaunchOptions(730, $"-netconport {NETCON_PORT}");
+        //        else
+        //            Log.WriteLine($"Already has \'-netconport {NETCON_PORT}\' in launch options.");
+        //    }
+        //    catch
+        //    {
+        //        throw new WriteException($"Couldn't add '-netconport {NETCON_PORT}' to launch options\n" +
+        //        "please add it manually");
+        //    }
+        //}
+        //private bool HasNetCon(string launchOpt)
+        //{
+        //    string[] split = launchOpt.Split(' ');
+        //    for (int i = 0; i < split.Length; i++)
+        //    {
+        //        if (split[i].Trim() == "-netconport")
+        //            if (i + 1 < split.Length && split[i + 1].Trim() == NETCON_PORT)
+        //                return true;
+        //    }
+        //    return false;
+        //}
+        //private void InitializeGameStateLaunchOption()
+        //{
+        //    try
+        //    {
+        //        Steam.GetLaunchOptions(730, out string launchOpt);
+        //        if (launchOpt != null && !HasGSILaunchOption(launchOpt))
+        //            Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
+        //        else if (launchOpt == null)
+        //            Steam.SetLaunchOptions(730, "-gamestateintegration");
+        //        else
+        //            Log.WriteLine("Already has \'-gamestateintegration\' in launch options.");
+        //    }
+        //    catch
+        //    {
+        //        throw new WriteException("Couldn't add -gamestateintegration to launch options\n" +
+        //        "please refer the the FAQ at the git hub page");
+        //    }
+        //}
 
         private void InitializeTimer()
         {
@@ -1499,16 +1498,16 @@ namespace CSAuto
                 }
             }).Start();
         }
-        private bool HasGSILaunchOption(string launchOpt)
-        {
-            string[] split = launchOpt.Split(' ');
-            for (int i = 0; i < split.Length; i++)
-            {
-                if (split[i].Trim() == "-gamestateintegration")
-                    return true;
-            }
-            return false;
-        }
+        //private bool HasGSILaunchOption(string launchOpt)
+        //{
+        //    string[] split = launchOpt.Split(' ');
+        //    for (int i = 0; i < split.Length; i++)
+        //    {
+        //        if (split[i].Trim() == "-gamestateintegration")
+        //            return true;
+        //    }
+        //    return false;
+        //}
 
         internal void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
