@@ -386,7 +386,7 @@ namespace CSAuto
                     }
                     catch
                     {
-                        Log.WriteLine($"weapon_{customItem.Name.ToString().ToLower()}.png isn't found");
+                        Log.WriteLine($"|AutoBuyMenu.cs| weapon_{customItem.Name.ToString().ToLower()}.png isn't found");
                     }
                 }
             } 

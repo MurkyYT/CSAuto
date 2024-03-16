@@ -68,20 +68,22 @@ public enum AppComandCode : uint
 }
          */
         [DllImport("user32.dll")]
-        static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        private static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
+        private const int WM_APPCOMMAND = 0x0319;
         public static void Pause()
         {
             if (IsPlaying())
             {
                 SendMediaPauseResume();
-                Log.WriteLine("Pausing Spotify");
+                Log.WriteLine("|Spotify.cs| Pausing Spotify");
             }
         }
 
         private static void SendMediaPauseResume()
         {
             Process prc = GetProcess();
-            SendMessageW(prc.MainWindowHandle, 0x0319, prc.MainWindowHandle, (IntPtr)(14 << 16));
+            SendMessageW(prc.MainWindowHandle, WM_APPCOMMAND, prc.MainWindowHandle, (IntPtr)(14 << 16));
         }
 
         public static void Resume()
@@ -89,7 +91,7 @@ public enum AppComandCode : uint
             if (!IsPlaying())
             {
                 SendMediaPauseResume();
-                Log.WriteLine("Resuming Spotify");
+                Log.WriteLine("|Spotify.cs| Resuming Spotify");
             }
         }
         public static bool IsRunning()
@@ -115,7 +117,6 @@ public enum AppComandCode : uint
             Process main = GetProcess();
             if (main == null)
                 return false;
-            // create a substring which checks if there is Spotify at the start of the main window handle
             return !main.MainWindowTitle.StartsWith("Spotify");
         }
         private static Process GetProcess()

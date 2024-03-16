@@ -89,7 +89,7 @@ namespace Murky.Utils
             }
             catch (IOException)
             {
-                Log.WriteLine("Couldn't read SteamID3 from log, reading from Registry");
+                Log.WriteLine("|Steam.cs| Couldn't read SteamID3 from log, reading from Registry");
                 steamID3 = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam\\ActiveProcess", "ActiveUser", 0);
             }
             return steamID3;
@@ -181,7 +181,7 @@ namespace Murky.Utils
                     else if (addedOptions)
                         localconfFile[i] = temp[i-1];
                 }
-                Log.WriteLine($"No launch options found, adding \'\"LaunchOptions\" \t\t\"{value}\"\' at index {appIDIndex+2}");
+                Log.WriteLine($"|Steam.cs| No launch options found, adding \'\"LaunchOptions\" \t\t\"{value}\"\' at index {appIDIndex+2}");
             }
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < localconfFile.Length; i++)
@@ -193,7 +193,7 @@ namespace Murky.Utils
                 Byte[] title = new UTF8Encoding(true).GetBytes(builder.ToString());
                 fs.Write(title, 0, title.Length);
             }
-            Log.WriteLine($"Successfuly set LaunchOptions to \'{value}\'");
+            Log.WriteLine($"|Steam.cs| Successfuly set LaunchOptions to \'{value}\'");
             return true;
         }
         private static int GetLaunchOptionsIndex (int length, string[] appOpts,out bool succes)

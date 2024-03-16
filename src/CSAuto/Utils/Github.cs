@@ -80,7 +80,7 @@ namespace Murky.Utils
             {
                 if (CompareIntVersions(tags[i].Name, recent.Name) == 1)
                 {
-                    Log.WriteLine($"{tags[i].Name} > {recent.Name}");
+                    Log.WriteLine($"|Github.cs| {tags[i].Name} > {recent.Name}");
                     recent = tags[i];
                 }
             }

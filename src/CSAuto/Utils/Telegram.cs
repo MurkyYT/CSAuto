@@ -24,7 +24,7 @@ namespace Murky.Utils
                 {
                     webclient.DownloadString(urlString);
                 }
-                Log.WriteLine($"Sent telegram message \"{text}\" to \"{chatID}\"");
+                Log.WriteLine($"|Telegram.cs| Sent telegram message \"{text}\" to \"{chatID}\"");
             }
             catch (WebException ex)
             {
@@ -54,7 +54,7 @@ namespace Murky.Utils
                         using (HttpClient client = new HttpClient())
                         {
                             var response = await client.PostAsync(url, form);
-                            Log.WriteLine($"Sent telegram photo to \"{chatID}\"");
+                            Log.WriteLine($"|Telegram.cs| Sent telegram photo to \"{chatID}\"");
                         }
                     }
                 }

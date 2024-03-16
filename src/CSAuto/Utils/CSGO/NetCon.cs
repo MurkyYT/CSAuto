@@ -26,12 +26,12 @@ namespace Murky.Utils.CSGO
                 if (!_client.IsConnected)
                     throw new WebException("Couldn't connect to the netcon");
                 _client.DataReceived += OnDataReceived;
-                Log.WriteLine($"[NetCon] : Successfully connected to netCon");
+                Log.WriteLine($"|NetCon.cs| Successfully connected to netCon");
             }
             catch (Exception ex)
             {
                 _client.Dispose();
-                Log.WriteLine($"[NetCon] : Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}");
+                Log.WriteLine($"|NetCon.cs| Couldn't connet to netCon\n{ex.Message}\n{ex.StackTrace}");
             }
         }
         void OnDataReceived(byte[] receivedData)
@@ -47,7 +47,7 @@ namespace Murky.Utils.CSGO
         {
             Byte[] data = Encoding.ASCII.GetBytes(command + "\n");
             _ = _client.SendAsync(data);
-            Log.WriteLine("[NetCon] Sent: '" + command +"'");
+            Log.WriteLine("|NetCon.cs| Sent: '" + command +"'");
         }
 
         public void Close()
@@ -55,11 +55,11 @@ namespace Murky.Utils.CSGO
             try
             {
                 _client.Disconnect();
-                Log.WriteLine($"[NetCon] : Successfully closed netCon");
+                Log.WriteLine($"|NetCon.cs| Successfully closed netCon");
             }
             catch (SocketException ex)
             {
-                Log.WriteLine($"[NetCon] : Couldn't close netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
+                Log.WriteLine($"|NetCon.cs| Couldn't close netCon\n{ex.Message}\n{ex.StackTrace}\n{ex.SocketErrorCode}");
             }
         }
     }

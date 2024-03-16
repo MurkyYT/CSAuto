@@ -28,7 +28,8 @@ namespace CSAuto
         public bool AlwaysMaximized;
         public bool Restarted;
         public bool IsWindows11;
-        public bool IsPortable = false;
+        public bool IsPortable;
+        public bool LogArg;
         public string Args = "";
         public AutoBuyMenu buyMenu;
         public RegistrySettings settings = new RegistrySettings();
@@ -54,7 +55,7 @@ namespace CSAuto
                     settings.Import(Log.WorkPath + "\\.conf");
                 else if (oldSettingsExist)
                 {
-                    Log.WriteLine("Loading original settings to portable, first run of portable, but has old settings");
+                    Log.WriteLine("|App.cs| Loading original settings to portable, first run of portable, but has old settings");
                     settings.Import(Log.WorkPath + "\\.tmp");
                 }
                 if(oldSettingsExist)
@@ -101,6 +102,8 @@ namespace CSAuto
                     languageName = e.Args[e.Args.ToList().IndexOf(arg) + 1];
                 if (arg == "--portable")
                     IsPortable = true;
+                if (arg == "--log")
+                    LogArg = true;
             }
         }
 
@@ -108,7 +111,7 @@ namespace CSAuto
         {
             if (settings["FirstRun"] == null || settings["FirstRun"])
             {
-                Log.WriteLine("First run of new settings, moving old ones to registry");
+                Log.WriteLine("|App.cs| First run of new settings, moving old ones to registry");
                 if (WindowsDarkMode())
                     Settings.Default.darkTheme = true;
                 else
@@ -120,7 +123,7 @@ namespace CSAuto
             }
             else
             {
-                Log.WriteLine("Loading registry settings to properties");
+                Log.WriteLine("|App.cs| Loading registry settings to properties");
                 LoadSettings();
             }
         }

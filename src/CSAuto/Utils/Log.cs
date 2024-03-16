@@ -16,7 +16,7 @@ namespace Murky.Utils
         public static CSAuto.GUIWindow debugWind = null;
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         static string path = strWorkPath + "\\DEBUG\\LOGS\\";
-        static string lineTemplate = "[%date%] (%caller%) - %message%";
+        static string lineTemplate = "[%date%] (%caller%) %message%";
         public static string Path { get { return path; } }
         public static string WorkPath { get { return strWorkPath; } }
         public static void VerifyDir()
@@ -44,7 +44,7 @@ namespace Murky.Utils
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
             Debug.WriteLine(lines);
-            if (CSAuto.Properties.Settings.Default.saveLogs)
+            if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
             {
                 VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
@@ -71,7 +71,7 @@ namespace Murky.Utils
             if (debugWind != null)
                 debugWind.UpdateDebug(lines.ToString());
             Debug.WriteLine(lines);
-            if (CSAuto.Properties.Settings.Default.saveLogs)
+            if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
             {
                 VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";

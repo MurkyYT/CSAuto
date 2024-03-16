@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.0";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -238,7 +238,7 @@ namespace CSAuto
             }
             catch 
             {
-                Log.WriteLine("Couldn't load colors from web, trying to load latest loaded colors");
+                Log.WriteLine("|MainApp.cs| Couldn't load colors from web, trying to load latest loaded colors");
                 //string path = DiscordRPCButtonSerializer.Path + "\\colors";
                 if ((App.Current as App).settings["ButtonColors"] != null)
                 {
@@ -249,7 +249,7 @@ namespace CSAuto
                         return SplitColorsLines(lines);
                     }
                 }
-                Log.WriteLine("Couldn't load colors at all");
+                Log.WriteLine("|MainApp.cs| Couldn't load colors at all");
                 MessageBox.Show(AppLanguage.Language["error_loadcolors"], AppLanguage.Language["title_error"],MessageBoxButton.OK, MessageBoxImage.Error);
                 return new Color[2];
             }
@@ -295,12 +295,12 @@ namespace CSAuto
                 if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
                 {
                     InitializeDiscordRPC();
-                    Log.WriteLine("DiscordRpc.Initialize();");
+                    Log.WriteLine("|MainApp.cs| DiscordRpc.Initialize();");
                 }
                 else if (RPCClient.IsInitialized && !Properties.Settings.Default.enableDiscordRPC)
                 {
                     RPCClient.Deinitialize();
-                    Log.WriteLine("DiscordRpc.Shutdown();");
+                    Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
                 Activity? activity = gameState.Player.CurrentActivity;
                 Phase? currentMatchState = gameState.Match.Phase;
@@ -344,7 +344,7 @@ namespace CSAuto
                 if (gameState.Match.Map != null && (inLobby == true || inLobby == null))
                 {
                     inLobby = false;
-                    Log.WriteLine($"Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
+                    Log.WriteLine($"|MainApp.cs| Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
                     if (CSGOMap.MapIcons.ContainsKey(gameState.Match.Map))
                         currentMapIcon = CSGOMap.MapIcons[gameState.Match.Map];
                     RPCClient.SetPresence(new RichPresence()
@@ -371,7 +371,7 @@ namespace CSAuto
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
-                        Log.WriteLine("Deinit DXGI Capture");
+                        Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                     }
                 }
                 else if (gameState.Match.Map == null && (inLobby == false || inLobby == null))
@@ -379,7 +379,7 @@ namespace CSAuto
                     inLobby = true;
                     currentMapIcon = null;
                     inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
-                    Log.WriteLine($"Player is back in main menu");
+                    Log.WriteLine($"|MainApp.cs| Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
                     {
                         Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
@@ -404,7 +404,7 @@ namespace CSAuto
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
                         DXGIcapture.Init();
-                        Log.WriteLine("Init DXGI Capture");
+                        Log.WriteLine("|MainApp.cs| Init DXGI Capture");
                     }
                 }
                 lastActivity = activity;
@@ -425,7 +425,7 @@ namespace CSAuto
                 if (lastActivity != Activity.Playing && hCursorOriginal == IntPtr.Zero && csActive)
                 {
                     hCursorOriginal = NativeMethods.GetCursorHandle();
-                    Log.WriteLine($"hCurosr when in CS -> {hCursorOriginal}");
+                    Log.WriteLine($"|MainApp.cs| hCurosr when in CS -> {hCursorOriginal}");
                 }
                 UpdateDiscordRPC();
                 //SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
@@ -433,7 +433,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                Log.WriteLine("Error happend while getting GSI Info\n" + ex);
+                Log.WriteLine("|MainApp.cs| An error accured while getting GSI Info\n" + ex);
             }
         }
 
@@ -449,7 +449,7 @@ namespace CSAuto
                 }
                 foreach (BuyItem item in items)
                 {
-                    Log.WriteLine($"Auto buying {item.Name}");
+                    Log.WriteLine($"|MainApp.cs| Auto buying {item.Name}");
                     //Have to press b after buying grenades because the buy menu stays at the grenades category
                     PressKeys(new Keyboard.DirectXKeyStrokes[]
                     {
@@ -469,7 +469,7 @@ namespace CSAuto
         private bool BuyMenuOpen()
         {
             IntPtr res = NativeMethods.GetCursorHandle();
-            Log.WriteLine($"Original hCurosr: {hCursorOriginal} || {hCursorOriginal - 2}: new one {res}");
+            Log.WriteLine($"|MainApp.cs| Original hCurosr: {hCursorOriginal} || {hCursorOriginal - 2}: new one {res}");
             return (hCursorOriginal == res || hCursorOriginal - 2 == res) && gameState.Player.CurrentActivity == Activity.Playing;
         }
         private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
@@ -553,7 +553,7 @@ namespace CSAuto
                 if (Properties.Settings.Default.runAtStartUp)
                 {
                     rk.SetValue(appname , executablePath + " "+current.Args);
-                    Log.WriteLine(executablePath + " " +current.Args);
+                    Log.WriteLine("|MainApp.cs| "+executablePath + " " +current.Args);
                 }
                 else
                 {
@@ -726,7 +726,7 @@ namespace CSAuto
 #endif
             RPCClient.OnReady += (sender, e) =>
             {
-                Log.WriteLine($"Received Discord RPC Ready! {e.User.Username}");
+                Log.WriteLine($"|MainApp.cs| Received Discord RPC Ready! {e.User.Username}");
             };
             RPCClient.Initialize();
         }
@@ -752,21 +752,21 @@ namespace CSAuto
             {
                 try
                 {
-                    Log.WriteLine("Checking for updates");
+                    Log.WriteLine("|MainApp.cs| Checking for updates");
                     string latestVersion = Github.GetWebInfo($"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/version");
-                    Log.WriteLine($"The latest version is {latestVersion}");
+                    Log.WriteLine($"|MainApp.cs| The latest version is {latestVersion}");
                     if (latestVersion == VER)
                     {
-                        Log.WriteLine("Latest version installed");
+                        Log.WriteLine("|MainApp.cs| Latest version installed");
                         MessageBox.Show(AppLanguage.Language["msgbox_latestversion"], AppLanguage.Language["title_update"], MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
+                        Log.WriteLine($"|MainApp.cs| Newer version found ({latestVersion}),current version is {VER}");
                         MessageBoxResult result = MessageBox.Show(string.Format(AppLanguage.Language["msgbox_newerversion"],latestVersion), AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
-                            Log.WriteLine("Launching updater");
+                            Log.WriteLine("|MainApp.cs| Launching updater");
                             try
                             {
                                 string path = Path.GetTempPath() + "CSAutoUpdate";
@@ -786,7 +786,7 @@ namespace CSAuto
                 }
                 catch (Exception ex)
                 {
-                    Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
+                    Log.WriteLine($"|MainApp.cs| Couldn't check for updates - '{ex.Message}'");
                     MessageBox.Show($"{AppLanguage.Language["error_update"]}\n'{ex.Message}'", AppLanguage.Language["title_update"], MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }).Start();
@@ -869,7 +869,7 @@ namespace CSAuto
                 else if (RPCClient.IsInitialized && !csRunning)
                 {
                     RPCClient.Deinitialize();
-                    Log.WriteLine("DiscordRpc.Shutdown();");
+                    Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
             }
             catch(NullReferenceException) { }
@@ -932,7 +932,7 @@ namespace CSAuto
                         csProcess.EnableRaisingEvents = true;
                         if (!GameStateListener.ServerRunning)
                         {
-                            Log.WriteLine("Starting GSI Server");
+                            Log.WriteLine("|MainApp.cs| Starting GSI Server");
                             GameStateListener.StartGSIServer();
                         }
                         if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
@@ -940,7 +940,7 @@ namespace CSAuto
                             steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
                             if (!steamAPIServer.Start())
                             {
-                                Log.WriteLine("Couldn't launch 'steamapi.exe'");
+                                Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
                                 steamAPIServer = null;
                             }
                         }
@@ -966,7 +966,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                Log.WriteLine($"{ex}");
+                Log.WriteLine($"|MainApp.cs| {ex}");
             }
         }
 
@@ -993,7 +993,7 @@ namespace CSAuto
             }
             else
             {
-                Log.WriteLine("Server could not be verified.");
+                Log.WriteLine("|MainApp.cs| Server could not be verified.");
             }
             pipeClient.Close();
             return res;
@@ -1015,14 +1015,14 @@ namespace CSAuto
         {
             csRunning = false;
             inLobby = false;
-            Log.WriteLine($"CS Exit Code: {csProcess.ExitCode}");
+            Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{AppLanguage.Language["server_gamecrash"]}");
             csProcess = null;
             if (RPCClient.IsInitialized)
             {
                 RPCClient.Deinitialize();
-                Log.WriteLine("DiscordRpc.Shutdown();");
+                Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
             }
             if (gameState.Timestamp != 0)
             {
@@ -1030,7 +1030,7 @@ namespace CSAuto
             }
             if (GameStateListener.ServerRunning)
             {
-                Log.WriteLine("Stopping GSI Server");
+                Log.WriteLine("|MainApp.cs| Stopping GSI Server");
                 GameStateListener.StopGSIServer();
                 //NetConCloseConnection();
                 SendMessageToServer("<CLS>", onlyServer: true);
@@ -1047,7 +1047,7 @@ namespace CSAuto
             if (DXGIcapture.Enabled)
             {
                 DXGIcapture.DeInit();
-                Log.WriteLine("Deinit DXGI Capture");
+                Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
             }
             if (Properties.Settings.Default.autoCloseCSAuto)
                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
@@ -1071,7 +1071,7 @@ namespace CSAuto
                         0, 0);
                     //netCon.SendCommand("+reload");
                     //netCon.SendCommand("-attack");
-                    Log.WriteLine("Auto reloading");
+                    Log.WriteLine("|MainApp.cs| Auto reloading");
                     if ((weaponType == WeaponType.Rifle
                         || weaponType == WeaponType.MachineGun
                         || weaponType == WeaponType.SubmachineGun
@@ -1089,7 +1089,7 @@ namespace CSAuto
                             System.Windows.Forms.Cursor.Position.X,
                             System.Windows.Forms.Cursor.Position.Y,
                             0, 0);
-                        Log.WriteLine($"Continue spraying ({weaponName} - {weaponType})");
+                        Log.WriteLine($"|MainApp.cs| Continue spraying ({weaponName} - {weaponType})");
                         //}
                     }
                     //netCon.SendCommand("-reload");
@@ -1124,14 +1124,14 @@ namespace CSAuto
             NativeMethods.SetCursorPos(xpos, ypos);
             NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
             NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
-            Log.WriteLine($"Left clicked at X:{xpos} Y:{ypos}");
+            Log.WriteLine($"|MainApp.cs| Left clicked at X:{xpos} Y:{ypos}");
         }
         private async Task AutoAcceptMatchAsync()
         {
             if(!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
             {
                 DXGIcapture.Init();
-                Log.WriteLine("Init DXGI Capture");
+                Log.WriteLine("|MainApp.cs| Init DXGI Capture");
             }
             if ((DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay && inLobby == true) ||
                 (inLobby == true && Properties.Settings.Default.oldScreenCaptureWay))
@@ -1143,9 +1143,9 @@ namespace CSAuto
                     if (_handle == IntPtr.Zero)
                     {
                         DXGIcapture.DeInit();
-                        Log.WriteLine("Deinit DXGI Capture");
+                        Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                         DXGIcapture.Init();
-                        Log.WriteLine("Init DXGI Capture");
+                        Log.WriteLine("|MainApp.cs| Init DXGI Capture");
                     }
                 }
                 Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ?
@@ -1200,7 +1200,7 @@ namespace CSAuto
                                 y);
                             int X = clickpoint.X;
                             int Y = clickpoint.Y;
-                            Log.WriteLine($"Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
+                            Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
                             if (Properties.Settings.Default.acceptedNotification)
                                 SendMessageToServer($"<ACP>{AppLanguage.Language["server_acceptmatch"]}");
                             LeftMouseClick(X, Y);
@@ -1232,7 +1232,7 @@ namespace CSAuto
             else if (inLobby == true && !DXGIcapture.Enabled && Properties.Settings.Default.oldScreenCaptureWay)
             {
                 DXGIcapture.Init();
-                Log.WriteLine("Init DXGI Capture");
+                Log.WriteLine("|MainApp.cs| Init DXGI Capture");
             }
         }
         private bool CheckIfAccepted(Bitmap bitmap, int maxY)
@@ -1330,7 +1330,7 @@ namespace CSAuto
                 Visibility = Visibility.Hidden;
                 InitializeNotifyIcon();
                 InitializeTimer();
-                Log.WriteLine($"CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
+                Log.WriteLine($"|MainApp.cs| CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
                 string csgoDir = GetCSGODir();
 #if !DEBUG
                 if (Properties.Settings.Default.autoCheckForUpdates)
@@ -1438,7 +1438,7 @@ namespace CSAuto
                     Byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                     fs.Write(title, 0, title.Length);
                 }
-                Log.WriteLine("CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
+                Log.WriteLine("|MainApp.cs| CSAuto was never launched, initializing 'gamestate_integration_csauto.cfg'");
             }
             else
             {
@@ -1451,7 +1451,7 @@ namespace CSAuto
                         byte[] title = new UTF8Encoding(true).GetBytes(INTEGRATION_FILE);
                         fs.Write(title, 0, title.Length);
                     }
-                    Log.WriteLine("Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
+                    Log.WriteLine("|MainApp.cs| Different 'gamestate_integration_csauto.cfg' was found, installing correct 'gamestate_integration_csauto.cfg'");
                 }
             }
         }
@@ -1461,20 +1461,20 @@ namespace CSAuto
             {
                 try
                 {
-                    Log.WriteLine("Auto Checking for Updates");
+                    Log.WriteLine("|MainApp.cs| Auto Checking for Updates");
                     string latestVersion = Github.GetWebInfo($"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/version");
-                    Log.WriteLine($"The latest version is {latestVersion}");
+                    Log.WriteLine($"|MainApp.cs| The latest version is {latestVersion}");
                     if (latestVersion == VER)
                     {
-                        Log.WriteLine("Latest version installed");
+                        Log.WriteLine("|MainApp.cs| Latest version installed");
                     }
                     else
                     {
-                        Log.WriteLine($"Newer version found {VER} --> {latestVersion}");
+                        Log.WriteLine($"|MainApp.cs| Newer version found ({latestVersion}), current version is {VER}");
                         MessageBoxResult result = MessageBox.Show(string.Format(AppLanguage.Language["msgbox_newerversion"], latestVersion), AppLanguage.Language["title_update"], MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
-                            Log.WriteLine("Launching updater");
+                            Log.WriteLine("|MainApp.cs| Launching updater");
                             try
                             {
                                 string path = Path.GetTempPath() + "CSAutoUpdate";
@@ -1494,7 +1494,7 @@ namespace CSAuto
                 }
                 catch (Exception ex)
                 {
-                    Log.WriteLine($"Couldn't check for updates - '{ex.Message}'");
+                    Log.WriteLine($"|MainApp.cs| Couldn't check for updates - '{ex.Message}'");
                 }
             }).Start();
         }
