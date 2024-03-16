@@ -51,6 +51,13 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 <a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="Docs/assets/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
 </p>
 
+## Launch Options
+  * `--show` - Show settings window on application startup
+  * `--maximized` - Make settings window always start maximized
+  * `--language [language name]` - Change app language to the one specified, doesn't change the settings
+  * `--portable` - Run the app in portable mode
+  * `--log` - Enabling logging, regardless of whether it is enabled in the settings, doesn't change the settings
+
 ## FAQ
 
 ### How to connect to the mobile app
