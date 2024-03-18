@@ -99,9 +99,9 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 
 ## Contributors
 
-| Name | Helped with |
-| ---- | ----------- |
-| ![NoPlagiarism's pfp](https://github.com/NoPlagiarism.png?size=30) [NoPlagiarsm](https://github.com/NoPlagiarism) | Translation, design and app ideas |
+<a href="https://github.com/murkyyt/csauto/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=murkyyt/csauto" />
+</a>
 
 ## Development
 

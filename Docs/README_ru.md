@@ -99,9 +99,9 @@
 
 ## Участники
 
-| Имя | Помощь |
-| ---- | ----------- |
-| ![NoPlagiarism's pfp](https://github.com/NoPlagiarism.png?size=30) [NoPlagiarsm](https://github.com/NoPlagiarism) | Перевод, дизайн и идеи |
+<a href="https://github.com/murkyyt/csauto/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=murkyyt/csauto" />
+</a>
 
 ## Разработка
 

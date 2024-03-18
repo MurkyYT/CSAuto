@@ -1338,7 +1338,7 @@ namespace CSAuto
 #endif
                 if (Properties.Settings.Default.connectedNotification && !current.Restarted)
                     SendMessageToServer(string.Format($"<CNT>{AppLanguage.Language["server_computeronline"]}", Environment.MachineName, GetLocalIPAddress(),FULL_VER));
-                if (current.StartWidnow)
+                if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException(AppLanguage.Language["exception_csgonotfound"]/*"Couldn't find CS:GO directory"*/);

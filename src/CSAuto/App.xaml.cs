@@ -24,7 +24,7 @@ namespace CSAuto
     /// </summary>
     public partial class App : Application
     {
-        public bool StartWidnow;
+        public bool StartWindow;
         public bool AlwaysMaximized;
         public bool Restarted;
         public bool IsWindows11;
@@ -95,7 +95,7 @@ namespace CSAuto
                 if (arg == "--maximized")
                     AlwaysMaximized = true;
                 if (arg == "--show")
-                    StartWidnow = true;
+                    StartWindow = true;
                 if (arg == "--restart")
                     Restarted = true;
                 if (arg == "--language" && e.Args.ToList().IndexOf(arg) + 1 < e.Args.Length)
