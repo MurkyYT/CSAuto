@@ -192,14 +192,14 @@ namespace CSAuto
                 {
                     string[] values = GetValues(file[i]);
                     if (values != null && values[0] != null && values[1] != null)
-                        Languages._Language.translation.Add(values[0], values[1]);
+                        Languages._Language.translation.Add(values[0], values[1].Replace("\\n","\n"));
                 }
             }
             for (int i = 0; i < englishFile.Length; i++)
             {
                 string[] values = GetValues(englishFile[i]);
                 if (values != null && values[0] != null && values[1] != null)
-                    Languages._Language.englishTranslation.Add(values[0], values[1]);
+                    Languages._Language.englishTranslation.Add(values[0], values[1].Replace("\\n", "\n"));
             }
         }
 

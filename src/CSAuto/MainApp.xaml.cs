@@ -80,7 +80,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.0";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -675,7 +675,7 @@ namespace CSAuto
             var restart = MessageBox.Show(AppLanguage.Language["msgbox_restartneeded"], AppLanguage.Language["title_restartneeded"], MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (restart == MessageBoxResult.OK)
             {
-                Process.Start(Assembly.GetExecutingAssembly().Location, "--restart --show " + current.Args);
+                Process.Start(Assembly.GetExecutingAssembly().Location, "--restart" + (guiWindow == null ? "" : " --show ") + current.Args);
                 Application.Current.Shutdown();
             }
         }
@@ -774,7 +774,7 @@ namespace CSAuto
                                     Directory.Delete(path, true);
                                 Directory.CreateDirectory(path);
                                 File.Copy(Log.WorkPath + "\\updater.exe", path + "\\updater.exe");
-                                Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} --restart\" .portable");
+                                Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} {(guiWindow == null ? "" : "--show")} --restart\" .portable");
                                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
                             }
                             catch
@@ -1482,7 +1482,7 @@ namespace CSAuto
                                     Directory.Delete(path, true);
                                 Directory.CreateDirectory(path);
                                 File.Copy(Log.WorkPath + "\\updater.exe", path + "\\updater.exe");
-                                Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} --restart\" .portable");
+                                Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} {(guiWindow == null ? "" : "--show")} --restart\" .portable");
                                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
                             }
                             catch
