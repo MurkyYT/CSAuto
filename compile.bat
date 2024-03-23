@@ -37,7 +37,7 @@ echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net7.0-android33.0\com.murky.
 @echo Copied csauto_mobile apk
 @echo ------------------------------------------------------------------
 @echo Zipping csauto...
-tar -caf Output\CSAuto_Portable.zip -C src\CSAuto\bin\Release *.dll *.exe resource
+tar -caf Output\CSAuto_Portable.zip -C src\CSAuto\bin\Release *.dll *.exe resource ru
 @echo Zipped csauto
 @echo ------------------------------------------------------------------
 @echo Everything should be in the Output folder

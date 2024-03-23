@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -61,10 +62,24 @@ namespace CSAuto
                 if(oldSettingsExist)
                     File.Delete(Log.WorkPath + "\\.tmp");
             }
-            LoadLanguage(languageName?.ToLower());
+            //LoadLanguage(languageName?.ToLower());
             buyMenu = new AutoBuyMenu();
             ImportSettings();
             ImportAutoBuy();
+
+            if (Settings.Default.currentLanguage.Contains("language"))
+            {
+                switch (Settings.Default.currentLanguage)
+                {
+                    case "language_english":
+                        Settings.Default.currentLanguage = "en-EN";
+                        break;
+                    case "language_russian":
+                        Settings.Default.currentLanguage = "ru-RU";
+                        break;
+                }
+            }
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(Settings.Default.currentLanguage);
 
             base.OnStartup(e);
 
@@ -174,40 +189,40 @@ namespace CSAuto
             catch { return false; }
         }
 
-        private void LoadLanguage(string languageName)
-        {
-            string[] englishFile = ReadLanguageFile($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\language_english.pac");
-            string[] file = null;
-            try { file = ReadLanguageFile($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\resource\\{(languageName == null ? Settings.Default.currentLanguage : "language_"+languageName)}.pac"); }
-            catch (FileNotFoundException) 
-            { 
-                MessageBox.Show($"Couldn't load {(languageName == null ? Settings.Default.currentLanguage : "language_" + languageName)}, the app will fallback to english", 
-                    "Warning", 
-                    MessageBoxButton.OK, 
-                    MessageBoxImage.Warning); 
-            }
-            if(file!= null)
-            {
-                for (int i = 0; i < file.Length; i++)
-                {
-                    string[] values = GetValues(file[i]);
-                    if (values != null && values[0] != null && values[1] != null)
-                        Languages._Language.translation.Add(values[0], values[1].Replace("\\n","\n"));
-                }
-            }
-            for (int i = 0; i < englishFile.Length; i++)
-            {
-                string[] values = GetValues(englishFile[i]);
-                if (values != null && values[0] != null && values[1] != null)
-                    Languages._Language.englishTranslation.Add(values[0], values[1].Replace("\\n", "\n"));
-            }
-        }
+        //private void LoadLanguage(string languageName)
+        //{
+        //    string[] englishFile = ReadLanguageFile($"{Log.WorkPath}\\resource\\lang\\language_english.pac");
+        //    string[] file = null;
+        //    try { file = ReadLanguageFile($"{Log.WorkPath}\\resource\\lang\\{(languageName == null ? Settings.Default.currentLanguage : "language_"+languageName)}.pac"); }
+        //    catch (FileNotFoundException) 
+        //    { 
+        //        MessageBox.Show($"Couldn't load {(languageName == null ? Settings.Default.currentLanguage : "language_" + languageName)}, the app will fallback to english", 
+        //            "Warning", 
+        //            MessageBoxButton.OK, 
+        //            MessageBoxImage.Warning); 
+        //    }
+        //    if(file!= null)
+        //    {
+        //        for (int i = 0; i < file.Length; i++)
+        //        {
+        //            string[] values = GetValues(file[i]);
+        //            if (values != null && values[0] != null && values[1] != null)
+        //                Languages._Language.translation.Add(values[0], values[1].Replace("\\n","\n"));
+        //        }
+        //    }
+        //    for (int i = 0; i < englishFile.Length; i++)
+        //    {
+        //        string[] values = GetValues(englishFile[i]);
+        //        if (values != null && values[0] != null && values[1] != null)
+        //            Languages._Language.englishTranslation.Add(values[0], values[1].Replace("\\n", "\n"));
+        //    }
+        //}
 
-        private string[] ReadLanguageFile(string path)
-        {
-            string file = Unzip(File.ReadAllBytes(path));
-            return file.Split('\n');
-        }
+        //private string[] ReadLanguageFile(string path)
+        //{
+        //    string file = Unzip(File.ReadAllBytes(path));
+        //    return file.Split('\n');
+        //}
         static void CopyTo(Stream src, Stream dest)
         {
             byte[] bytes = new byte[4096];
@@ -301,7 +316,7 @@ namespace CSAuto
                 $"StackTrace:{ex.StackTrace}\n" +
                 $"Source: {ex.Source}\n" +
                 $"Inner Exception: {ex.InnerException}");
-            MessageBox.Show(AppLanguage.Language["error_appcrashed"], AppLanguage.Language["title_error"] + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.ResourceManager.GetString("error_appcrashed"), Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
             Process.Start(Log.WorkPath + "\\Error_Log.txt");
             Current.Shutdown();
         }

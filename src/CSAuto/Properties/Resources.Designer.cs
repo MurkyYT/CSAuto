@@ -22,7 +22,7 @@ namespace CSAuto.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace CSAuto.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CSAuto.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace CSAuto.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace CSAuto.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Purple&quot;, &quot;Orange&quot;, &quot;Lime&quot;, &quot;Emerald&quot;, &quot;Teal&quot;, &quot;Cyan&quot;, &quot;Cobalt&quot;, &quot;Indigo&quot;, &quot;Violet&quot;, &quot;Pink&quot;, &quot;Magenta&quot;, &quot;Crimson&quot;, &quot;Amber&quot;, &quot;Yellow&quot;, &quot;Brown&quot;, &quot;Olive&quot;, &quot;Steel&quot;, &quot;Mauve&quot;, &quot;Taupe&quot;, &quot;Sienna&quot;.
         /// </summary>
-        internal static string AVAILABLE_THEME_COLORS {
+        public static string AVAILABLE_THEME_COLORS {
             get {
                 return ResourceManager.GetString("AVAILABLE_THEME_COLORS", resourceCulture);
             }
@@ -95,7 +95,7 @@ namespace CSAuto.Properties {
         ///			&quot;consecutive_round_losses&quot;: 1,
         ///			&quot;timeouts_remain [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string GAMESTATE_EXAMPLE {
+        public static string GAMESTATE_EXAMPLE {
             get {
                 return ResourceManager.GetString("GAMESTATE_EXAMPLE", resourceCulture);
             }
@@ -104,7 +104,7 @@ namespace CSAuto.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon main {
+        public static System.Drawing.Icon main {
             get {
                 object obj = ResourceManager.GetObject("main", resourceCulture);
                 return ((System.Drawing.Icon)(obj));

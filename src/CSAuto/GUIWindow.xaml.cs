@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -78,7 +79,8 @@ namespace CSAuto
         }
         private async Task<string> CallInputDialogAsync(string title,string message)
         {
-            return await this.ShowInputAsync(AppLanguage.Language[title], AppLanguage.Language[message]);
+            return await this.ShowInputAsync(Properties.Strings.ResourceManager.GetString(title), 
+                Properties.Strings.ResourceManager.GetString(message));
             
         }
         public void UpdateText(string data)
@@ -287,7 +289,7 @@ namespace CSAuto
                         debugBox.Text = File.ReadAllText(finalPath);
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;
-                    LoadLanguages(this);
+                    //LoadLanguages(this);
                     //VersionText.Text = $"ver {MainApp.FULL_VER}";
                     UpdateDiscordRPCResult(true);
                     LoadDiscordButtons();
@@ -315,7 +317,7 @@ namespace CSAuto
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    _ = ShowMessage(AppLanguage.Language["title_error"], AppLanguage.Language["error_loadchangelog"], MessageDialogStyle.Affirmative);
+                    _ = ShowMessage(Properties.Strings.ResourceManager.GetString("title_error"), Properties.Strings.ResourceManager.GetString("error_loadchangelog"), MessageDialogStyle.Affirmative);
                 });
                 return;
             }
@@ -330,33 +332,33 @@ namespace CSAuto
                 });
         }
 
-        private void LoadLanguages(DependencyObject obj)
-        {
-            Dispatcher.InvokeAsync(() =>
-            {
-                foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
-                    ch.Content = AppLanguage.Language[(string)ch.Content];
-                foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
-                    ch.Header = AppLanguage.Language[(string)ch.Header];
-                foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
-                {
-                    if (Colors.Contains(ch.Text) ||
-                        ch.Text == "" ||
-                        ch.Text == "Steam" ||
-                        ch.Text == "Faceit" ||
-                        ch.Text == "CSGOStats")
-                        continue;
-                    ch.Text = AppLanguage.Language[ch.Text];
-                }
-                foreach (Button ch in FindVisualChildren<Button>(obj))
-                    if (ch.Content != null && ch.Content.GetType().Name == "String")
-                        ch.Content = AppLanguage.Language[(string)ch.Content];
-                foreach (DropDownButton ch in FindVisualChildren<DropDownButton>(obj))
-                    ch.Content = AppLanguage.Language[(string)ch.Content];
-                foreach (TextBox tb in FindVisualChildren<TextBox>(obj))
-                    tb.ToolTip = tb.ToolTip != null ? tb.ToolTip = AppLanguage.Language[(string)tb.ToolTip] : null;
-            });
-        }
+        //private void LoadLanguages(DependencyObject obj)
+        //{
+        //    Dispatcher.InvokeAsync(() =>
+        //    {
+        //        foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
+        //            ch.Content = Properties.Strings.ResourceManager.GetString((string)ch.Content];
+        //        foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
+        //            ch.Header = Properties.Strings.ResourceManager.GetString((string)ch.Header];
+        //        foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
+        //        {
+        //            if (Colors.Contains(ch.Text) ||
+        //                ch.Text == "" ||
+        //                ch.Text == "Steam" ||
+        //                ch.Text == "Faceit" ||
+        //                ch.Text == "CSGOStats")
+        //                continue;
+        //            ch.Text = Properties.Strings.ResourceManager.GetString(ch.Text];
+        //        }
+        //        foreach (Button ch in FindVisualChildren<Button>(obj))
+        //            if (ch.Content != null && ch.Content.GetType().Name == "String")
+        //                ch.Content = Properties.Strings.ResourceManager.GetString((string)ch.Content];
+        //        foreach (DropDownButton ch in FindVisualChildren<DropDownButton>(obj))
+        //            ch.Content = Properties.Strings.ResourceManager.GetString((string)ch.Content];
+        //        foreach (TextBox tb in FindVisualChildren<TextBox>(obj))
+        //            tb.ToolTip = tb.ToolTip != null ? tb.ToolTip = Properties.Strings.ResourceManager.GetString((string)tb.ToolTip] : null;
+        //    });
+        //}
 
         private void LaunchGitHubSite(object sender, RoutedEventArgs e)
         {
@@ -366,25 +368,18 @@ namespace CSAuto
         {
             foreach (string language in AppLanguage.Available)
             {
-                RadioButton rb = new RadioButton() { Content = AppLanguage.Language[language], IsChecked = language == Properties.Settings.Default.currentLanguage };
+                RadioButton rb = new RadioButton() { Content = Properties.Strings.ResourceManager.GetString("language_"+language), IsChecked = language == Properties.Settings.Default.currentLanguage };
                 rb.Checked += async (sender, args) =>
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
                     Properties.Settings.Default.Save();
+                    CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo((sender as RadioButton).Tag.ToString());
                     await RestartMessageBox();
                 };
                 rb.Tag = language;
                 languagesStackPanel.Children.Add(rb);
             }
         }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            IEnumerable<DependencyObject> enumarble = ((sender as TabControl).SelectedItem as MetroTabItem).GetChildObjects();
-            if(enumarble.Count() > 0)
-                LoadLanguages((enumarble.First() as StackPanel));
-        }
-
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
         {
             string appname = Assembly.GetEntryAssembly().GetName().Name;
@@ -405,7 +400,7 @@ namespace CSAuto
            string message, MessageDialogStyle dialogStyle)
         {
             return await this.ShowMessageAsync(
-                AppLanguage.Language[title], AppLanguage.Language[message], dialogStyle);
+                Properties.Strings.ResourceManager.GetString(title), Properties.Strings.ResourceManager.GetString(message), dialogStyle);
         }
         private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -437,22 +432,18 @@ namespace CSAuto
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex != 2 && CategoriesTabControl.SelectedIndex != 1)
-                LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
-            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 1 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
-            {
+            if (CategoriesTabControl.SelectedItem != null &&
+                CategoriesTabControl.SelectedIndex == 1
+                && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
                 new Thread(() => { LoadChangelog(); }).Start();
-                LoadLanguages((DependencyObject)(CategoriesTabControl.SelectedItem as MetroTabItem).Content);
-                ((TextBlock)ChangeLogAlternatives.Items[1]).Text = AppLanguage.Language["menu_website"];
-            }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {
                 debugBox.ScrollToEnd();
                 OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
             }
-            if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
+            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
             {
-               UpdateImage();
+                UpdateImage();
             }
         }
 
@@ -495,9 +486,6 @@ namespace CSAuto
 
         private void DiscordTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            listViewLabel.Header = AppLanguage.Language[(string)listViewLabel.Header];
-            listViewUrl.Header = AppLanguage.Language[(string)listViewUrl.Header];
-            TabControl_SelectionChanged(sender, e);
             UpdateDiscordRPCResult(DiscordTabControl.SelectedIndex == 0);
         }
 
@@ -525,8 +513,10 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(AppLanguage.Language["inputtext_label"], AppLanguage.Language["inputtext_enterlabel"]);
-            string url = await CallInputDialogAsync(AppLanguage.Language["inputtext_url"], AppLanguage.Language["inputtext_enterurl"]);
+            string label = await CallInputDialogAsync(Properties.Strings.ResourceManager.GetString("inputtext_label"),
+                Properties.Strings.ResourceManager.GetString("inputtext_enterlabel"));
+            string url = await CallInputDialogAsync(Properties.Strings.ResourceManager.GetString("inputtext_url")
+                , Properties.Strings.ResourceManager.GetString("inputtext_enterurl"));
             if(label == null || url == null || label.Trim() == "" || url.Trim() == "" || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
@@ -550,7 +540,8 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(AppLanguage.Language["inputtext_label"], AppLanguage.Language["inputtext_enterlabel"]);
+            string label = await CallInputDialogAsync(Properties.Strings.ResourceManager.GetString("inputtext_label")
+                , Properties.Strings.ResourceManager.GetString("inputtext_enterlabel"));
             if (label == null || label.Trim() == "")
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
@@ -596,7 +587,7 @@ namespace CSAuto
                     BuyItemProperties.Visibility = Visibility.Visible;
                     AutoBuyImage.Visibility = Visibility.Hidden;
                     AutoBuyTab.Visibility = Visibility.Hidden;
-                    BuyItemName.Text = AppLanguage.Language[$"buyitem_{item.Name.ToString().ToLower()}"];
+                    BuyItemName.Text = Properties.Strings.ResourceManager.GetString($"buyitem_{item.Name.ToString().ToLower()}");
                     BuyItemPriority.Value = item.GetPriority();
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
                     CheckIsCustom(item);
@@ -623,7 +614,7 @@ namespace CSAuto
                         {
                             RadioButton rb = new RadioButton
                             {
-                                Content = AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"],
+                                Content = Properties.Strings.ResourceManager.GetString($"buyitem_{option.ToString().ToLower()}"),
                                 IsChecked = option == customItem.GetName(),
                                 Tag = option
                             };
@@ -637,7 +628,7 @@ namespace CSAuto
                         {
                             RadioButton rb = new RadioButton
                             {
-                                Content = AppLanguage.Language[$"buyitem_{option.ToString().ToLower()}"],
+                                Content = Properties.Strings.ResourceManager.GetString($"buyitem_{option.ToString().ToLower()}"),
                                 IsChecked = option == customItem.GetName(),
                                 Tag = option
                             };

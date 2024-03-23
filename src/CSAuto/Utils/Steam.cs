@@ -21,7 +21,7 @@ namespace Murky.Utils
         {
             string steamPath = Steam.GetSteamPath();
             if (steamPath == null)
-                throw new DirectoryNotFoundException(CSAuto.AppLanguage.Language["exception_steamnotfound"]);
+                throw new DirectoryNotFoundException(CSAuto.Properties.Strings.ResourceManager.GetString("exception_steamnotfound"));
             string pathsFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
 
             if (!File.Exists(pathsFile))

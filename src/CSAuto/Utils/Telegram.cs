@@ -31,8 +31,8 @@ namespace Murky.Utils
                 if (!ex.Message.Contains("(429)") &&
                     ex.Message != "Unable to connect to the remote server")
                 {
-                    MessageBox.Show($"{AppLanguage.Language["error_telegrammessage"]}\n'{ex.Message}'\n'{text}'",
-                        AppLanguage.Language["title_error"],
+                    MessageBox.Show($"{CSAuto.Properties.Strings.ResourceManager.GetString("error_telegrammessage")}\n'{ex.Message}'\n'{text}'",
+                        CSAuto.Properties.Strings.ResourceManager.GetString("title_error"),
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
