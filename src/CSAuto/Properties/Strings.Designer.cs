@@ -754,7 +754,9 @@ namespace CSAuto.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error ocurred\n&apos;{0}&apos;\nTry to download the latest version from github, if it didn&apos;t help create a bug report with the error log attached..
+        ///   Looks up a localized string similar to An error ocurred
+        ///&apos;{0}&apos;
+        ///Try to download the latest version from github, if it didn&apos;t help create a bug report with the error log attached..
         /// </summary>
         public static string error_startup {
             get {

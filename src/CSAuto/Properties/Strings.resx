@@ -229,7 +229,9 @@
     <value>Couldn't check for updates. Try again later</value>
   </data>
   <data name="error_startup" xml:space="preserve">
-    <value>An error ocurred\n'{0}'\nTry to download the latest version from github, if it didn't help create a bug report with the error log attached.</value>
+    <value>An error ocurred
+'{0}'
+Try to download the latest version from github, if it didn't help create a bug report with the error log attached.</value>
   </data>
   <data name="menu_notifications" xml:space="preserve">
     <value>Notifications</value>

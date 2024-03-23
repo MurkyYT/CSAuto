@@ -229,7 +229,9 @@
     <value>Не получилось проверить обновления. Попробуйте позже</value>
   </data>
   <data name="error_startup" xml:space="preserve">
-    <value>Случилась ошибка\n'{0}'\nПопытайтесь скачать последнюю версию с GitHub, если не помогло создайте отчет об ошибке с прикрепленным 'Error_Log.txt'.</value>
+    <value>Случилась ошибка
+'{0}'
+Попытайтесь скачать последнюю версию с GitHub, если не помогло создайте отчет об ошибке с прикрепленным 'Error_Log.txt'.</value>
   </data>
   <data name="menu_notifications" xml:space="preserve">
     <value>Уведомления</value>
