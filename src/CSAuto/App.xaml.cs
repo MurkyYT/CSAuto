@@ -316,7 +316,7 @@ namespace CSAuto
                 $"StackTrace:{ex.StackTrace}\n" +
                 $"Source: {ex.Source}\n" +
                 $"Inner Exception: {ex.InnerException}");
-            MessageBox.Show(Strings.ResourceManager.GetString("error_appcrashed"), Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
             Process.Start(Log.WorkPath + "\\Error_Log.txt");
             Current.Shutdown();
         }

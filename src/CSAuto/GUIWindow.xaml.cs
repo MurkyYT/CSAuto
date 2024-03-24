@@ -79,8 +79,8 @@ namespace CSAuto
         }
         private async Task<string> CallInputDialogAsync(string title,string message)
         {
-            return await this.ShowInputAsync(Properties.Strings.ResourceManager.GetString(title), 
-                Properties.Strings.ResourceManager.GetString(message));
+            return await this.ShowInputAsync(Languages.Strings.ResourceManager.GetString(title), 
+                Languages.Strings.ResourceManager.GetString(message));
             
         }
         public void UpdateText(string data)
@@ -97,7 +97,6 @@ namespace CSAuto
             this.Dispatcher.Invoke(() =>
             {
                 debugBox.Text += data+'\n';
-                debugBox.ScrollToEnd();
             });
 
         }
@@ -317,7 +316,7 @@ namespace CSAuto
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    _ = ShowMessage(Properties.Strings.ResourceManager.GetString("title_error"), Properties.Strings.ResourceManager.GetString("error_loadchangelog"), MessageDialogStyle.Affirmative);
+                    _ = ShowMessage(Languages.Strings.ResourceManager.GetString("title_error"), Languages.Strings.ResourceManager.GetString("error_loadchangelog"), MessageDialogStyle.Affirmative);
                 });
                 return;
             }
@@ -337,9 +336,9 @@ namespace CSAuto
         //    Dispatcher.InvokeAsync(() =>
         //    {
         //        foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
-        //            ch.Content = Properties.Strings.ResourceManager.GetString((string)ch.Content];
+        //            ch.Content = Languages.Strings.ResourceManager.GetString((string)ch.Content];
         //        foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
-        //            ch.Header = Properties.Strings.ResourceManager.GetString((string)ch.Header];
+        //            ch.Header = Languages.Strings.ResourceManager.GetString((string)ch.Header];
         //        foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
         //        {
         //            if (Colors.Contains(ch.Text) ||
@@ -348,15 +347,15 @@ namespace CSAuto
         //                ch.Text == "Faceit" ||
         //                ch.Text == "CSGOStats")
         //                continue;
-        //            ch.Text = Properties.Strings.ResourceManager.GetString(ch.Text];
+        //            ch.Text = Languages.Strings.ResourceManager.GetString(ch.Text];
         //        }
         //        foreach (Button ch in FindVisualChildren<Button>(obj))
         //            if (ch.Content != null && ch.Content.GetType().Name == "String")
-        //                ch.Content = Properties.Strings.ResourceManager.GetString((string)ch.Content];
+        //                ch.Content = Languages.Strings.ResourceManager.GetString((string)ch.Content];
         //        foreach (DropDownButton ch in FindVisualChildren<DropDownButton>(obj))
-        //            ch.Content = Properties.Strings.ResourceManager.GetString((string)ch.Content];
+        //            ch.Content = Languages.Strings.ResourceManager.GetString((string)ch.Content];
         //        foreach (TextBox tb in FindVisualChildren<TextBox>(obj))
-        //            tb.ToolTip = tb.ToolTip != null ? tb.ToolTip = Properties.Strings.ResourceManager.GetString((string)tb.ToolTip] : null;
+        //            tb.ToolTip = tb.ToolTip != null ? tb.ToolTip = Languages.Strings.ResourceManager.GetString((string)tb.ToolTip] : null;
         //    });
         //}
 
@@ -368,7 +367,7 @@ namespace CSAuto
         {
             foreach (string language in AppLanguage.Available)
             {
-                RadioButton rb = new RadioButton() { Content = Properties.Strings.ResourceManager.GetString("language_"+language), IsChecked = language == Properties.Settings.Default.currentLanguage };
+                RadioButton rb = new RadioButton() { Content = Languages.Strings.ResourceManager.GetString("language_"+language), IsChecked = language == Properties.Settings.Default.currentLanguage };
                 rb.Checked += async (sender, args) =>
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
@@ -400,7 +399,7 @@ namespace CSAuto
            string message, MessageDialogStyle dialogStyle)
         {
             return await this.ShowMessageAsync(
-                Properties.Strings.ResourceManager.GetString(title), Properties.Strings.ResourceManager.GetString(message), dialogStyle);
+                Languages.Strings.ResourceManager.GetString(title), Languages.Strings.ResourceManager.GetString(message), dialogStyle);
         }
         private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -438,7 +437,6 @@ namespace CSAuto
                 new Thread(() => { LoadChangelog(); }).Start();
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {
-                debugBox.ScrollToEnd();
                 OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
             }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
@@ -513,10 +511,10 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(Properties.Strings.ResourceManager.GetString("inputtext_label"),
-                Properties.Strings.ResourceManager.GetString("inputtext_enterlabel"));
-            string url = await CallInputDialogAsync(Properties.Strings.ResourceManager.GetString("inputtext_url")
-                , Properties.Strings.ResourceManager.GetString("inputtext_enterurl"));
+            string label = await CallInputDialogAsync(Languages.Strings.ResourceManager.GetString("inputtext_label"),
+                Languages.Strings.ResourceManager.GetString("inputtext_enterlabel"));
+            string url = await CallInputDialogAsync(Languages.Strings.ResourceManager.GetString("inputtext_url")
+                , Languages.Strings.ResourceManager.GetString("inputtext_enterurl"));
             if(label == null || url == null || label.Trim() == "" || url.Trim() == "" || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
@@ -540,8 +538,8 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(Properties.Strings.ResourceManager.GetString("inputtext_label")
-                , Properties.Strings.ResourceManager.GetString("inputtext_enterlabel"));
+            string label = await CallInputDialogAsync(Languages.Strings.ResourceManager.GetString("inputtext_label")
+                , Languages.Strings.ResourceManager.GetString("inputtext_enterlabel"));
             if (label == null || label.Trim() == "")
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
@@ -587,7 +585,7 @@ namespace CSAuto
                     BuyItemProperties.Visibility = Visibility.Visible;
                     AutoBuyImage.Visibility = Visibility.Hidden;
                     AutoBuyTab.Visibility = Visibility.Hidden;
-                    BuyItemName.Text = Properties.Strings.ResourceManager.GetString($"buyitem_{item.Name.ToString().ToLower()}");
+                    BuyItemName.Text = Languages.Strings.ResourceManager.GetString($"buyitem_{item.Name.ToString().ToLower()}");
                     BuyItemPriority.Value = item.GetPriority();
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
                     CheckIsCustom(item);
@@ -614,7 +612,7 @@ namespace CSAuto
                         {
                             RadioButton rb = new RadioButton
                             {
-                                Content = Properties.Strings.ResourceManager.GetString($"buyitem_{option.ToString().ToLower()}"),
+                                Content = Languages.Strings.ResourceManager.GetString($"buyitem_{option.ToString().ToLower()}"),
                                 IsChecked = option == customItem.GetName(),
                                 Tag = option
                             };
@@ -628,7 +626,7 @@ namespace CSAuto
                         {
                             RadioButton rb = new RadioButton
                             {
-                                Content = Properties.Strings.ResourceManager.GetString($"buyitem_{option.ToString().ToLower()}"),
+                                Content = Languages.Strings.ResourceManager.GetString($"buyitem_{option.ToString().ToLower()}"),
                                 IsChecked = option == customItem.GetName(),
                                 Tag = option
                             };
@@ -716,6 +714,15 @@ namespace CSAuto
         private void OpenGithubChangelog_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Process.Start("https://github.com/MurkyYT/CSAuto/blob/master/Docs/FullChangelog.MD");
+        }
+
+        private void debugBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            debugBox.ScrollToEnd();
+        }
+        private void debugBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            debugBox_TextChanged(sender, null);
         }
     }
 }

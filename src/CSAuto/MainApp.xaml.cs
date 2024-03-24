@@ -214,7 +214,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(Properties.Strings.ResourceManager.GetString("error_startup"),ex.Message), Properties.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("error_startup"),ex.Message), Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Log.Error(
                     $"{ex.Message}\n" +
                     $"StackTrace:{ex.StackTrace}\n" +
@@ -250,7 +250,7 @@ namespace CSAuto
                     }
                 }
                 Log.WriteLine("|MainApp.cs| Couldn't load colors at all");
-                MessageBox.Show(Properties.Strings.ResourceManager.GetString("error_loadcolors"), Properties.Strings.ResourceManager.GetString("title_error"),MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_loadcolors"), Languages.Strings.ResourceManager.GetString("title_error"),MessageBoxButton.OK, MessageBoxImage.Error);
                 return new Color[2];
             }
         }
@@ -333,10 +333,10 @@ namespace CSAuto
                     switch (currentBombState)
                     {
                         case BombState.Defused:
-                            SendMessageToServer($"<BMB>{Properties.Strings.ResourceManager.GetString("server_bombdefuse")}");
+                            SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_bombdefuse")}");
                             break;
                         case BombState.Exploded:
-                            SendMessageToServer($"<BMB>{Properties.Strings.ResourceManager.GetString("server_bombexplode")}");
+                            SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_bombexplode")}");
                             break;
                     }
 
@@ -367,7 +367,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer(string.Format($"<MAP>{Properties.Strings.ResourceManager.GetString("server_loadedmap")}", gameState.Match.Map, gameState.Match.Mode));
+                        SendMessageToServer(string.Format($"<MAP>{Languages.Strings.ResourceManager.GetString("server_loadedmap")}", gameState.Match.Map, gameState.Match.Mode));
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -400,7 +400,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.lobbyNotification)
-                        SendMessageToServer($"<LBY>{Properties.Strings.ResourceManager.GetString("server_loadedlobby")}");
+                        SendMessageToServer($"<LBY>{Languages.Strings.ResourceManager.GetString("server_loadedlobby")}");
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
                         DXGIcapture.Init();
@@ -571,27 +571,27 @@ namespace CSAuto
             exitCm.Closed += Exitcm_Closed;
             MenuItem exit = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_exit")
+                Header = Languages.Strings.ResourceManager.GetString("menu_exit")
             };
             MenuItem launchCS = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_launchcs")
+                Header = Languages.Strings.ResourceManager.GetString("menu_launchcs")
             };
             MenuItem options = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_options")
+                Header = Languages.Strings.ResourceManager.GetString("menu_options")
             };
             MenuItem optionsOpen = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_open")
+                Header = Languages.Strings.ResourceManager.GetString("menu_open")
             };
             MenuItem optionsExport = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_optionsexport")
+                Header = Languages.Strings.ResourceManager.GetString("menu_optionsexport")
             };
             MenuItem optionsImport = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_optionsimport")
+                Header = Languages.Strings.ResourceManager.GetString("menu_optionsimport")
             };
             exit.Click += Exit_Click;
             options.Items.Add(optionsOpen);
@@ -613,7 +613,7 @@ namespace CSAuto
             };
             MenuItem checkForUpdates = new MenuItem
             {
-                Header = Properties.Strings.ResourceManager.GetString("menu_checkforupdates")
+                Header = Languages.Strings.ResourceManager.GetString("menu_checkforupdates")
             };
             checkForUpdates.Click += CheckForUpdates_Click;
             exitCm.Items.Add(about);
@@ -638,12 +638,12 @@ namespace CSAuto
                 if ((bool)saveFileDialog.ShowDialog())
                 {
                     File.WriteAllText(saveFileDialog.FileName, current.settings.ToString(),Encoding.UTF8);
-                    MessageBox.Show(string.Format(Properties.Strings.ResourceManager.GetString("file_savesucess"), saveFileDialog.FileName), Properties.Strings.ResourceManager.GetString("title_success"), MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("file_savesucess"), saveFileDialog.FileName), Languages.Strings.ResourceManager.GetString("title_success"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }  
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.ToString(), Properties.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.ToString(), Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -661,18 +661,18 @@ namespace CSAuto
                     current.settings.Import(openFileDialog.FileName);
                     current.LoadSettings();
                     current.buyMenu.Load(current.settings);
-                    MessageBox.Show(string.Format(Properties.Strings.ResourceManager.GetString("file_importsucess"), openFileDialog.FileName), Properties.Strings.ResourceManager.GetString("title_success"), MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("file_importsucess"), openFileDialog.FileName), Languages.Strings.ResourceManager.GetString("title_success"), MessageBoxButton.OK, MessageBoxImage.Information);
                     RestartMessageBox();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), Properties.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.ToString(), Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void RestartMessageBox()
         {
-            var restart = MessageBox.Show(Properties.Strings.ResourceManager.GetString("msgbox_restartneeded"), Properties.Strings.ResourceManager.GetString("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            var restart = MessageBox.Show(Languages.Strings.ResourceManager.GetString("msgbox_restartneeded"), Languages.Strings.ResourceManager.GetString("title_restartneeded"), MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (restart == MessageBoxResult.OK)
             {
                 Process.Start(Assembly.GetExecutingAssembly().Location, "--restart" + (guiWindow == null ? "" : " --show ") + current.Args);
@@ -722,7 +722,7 @@ namespace CSAuto
                 File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt").Close();
                 RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt", DiscordRPC.Logging.LogLevel.Error);
             }
-            catch { MessageBox.Show(Properties.Strings.ResourceManager.GetString("error_createfiles"), Properties.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning); }
+            catch { MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_createfiles"), Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning); }
 #endif
             RPCClient.OnReady += (sender, e) =>
             {
@@ -758,12 +758,12 @@ namespace CSAuto
                     if (latestVersion == VER)
                     {
                         Log.WriteLine("|MainApp.cs| Latest version installed");
-                        MessageBox.Show(Properties.Strings.ResourceManager.GetString("msgbox_latestversion"), Properties.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Languages.Strings.ResourceManager.GetString("msgbox_latestversion"), Languages.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         Log.WriteLine($"|MainApp.cs| Newer version found ({latestVersion}),current version is {VER}");
-                        MessageBoxResult result = MessageBox.Show(string.Format(Properties.Strings.ResourceManager.GetString("msgbox_newerversion"),latestVersion), Properties.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("msgbox_newerversion"),latestVersion), Languages.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("|MainApp.cs| Launching updater");
@@ -787,7 +787,7 @@ namespace CSAuto
                 catch (Exception ex)
                 {
                     Log.WriteLine($"|MainApp.cs| Couldn't check for updates - '{ex.Message}'");
-                    MessageBox.Show($"{Properties.Strings.ResourceManager.GetString("error_update")}\n'{ex.Message}'", Properties.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"{Languages.Strings.ResourceManager.GetString("error_update")}\n'{ex.Message}'", Languages.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }).Start();
         }
@@ -797,12 +797,12 @@ namespace CSAuto
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
             int diff = (int)(gameState.Timestamp - result);
-            SendMessageToServer($"<BMB>{Properties.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true);
+            SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true);
             bombTimerThread = new Thread(() =>
             {
                 for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
                 {
-                    SendMessageToServer($"<BMB>{Properties.Strings.ResourceManager.GetString("server_timeleft")} {seconds}", onlyServer: true);
+                    SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_timeleft")} {seconds}", onlyServer: true);
                     Thread.Sleep(BOMB_TIMER_DELAY);
                 }
                 bombTimerThread = null;
@@ -1017,7 +1017,7 @@ namespace CSAuto
             inLobby = false;
             Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                SendMessageToServer($"<CRS>{Properties.Strings.ResourceManager.GetString("server_gamecrash")}");
+                SendMessageToServer($"<CRS>{Languages.Strings.ResourceManager.GetString("server_gamecrash")}");
             csProcess = null;
             if (RPCClient.IsInitialized)
             {
@@ -1202,7 +1202,7 @@ namespace CSAuto
                             int Y = clickpoint.Y;
                             Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
                             if (Properties.Settings.Default.acceptedNotification)
-                                SendMessageToServer($"<ACP>{Properties.Strings.ResourceManager.GetString("server_acceptmatch")}");
+                                SendMessageToServer($"<ACP>{Languages.Strings.ResourceManager.GetString("server_acceptmatch")}");
                             LeftMouseClick(X, Y);
                             found = true;
                             if (CheckIfAccepted(bitmap, Y))
@@ -1321,7 +1321,7 @@ namespace CSAuto
                     return ip.ToString();
                 }
             }
-            throw new Exception(Properties.Strings.ResourceManager.GetString("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
+            throw new Exception(Languages.Strings.ResourceManager.GetString("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -1337,11 +1337,11 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification && !current.Restarted)
-                    SendMessageToServer(string.Format($"<CNT>{Properties.Strings.ResourceManager.GetString("server_computeronline")}", Environment.MachineName, GetLocalIPAddress(),FULL_VER));
+                    SendMessageToServer(string.Format($"<CNT>{Languages.Strings.ResourceManager.GetString("server_computeronline")}", Environment.MachineName, GetLocalIPAddress(),FULL_VER));
                 if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)
-                    throw new DirectoryNotFoundException(Properties.Strings.ResourceManager.GetString("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
+                    throw new DirectoryNotFoundException(Languages.Strings.ResourceManager.GetString("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
                 //InitializeGameStateLaunchOption();
@@ -1359,7 +1359,7 @@ namespace CSAuto
                     //discordMenu.IsEnabled = false;
                     hadError = true;
                 }
-                MessageBox.Show($"{ex.Message}", Properties.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"{ex.Message}", Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             NativeMethods.OptimizeMemory();
         }
@@ -1471,7 +1471,7 @@ namespace CSAuto
                     else
                     {
                         Log.WriteLine($"|MainApp.cs| Newer version found ({latestVersion}), current version is {VER}");
-                        MessageBoxResult result = MessageBox.Show(string.Format(Properties.Strings.ResourceManager.GetString("msgbox_newerversion"), latestVersion), Properties.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("msgbox_newerversion"), latestVersion), Languages.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("|MainApp.cs| Launching updater");

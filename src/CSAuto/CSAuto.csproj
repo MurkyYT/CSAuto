@@ -106,12 +106,12 @@
     <Compile Include="Extentions.cs" />
     <Compile Include="ImageLoader.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
-    <Compile Include="Properties\Strings.Designer.cs">
+    <Compile Include="Languages\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Strings.ru.Designer.cs">
+    <Compile Include="Languages\Strings.ru.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.ru.resx</DependentUpon>
@@ -190,11 +190,11 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Strings.resx">
+    <EmbeddedResource Include="Languages\Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Strings.ru.resx">
+    <EmbeddedResource Include="Languages\Strings.ru.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -258,7 +258,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>rm -r $(ProjectDir)$(OutDir)resource
-mkdir -r $(ProjectDir)$(OutDir)resource
+mkdir $(ProjectDir)$(OutDir)resource
 call $(SolutionDir)Misc\prebuild.bat $(SolutionDir)
 call $(SolutionDir)Misc\impack.exe $(ProjectDir)resource\images $(TargetDir)resource\images.pac
 copy $(ProjectDir)resource\.portable $(ProjectDir)$(OutDir)resource\.portable</PreBuildEvent>

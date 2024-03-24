@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:properties="clr-namespace:CSAuto.Properties"
-        xmlns:p = "clr-namespace:CSAuto.Properties"
+        xmlns:p = "clr-namespace:CSAuto.Languages"
         xmlns:csauto="clr-namespace:CSAuto"
         mc:Ignorable="d"
         Title="CSAuto" 
@@ -183,7 +183,7 @@
                     <TextBlock x:Name="IsPortableText" Text="Portable: {}" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Bottom" Margin="0,0,0,30"/>
                     <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom"/>
                     <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto"/>
-                    <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" TextChanged="debugBox_TextChanged" Loaded="debugBox_Loaded"/>
                     <!--<TextBlock Text="CS Console Output:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom"/> -->
                     <TextBlock Text="{Binding Source={x:Static csauto:DiscordRPCButtonSerializer.Path}}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,15" TextWrapping="WrapWithOverflow"/>
                     <TextBlock Text="" x:Name="OldCaptureText" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,0,15"/>
