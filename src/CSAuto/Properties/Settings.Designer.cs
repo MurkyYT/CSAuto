@@ -440,5 +440,29 @@ namespace CSAuto.Properties {
                 this["customTelegramToken"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoFocusOnCS {
+            get {
+                return ((bool)(this["autoFocusOnCS"]));
+            }
+            set {
+                this["autoFocusOnCS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool focusBackOnOriginalWindow {
+            get {
+                return ((bool)(this["focusBackOnOriginalWindow"]));
+            }
+            set {
+                this["focusBackOnOriginalWindow"] = value;
+            }
+        }
     }
 }

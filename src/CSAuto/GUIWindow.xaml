@@ -102,6 +102,8 @@
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="{x:Static p:Strings.menu_autoaccept}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoAcceptMatch}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_autospotify}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoPausePlaySpotify}"/>
+                                <CheckBox Content="{x:Static p:Strings.menu_autofocus}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoFocusOnCS}"/>
+                                <CheckBox Content="{x:Static p:Strings.menu_focusback}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=focusBackOnOriginalWindow}"/>
                                 <!--<TextBlock Text="menu_autobuy" FontSize="20" FontWeight="Bold"/>
                                 --><!-- <CheckBox Content="menu_oldautobuy" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldAutoBuy}"/>--><!--
                                 <CheckBox Content="menu_preferarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=preferArmor}"/>

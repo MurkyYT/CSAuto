@@ -116,6 +116,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.ru.resx</DependentUpon>
     </Compile>
+    <Compile Include="StreamString.cs" />
     <Compile Include="Utils\CSGO\ConDump.cs" />
     <Compile Include="Utils\DXGICapture.cs" />
     <Compile Include="Utils\Nager.TcpClient\TcpClient.cs" />
@@ -225,10 +226,6 @@
   <ItemGroup>
     <Resource Include="Images\CS_ICON.png" />
     <Content Include="DXGICapture.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Steamworks.NET.dll" />
-    <Content Include="steam_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

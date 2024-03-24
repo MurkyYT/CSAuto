@@ -18,6 +18,19 @@ namespace CSAuto
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeregisterShellHookWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SwitchToThisWindow(IntPtr hWnd,bool fUnknown);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        public static IntPtr HSHELL_FLASH = IntPtr.Add(IntPtr.Zero, 0x8006);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool RegisterShellHookWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         [DllImport("user32.dll")]
         static extern bool SetSystemCursor(IntPtr hcur, uint id);
@@ -119,7 +132,7 @@ namespace CSAuto
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
         [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
+        public static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
         public static extern bool SetCursorPos(int x, int y);
         [DllImport("user32.dll")]

@@ -659,4 +659,10 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="tooltip_telegramcustomtoken" xml:space="preserve">
     <value>Enter here your bot token which will send you messages, if the token is wrong or doesn't exist the app will fallback to the default token</value>
   </data>
+  <data name="menu_autofocus" xml:space="preserve">
+    <value>Try to focus on cs window when game is found</value>
+  </data>
+  <data name="menu_focusback" xml:space="preserve">
+    <value>Focus back to original window on accept</value>
+  </data>
 </root>

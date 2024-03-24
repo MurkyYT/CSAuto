@@ -659,4 +659,10 @@
   <data name="tooltip_telegramcustomtoken" xml:space="preserve">
     <value>Введите здесь свой токен бота, который будет отправлять вам сообщения, если токен неверен или не существует, приложение вернется к токену по умолчанию</value>
   </data>
+  <data name="menu_autofocus" xml:space="preserve">
+    <value>Попытатся сфокусироваться на окно cs, когда игра будет найдена</value>
+  </data>
+  <data name="menu_focusback" xml:space="preserve">
+    <value>Возвращаться к исходному окну при нажатии кнопки принять</value>
+  </data>
 </root>

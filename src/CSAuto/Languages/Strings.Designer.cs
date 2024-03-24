@@ -1053,6 +1053,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Try to focus on cs window when game is found.
+        /// </summary>
+        public static string menu_autofocus {
+            get {
+                return ResourceManager.GetString("menu_autofocus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automation.
         /// </summary>
         public static string menu_automation {
@@ -1238,6 +1247,15 @@ namespace CSAuto.Languages {
         public static string menu_exit {
             get {
                 return ResourceManager.GetString("menu_exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Focus back to original window on accept.
+        /// </summary>
+        public static string menu_focusback {
+            get {
+                return ResourceManager.GetString("menu_focusback", resourceCulture);
             }
         }
         

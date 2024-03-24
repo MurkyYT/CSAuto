@@ -33,45 +33,6 @@ using DiscordRPC.Logging;
 #endregion
 namespace CSAuto
 {
-    public class StreamString
-    {
-        private readonly Stream ioStream;
-        private readonly UnicodeEncoding streamEncoding;
-
-        public StreamString(Stream ioStream)
-        {
-            this.ioStream = ioStream;
-            streamEncoding = new UnicodeEncoding();
-        }
-
-        public string ReadString()
-        {
-            int len;
-            len = ioStream.ReadByte() * 256;
-            len += ioStream.ReadByte();
-            var inBuffer = new byte[len];
-            ioStream.Read(inBuffer, 0, len);
-
-            return streamEncoding.GetString(inBuffer);
-        }
-
-        public int WriteString(string outString)
-        {
-            byte[] outBuffer = streamEncoding.GetBytes(outString);
-            int len = outBuffer.Length;
-            if (len > UInt16.MaxValue)
-            {
-                len = (int)UInt16.MaxValue;
-            }
-            ioStream.WriteByte((byte)(len / 256));
-            ioStream.WriteByte((byte)(len & 255));
-            ioStream.Write(outBuffer, 0, len);
-            ioStream.Flush();
-
-            return outBuffer.Length + 2;
-        }
-    }
-
     /// <summary>
     /// Main logic for CSAuto app
     /// </summary>
@@ -80,7 +41,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.0";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "5";
+        const string DEBUG_REVISION = "6";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -145,9 +106,11 @@ namespace CSAuto
         bool acceptedGame = false;
         Process steamAPIServer = null;
         Process csProcess = null;
+        Process originalProcess = null;
         Thread bombTimerThread = null;
         bool hadError = false;
         IntPtr hCursorOriginal = IntPtr.Zero;
+        HwndSource windowSource;
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -927,6 +890,7 @@ namespace CSAuto
                     csProcess = NativeMethods.GetProccesByWindowName(GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME, GAME_PROCCES_NAME);
                     if(suc)
                     {
+                        NativeMethods.RegisterShellHookWindow(windowSource.Handle);
                         csRunning = true;
                         csProcess.Exited += CsProcess_Exited;
                         csProcess.EnableRaisingEvents = true;
@@ -969,7 +933,26 @@ namespace CSAuto
                 Log.WriteLine($"|MainApp.cs| {ex}");
             }
         }
-
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (Properties.Settings.Default.autoFocusOnCS &&
+                Properties.Settings.Default.autoAcceptMatch &&
+                csProcess != null && !csActive &&
+                lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH)
+            {
+                NativeMethods.GetWindowThreadProcessId(NativeMethods.GetForegroundWindow(), out uint prcsId);
+                if (prcsId != 0 && Properties.Settings.Default.focusBackOnOriginalWindow)
+                    originalProcess = Process.GetProcessById((int)prcsId);
+                NativeMethods.SetForegroundWindow(csProcess.MainWindowHandle);
+                if (NativeMethods.GetForegroundWindow() != csProcess.MainWindowHandle)
+                {
+                    NativeMethods.SwitchToThisWindow(csProcess.MainWindowHandle, true);
+                    NativeMethods.SetForegroundWindow(csProcess.MainWindowHandle);
+                }
+                Log.WriteLine("|MainApp.cs| Switching to CS window");
+            }
+            return IntPtr.Zero;
+        }
         private string GetLobbyInfoFromSteamworks()
         {
             string res = "0/0(0)";
@@ -1018,6 +1001,7 @@ namespace CSAuto
             Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{Languages.Strings.ResourceManager.GetString("server_gamecrash")}");
+            NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
             csProcess = null;
             if (RPCClient.IsInitialized)
             {
@@ -1219,6 +1203,17 @@ namespace CSAuto
                                         $"{csResolution.Width}X{csResolution.Height}\n" +
                                         $"({X},{Y})\n" +
                                         $"{DateTime.Now}");
+                                if(originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
+                                {
+                                    NativeMethods.SetForegroundWindow(originalProcess.MainWindowHandle);
+                                    if (NativeMethods.GetForegroundWindow() != originalProcess.MainWindowHandle)
+                                    {
+                                        NativeMethods.SwitchToThisWindow(originalProcess.MainWindowHandle, true);
+                                        NativeMethods.SetForegroundWindow(originalProcess.MainWindowHandle);
+                                    }
+                                    Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
+                                    originalProcess = null;
+                                }
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
                         }
@@ -1344,6 +1339,8 @@ namespace CSAuto
                     throw new DirectoryNotFoundException(Languages.Strings.ResourceManager.GetString("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 InitializeGSIConfig();
+                windowSource = PresentationSource.FromVisual(this) as HwndSource;
+                windowSource.AddHook(WndProc);
                 //InitializeGameStateLaunchOption();
                 //InitializeNetConLaunchOption();
             }
