@@ -31,3 +31,4 @@ jobs:
             footer_title: "Changelog"
             footer_icon_url: "https://cdn.discordapp.com/icons/1154291113352499232/3c6a6a5160efea5657e07b256fb14cf8.png"
             footer_timestamp: true
+            reduce_headings: true
