@@ -9,8 +9,7 @@ jobs:
       permissions: write-all
       runs-on: ubuntu-latest
       steps:
-        -
-          name: VirusTotal Scan
+        - name: VirusTotal Scan
           uses: crazy-max/ghaction-virustotal@v3
           with:
             vt_api_key: ${{ secrets.VT_API_KEY }}
@@ -19,3 +18,16 @@ jobs:
               .exe$
               .zip$
               .apk$
+        - name: Checkout
+          uses: actions/checkout@v3
+        - name: Github Releases To Discord
+          uses: SethCohen/github-releases-to-discord@v1.13.1
+          with:
+            webhook_url: ${{ secrets.WEBHOOK_URL }}
+            color: "2105893"
+            username: "Release Changelog"
+            avatar_url: "https://cdn.discordapp.com/icons/1154291113352499232/3c6a6a5160efea5657e07b256fb14cf8.png"
+            content: "||@Release||"
+            footer_title: "Changelog"
+            footer_icon_url: "https://cdn.discordapp.com/icons/1154291113352499232/3c6a6a5160efea5657e07b256fb14cf8.png"
+            footer_timestamp: true
