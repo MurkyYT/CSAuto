@@ -80,7 +80,7 @@
                                 </StackPanel>
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=telegramChatId}"/>
                                 <TextBlock Text="{x:Static p:Strings.inputtitle_telegramcustomtoken}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"/>
-                                <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=customTelegramToken}" ToolTip="tooltip_telegramcustomtoken"/>
+                                <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=customTelegramToken}" ToolTip="{x:Static p:Strings.tooltip_telegramcustomtoken}"/>
                                 <TextBlock Text="{x:Static p:Strings.menu_notifications}" FontSize="20" FontWeight="Bold"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_acceptednotification}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=acceptedNotification}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_mapnotification}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mapNotification}"/>
