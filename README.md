@@ -57,6 +57,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
   * `--language [language name]` - Change app language to the one specified, doesn't change the settings
   * `--portable` - Run the app in portable mode
   * `--log` - Enabling logging, regardless of whether it is enabled in the settings, doesn't change the settings
+  * `--cs` - Launch cs with CSAuto
 
 ## FAQ
 

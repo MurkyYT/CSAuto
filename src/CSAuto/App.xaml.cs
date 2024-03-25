@@ -103,9 +103,15 @@ namespace CSAuto
         }
         private void ParseArgs(StartupEventArgs e)
         {
+            string[] forbiden = new string[]
+            {
+                "--show",
+                "--restart",
+                "--cs"
+            };
             foreach (string arg in e.Args)
             {
-                if (arg != "--show" && arg != "--restart")
+                if (!forbiden.Contains(arg))
                     Args += arg + " ";
                 if (arg == "--maximized")
                     AlwaysMaximized = true;
@@ -119,6 +125,11 @@ namespace CSAuto
                     IsPortable = true;
                 if (arg == "--log")
                     LogArg = true;
+                if (arg == "--cs")
+                {
+                    Process.Start("steam://rungameid/730");
+                    Log.WriteLine("|App.cs| Launching cs on start");
+                }
             }
         }
 
