@@ -49,7 +49,29 @@ namespace CSAuto
             public IntPtr hCursor;          // Handle to the cursor. 
             public POINT ptScreenPos;       // A POINT structure that receives the screen coordinates of the cursor. 
         }
-
+        public static Process GetForegroundProcess()
+        {
+            IntPtr hWnd = GetForegroundWindow();
+            if (hWnd == IntPtr.Zero)
+                return null;
+            GetWindowThreadProcessId(hWnd, out uint prcsId);
+            if (prcsId != 0)
+                return Process.GetProcessById((int)prcsId);
+            return null;
+        }
+        public static bool BringToFront(IntPtr hWnd)
+        {
+            if (GetForegroundWindow() == hWnd)
+                return false;
+            bool res = SetForegroundWindow(hWnd);
+            if (GetForegroundWindow() != hWnd)
+            {
+                bool res1 = SwitchToThisWindow(hWnd, true);
+                bool res2 = SetForegroundWindow(hWnd);
+                return res1 && res2;
+            }
+            return res;
+        }
         public static CURSORINFO GetCursorInfo()
         {
             CURSORINFO curin = new CURSORINFO();

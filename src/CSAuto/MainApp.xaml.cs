@@ -41,7 +41,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.0";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "6";
+        const string DEBUG_REVISION = "7";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -940,16 +940,10 @@ namespace CSAuto
                 csProcess != null && !csActive &&
                 lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH)
             {
-                NativeMethods.GetWindowThreadProcessId(NativeMethods.GetForegroundWindow(), out uint prcsId);
-                if (prcsId != 0 && Properties.Settings.Default.focusBackOnOriginalWindow)
-                    originalProcess = Process.GetProcessById((int)prcsId);
-                NativeMethods.SetForegroundWindow(csProcess.MainWindowHandle);
-                if (NativeMethods.GetForegroundWindow() != csProcess.MainWindowHandle)
-                {
-                    NativeMethods.SwitchToThisWindow(csProcess.MainWindowHandle, true);
-                    NativeMethods.SetForegroundWindow(csProcess.MainWindowHandle);
-                }
-                Log.WriteLine("|MainApp.cs| Switching to CS window");
+                if (Properties.Settings.Default.focusBackOnOriginalWindow)
+                    originalProcess = NativeMethods.GetForegroundProcess();
+                if(NativeMethods.BringToFront(csProcess.MainWindowHandle))
+                    Log.WriteLine("|MainApp.cs| Switching to CS window");
             }
             return IntPtr.Zero;
         }
@@ -1205,14 +1199,11 @@ namespace CSAuto
                                         $"{DateTime.Now}");
                                 if(originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
                                 {
-                                    NativeMethods.SetForegroundWindow(originalProcess.MainWindowHandle);
-                                    if (NativeMethods.GetForegroundWindow() != originalProcess.MainWindowHandle)
+                                    if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
                                     {
-                                        NativeMethods.SwitchToThisWindow(originalProcess.MainWindowHandle, true);
-                                        NativeMethods.SetForegroundWindow(originalProcess.MainWindowHandle);
+                                        Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
+                                        originalProcess = null;
                                     }
-                                    Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
-                                    originalProcess = null;
                                 }
                                 acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
