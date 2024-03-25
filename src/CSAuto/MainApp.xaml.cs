@@ -308,8 +308,7 @@ namespace CSAuto
                 {
                     inLobby = false;
                     Log.WriteLine($"|MainApp.cs| Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
-                    if (CSGOMap.MapIcons.ContainsKey(gameState.Match.Map))
-                        currentMapIcon = CSGOMap.MapIcons[gameState.Match.Map];
+                    currentMapIcon = CSGOMap.GetMapIcon(gameState.Match.Map);
                     RPCClient.SetPresence(new RichPresence()
                     {
                         Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),

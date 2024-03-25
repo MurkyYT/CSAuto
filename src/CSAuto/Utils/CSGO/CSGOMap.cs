@@ -11,7 +11,7 @@ namespace Murky.Utils.CSGO
 {
     public static class CSGOMap
     {
-        public static Dictionary<string, string> MapIcons = new Dictionary<string, string>();
+        static Dictionary<string, string> MapIcons = new Dictionary<string, string>();
         readonly static WebClient client = new WebClient();
         static CSGOMap()
         {
@@ -23,27 +23,30 @@ namespace Murky.Utils.CSGO
 
         public static void LoadMapIcons()
         {
-            try
+            lock (client)
             {
-                string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media");
-                string[] splt = info.Split(new string[] { "src=\"/w/images/thumb/" }, StringSplitOptions.None);
-                for (int i = 1; i < splt.Length; i++)
+                try
                 {
-                    string link = splt[i].Split('"')[0];
-                    try
+                    string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media");
+                    string[] splt = info.Split(new string[] { "src=\"/w/images/thumb/" }, StringSplitOptions.None);
+                    for (int i = 1; i < splt.Length; i++)
                     {
-                        string[] imageInfo = link.Split('/');
-                        string mapName = imageInfo[2].Split('.')[0];
-                        if (IsOfficial(mapName))
+                        string link = splt[i].Split('"')[0];
+                        try
                         {
-                            string finalLink = $"https://developer.valvesoftware.com/w/images/{imageInfo[0]}/{imageInfo[1]}/{imageInfo[2]}";
-                            MapIcons[mapName.ToLower()] = finalLink;
+                            string[] imageInfo = link.Split('/');
+                            string mapName = imageInfo[2].Split('.')[0];
+                            if (IsOfficial(mapName))
+                            {
+                                string finalLink = $"https://developer.valvesoftware.com/w/images/{imageInfo[0]}/{imageInfo[1]}/{imageInfo[2]}";
+                                MapIcons[mapName.ToLower()] = finalLink;
+                            }
                         }
+                        catch { }
                     }
-                    catch { }
                 }
+                catch { }
             }
-            catch { }
         }
 
         public static bool IsOfficial(string mapName)
@@ -58,15 +61,40 @@ namespace Murky.Utils.CSGO
         }
         public static string GetMapIcon(string mapName)
         {
-            try
+            lock (client)
             {
-                string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
-                string result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
-                return result;
-            }
-            catch
-            {
-                return null;
+                try
+                {
+                    if (MapIcons.ContainsKey(mapName))
+                        return MapIcons[mapName];
+                    else if (IsOfficial(mapName))
+                    {
+                        string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
+                        string result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
+                        MapIcons[mapName] = result;
+                        return result;
+                    }
+                    else
+                    {
+                        string info = client.DownloadString($"https://steamcommunity.com/workshop/browse/?appid=730&searchtext={mapName}");
+                        string[] splt = info.Split(new string[] { "<div class=\"workshopBrowseItems\">" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (splt.Length > 1)
+                        {
+                            splt = info.Split(new string[] { "<img class=\"workshopItemPreviewImage  aspectratio_16x9\" src=\"" }, StringSplitOptions.RemoveEmptyEntries);
+                            if (splt.Length > 1)
+                            {
+                                string result = splt[1].Split('"')[0];
+                                MapIcons[mapName] = result;
+                                return result;
+                            }
+                        }
+                    }
+                    return null;
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
     }
