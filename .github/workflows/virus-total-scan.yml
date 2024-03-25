@@ -9,15 +9,6 @@ jobs:
       permissions: write-all
       runs-on: ubuntu-latest
       steps:
-        - name: VirusTotal Scan
-          uses: crazy-max/ghaction-virustotal@v3
-          with:
-            vt_api_key: ${{ secrets.VT_API_KEY }}
-            update_release_body: true
-            files: |
-              .exe$
-              .zip$
-              .apk$
         - name: Checkout
           uses: actions/checkout@v3
         - name: Github Releases To Discord
@@ -32,3 +23,12 @@ jobs:
             footer_icon_url: "https://cdn.discordapp.com/icons/1154291113352499232/3c6a6a5160efea5657e07b256fb14cf8.png"
             footer_timestamp: true
             reduce_headings: true
+        - name: VirusTotal Scan
+          uses: crazy-max/ghaction-virustotal@v3
+          with:
+            vt_api_key: ${{ secrets.VT_API_KEY }}
+            update_release_body: true
+            files: |
+              .exe$
+              .zip$
+              .apk$
