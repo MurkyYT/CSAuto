@@ -254,6 +254,7 @@ namespace CSAuto
                         Thread.Sleep(100);
                         PressKey(Keyboard.DirectXKeyStrokes.DIK_ESCAPE);
                     }
+                    Log.WriteLine($"|MainApp.cs| hCurosr when in CS -> {hCursorOriginal}");
                 }
                 if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
                 {
@@ -383,11 +384,6 @@ namespace CSAuto
                         AutoBuy();
                     if (Properties.Settings.Default.autoPausePlaySpotify)
                         AutoPauseResumeSpotify();
-                }
-                if (lastActivity != Activity.Playing && hCursorOriginal == IntPtr.Zero && csActive)
-                {
-                    hCursorOriginal = NativeMethods.GetCursorHandle();
-                    Log.WriteLine($"|MainApp.cs| hCurosr when in CS -> {hCursorOriginal}");
                 }
                 UpdateDiscordRPC();
                 //SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
