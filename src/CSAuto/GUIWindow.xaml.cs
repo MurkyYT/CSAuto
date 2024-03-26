@@ -320,8 +320,6 @@ namespace CSAuto
                 });
                 return;
             }
-            // Remove uneeded thing
-            res = res.Replace("<!--Version split-->\n", "");
             // Well MdXaml cant use only 2 spaces to add indetation so replace "  " with "    "
             res = res.Replace("  ", "    ");
             Dispatcher.InvokeAsync(() => {
