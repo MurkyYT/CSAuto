@@ -79,7 +79,8 @@ namespace CSAuto
                         break;
                 }
             }
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(Settings.Default.currentLanguage);
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(
+                languageName ?? Settings.Default.currentLanguage);
 
             base.OnStartup(e);
 

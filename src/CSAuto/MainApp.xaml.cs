@@ -41,7 +41,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.0";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "7";
+        const string DEBUG_REVISION = "8";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -932,7 +932,7 @@ namespace CSAuto
         {
             if (Properties.Settings.Default.autoFocusOnCS &&
                 Properties.Settings.Default.autoAcceptMatch &&
-                csProcess != null && !csActive &&
+                csProcess != null && !csActive && inLobby == true &&
                 lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH)
             {
                 if (Properties.Settings.Default.focusBackOnOriginalWindow)
