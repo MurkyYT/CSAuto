@@ -29,6 +29,8 @@ else:
 
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.path.join(ROOT_DIR, "Data")
+CHANGELOG_JSON_PATH = os.path.join(DATA_DIR, "full_changelog.json")
 DOCS_DIR = os.path.join(ROOT_DIR, "Docs")
 CHANGELOG_PATH = os.path.join(DOCS_DIR, "FullChangelog.MD")
 
@@ -68,7 +70,6 @@ class GitHubAPI:
 def prepare_changelog(changelog_ver: str):
     changelog_ver = changelog_ver.split("**Full Changelog**")[0].split("🛡 [VirusTotal")[0]
     changelog_ver = changelog_ver.strip("\n").strip("\r\n")  # Remove unneeded \n's
-    # changelog_ver = re.sub(r"#(?P<ref_id>\d+)", r"[#\g<ref_id>](https://github.com/MurkyYT/CSAuto/issues/\g<ref_id>)", changelog_ver)  # (Not needed for GitHub MD, just testing)
     return changelog_ver
 
 
@@ -76,15 +77,24 @@ def main():
     github_vars = GitHubVars()
     github_api = GitHubAPI(token=github_vars.token)
     releases = github_api.get_all_releases(github_vars.repository)
-    changelog_vers = [prepare_changelog(x["body"]) for x in releases if x["body"]]
-    full_changelog_md = "\n\n<!--Version split-->\n\n".join(changelog_vers)
+    changelog_dicts = [{"filtered_body": prepare_changelog(x["body"]) if x["body"] else "", **x} for x in releases]
+    changelog_vers = [x["filtered_body"] for x in changelog_dicts]
+    full_changelog_md = "\n\n---\n\n".join(changelog_vers)
     full_changelog_md = full_changelog_md + "\n"  # Add single newline
+    
     try:
         os.remove(CHANGELOG_PATH)
     except FileNotFoundError:
         pass
     with open(CHANGELOG_PATH, mode="w+", encoding="utf-8", newline="\n") as f:
         f.write(full_changelog_md)
+    
+    try:
+        os.remove(CHANGELOG_JSON_PATH)
+    except FileNotFoundError:
+        pass
+    with open(CHANGELOG_JSON_PATH, mode="w+", encoding="utf-8", newline="\n") as f:
+        json.dump(changelog_dicts, f, indent=4)
 
 
 if __name__ == '__main__':
