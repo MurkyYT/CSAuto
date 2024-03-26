@@ -1,3 +1,20 @@
+### Version 2.1.0 changelog
+- Changed the title, it is now centered and shows `CSAuto` in bold with the version
+- Added new launch option, `--log`, enabling logging, regardless of whether it is enabled in the settings, doesn't change the settings
+- Small fix with spotify process finding
+- Changes to russian translation (`Загрузить настройки` -> `Экспортировать настройки`)
+- Settings importing now shows the gui window only if it was open before
+- Languages now interpolates '\n' correctly
+- Languages are now stored as resources, fixes gui window not always showing text
+- Fixed a bug when entering debug category, log will always scroll down
+- Added new automation feature, `CSAuto` can try to focus on cs window when game is found, only if enabled in settings
+- If `CSAuto` focused on cs window it can focus back to the original window
+- New launch option, `--cs`, launches CS together with `CSAuto`
+- `CSAuto` now tries to load workshop maps icons as well
+- `--language` now uses two letters to represent languages, e.g `en` or `ru`
+
+---
+
 ### Version 2.0.9 changelog
 - All Discord settings are now in the same place
 - Fix with settings import/export message boxes being shown when not needed
