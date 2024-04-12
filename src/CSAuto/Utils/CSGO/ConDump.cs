@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace Murky.Utils.CSGO
@@ -9,66 +10,54 @@ namespace Murky.Utils.CSGO
     public static class ConDump
     {
         //public static event EventHandler SearchStarted;
-        //public static event EventHandler OnChange;
-        public static int Delay = 500;
-        private static IEnumerable<string> oldFile = Enumerable.Empty<string>();
+        public static event EventHandler OnChange;
+        private static FileSystemWatcher fileWathcer = new FileSystemWatcher();
+        private static int lastLineIndex = 0;
         private static readonly string path;
-        private static readonly Thread workThread;
+        private static readonly string fileName = "console.log";
         static ConDump()
         {
             string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
             if (csgoDir != null)
-                path = csgoDir + "\\game\\csgo\\";
-            workThread = new Thread(CheckForChange);
+                path = csgoDir + "\\game\\csgo";
+            fileWathcer.Path = path;
+            fileWathcer.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.LastAccess | NotifyFilters.Size;
+            fileWathcer.Filter = fileName;
+            fileWathcer.Changed += FileWathcer_Changed;
         }
         public static void StartListening()
-        {
-            if (workThread != null && workThread.ThreadState == ThreadState.Unstarted)
-                workThread.Start();
-            if (workThread != null && workThread.ThreadState == ThreadState.Suspended)
-                workThread.Resume();
+        { 
+            fileWathcer.EnableRaisingEvents = true;
         }
-        public static void StopListening()
-        {
-            if (workThread != null && workThread.ThreadState == ThreadState.Running)
-                workThread.Suspend();
-        }
-        private static void CheckForChange()
-        {
-            while (true) 
-            {
-                IEnumerable<string> newFile = ReadFile(path + "console.log");
-                IEnumerable<string> diff = newFile.Except(oldFile);
-                if (diff.Count() > 0)
-                    OnChanged(diff);
-                oldFile = newFile.ToList();
-                Thread.Sleep(Delay);
-            }
-        }
-        private static IEnumerable<string> ReadFile(string path)
-        {
-            using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                string line = "";
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        yield return line;
-                    }
-                }
-            }
-        }
-        private static void OnChanged(IEnumerable<string> diff)
+
+        private static void FileWathcer_Changed(object sender, FileSystemEventArgs e)
         {
             try
             {
-                foreach (string str in diff)
+                byte[] buffer;
+                using (FileStream file = File.Open(path + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    Log.WriteLine(str);
+                    buffer = new byte[file.Length];
+                    file.Read(buffer, 0, buffer.Length);
                 }
+                string result = UTF8Encoding.UTF8.GetString(buffer);
+                char[] fileArr = result.ToCharArray();
+                int index = fileArr.Length - 1;
+                string resultChanged = "";
+                while (index >= lastLineIndex)
+                {
+                    resultChanged = fileArr[index] + resultChanged;
+                    index--;
+                }
+                lastLineIndex = fileArr.Length;
+                OnChange?.Invoke(resultChanged, null);
             }
             catch { }
+        }
+
+        public static void StopListening()
+        {
+            fileWathcer.EnableRaisingEvents = false;
         }
     }
 }

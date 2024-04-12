@@ -299,10 +299,13 @@
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_autobuy}">
                 <Grid>
-                    <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom" Height="48">
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.team_ct}"/>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.team_t}"/>
-                    </TabControl>
+                    <CheckBox Content="{x:Static p:Strings.text_enabled}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=enableDiscordRPC}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,15,0,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom" Height="48">
+                            <mahapps:MetroTabItem Header="{x:Static p:Strings.team_ct}"/>
+                            <mahapps:MetroTabItem Header="{x:Static p:Strings.team_t}"/>
+                        </TabControl>
+                    </StackPanel>
                     <Image Panel.ZIndex="0" x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,48,0,0"/>
                     <Grid x:Name="BuyItemProperties" Visibility="Hidden">
                         <StackPanel>

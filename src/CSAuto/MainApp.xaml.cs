@@ -39,9 +39,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.0";
+        public const string VER = "2.1.1";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -186,6 +186,12 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
+
+        //private void ConDump_OnChange(object sender, EventArgs e)
+        //{
+        //    Log.WriteLine(sender);
+        //}
+
         static Color[] LoadButtonColors()
         {
             try
@@ -380,7 +386,7 @@ namespace CSAuto
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu && csActive)
                         TryToAutoReload();
-                    if (lastActivity == Activity.Playing && csActive)
+                    if (lastActivity == Activity.Playing && csActive && Properties.Settings.Default.autoBuyEnabled)
                         AutoBuy();
                     if (Properties.Settings.Default.autoPausePlaySpotify)
                         AutoPauseResumeSpotify();
@@ -903,6 +909,8 @@ namespace CSAuto
                                 steamAPIServer = null;
                             }
                         }
+                        //ConDump.StartListening();
+                        //ConDump.OnChange += ConDump_OnChange;
                         hCursorOriginal = IntPtr.Zero;
                         NativeMethods.OptimizeMemory();
                     }
@@ -1024,6 +1032,8 @@ namespace CSAuto
             }
             if (Properties.Settings.Default.autoCloseCSAuto)
                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+            //ConDump.StopListening();
+            //ConDump.OnChange -= ConDump_OnChange;
             NativeMethods.OptimizeMemory();
         }
         private void TryToAutoReload()

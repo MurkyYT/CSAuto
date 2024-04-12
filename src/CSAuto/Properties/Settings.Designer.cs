@@ -464,5 +464,17 @@ namespace CSAuto.Properties {
                 this["focusBackOnOriginalWindow"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoBuyEnabled {
+            get {
+                return ((bool)(this["autoBuyEnabled"]));
+            }
+            set {
+                this["autoBuyEnabled"] = value;
+            }
+        }
     }
 }
