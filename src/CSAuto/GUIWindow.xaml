@@ -180,6 +180,7 @@
                                 <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
                                 <MenuItem x:Name="SaveFile" Header="_Save" Click="SaveFile_Click"/>
                             </MenuItem>
+                            <MenuItem Header="_Debug settings" Click="DebugSettings_Click"/>
                         </Menu>
                     </DockPanel>
                     <TextBlock x:Name="IsPortableText" Text="Portable: {}" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Bottom" Margin="0,0,0,30"/>
@@ -299,7 +300,7 @@
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_autobuy}">
                 <Grid>
-                    <CheckBox Content="{x:Static p:Strings.text_enabled}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,15,0,0"/>
+                    <CheckBox x:Name="AutoBuyEnabledCheckBox" Content="{x:Static p:Strings.text_enabled}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,15,0,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom" Height="48">
                             <mahapps:MetroTabItem Header="{x:Static p:Strings.team_ct}"/>

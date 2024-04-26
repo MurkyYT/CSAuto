@@ -101,6 +101,9 @@
       <DependentUpon>APIKeys.resx</DependentUpon>
     </Compile>
     <Compile Include="AutoBuyMenu.cs" />
+    <Compile Include="DebugSettings.xaml.cs">
+      <DependentUpon>DebugSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exception\WriteException.cs" />
     <Compile Include="Extentions.cs" />
@@ -115,6 +118,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.ru.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\DebugSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>DebugSettings.settings</DependentUpon>
     </Compile>
     <Compile Include="StreamString.cs" />
     <Compile Include="Utils\CSGO\ConDump.cs" />
@@ -137,6 +145,10 @@
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Compile Include="Utils\WinVersion.cs" />
+    <Page Include="DebugSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUIWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -200,6 +212,10 @@
       <LastGenOutput>Strings.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
+    <None Include="Properties\DebugSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>DebugSettings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
