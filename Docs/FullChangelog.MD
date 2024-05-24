@@ -1,3 +1,11 @@
+### Version 2.1.1 changelog
+- Added global toggle for auto buy
+- Added more in depth debug settings in the debug category (they are resetted every startup)
+- Added newer style to default message boxes
+- Corrected `M4A4` and `Incendiary Grenade` prices according to the [24.5.24 update](https://steamcommunity.com/games/CSGO/announcements/detail/4177730135016140041)
+
+---
+
 ### Version 2.1.0 changelog
 - Changed the title, it is now centered and shows `CSAuto` in bold with the version
 - Added new launch option, `--log`, enabling logging, regardless of whether it is enabled in the settings, doesn't change the settings
