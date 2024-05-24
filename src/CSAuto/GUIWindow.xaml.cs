@@ -282,7 +282,6 @@ namespace CSAuto
                         $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                         $"CS:GO LaunchOptions: \"{launchOpt}\"";
                     GenerateLanguages();
-                    DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
                     string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                     if (File.Exists(finalPath))
                         debugBox.Text = File.ReadAllText(finalPath);
@@ -436,6 +435,7 @@ namespace CSAuto
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {
                 OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
+                DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
             }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
             {
@@ -583,6 +583,7 @@ namespace CSAuto
                     BuyItemProperties.Visibility = Visibility.Visible;
                     AutoBuyImage.Visibility = Visibility.Hidden;
                     AutoBuyTab.Visibility = Visibility.Hidden;
+                    AutoBuyEnabledCheckBox.Visibility = Visibility.Hidden;
                     BuyItemName.Text = Languages.Strings.ResourceManager.GetString($"buyitem_{item.Name.ToString().ToLower()}");
                     BuyItemPriority.Value = item.GetPriority();
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
@@ -646,6 +647,7 @@ namespace CSAuto
                 BuyItemProperties.Visibility = Visibility.Hidden;
                 AutoBuyImage.Visibility = Visibility.Visible;
                 AutoBuyTab.Visibility = Visibility.Visible;
+                AutoBuyEnabledCheckBox.Visibility = Visibility.Visible;
                 if (customSelectedItem != null)
                 {
                     CustomBuyItem item = customSelectedItem;
@@ -721,6 +723,11 @@ namespace CSAuto
         private void debugBox_Loaded(object sender, RoutedEventArgs e)
         {
             debugBox_TextChanged(sender, null);
+        }
+
+        private void DebugSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new DebugSettings(this.main).Show();
         }
     }
 }

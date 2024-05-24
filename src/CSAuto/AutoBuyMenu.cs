@@ -152,7 +152,7 @@ namespace CSAuto
             { NAMES.AUG,new object[] { "weapon_aug", 3300 } },
             { NAMES.AK47,new object[] { "weapon_ak47", 2700 } },
             { NAMES.M4A1S,new object[] { "weapon_m4a1_silencer", 2900 } },
-            { NAMES.M4A4,new object[] { "weapon_m4a1", 3100 } },
+            { NAMES.M4A4,new object[] { "weapon_m4a1", 3000 } },
             { NAMES.GalilAR,new object[] { "weapon_galilar", 1800 } },
             { NAMES.Famas,new object[] { "weapon_famas", 2050 } },
             { NAMES.SawedOff,new object[] { "weapon_sawedoff", 1100 } },
@@ -580,10 +580,10 @@ namespace CSAuto
                                 hasMolotov = true;
                                 grenadeCount++;
                             }
-                            if (money >= 600 && !hasMolotov && gameState.Player.Team == Team.CT && grenadeCount < 4)
+                            if (money >= 500 && !hasMolotov && gameState.Player.Team == Team.CT && grenadeCount < 4)
                             {
                                 res.Add(item);
-                                money -= 400;
+                                money -= 500;
                                 hasMolotov = true;
                                 grenadeCount++;
                             }

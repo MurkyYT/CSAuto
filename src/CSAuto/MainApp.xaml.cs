@@ -39,7 +39,7 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.0";
+        public const string VER = "2.1.1";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
         const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
@@ -155,8 +155,7 @@ namespace CSAuto
                 Task.Run(() =>
                 {
                     BUTTON_COLORS = LoadButtonColors();
-                    BUTTON_COLOR = BUTTON_COLORS[0];
-                    ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1];
+                    UpdateColors();
                 });
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
@@ -167,6 +166,7 @@ namespace CSAuto
                 CheckForDuplicates();
                 GameStateListener = new GameStateListener(ref gameState, GAMESTATE_PORT);
                 GameStateListener.OnReceive += GameStateListener_OnReceive;
+                Properties.DebugSettings.Default.Reset();
                 InitializeContextMenu();
 #if !DEBUG
                 MakeSureStartupIsOn();
@@ -185,6 +185,17 @@ namespace CSAuto
                     $"Inner Exception: {ex.InnerException}");
                 Application.Current.Shutdown();
             }
+        }
+
+        //private void ConDump_OnChange(object sender, EventArgs e)
+        //{
+        //    Log.WriteLine(sender);
+        //}
+
+        public void UpdateColors()
+        {
+            BUTTON_COLOR = BUTTON_COLORS[0];
+            ACTIVE_BUTTON_COLOR = BUTTON_COLORS[1];
         }
         static Color[] LoadButtonColors()
         {
@@ -380,7 +391,7 @@ namespace CSAuto
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu && csActive)
                         TryToAutoReload();
-                    if (lastActivity == Activity.Playing && csActive)
+                    if (lastActivity == Activity.Playing && csActive && Properties.Settings.Default.autoBuyEnabled)
                         AutoBuy();
                     if (Properties.Settings.Default.autoPausePlaySpotify)
                         AutoPauseResumeSpotify();
@@ -903,6 +914,8 @@ namespace CSAuto
                                 steamAPIServer = null;
                             }
                         }
+                        //ConDump.StartListening();
+                        //ConDump.OnChange += ConDump_OnChange;
                         hCursorOriginal = IntPtr.Zero;
                         NativeMethods.OptimizeMemory();
                     }
@@ -1024,6 +1037,8 @@ namespace CSAuto
             }
             if (Properties.Settings.Default.autoCloseCSAuto)
                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+            //ConDump.StopListening();
+            //ConDump.OnChange -= ConDump_OnChange;
             NativeMethods.OptimizeMemory();
         }
         private void TryToAutoReload()
@@ -1173,34 +1188,37 @@ namespace CSAuto
                                 y);
                             int X = clickpoint.X;
                             int Y = clickpoint.Y;
-                            Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y}", caller: "AutoAcceptMatch");
-                            if (Properties.Settings.Default.acceptedNotification)
-                                SendMessageToServer($"<ACP>{Languages.Strings.ResourceManager.GetString("server_acceptmatch")}");
-                            LeftMouseClick(X, Y);
+                            Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y} Color:{pixelColor}", caller: "AutoAcceptMatch");
                             found = true;
-                            if (CheckIfAccepted(bitmap, Y))
+                            if (Properties.DebugSettings.Default.pressAcceptButton)
                             {
-                                acceptedGame = true;
-                                if (acceptButtonTimer.IsEnabled)
-                                    acceptButtonTimer.Stop();
-                                if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
-                                    Telegram.SendPhoto(bitmap,
-                                        Properties.Settings.Default.telegramChatId,
-                                        Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
-                                            Properties.Settings.Default.customTelegramToken 
-                                            : APIKeys.TELEGRAM_BOT_TOKEN,
-                                        $"{csResolution.Width}X{csResolution.Height}\n" +
-                                        $"({X},{Y})\n" +
-                                        $"{DateTime.Now}");
-                                if(originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
+                                LeftMouseClick(X, Y);
+                                if (CheckIfAccepted(bitmap, Y))
                                 {
-                                    if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
+                                    if (Properties.Settings.Default.acceptedNotification)
+                                        SendMessageToServer($"<ACP>{Languages.Strings.ResourceManager.GetString("server_acceptmatch")}");
+                                    acceptedGame = true;
+                                    if (acceptButtonTimer.IsEnabled)
+                                        acceptButtonTimer.Stop();
+                                    if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
+                                        Telegram.SendPhoto(bitmap,
+                                            Properties.Settings.Default.telegramChatId,
+                                            Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
+                                                Properties.Settings.Default.customTelegramToken
+                                                : APIKeys.TELEGRAM_BOT_TOKEN,
+                                            $"{csResolution.Width}X{csResolution.Height}\n" +
+                                            $"({X},{Y})\n" +
+                                            $"{DateTime.Now}");
+                                    if (originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
                                     {
-                                        Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
-                                        originalProcess = null;
+                                        if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
+                                        {
+                                            Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
+                                            originalProcess = null;
+                                        }
                                     }
+                                    acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                                 }
-                                acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
                             }
                         }
                         count++;
