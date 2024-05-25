@@ -398,9 +398,10 @@ namespace CSAuto
             return await this.ShowMessageAsync(
                 Languages.Strings.ResourceManager.GetString(title), Languages.Strings.ResourceManager.GetString(message), dialogStyle);
         }
-        private async void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
+        private void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
-            await RestartMessageBox();
+            //await RestartMessageBox();
+            UpdateTheme();
         }
 
         private void BotButton_Click(object sender, RoutedEventArgs e)
@@ -424,6 +425,7 @@ namespace CSAuto
             else
                 // Set the application theme to Light + selected color
                 ThemeManager.Current.ChangeTheme(Application.Current, $"Light.{Properties.Settings.Default.currentColor}");
+            main.InitializeContextMenu();
         }
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

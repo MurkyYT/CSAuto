@@ -30,6 +30,8 @@ using System.Windows.Threading;
 using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using ControlzEx.Theming;
+using CSAuto.Properties;
 #endregion
 namespace CSAuto
 {
@@ -39,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.1";
+        public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -72,7 +74,6 @@ namespace CSAuto
         #endregion
         #region Readonly
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
-        readonly ContextMenu exitCm = new ContextMenu();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
         readonly GameState gameState = new GameState(null);
@@ -111,6 +112,7 @@ namespace CSAuto
         bool hadError = false;
         IntPtr hCursorOriginal = IntPtr.Zero;
         HwndSource windowSource;
+        ContextMenu exitCm;
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -535,8 +537,9 @@ namespace CSAuto
             Exited();
         }
 
-        private void InitializeContextMenu()
+        internal void InitializeContextMenu()
         {
+            exitCm = new ContextMenu();
             exitCm.Closed += Exitcm_Closed;
             MenuItem exit = new MenuItem
             {
@@ -578,7 +581,8 @@ namespace CSAuto
                 Icon = new System.Windows.Controls.Image
                 {
                     Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
-                }
+                },
+                Foreground = new SolidColorBrush(ThemeManager.Current.GetTheme($"Dark.{Settings.Default.currentColor}").PrimaryAccentColor)
             };
             MenuItem checkForUpdates = new MenuItem
             {
