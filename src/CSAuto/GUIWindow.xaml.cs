@@ -42,17 +42,6 @@ namespace CSAuto
         private BuyItem selectedItem = null;
         private CustomBuyItem customSelectedItem = null;
         bool isCt = true;
-        IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj == null) yield return (T)Enumerable.Empty<T>();
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-            {
-                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
-                if (ithChild == null) continue;
-                if (ithChild is T t) yield return t;
-                foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
-            }
-        }
         public GUIWindow()
         {
             InitializeComponent();
@@ -63,7 +52,7 @@ namespace CSAuto
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
-            AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
+            Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt); });
             PortableModeCheck.IsChecked = File.Exists(Log.WorkPath + "\\resource\\.portable");
             IsPortableText.Text = $"Portable: {PortableModeCheck.IsChecked}";
             Title += $" {MainApp.FULL_VER}";
@@ -85,7 +74,7 @@ namespace CSAuto
         }
         public void UpdateText(string data)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(() =>
             {
                 outputBox.Text = data;
                 lastRecieveTime.Text = $"Last recieved data from GSI: {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}";
@@ -94,7 +83,7 @@ namespace CSAuto
         }
         public void UpdateDebug(string data)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(() =>
             {
                 debugBox.Text += data+'\n';
             });
