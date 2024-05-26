@@ -31,7 +31,6 @@ using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using ControlzEx.Theming;
-using CSAuto.Properties;
 #endregion
 namespace CSAuto
 {
@@ -43,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -582,7 +581,7 @@ namespace CSAuto
                 {
                     Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
                 },
-                Foreground = new SolidColorBrush(ThemeManager.Current.GetTheme($"Dark.{Settings.Default.currentColor}").PrimaryAccentColor)
+                Foreground = new SolidColorBrush(ThemeManager.Current.GetTheme($"Dark.{Properties.Settings.Default.currentColor}").PrimaryAccentColor)
             };
             MenuItem checkForUpdates = new MenuItem
             {
@@ -1267,7 +1266,8 @@ namespace CSAuto
         }
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
-            exitCm.IsOpen = true;
+            if(exitCm != null)
+                exitCm.IsOpen = true;
             Activate();
         }
 

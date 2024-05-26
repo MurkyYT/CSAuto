@@ -330,7 +330,6 @@ namespace CSAuto
                 $"Inner Exception: {ex.InnerException}");
             MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
             Process.Start(Log.WorkPath + "\\Error_Log.txt");
-            Current.Shutdown();
         }
         //private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         //{

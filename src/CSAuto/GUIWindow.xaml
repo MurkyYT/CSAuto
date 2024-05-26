@@ -28,7 +28,9 @@
                    FontWeight="SemiBold"
                    HorizontalAlignment="Center"
                    FontSize="{DynamicResource WindowTitleFontSize}"
-                   FontFamily="{DynamicResource HeaderFontFamily}" />
+                   FontFamily="{DynamicResource HeaderFontFamily}"
+                   />
+            <!--Foreground="{DynamicResource MahApps.Brushes.Accent}"/>-->
         </DataTemplate>
     </mahapps:MetroWindow.TitleTemplate>
     <mahapps:MetroWindow.LeftWindowCommands>
@@ -36,20 +38,30 @@
             <Button Click="LaunchGitHubSite" ToolTip="Opens GitHub repository">
                 <!--<Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>-->
                 <Viewbox Width="18" Height="18" Stretch="Fill">
-                    <Path Fill="#FFFFFFFF" Data="F0 M98,96z M0,0z M48.854,0C21.839,0 0,22 0,49.217 0,70.973 13.993,89.389 33.405,95.907 35.832,96.397 36.721,94.848 36.721,93.545 36.721,92.404 36.641,88.493 36.641,84.418 23.051,87.352 20.221,78.551 20.221,78.551 18.037,72.847 14.801,71.381 14.801,71.381 10.353,68.366 15.125,68.366 15.125,68.366 20.059,68.692 22.648,73.418 22.648,73.418 27.015,80.914 34.052,78.796 36.883,77.492 37.287,74.314 38.582,72.114 39.957,70.892 29.118,69.751 17.714,65.514 17.714,46.609 17.714,41.231 19.654,36.831 22.728,33.409 22.243,32.187 20.544,27.134 23.214,20.371 23.214,20.371 27.339,19.067 36.64,25.423A46.97,46.97,0,0,1,48.854,23.793C52.979,23.793 57.184,24.364 61.067,25.423 70.369,19.067 74.494,20.371 74.494,20.371 77.164,27.134 75.464,32.187 74.979,33.409 78.134,36.831 79.994,41.231 79.994,46.609 79.994,65.514 68.59,69.669 57.67,70.892 59.45,72.44 60.986,75.373 60.986,80.018 60.986,86.618 60.906,91.915 60.906,93.544 60.906,94.848 61.796,96.397 64.222,95.908 83.634,89.388 97.627,70.973 97.627,49.217 97.707,22 75.788,0 48.854,0z" />
+                    <Path Fill="#FFFFFFFF" Data="{StaticResource GithubMark}" />
                 </Viewbox>
             </Button>
             <Button ToolTip="Opens the discord server" Click="OpenDiscordServer">
                 <!--<Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>-->
                 <Viewbox Width="24" Height="18" Stretch="Fill">
-                    <Path Fill="#5865F2" Data="M216.856339,16.5966031 C200.285002,8.84328665 182.566144,3.2084988 164.041564,0 C161.766523,4.11318106 159.108624,9.64549908 157.276099,14.0464379 C137.583995,11.0849896 118.072967,11.0849896 98.7430163,14.0464379 C96.9108417,9.64549908 94.1925838,4.11318106 91.8971895,0 C73.3526068,3.2084988 55.6133949,8.86399117 39.0420583,16.6376612 C5.61752293,67.146514 -3.4433191,116.400813 1.08711069,164.955721 C23.2560196,181.510915 44.7403634,191.567697 65.8621325,198.148576 C71.0772151,190.971126 75.7283628,183.341335 79.7352139,175.300261 C72.104019,172.400575 64.7949724,168.822202 57.8887866,164.667963 C59.7209612,163.310589 61.5131304,161.891452 63.2445898,160.431257 C105.36741,180.133187 151.134928,180.133187 192.754523,160.431257 C194.506336,161.891452 196.298154,163.310589 198.110326,164.667963 C191.183787,168.842556 183.854737,172.420929 176.223542,175.320965 C180.230393,183.341335 184.861538,190.991831 190.096624,198.16893 C211.238746,191.588051 232.743023,181.531619 254.911949,164.955721 C260.227747,108.668201 245.831087,59.8662432 216.856339,16.5966031 Z M85.4738752,135.09489 C72.8290281,135.09489 62.4592217,123.290155 62.4592217,108.914901 C62.4592217,94.5396472 72.607595,82.7145587 85.4738752,82.7145587 C98.3405064,82.7145587 108.709962,94.5189427 108.488529,108.914901 C108.508531,123.290155 98.3405064,135.09489 85.4738752,135.09489 Z M170.525237,135.09489 C157.88039,135.09489 147.510584,123.290155 147.510584,108.914901 C147.510584,94.5396472 157.658606,82.7145587 170.525237,82.7145587 C183.391518,82.7145587 193.761324,94.5189427 193.539891,108.914901 C193.539891,123.290155 183.391518,135.09489 170.525237,135.09489 Z"/>
+                    <Path Fill="#5865F2" Data="{StaticResource DiscordBadge}"/>
                 </Viewbox>
             </Button>
         </mahapps:WindowCommands>
     </mahapps:MetroWindow.LeftWindowCommands>
     <Grid>
-        <TabControl x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged">
-            <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_options}">
+        <TabControl x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="22.5" Height="22.5" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource SettingsBadge}" />
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_options}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
                 <Grid>
                     <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top">
                         <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_general}">
@@ -124,16 +136,17 @@
                     </TabControl>
                 </Grid>
             </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_changelog}">
-                <!--<TabItem.HeaderTemplate>
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
                     <ItemContainerTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Icons/GitHub-Mark.png" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <TextBlock>menu_changelog</TextBlock>
+                            <Viewbox Width="22.5" Height="30" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource ChangelogBadge}" />
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_changelog}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
-                </TabItem.HeaderTemplate>-->
-                <!--Example on how to add image to the left-->
+                </TabItem.HeaderTemplate>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -161,7 +174,26 @@
                 </Grid>
                
             </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_debug}">
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="22.5" Height="26" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource DebugBadge}" RenderTransformOrigin="0.5,0.5" >
+                                    <Path.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform X="-2.5"/>
+                                        </TransformGroup>
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_debug}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -198,7 +230,17 @@
                     <TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,30"/>
                 </Grid>
             </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordrpc}">
+            <mahapps:MetroTabItem >
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="22.5" Height="18" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource DiscordBadge}" />
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_discordrpc}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
                 <StackPanel Orientation="Vertical">
                     <TabControl x:Name="DiscordTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" SelectionChanged="DiscordTabControl_SelectionChanged">
                         <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordlobby}">
@@ -298,7 +340,17 @@
                     </StackPanel>
                 </StackPanel>
             </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_autobuy}">
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="22.5" Height="18" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource AutoBuyBadge}" />
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_autobuy}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
                 <Grid>
                     <CheckBox x:Name="AutoBuyEnabledCheckBox" Content="{x:Static p:Strings.text_enabled}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,15,0,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
