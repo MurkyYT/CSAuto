@@ -50,7 +50,7 @@
         </mahapps:WindowCommands>
     </mahapps:MetroWindow.LeftWindowCommands>
     <Grid>
-        <TabControl x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+        <TabControl BorderThickness="1.5,0,0,0" Padding="6,0,0,0" x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
             <mahapps:MetroTabItem>
                 <TabItem.HeaderTemplate>
                     <ItemContainerTemplate>
