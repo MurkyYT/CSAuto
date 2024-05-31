@@ -37,6 +37,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 * Auto pause/resume spotify song
 * Show customizable game info in Discord Rich Presence (show amount of players in lobby can be bannable!)
 * Send time left till bomb exploded to mobile! (not accurate as of right now)
+* Bring game to front when accept button appears and return to previous window!
 
 ## Screenshots
 
