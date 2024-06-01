@@ -1699,5 +1699,14 @@ namespace CSAuto.Languages {
                 return ResourceManager.GetString("tooltip_telegramcustomtoken", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified language was not found, app fallbacked to using English.
+        /// </summary>
+        public static string warning_language {
+            get {
+                return ResourceManager.GetString("warning_language", resourceCulture);
+            }
+        }
     }
 }

@@ -665,4 +665,7 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="menu_focusback" xml:space="preserve">
     <value>Focus back to original window on accept</value>
   </data>
+  <data name="warning_language" xml:space="preserve">
+    <value>The specified language was not found, app fallbacked to using English</value>
+  </data>
 </root>

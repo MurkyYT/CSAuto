@@ -665,4 +665,7 @@
   <data name="menu_focusback" xml:space="preserve">
     <value>Возвращаться к исходному окну при нажатии кнопки принять</value>
   </data>
+  <data name="warning_language" xml:space="preserve">
+    <value>Указанный язык не найден, приложение возвращается к использованию английского</value>
+  </data>
 </root>
