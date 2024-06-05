@@ -1006,7 +1006,8 @@ namespace CSAuto
             Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
             if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                 SendMessageToServer($"<CRS>{Languages.Strings.ResourceManager.GetString("server_gamecrash")}");
-            NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
+            if(windowSource.Handle != IntPtr.Zero)
+                NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
             csProcess = null;
             if (RPCClient.IsInitialized)
             {
