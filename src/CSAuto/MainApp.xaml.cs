@@ -104,6 +104,7 @@ namespace CSAuto
         BombState? bombState;
         Weapon weapon;
         bool acceptedGame = false;
+        object csProcessLock = new object();
         Process steamAPIServer = null;
         Process csProcess = null;
         Process originalProcess = null;
@@ -896,7 +897,7 @@ namespace CSAuto
             {
                 if (!csRunning)
                 {
-                    lock (csProcess)
+                    lock (csProcessLock)
                     {
                         csProcess = NativeMethods.GetProccesByWindowName(GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME, GAME_PROCCES_NAME);
                         if (suc)
@@ -1004,7 +1005,7 @@ namespace CSAuto
         }
         private void CsProcess_Exited(object sender, EventArgs e)
         {
-            lock (csProcess)
+            lock (csProcessLock)
             {
                 Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
                 if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
