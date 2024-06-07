@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -896,31 +896,34 @@ namespace CSAuto
             {
                 if (!csRunning)
                 {
-                    csProcess = NativeMethods.GetProccesByWindowName(GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME, GAME_PROCCES_NAME);
-                    if(suc)
+                    lock (csProcess)
                     {
-                        NativeMethods.RegisterShellHookWindow(windowSource.Handle);
-                        csRunning = true;
-                        csProcess.Exited += CsProcess_Exited;
-                        csProcess.EnableRaisingEvents = true;
-                        if (!GameStateListener.ServerRunning)
+                        csProcess = NativeMethods.GetProccesByWindowName(GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME, GAME_PROCCES_NAME);
+                        if (suc)
                         {
-                            Log.WriteLine("|MainApp.cs| Starting GSI Server");
-                            GameStateListener.StartGSIServer();
-                        }
-                        if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
-                        {
-                            steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
-                            if (!steamAPIServer.Start())
+                            NativeMethods.RegisterShellHookWindow(windowSource.Handle);
+                            csRunning = true;
+                            csProcess.Exited += CsProcess_Exited;
+                            csProcess.EnableRaisingEvents = true;
+                            if (!GameStateListener.ServerRunning)
                             {
-                                Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
-                                steamAPIServer = null;
+                                Log.WriteLine("|MainApp.cs| Starting GSI Server");
+                                GameStateListener.StartGSIServer();
                             }
+                            if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
+                            {
+                                steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
+                                if (!steamAPIServer.Start())
+                                {
+                                    Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
+                                    steamAPIServer = null;
+                                }
+                            }
+                            //ConDump.StartListening();
+                            //ConDump.OnChange += ConDump_OnChange;
+                            hCursorOriginal = IntPtr.Zero;
+                            NativeMethods.OptimizeMemory();
                         }
-                        //ConDump.StartListening();
-                        //ConDump.OnChange += ConDump_OnChange;
-                        hCursorOriginal = IntPtr.Zero;
-                        NativeMethods.OptimizeMemory();
                     }
                 }
                 else
@@ -1001,49 +1004,52 @@ namespace CSAuto
         }
         private void CsProcess_Exited(object sender, EventArgs e)
         {
-            csRunning = false;
-            inLobby = false;
-            Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
-            if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                SendMessageToServer($"<CRS>{Languages.Strings.ResourceManager.GetString("server_gamecrash")}");
-            if(windowSource.Handle != IntPtr.Zero)
-                NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
-            csProcess = null;
-            if (RPCClient.IsInitialized)
+            lock (csProcess)
             {
-                RPCClient.Deinitialize();
-                Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
-            }
-            if (gameState.Timestamp != 0)
-            {
-                gameState.UpdateJson(null);
-            }
-            if (GameStateListener.ServerRunning)
-            {
-                Log.WriteLine("|MainApp.cs| Stopping GSI Server");
-                GameStateListener.StopGSIServer();
-                //NetConCloseConnection();
-                SendMessageToServer("<CLS>", onlyServer: true);
-            }
-            if (steamAPIServer != null)
-            {
-                try
+                Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
+                if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
+                    SendMessageToServer($"<CRS>{Languages.Strings.ResourceManager.GetString("server_gamecrash")}");
+                if (windowSource.Handle != IntPtr.Zero)
+                    NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
+                if (RPCClient.IsInitialized)
                 {
-                    steamAPIServer.Kill();
+                    RPCClient.Deinitialize();
+                    Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
-                catch { }
-                steamAPIServer = null;
+                if (gameState.Timestamp != 0)
+                {
+                    gameState.UpdateJson(null);
+                }
+                if (GameStateListener.ServerRunning)
+                {
+                    Log.WriteLine("|MainApp.cs| Stopping GSI Server");
+                    GameStateListener.StopGSIServer();
+                    //NetConCloseConnection();
+                    SendMessageToServer("<CLS>", onlyServer: true);
+                }
+                if (steamAPIServer != null)
+                {
+                    try
+                    {
+                        steamAPIServer.Kill();
+                    }
+                    catch { }
+                    steamAPIServer = null;
+                }
+                if (DXGIcapture.Enabled)
+                {
+                    DXGIcapture.DeInit();
+                    Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
+                }
+                if (Properties.Settings.Default.autoCloseCSAuto)
+                    Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+                csProcess = null;
+                inLobby = false;
+                csRunning = false;
+                //ConDump.StopListening();
+                //ConDump.OnChange -= ConDump_OnChange;
+                NativeMethods.OptimizeMemory();
             }
-            if (DXGIcapture.Enabled)
-            {
-                DXGIcapture.DeInit();
-                Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
-            }
-            if (Properties.Settings.Default.autoCloseCSAuto)
-                Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
-            //ConDump.StopListening();
-            //ConDump.OnChange -= ConDump_OnChange;
-            NativeMethods.OptimizeMemory();
         }
         private void TryToAutoReload()
         {
