@@ -139,8 +139,6 @@ namespace CSAuto_Mobile
                         uint length = BitConverter.ToUInt32(buf, 0);
                         buf = new byte[length];
                         stream.ReadExactly(buf, 0, (int)length);
-                        while (stream.IsDataAvailable() && stream.Position < buf.Length)
-                            buf[stream.Position] = (byte)stream.ReadByte();
                         string message = CleanMessage(buf);
                         Commands command = (Commands)buf[0];
                         Log.Debug(TAG, $"Received message: '{message}', command: '{command.ToString()}'");
@@ -189,6 +187,10 @@ namespace CSAuto_Mobile
                         Thread.Sleep(1);
                     }
                 }
+                else
+                {
+                    Toast.MakeText(Application.Context, "Couldn't start server, ip is null",ToastLength.Short).Show();
+                }
             }
             catch (SocketException ex)
             {
@@ -199,7 +201,7 @@ namespace CSAuto_Mobile
             {
                 ShowNotification("Disposed exception", $"{ex.Message}", Constants.DISPOSED_EXCEPTION_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
             }
-            catch (Exception ex) { ShowNotification("Error acurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
+            catch (Exception ex) { ShowNotification("Error ocurred", $"{ex.GetType()},{ex.StackTrace} - {ex.Message}", Constants.ERROR_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID); }
             var stopServiceIntent = new Intent(this, GetType());
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
             MainActivity.Instance.StartService(stopServiceIntent);
