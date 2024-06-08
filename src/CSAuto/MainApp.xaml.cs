@@ -39,6 +39,19 @@ namespace CSAuto
     /// </summary>
     public partial class MainApp : Window
     {
+        #region Server Commands
+        enum Commands
+        {
+            None,
+            AcceptedMatch,
+            LoadedOnMap,
+            LoadedInLobby,
+            Connected,
+            Crashed,
+            Bomb,
+            Clear
+        }
+        #endregion
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
@@ -310,10 +323,10 @@ namespace CSAuto
                     switch (currentBombState)
                     {
                         case BombState.Defused:
-                            SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_bombdefuse")}");
+                            SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_bombdefuse"),command:Commands.Bomb);
                             break;
                         case BombState.Exploded:
-                            SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_bombexplode")}");
+                            SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_bombexplode"), command: Commands.Bomb);
                             break;
                     }
 
@@ -343,7 +356,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer(string.Format($"<MAP>{Languages.Strings.ResourceManager.GetString("server_loadedmap")}", gameState.Match.Map, gameState.Match.Mode));
+                        SendMessageToServer(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode),command:Commands.LoadedOnMap);
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -376,7 +389,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.lobbyNotification)
-                        SendMessageToServer($"<LBY>{Languages.Strings.ResourceManager.GetString("server_loadedlobby")}");
+                        SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_loadedlobby"),command:Commands.LoadedInLobby);
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
                         DXGIcapture.Init();
@@ -770,12 +783,12 @@ namespace CSAuto
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
             int diff = (int)(gameState.Timestamp - result);
-            SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true);
+            SendMessageToServer($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true,command:Commands.Bomb);
             bombTimerThread = new Thread(() =>
             {
                 for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
                 {
-                    SendMessageToServer($"<BMB>{Languages.Strings.ResourceManager.GetString("server_timeleft")} {seconds}", onlyServer: true);
+                    SendMessageToServer($"{Languages.Strings.ResourceManager.GetString("server_timeleft")} {seconds}", onlyServer: true, command: Commands.Bomb);
                     Thread.Sleep(BOMB_TIMER_DELAY);
                 }
                 bombTimerThread = null;
@@ -868,12 +881,12 @@ namespace CSAuto
             }
 
         }
-        private void SendMessageToServer(string message, bool onlyTelegram = false, bool onlyServer = false)
+        private void SendMessageToServer(string message, bool onlyTelegram = false, bool onlyServer = false,Commands command = Commands.None)
         {
             new Thread(() =>
             {
                 if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
-                    Telegram.SendMessage(message.Substring(5), Properties.Settings.Default.telegramChatId,
+                    Telegram.SendMessage(message, Properties.Settings.Default.telegramChatId,
                         Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ? 
                         Properties.Settings.Default.customTelegramToken : APIKeys.TELEGRAM_BOT_TOKEN);
                 if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
@@ -882,13 +895,21 @@ namespace CSAuto
                 {
                     TcpClient client = new TcpClient(Properties.Settings.Default.phoneIpAddress, 11_000); // Create a new connection  
                     NetworkStream stream = client.GetStream();
-                    byte[] messageBytes = Encoding.UTF8.GetBytes($"{message}<|EOM|>");
-                    stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
-                                                                        // Clean up  
+                    byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+                    // message + command
+                    int length = messageBytes.Length + 1;
+                    byte[] lengthBuf = BitConverter.GetBytes(length);
+                    byte[] buffer = new byte[4 + length];
+                    for (int i = 0; i < 4; i++)
+                        buffer[i] = lengthBuf[i];
+                    buffer[4] = (byte)command;
+                    for (int i = 0; i < messageBytes.Length; i++)
+                        buffer[5 + i] = messageBytes[i];
+                    stream.Write(buffer, 0, buffer.Length);
                     stream.Dispose();
                     client.Close();
                 }
-                catch { }
+                catch (Exception ex){ Log.WriteLine(ex); }
             }).Start();
         }
         private void TimerCallback(object sender, EventArgs e)
@@ -1009,7 +1030,7 @@ namespace CSAuto
             {
                 Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
                 if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                    SendMessageToServer($"<CRS>{Languages.Strings.ResourceManager.GetString("server_gamecrash")}");
+                    SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_gamecrash"),command:Commands.Crashed);
                 if (windowSource.Handle != IntPtr.Zero)
                     NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
                 if (RPCClient.IsInitialized)
@@ -1026,7 +1047,7 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| Stopping GSI Server");
                     GameStateListener.StopGSIServer();
                     //NetConCloseConnection();
-                    SendMessageToServer("<CLS>", onlyServer: true);
+                    SendMessageToServer("", onlyServer: true,command:Commands.Clear);
                 }
                 if (steamAPIServer != null)
                 {
@@ -1207,7 +1228,7 @@ namespace CSAuto
                                 if (CheckIfAccepted(bitmap, Y))
                                 {
                                     if (Properties.Settings.Default.acceptedNotification)
-                                        SendMessageToServer($"<ACP>{Languages.Strings.ResourceManager.GetString("server_acceptmatch")}");
+                                        SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_acceptmatch"),command:Commands.AcceptedMatch);
                                     acceptedGame = true;
                                     if (acceptButtonTimer.IsEnabled)
                                         acceptButtonTimer.Stop();
@@ -1348,7 +1369,7 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification && !current.Restarted)
-                    SendMessageToServer(string.Format($"<CNT>{Languages.Strings.ResourceManager.GetString("server_computeronline")}", Environment.MachineName, GetLocalIPAddress(),FULL_VER));
+                    SendMessageToServer(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(),FULL_VER),command:Commands.Connected);
                 if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)

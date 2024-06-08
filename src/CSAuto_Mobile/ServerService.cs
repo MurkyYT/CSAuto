@@ -22,7 +22,17 @@ namespace CSAuto_Mobile
 	[Service]
     public class ServerService : Service
     {
-
+        enum Commands
+        {
+            None,
+            AcceptedMatch,
+            LoadedOnMap,
+            LoadedInLobby,
+            Connected,
+            Crashed,
+            Bomb,
+            Clear
+        }
         static readonly string? TAG = typeof(ServerService).FullName;
 
         bool isStarted;
@@ -89,7 +99,7 @@ namespace CSAuto_Mobile
 
         private static string CleanMessage(byte[] bytes)
         {
-            string message = Encoding.UTF8.GetString(bytes);
+            string message = Encoding.UTF8.GetString(bytes,1,bytes.Length-1);
             return message;
         }
         public long CastIp(byte[] ip)
@@ -121,63 +131,62 @@ namespace CSAuto_Mobile
                             MainActivity.Instance.startServiceButton.Enabled = false;
                         }
                         // Receive message.
-
-                        string? message = null;
-                        List<byte> buffer = new();
                         var sender = listener.AcceptTcpClient();
                         Stream stream = sender.GetStream();
-                        while (stream.CanRead && stream.IsDataAvailable())
-                            buffer.Add((byte)stream.ReadByte());
-                        message = CleanMessage(buffer.ToArray());
-                        var eom = "<|EOM|>";
-                        Log.Debug(TAG, message);
-                        if (message.IndexOf(eom) > -1 /* is end of message */)
+                        while (!stream.IsDataAvailable()) { }
+                        byte[] buf = new byte[4];
+                        stream.ReadExactly(buf, 0, 4);
+                        uint length = BitConverter.ToUInt32(buf, 0);
+                        buf = new byte[length];
+                        stream.ReadExactly(buf, 0, (int)length);
+                        while (stream.IsDataAvailable() && stream.Position < buf.Length)
+                            buf[stream.Position] = (byte)stream.ReadByte();
+                        string message = CleanMessage(buf);
+                        Commands command = (Commands)buf[0];
+                        Log.Debug(TAG, $"Received message: '{message}', command: '{command.ToString()}'");
+                        switch (command)
                         {
-                            string clearResponse = message.Replace("<BMB>", "").Replace("<CRS>", "").Replace("<GSI>", "").Replace("<CNT>", "").Replace("<ACP>", "").Replace("<|EOM|>", "").Replace("<MAP>", "").Replace("<LBY>", "").Replace("�", "");
-                            switch (message.Substring(0, "<XXX>".Length))
-                            {
-                                case "<ACP>":
-                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.ACCEPTED_MATCH_NOTIFICATION_ID, Constants.ACCEPTED_MATCH_CHANNEL);
-                                    break;
-                                case "<MAP>":
-                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.LOADED_ON_MAP_NOTIFICATION_ID, Constants.LOADED_ON_MAP_CHANNEL_ID);
-                                    break;
-                                case "<LBY>":
-                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.IN_LOBBY_NOTIFICATION_ID, Constants.LOADED_TO_LOBBY_CHANNEL);
-                                    break;
-                                case "<CNT>":
-                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
-                                    break;
-                                case "<CRS>":
-                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.CRASHED_NOTIFICATION_ID, Constants.CRASHED_CHANNEL);
-                                    break;
-                                case "<BMB>":
-                                    ShowNotification(Resources.GetString(Resource.String.app_name), clearResponse, Constants.BOMB_NOTIFICATION_ID, Constants.BOMB_CHANNEL, NotificationPriority.Default);
-                                    if (MainActivity.Active)
+                            case Commands.AcceptedMatch:
+                                ShowNotification(Resources.GetString(Resource.String.app_name), message, Constants.ACCEPTED_MATCH_NOTIFICATION_ID, Constants.ACCEPTED_MATCH_CHANNEL);
+                                break;
+                            case Commands.LoadedOnMap:
+                                ShowNotification(Resources.GetString(Resource.String.app_name), message, Constants.LOADED_ON_MAP_NOTIFICATION_ID, Constants.LOADED_ON_MAP_CHANNEL_ID);
+                                break;
+                            case Commands.LoadedInLobby:
+                                ShowNotification(Resources.GetString(Resource.String.app_name), message, Constants.IN_LOBBY_NOTIFICATION_ID, Constants.LOADED_TO_LOBBY_CHANNEL);
+                                break;
+                            case Commands.Connected:
+                                ShowNotification(Resources.GetString(Resource.String.app_name), message, Constants.CONNECTED_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
+                                break;
+                            case Commands.Crashed:
+                                ShowNotification(Resources.GetString(Resource.String.app_name), message, Constants.CRASHED_NOTIFICATION_ID, Constants.CRASHED_CHANNEL);
+                                break;
+                            case Commands.Bomb:
+                                ShowNotification(Resources.GetString(Resource.String.app_name), message, Constants.BOMB_NOTIFICATION_ID, Constants.BOMB_CHANNEL, NotificationPriority.Default);
+                                if (MainActivity.Active)
+                                {
+                                    MainActivity.Instance.RunOnUiThread(() =>
                                     {
-                                        MainActivity.Instance.RunOnUiThread(() =>
-                                        {
-                                            MainActivity.Instance.bombState.Text = clearResponse;
-                                        });
-                                    }
-                                    break;
-                                case "<CLS>":
-                                    if (MainActivity.Active)
+                                        MainActivity.Instance.bombState.Text = message;
+                                    });
+                                }
+                                break;
+                            case Commands.Clear:
+                                if (MainActivity.Active)
+                                {
+                                    MainActivity.Instance.RunOnUiThread(() =>
                                     {
-                                        MainActivity.Instance.RunOnUiThread(() =>
-                                        {
-                                            MainActivity.Instance.state.Text = "";
-                                            MainActivity.Instance.details.Text = "";
-                                            MainActivity.Instance.bombState.Text = "";
-                                        });
-                                    }
-                                    break;
-                            }
-                            //MainActivity.Instance.RunOnUiThread(() => {
-                            //    MainActivity.Instance.outputText.Text = clearResponse;
-                            //});
-
+                                        MainActivity.Instance.state.Text = "";
+                                        MainActivity.Instance.details.Text = "";
+                                        MainActivity.Instance.bombState.Text = "";
+                                    });
+                                }
+                                break;
                         }
+                        //MainActivity.Instance.RunOnUiThread(() => {
+                        //    MainActivity.Instance.outputText.Text = clearResponse;
+                        //});
+                        Thread.Sleep(1);
                     }
                 }
             }
