@@ -10,6 +10,12 @@
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\CSAuto\Utils\CSGO\GameState.cs" Link="GameState.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.12.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\drawable\" />
   </ItemGroup>
 </Project>

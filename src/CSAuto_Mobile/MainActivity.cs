@@ -6,6 +6,9 @@ using Android.OS;
 using Android.Util;
 using Java.Util.Prefs;
 using Android.Net;
+using Android.Graphics.Drawables;
+using Android.Content.Res;
+using System.Drawing;
 
 namespace CSAuto_Mobile
 {
@@ -16,15 +19,26 @@ namespace CSAuto_Mobile
         static readonly string? TAG = typeof(MainActivity).FullName;
         public required Button? stopServiceButton;
         public required Button? startServiceButton;
+        public required Button? logButton;
         public required TextView? outputText;
         public required TextView? ipAdressText;
-        public required TextView? details;
-        public required TextView? state;
+        public required TextView? ctScoreText;
+        public required TextView? tScoreText;
+        public required TextView? roundStateText;
+        public required TextView? mapText;
+        public required TextView? playerText;
+        //public required TextView? details;
+        //public required TextView? state;
         public required TextView? bombState;
+        public required GridLayout? logGrid;
+        public required GridLayout? inGameGrid;
+        public required GridLayout? lobbyGrid;
+        public required ScrollView? scrollView;
         public static MainActivity? Instance;
         public static bool Active = false;
         public required Intent startServiceIntent;
         public required Intent stopServiceIntent;
+        public bool inGame = false;
         bool isStarted = false;
         protected override void OnCreate(Bundle? savedInstanceState)
         {
@@ -39,10 +53,22 @@ namespace CSAuto_Mobile
             byte[]? ip = GetMyIpAddress();
             ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
             outputText = FindViewById<TextView>(Resource.Id.OutputText);
-            details = FindViewById<TextView>(Resource.Id.details);
-            state = FindViewById<TextView>(Resource.Id.state);
-            bombState = FindViewById<TextView>(Resource.Id.bomb_state);
-            if(ip != null)
+            logGrid = FindViewById<GridLayout>(Resource.Id.LogGrid);
+            inGameGrid = FindViewById<GridLayout>(Resource.Id.inGameGrid);
+            lobbyGrid = FindViewById<GridLayout>(Resource.Id.inLobbyGrid);
+            logButton = FindViewById<Button>(Resource.Id.logButton);
+            ctScoreText = FindViewById<TextView>(Resource.Id.ctScoreText);
+            tScoreText = FindViewById<TextView>(Resource.Id.tScoreText);
+            roundStateText = FindViewById<TextView>(Resource.Id.roundStateText);
+            mapText = FindViewById<TextView>(Resource.Id.mapText);
+            playerText = FindViewById<TextView>(Resource.Id.playerStatsText);
+            //details = FindViewById<TextView>(Resource.Id.details);
+            //state = FindViewById<TextView>(Resource.Id.state);
+            bombState = FindViewById<TextView>(Resource.Id.bombStateText);
+            scrollView = FindViewById<ScrollView>(Resource.Id.outputScrollView);
+            FindViewById(Resource.Id.ctScoreLayout).SetBackgroundDrawable(GetRoundedDrawable(140, 157, 165));
+            FindViewById(Resource.Id.tScoreLayout).SetBackgroundDrawable(GetRoundedDrawable(203, 186, 125));
+            if (ip != null)
                 ipAdressText.Text = $"Your IP Address: {new IPAddress(ip)}";
             Instance = this;
             startServiceIntent = new Intent(this, typeof(ServerService));
@@ -58,6 +84,7 @@ namespace CSAuto_Mobile
             startServiceButton.Click += StartServiceButton_Click;
 
             stopServiceButton.Click += StopServiceButton_Click;
+            logButton.Click += LogButton_Click;
             if (isStarted)
             {
                 stopServiceButton.Enabled = true;
@@ -70,6 +97,47 @@ namespace CSAuto_Mobile
             }
             Active = true;
         }
+        private Drawable GetRoundedDrawable(int r,int g,int b)
+        {
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.SetCornerRadii(new float[] { 20, 20, 20, 20, 20, 20, 20, 20 });
+            gradientDrawable.SetColor(Color.FromArgb(r,g,b).ToArgb());
+            return gradientDrawable;
+        }
+        public void UpdateLayout()
+        {
+            if (logGrid.Visibility == Android.Views.ViewStates.Invisible)
+            {
+                if (inGame)
+                {
+                    inGameGrid.Visibility = Android.Views.ViewStates.Visible;
+                    lobbyGrid.Visibility = Android.Views.ViewStates.Invisible;
+                }
+                else
+                {
+                    lobbyGrid.Visibility = Android.Views.ViewStates.Visible;
+                    inGameGrid.Visibility = Android.Views.ViewStates.Invisible;
+                }
+            }
+        }
+        private void LogButton_Click(object? sender, EventArgs e)
+        {
+            if(logGrid.Visibility == Android.Views.ViewStates.Invisible)
+            {
+                logGrid.Visibility = Android.Views.ViewStates.Visible;
+                inGameGrid.Visibility = Android.Views.ViewStates.Invisible;
+                lobbyGrid.Visibility = Android.Views.ViewStates.Invisible;
+            }
+            else
+            {
+                logGrid.Visibility = Android.Views.ViewStates.Invisible;
+                if(inGame)
+                    inGameGrid.Visibility = Android.Views.ViewStates.Visible;
+                else
+                    lobbyGrid.Visibility = Android.Views.ViewStates.Visible;
+            }
+        }
+
         private static byte[]? GetMyIpAddress()
         {
             ConnectivityManager? connectivityManager = (ConnectivityManager?)Application.Context.GetSystemService(ConnectivityService);

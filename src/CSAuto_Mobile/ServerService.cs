@@ -6,19 +6,17 @@ using Android.Preferences;
 using Android.Systems;
 using Android.Util;
 using AndroidX.Core.App;
+using Java.Lang;
 using Java.Util.Prefs;
 using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Exception = System.Exception;
+using Thread = Java.Lang.Thread;
 
 namespace CSAuto_Mobile
 {
-    /// <summary>
-	/// This is a sample started service. When the service is started, it will log a string that details how long 
-	/// the service has been running (using Android.Util.Log). This service displays a notification in the notification
-	/// tray while the service is active.
-	/// </summary>
 	[Service]
     public class ServerService : Service
     {
@@ -31,7 +29,8 @@ namespace CSAuto_Mobile
             Connected,
             Crashed,
             Bomb,
-            Clear
+            Clear,
+            GameState
         }
         static readonly string? TAG = typeof(ServerService).FullName;
 
@@ -39,6 +38,7 @@ namespace CSAuto_Mobile
         IPAddress? myIpAddress;
         TcpListener? listener;
         Thread? thread;
+        int lastRound = -1;
         public override void OnCreate()
         {
             base.OnCreate();
@@ -141,7 +141,17 @@ namespace CSAuto_Mobile
                         stream.ReadExactly(buf, 0, (int)length);
                         string message = CleanMessage(buf);
                         Commands command = (Commands)buf[0];
-                        Log.Debug(TAG, $"Received message: '{message}', command: '{command.ToString()}'");
+                        Log.Debug(TAG, $"Received message: '{message}', command: '{command}'");
+                        if (MainActivity.Active)
+                        {
+                            MainActivity.Instance.RunOnUiThread(() =>
+                            {
+                                new Runnable(() =>
+                                {
+                                    MainActivity.Instance.outputText.Text += $"[{DateTime.Now:HH:mm:ss}] Received message: '{message}', command: '{command}'\n";
+                                }).Run();
+                            });
+                        }
                         switch (command)
                         {
                             case Commands.AcceptedMatch:
@@ -165,20 +175,54 @@ namespace CSAuto_Mobile
                                 {
                                     MainActivity.Instance.RunOnUiThread(() =>
                                     {
-                                        MainActivity.Instance.bombState.Text = message;
+                                        new Runnable(() =>
+                                        {
+                                            MainActivity.Instance.bombState.Text = message;
+                                        }).Run();
                                     });
                                 }
                                 break;
                             case Commands.Clear:
+                                //if (MainActivity.Active)
+                                //{
+                                //    MainActivity.Instance.RunOnUiThread(() =>
+                                //    {
+                                //        new Runnable(() =>
+                                //        {
+                                //            MainActivity.Instance.state.Text = "";
+                                //            MainActivity.Instance.details.Text = "";
+                                //            MainActivity.Instance.bombState.Text = "";
+                                //        }).Run();
+                                //    });
+                                //}
+                                break;
+                            case Commands.GameState:
                                 if (MainActivity.Active)
                                 {
+                                    Murky.Utils.CSGO.GameState gameState = new Murky.Utils.CSGO.GameState(message);
                                     MainActivity.Instance.RunOnUiThread(() =>
                                     {
-                                        MainActivity.Instance.state.Text = "";
-                                        MainActivity.Instance.details.Text = "";
-                                        MainActivity.Instance.bombState.Text = "";
+                                        new Runnable(() =>
+                                        {
+                                            if(lastRound != gameState.Round.CurrentRound)
+                                            {
+                                                MainActivity.Instance.bombState.Text = "";
+                                                lastRound = gameState.Round.CurrentRound;
+                                            }
+                                            MainActivity.Instance.inGame = gameState.Match.Map != null;
+                                            MainActivity.Instance.UpdateLayout();
+                                            MainActivity.Instance.roundStateText.Text = gameState.Round.Phase.ToString();
+                                            MainActivity.Instance.ctScoreText.Text = gameState.Match.CTScore.ToString();
+                                            MainActivity.Instance.tScoreText.Text = gameState.Match.TScore.ToString();
+                                            MainActivity.Instance.mapText.Text = $"Map: {gameState.Match.Map}";
+                                            if(gameState.Player != null)
+                                                MainActivity.Instance.playerText.Text = 
+                                                    $"{gameState.Player.Name}\nKills: {gameState.Player.Kills}\nDeaths: {gameState.Player.Deaths}\n K\\D: {System.Math.Round((float)gameState.Player.Kills / (gameState.Player.Deaths == 0? 1: gameState.Player.Deaths), 3)}\n MVP's: {gameState.Player.MVPS}";
+                                        }).Run();
                                     });
                                 }
+                                break;
+                            default:
                                 break;
                         }
                         //MainActivity.Instance.RunOnUiThread(() => {

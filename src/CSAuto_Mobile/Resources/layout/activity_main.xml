@@ -1,22 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
+    android:orientation="vertical"
+    tools:gridSpec="1|8|#0093eeff|K:#ee8700ff:16,l:72,l:16,r|S:#83ee00ff:16,0,l:16,56,l:16,0,r"
+    android:rowCount="4">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <Button
+            android:text="Log"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logButton"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_above="@+id/start_timestamp_service_button"/>
+        <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="left"
         android:textColor="#ff000000"
         android:text="ip"
         android:id="@+id/IpAdressText"
         android:textStyle="bold"
         android:textSize="25dp"
-        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
-    <ImageView
+        android:layout_gravity="left"
+        android:layout_marginLeft="15px"
+        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor"
+            android:layout_toRightOf="@id/logButton"/>
+        <Button
+            android:id="@+id/start_timestamp_service_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="true"
+            android:text="@string/restart_timestamp_service_button_text"
+            android:layout_row="1"
+            android:layout_below="@+id/IpAdressText" />
+        <Button
+            android:id="@+id/stop_timestamp_service_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/stop_timestamp_service_button_text"
+            android:layout_row="2"
+            android:layout_below="@+id/start_timestamp_service_button"/>
+        <!--<ImageView
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#ff000000"
@@ -64,41 +98,161 @@
         android:background="#ff000000"
         android:contentDescription="description"
         tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
-    <Button
-        android:id="@+id/start_timestamp_service_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="true"
-        android:text="@string/restart_timestamp_service_button_text" />
-    <Button
-        android:id="@+id/stop_timestamp_service_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/stop_timestamp_service_button_text" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#ff000000"
         android:contentDescription="description"
         tools:ignore="HardcodedText,HardcodedSize,HardcodedColor" />
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:visibility="visible">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+    -->
+        <GridLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@+id/inLobbyGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_below="@+id/stop_timestamp_service_button">
             <TextView
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Waiting for game to start"
+                tools:ignore="HardcodedText" />
+        </GridLayout>
+        <GridLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@+id/inGameGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:layout_column="0"
+            android:layout_row="3"
+            android:layout_below="@+id/stop_timestamp_service_button">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="20px"
+                        android:layout_marginLeft="45px"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:id="@+id/mapText"
+                        android:layout_height="wrap_content" android:text="Map: de_mirage" android:textColor="@android:color/black" android:textSize="20dp"/>
+            <GridLayout
+                android:layout_width="300px"
+                android:layout_height="150px"
+                    android:orientation="horizontal"
+                    android:id="@+id/ctScoreLayout"
+                    android:layout_marginTop="100px"
+                    android:layout_marginLeft="50px"
+                    android:background="@android:color/holo_blue_dark"
+                    >
+                    <ImageView
+                        android:layout_width="150px"
+                        android:layout_height="150px"
+                        android:layout_gravity="center_vertical | left"
+                        android:src="@drawable/ct"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="20px"
+                        android:layout_gravity="center_vertical | left"
+                        android:layout_marginLeft="45px"
+                        android:id="@+id/ctScoreText"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content" android:text="13" android:textColor="@android:color/black" android:textSize="20dp"/>
+            </GridLayout>
+            <GridLayout
+                android:layout_width="300px"
+                android:layout_height="150px"
+                    android:orientation="horizontal"
+                    android:id="@+id/tScoreLayout"
+                    android:background="@android:color/holo_blue_dark"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="100px"
+                    android:layout_marginRight="50px"
+                    android:gravity="right"
+                    >
+                    <ImageView
+                        android:layout_width="150px"
+                        android:layout_height="150px"
+                        android:layout_gravity="center_vertical | left"
+                        android:src="@drawable/t"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="20px"
+                        android:layout_marginLeft="45px"
+                        android:textStyle="bold"
+                        android:id="@+id/tScoreText"
+                        android:layout_gravity="center_vertical | left"
+                        android:layout_height="wrap_content" android:text="13" android:textColor="@android:color/black" android:textSize="20dp"/>
+            </GridLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="130px"
+                        android:layout_gravity="center_vertical | left"
+                        android:layout_toRightOf="@+id/ctScoreLayout"
+                        android:layout_toLeftOf="@+id/tScoreLayout"
+                        android:id="@+id/roundStateText"
+                        android:gravity="center"
+                        android:layout_height="wrap_content" android:text="Freezetime" android:textColor="@android:color/black" android:textSize="20dp"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:textStyle="bold"
+                        android:layout_marginTop="300px"
+                        android:layout_gravity="center_vertical | left"
+                        android:id="@+id/bombStateText"
+                        android:gravity="center"
+                        android:layout_height="wrap_content" android:text="Bomb state" android:textColor="@android:color/black" android:textSize="20dp"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="400px"
+                        android:layout_gravity="center_vertical | left"
+                        android:layout_toRightOf="@+id/ctScoreLayout"
+                        android:layout_toLeftOf="@+id/tScoreLayout"
+                        android:id="@+id/playerStatsText"
+                        android:gravity="center"
+                        android:layout_height="wrap_content" android:text="Player stat" android:textColor="@android:color/black" android:textSize="20dp"/>
+            </RelativeLayout>
+
+        </GridLayout>
+        <GridLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@+id/LogGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_below="@+id/stop_timestamp_service_button">
+            <ScrollView
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top|left"
-                android:textColor="#ffb71c1c"
-                android:text=""
-                android:id="@+id/OutputText"
-                tools:ignore="HardcodedColor" />
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                android:scrollbars="vertical"
+                android:visibility="visible"
+                android:id="@+id/outputScrollView">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|left"
+                        android:textColor="#ffb71c1c"
+                        android:text=""
+                        android:id="@+id/OutputText"
+                        tools:ignore="HardcodedColor" />
+                </LinearLayout>
+            </ScrollView>
+        </GridLayout>
+    </RelativeLayout>
+
+</GridLayout>

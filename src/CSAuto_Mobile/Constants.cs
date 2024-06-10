@@ -26,7 +26,7 @@ namespace CSAuto_Mobile
         public const int CRASHED_NOTIFICATION_ID = 8;
         public const string SERVICE_STARTED_KEY = "has_service_been_started";
         public const string BROADCAST_MESSAGE_KEY = "broadcast_message";
-        public const string NOTIFICATION_BROADCAST_ACTION = "ServicesDemo3.Notification.Action";
+        public const string NOTIFICATION_BROADCAST_ACTION = "CSAuto.Notification.Action";
         public const string SERVICE_CHANNEL_ID = "SERVICECHANNELID";
         public const string LOADED_ON_MAP_CHANNEL_ID = "LOADEDCHANNELID";
         public const string ACCEPTED_MATCH_CHANNEL = "ACCEPTEDCHANNELID";
@@ -34,9 +34,9 @@ namespace CSAuto_Mobile
         public const string CRASHED_CHANNEL = "CRASHEDCHANNELID";
         public const string BOMB_CHANNEL = "BOMBCHANNELID";
 
-        public const string ACTION_START_SERVICE = "ServicesDemo3.action.START_SERVICE";
-        public const string ACTION_STOP_SERVICE = "ServicesDemo3.action.STOP_SERVICE";
-        public const string ACTION_RESTART_TIMER = "ServicesDemo3.action.RESTART_TIMER";
-        public const string ACTION_MAIN_ACTIVITY = "ServicesDemo3.action.MAIN_ACTIVITY";
+        public const string ACTION_START_SERVICE = "CSAuto.action.START_SERVICE";
+        public const string ACTION_STOP_SERVICE = "CSAuto.action.STOP_SERVICE";
+        public const string ACTION_RESTART_TIMER = "CSAuto.action.RESTART_TIMER";
+        public const string ACTION_MAIN_ACTIVITY = "CSAuto.action.MAIN_ACTIVITY";
     }
 }

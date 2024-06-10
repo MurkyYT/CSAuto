@@ -49,7 +49,8 @@ namespace CSAuto
             Connected,
             Crashed,
             Bomb,
-            Clear
+            Clear,
+            GameState
         }
         #endregion
         #region Constants
@@ -126,6 +127,7 @@ namespace CSAuto
         IntPtr hCursorOriginal = IntPtr.Zero;
         HwndSource windowSource;
         ContextMenu exitCm;
+        DateTime lastGameStateSend = DateTime.Now;
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -412,6 +414,11 @@ namespace CSAuto
                         AutoPauseResumeSpotify();
                 }
                 UpdateDiscordRPC();
+                if(DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
+                {
+                    lastGameStateSend = DateTime.Now;
+                    SendMessageToServer(gameState.JSON, onlyServer: true, command: Commands.GameState);
+                }
                 //SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
                 //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
             }
