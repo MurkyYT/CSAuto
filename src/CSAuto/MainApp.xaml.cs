@@ -56,7 +56,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -86,26 +86,25 @@ namespace CSAuto
         public const string ONLINE_BRANCH_NAME = "master";
         #endregion
         #region Readonly
+        readonly object csProcessLock = new object();
         readonly NotifyIconWrapper notifyIcon = new NotifyIconWrapper();
         readonly DispatcherTimer appTimer = new DispatcherTimer();
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
         readonly GameState gameState = new GameState(null);
         readonly GameStateListener GameStateListener;
-        // Looks like the old way is working now?
+        // Looks like the old way is working now? 20/06/24: Can confirm, indeed works!
         readonly DXGICapture DXGIcapture = new DXGICapture();
         #endregion
         #region Privates
         private DiscordRpcClient RPCClient;
         private string integrationPath = null;
-        private string inLobbyState = "Chilling in lobby";
         private string currentMapIcon = null;
         private Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
         private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         #endregion
         #region Members
         RECT csResolution = new RECT();
-        //Size screenResolution = new Size();
-        //Only workshop tools have netconport? (probably because vconsole2.exe uses it)
+        //Only workshop tools have netconport? https://github.com/ValveSoftware/csgo-osx-linux/issues/3603#issuecomment-2163695087
         //NetCon netCon = null;
         int frame = 0;
         bool csRunning = false;
@@ -118,7 +117,6 @@ namespace CSAuto
         BombState? bombState;
         Weapon weapon;
         bool acceptedGame = false;
-        object csProcessLock = new object();
         Process steamAPIServer = null;
         Process csProcess = null;
         Process originalProcess = null;
@@ -176,6 +174,7 @@ namespace CSAuto
                 });
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
+                // Try to encode my own steamid to see if its correct
                 CSGOFriendCode.Encode("76561198341800115");
                 new Thread(() => { CSGOMap.LoadMapIcons(); }).Start();
                 InitializeDiscordRPC();
@@ -190,7 +189,6 @@ namespace CSAuto
 #endif
                 Top = -1000;
                 Left = -1000;
-                inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
             }
             catch (Exception ex)
             {
@@ -369,12 +367,11 @@ namespace CSAuto
                 {
                     inLobby = true;
                     currentMapIcon = null;
-                    inLobbyState = FormatString(Properties.Settings.Default.lobbyState, gameState);
                     Log.WriteLine($"|MainApp.cs| Player is back in main menu");
                     RPCClient.SetPresence(new RichPresence()
                     {
                         Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                        State = LimitLength(inLobbyState, 128),
+                        State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
                         Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
@@ -419,8 +416,6 @@ namespace CSAuto
                     lastGameStateSend = DateTime.Now;
                     SendMessageToServer(gameState.JSON, onlyServer: true, command: Commands.GameState);
                 }
-                //SendMessageToServer($"<GSI>{gameState.JSON}{inGame}", onlyServer: true);
-                //Log.WriteLine($"Got info from GSI\nActivity:{activity}\nCSGOActive:{csgoActive}\nInGame:{inGame}\nIsSpectator:{IsSpectating(JSON)}");
             }
             catch (Exception ex)
             {
@@ -441,7 +436,6 @@ namespace CSAuto
                 foreach (BuyItem item in items)
                 {
                     Log.WriteLine($"|MainApp.cs| Auto buying {item.Name}");
-                    //Have to press b after buying grenades because the buy menu stays at the grenades category
                     PressKeys(new Keyboard.DirectXKeyStrokes[]
                     {
                         //Category key
@@ -449,6 +443,7 @@ namespace CSAuto
                         //Weapon key
                         (Keyboard.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
                     });
+                    //Have to press b after buying grenades because the buy menu stays at the grenades category
                     if (item.IsGrenade())
                         PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
                 }
@@ -530,9 +525,9 @@ namespace CSAuto
             return original;
         }
 
-        public string LimitLength(string v,int length)
+        public string LimitLength(string str,int length)
         {
-            return v?.Substring(0, Math.Min(v.Length, length));
+            return str?.Substring(0, Math.Min(str.Length, length));
         }
 
         private void MakeSureStartupIsOn()
@@ -593,7 +588,7 @@ namespace CSAuto
             optionsImport.Click += OptionsImport_Click;
             optionsExport.Click += OptionsExport_Click;
             optionsOpen.Click += Options_Click;
-            launchCS.Click += LaucnhCs_Click;
+            launchCS.Click += LaunchCs_Click;
             MenuItem about = new MenuItem
             {
                 Header = $"{typeof(MainApp).Namespace} - {FULL_VER}",
@@ -687,7 +682,7 @@ namespace CSAuto
         //    }
         //}
 
-        private void LaucnhCs_Click(object sender, RoutedEventArgs e)
+        private void LaunchCs_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("steam://rungameid/730");
         }
@@ -1369,7 +1364,7 @@ namespace CSAuto
                 Visibility = Visibility.Hidden;
                 InitializeNotifyIcon();
                 InitializeTimer();
-                Log.WriteLine($"|MainApp.cs| CSAuto v{VER}{(DEBUG_REVISION == "" ? "" : $" REV {DEBUG_REVISION}")} started");
+                Log.WriteLine($"|MainApp.cs| CSAuto v{FULL_VER} started");
                 string csgoDir = GetCSGODir();
 #if !DEBUG
                 if (Properties.Settings.Default.autoCheckForUpdates)
