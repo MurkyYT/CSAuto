@@ -65,17 +65,23 @@ namespace Murky.Utils.CSGO
             {
                 try
                 {
+                    string result = null;
                     if (MapIcons.ContainsKey(mapName))
                         return MapIcons[mapName];
                     else if (IsOfficial(mapName))
                     {
-                        string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
-                        string result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
-                        MapIcons[mapName] = result;
-                        return result;
+                        try
+                        {
+                            string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
+                            result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
+                            MapIcons[mapName] = result;
+                            return result;
+                        }
+                        catch { Log.WriteLine($"|CSGOMap.cs| Couldn't load official map icon for '{mapName}'"); }
                     }
-                    else
-                    {
+
+                    if(result == null) 
+                    { 
                         string info = client.DownloadString($"https://steamcommunity.com/workshop/browse/?appid=730&searchtext={mapName}");
                         string[] splt = info.Split(new string[] { "<div class=\"workshopBrowseItems\">" }, StringSplitOptions.RemoveEmptyEntries);
                         if (splt.Length > 1)
@@ -83,7 +89,7 @@ namespace Murky.Utils.CSGO
                             splt = info.Split(new string[] { "<img class=\"workshopItemPreviewImage  aspectratio_16x9\" src=\"" }, StringSplitOptions.RemoveEmptyEntries);
                             if (splt.Length > 1)
                             {
-                                string result = splt[1].Split('"')[0];
+                                result = splt[1].Split('"')[0];
                                 MapIcons[mapName] = result;
                                 return result;
                             }
