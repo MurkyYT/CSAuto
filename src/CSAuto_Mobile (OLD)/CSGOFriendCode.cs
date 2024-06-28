@@ -19,7 +19,7 @@ namespace Murky.Utils.CSGO
             for (int i = 0; i < 13; i++)
             {
                 if (i == 4 || i == 9)
-                    sr.Append("-");
+                    sr.Append('-');
                 int num = (int)(tmp & 0x1f);
                 sr.Append(alnum[num]);
                 tmp >>= 5;

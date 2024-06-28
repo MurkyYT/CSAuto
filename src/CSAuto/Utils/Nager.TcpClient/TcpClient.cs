@@ -359,7 +359,6 @@ namespace Nager.TcpClient
                     var exception = new Exception("Task faulted", task.Exception);
                     return false;
                 }
-
             }
             catch
             {
@@ -396,8 +395,6 @@ namespace Nager.TcpClient
             {
                 return;
             }
-
-
 #if (NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER)
 
             await this._stream.WriteAsync(data.AsMemory(0, data.Length), cancellationToken).ConfigureAwait(false);
@@ -417,7 +414,6 @@ namespace Nager.TcpClient
             {
                 if (this._tcpClient == null)
                 {
-
                     await Task
                         .Delay(defaultTimeout, cancellationToken)
                         .ContinueWith(task => { }, CancellationToken.None)

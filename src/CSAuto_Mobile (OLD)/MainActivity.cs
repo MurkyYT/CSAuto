@@ -56,7 +56,6 @@ namespace CSAuto_Mobile
             stopServiceIntent = new Intent(this, typeof(ServerService));
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
 
-
             stopServiceButton = FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
             startServiceButton = FindViewById<Button>(Resource.Id.start_timestamp_service_button);
             startServiceButton.Click += StartServiceButton_Click;
@@ -132,8 +131,7 @@ namespace CSAuto_Mobile
                 intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
                 intent.SetData(Android.Net.Uri.Parse("package:" + packageName));
                 StartActivity(intent);
-            }
-            
+            }    
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
