@@ -141,7 +141,7 @@ namespace CSAuto
             AWP,
             SCAR20,
             G3SG1
-        };
+        }
         private readonly Dictionary<NAMES, object[]> weaponsInfo = new Dictionary<NAMES, object[]>()
         {
             { NAMES.G3SG1,new object[] { "weapon_g3sg1", 5000 } },
@@ -196,7 +196,7 @@ namespace CSAuto
             for (int i = 0; i < 4; i++)
             {
                 BuyItem item = new BuyItem(((NAMES)i + 1),
-                    new Point(OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
+                    new Point(OFFSET_X, 43 + (OFFSET_Y * i) + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
                     ,false,
                     $"1{i+1}");
                 if (i != 3)
@@ -213,7 +213,7 @@ namespace CSAuto
             for (int i = 1; i < 5; i++)
             {
                 CustomBuyItem item = new CustomBuyItem(NAMES.None,
-                    new Point(152 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE, $"2{i+1}", new NAMES[]
+                    new Point(152 + OFFSET_X, 43 + (OFFSET_Y * i) + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE, $"2{i+1}", new NAMES[]
                     { NAMES.None, NAMES.R8Revolver,NAMES.CZ75Auto,NAMES.DualBerettas,NAMES.P250,NAMES.FiveSeven,NAMES.Deagle }, new NAMES[]
                     { NAMES.None, NAMES.R8Revolver,NAMES.CZ75Auto,NAMES.DualBerettas,NAMES.P250,NAMES.Tec9,NAMES.Deagle });
                 tCustomItems.Add(item);
@@ -223,7 +223,7 @@ namespace CSAuto
             for (int i = 0; i < 5; i++)
             {
                 CustomBuyItem item = new CustomBuyItem(NAMES.None,
-                    new Point(304 + OFFSET_X, 43 + OFFSET_Y * i + (MIDTIER_ITEM_SIZE.Height * i)), MIDTIER_ITEM_SIZE, $"3{i + 1}", new NAMES[]
+                    new Point(304 + OFFSET_X, 43 + (OFFSET_Y * i) + (MIDTIER_ITEM_SIZE.Height * i)), MIDTIER_ITEM_SIZE, $"3{i + 1}", new NAMES[]
                     {  NAMES.None, NAMES.Nova,NAMES.MP7,NAMES.MAG7,NAMES.Negev,NAMES.PPBizon,NAMES.UMP45,NAMES.M249,NAMES.XM1014,NAMES.MP5SD,NAMES.P90,NAMES.MP9 }, new NAMES[]
                     {  NAMES.None, NAMES.Nova,NAMES.MP7,NAMES.SawedOff,NAMES.Negev,NAMES.PPBizon,NAMES.UMP45,NAMES.M249,NAMES.XM1014,NAMES.MP5SD,NAMES.P90,NAMES.MAC10 });
                 tCustomItems.Add(item);
@@ -233,7 +233,7 @@ namespace CSAuto
             for (int i = 0; i < 5; i++)
             {
                 CustomBuyItem item = new CustomBuyItem(NAMES.None,
-                    new Point(490 + OFFSET_X, 43 + OFFSET_Y * i + (RIFLES_ITEM_SIZE.Height * i)), RIFLES_ITEM_SIZE, $"4{i + 1}", new NAMES[]
+                    new Point(490 + OFFSET_X, 43 + (OFFSET_Y * i) + (RIFLES_ITEM_SIZE.Height * i)), RIFLES_ITEM_SIZE, $"4{i + 1}", new NAMES[]
                     {  NAMES.None, NAMES.Famas,NAMES.M4A4,NAMES.M4A1S,NAMES.AUG,NAMES.SSG08,NAMES.SCAR20,NAMES.AWP }, new NAMES[]
                     {  NAMES.None, NAMES.GalilAR,NAMES.AK47,NAMES.SG553,NAMES.SSG08,NAMES.G3SG1,NAMES.AWP });
                 tCustomItems.Add(item);
@@ -243,7 +243,7 @@ namespace CSAuto
             for (int i = 0; i < 5; i++)
             {
                 BuyItem item = new BuyItem(((NAMES)5 + i),
-                    new Point(692 + OFFSET_X, 43 + OFFSET_Y * i + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
+                    new Point(692 + OFFSET_X, 43 + (OFFSET_Y * i) + (SMALL_ITEM_SIZE.Height * i)), SMALL_ITEM_SIZE
                     , true,
                     $"5{i + 1}");
                 tItems.Add(item);
@@ -325,9 +325,9 @@ namespace CSAuto
             for (int i = 0; i < enabled.Length; i++)
             {
                 BuyItem item = enabled[i];
-                for (int y = item.Position.Y + item.Size.Height / 4; y < item.Size.Height + item.Position.Y - (item.IsGrenade() ? 0 : 18); y++)
+                for (int y = item.Position.Y + (item.Size.Height / 4); y < item.Size.Height + item.Position.Y - (item.IsGrenade() ? 0 : 18); y++)
                 {
-                    for (int x = item.Position.X; x < item.Size.Width / (item.IsGrenade() ? 1.72 : 1) + item.Position.X; x++)
+                    for (int x = item.Position.X; x < (item.Size.Width / (item.IsGrenade() ? 1.72 : 1)) + item.Position.X; x++)
                     {
                         Color pixelColor = NativeMethods.GetPixel(copy,x,y);
                         if (colors.Contains(pixelColor))
@@ -360,8 +360,7 @@ namespace CSAuto
                     try
                     {
                         using (Bitmap customImg = BitmapImage2Bitmap(ImageLoader.LoadBitmapImage($"weapon_{customItem.Name.ToString().ToLower()}.png")))
-                        {
-                            
+                        {    
                             GraphicsUnit units = GraphicsUnit.Pixel;
                             Rectangle destReg = new Rectangle()
                             {

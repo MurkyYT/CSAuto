@@ -56,7 +56,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "5";
+        const string DEBUG_REVISION = "6";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -141,8 +141,7 @@ namespace CSAuto
         public static ImageSource CreateBitmapSourceFromBitmap(Bitmap bitmap)
         {
             if (bitmap == null)
-                throw new ArgumentNullException("bitmap");
-
+                throw new ArgumentNullException(nameof(bitmap));
             lock (bitmap)
             {
                 IntPtr hBitmap = bitmap.GetHbitmap();
@@ -329,7 +328,6 @@ namespace CSAuto
                             SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_bombexplode"), command: Commands.Bomb);
                             break;
                     }
-
                 }
                 if (gameState.Match.Map != null && (inLobby == true || inLobby == null))
                 {
@@ -883,7 +881,6 @@ namespace CSAuto
             {
                 Spotify.Resume();
             }
-
         }
         private void SendMessageToServer(string message, bool onlyTelegram = false, bool onlyServer = false,Commands command = Commands.None)
         {
@@ -1159,33 +1156,9 @@ namespace CSAuto
             if ((DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay && inLobby == true) ||
                 (inLobby == true && Properties.Settings.Default.oldScreenCaptureWay))
             {
-                IntPtr _handle = IntPtr.Zero;
-                if (!Properties.Settings.Default.oldScreenCaptureWay)
-                {
-                    _handle = DXGIcapture.GetCapture();
-                    if (_handle == IntPtr.Zero)
-                    {
-                        DXGIcapture.DeInit();
-                        Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
-                        DXGIcapture.Init();
-                        Log.WriteLine("|MainApp.cs| Init DXGI Capture");
-                    }
-                }
-                Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ?
-                    new Bitmap(csResolution.Width, csResolution.Height) : Image.FromHbitmap(_handle);
-                if (Properties.Settings.Default.oldScreenCaptureWay)
-                {
-                    using (Graphics g = Graphics.FromImage(bitmap))
-                    {
-                        g.CopyFromScreen(new Point(
-                            csResolution.Left,
-                            csResolution.Top),
-                            Point.Empty,
-                            new System.Drawing.Size(csResolution.Width, csResolution.Height));
-                    }
-                }
-                else
-                    bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
+                var res = GetBitmap();
+                Bitmap bitmap = res.Item1;
+                IntPtr _handle = res.Item2;
                 if (Properties.Settings.Default.saveDebugFrames)
                 {
                     try
@@ -1211,7 +1184,6 @@ namespace CSAuto
                     Color pixelColor = bitmap.GetPixel(xMiddle, y);
                     if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                     {
-
                         if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                         * just in case the program finds the 0:20 timer tick
                                         * didnt happen for a while but can happen still
@@ -1269,6 +1241,39 @@ namespace CSAuto
                 Log.WriteLine("|MainApp.cs| Init DXGI Capture");
             }
         }
+
+        private (Bitmap,IntPtr) GetBitmap()
+        {
+            IntPtr _handle = IntPtr.Zero;
+            if (!Properties.Settings.Default.oldScreenCaptureWay)
+            {
+                _handle = DXGIcapture.GetCapture();
+                if (_handle == IntPtr.Zero)
+                {
+                    DXGIcapture.DeInit();
+                    Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
+                    DXGIcapture.Init();
+                    Log.WriteLine("|MainApp.cs| Init DXGI Capture");
+                }
+            }
+            Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ?
+                new Bitmap(csResolution.Width, csResolution.Height) : Image.FromHbitmap(_handle);
+            if (Properties.Settings.Default.oldScreenCaptureWay)
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(new Point(
+                        csResolution.Left,
+                        csResolution.Top),
+                        Point.Empty,
+                        new System.Drawing.Size(csResolution.Width, csResolution.Height));
+                }
+            }
+            else
+                bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
+            return (bitmap, _handle);
+        }
+
         private bool CheckIfAccepted(Bitmap bitmap, int maxY)
         {
             int count = 0;
@@ -1277,7 +1282,6 @@ namespace CSAuto
                 Color pixelColor = bitmap.GetPixel(0, y);
                 if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                 {
-
                     if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                          * just in case the program finds the 0:20 timer tick
                                          * didnt happen for a while but can happen still
@@ -1338,7 +1342,7 @@ namespace CSAuto
         {
             var currentProcess = Process.GetCurrentProcess();
             var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
-            if (duplicates.Count() > 0)
+            if (duplicates.Any())
             {
                 //notifyIcon.Close();
                 //Application.Current.Shutdown();

@@ -188,11 +188,10 @@ namespace CSAuto
                   ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
                 byte* targetRow = (byte*)targetData.Scan0 + (y * targetData.Stride);
 
-
-                targetRow[x * pixelSize + 0] = color.B;
-                targetRow[x * pixelSize + 1] = color.G;
-                targetRow[x * pixelSize + 2] = color.R;
-                targetRow[x * pixelSize + 3] = color.A;
+                targetRow[(x * pixelSize) + 0] = color.B;
+                targetRow[(x * pixelSize) + 1] = color.G;
+                targetRow[(x * pixelSize) + 2] = color.R;
+                targetRow[(x * pixelSize) + 3] = color.A;
             }
             finally
             {
@@ -212,9 +211,9 @@ namespace CSAuto
                     ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
                 byte* targetRow = (byte*)targetData.Scan0 + (y * targetData.Stride);
 
-                res = Color.FromArgb(targetRow[x * pixelSize + 2],
-                    targetRow[x * pixelSize + 1],
-                    targetRow[x * pixelSize + 0]);
+                res = Color.FromArgb(targetRow[(x * pixelSize) + 2],
+                    targetRow[(x * pixelSize) + 1],
+                    targetRow[(x * pixelSize) + 0]);
                 //targetRow[x * pixelSize + 0] = color.B;
                 //targetRow[x * pixelSize + 1] = color.G;
                 //targetRow[x * pixelSize + 2] = color.R;
@@ -246,10 +245,10 @@ namespace CSAuto
                         byte* targetRow = (byte*)targetData.Scan0 + ((destRegion.Y + y - srcRegion.Y) * targetData.Stride);
                         byte* source = (byte*)sourceData.Scan0 + (y * sourceData.Stride);
 
-                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 0] = source[x * pixelSize + 0];
-                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 1] = source[x * pixelSize + 1];
-                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 2] = source[x * pixelSize + 2];
-                        targetRow[(x + destRegion.X - srcRegion.X) * pixelSize + 3] = source[x * pixelSize + 3];
+                        targetRow[((x + destRegion.X - srcRegion.X) * pixelSize) + 0] = source[(x * pixelSize) + 0];
+                        targetRow[((x + destRegion.X - srcRegion.X) * pixelSize) + 1] = source[(x * pixelSize) + 1];
+                        targetRow[((x + destRegion.X - srcRegion.X) * pixelSize) + 2] = source[(x * pixelSize) + 2];
+                        targetRow[((x + destRegion.X - srcRegion.X) * pixelSize) + 3] = source[(x * pixelSize) + 3];
                     }
                 }
             }
