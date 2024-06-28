@@ -41,12 +41,12 @@ namespace Murky.Utils
             VK_CAPITAL = 0x14,
             //
             VK_KANA = 0x15,
-            VK_HANGEUL = 0x15,  /* old name - should be here for compatibility */
-            VK_HANGUL = 0x15,
+            VK_HANGEUL = VK_KANA,  /* old name - should be here for compatibility */
+            VK_HANGUL = VK_KANA,
             VK_JUNJA = 0x17,
             VK_FINAL = 0x18,
             VK_HANJA = 0x19,
-            VK_KANJI = 0x19,
+            VK_KANJI = VK_HANJA,
             //
             VK_ESCAPE = 0x1B,
             //
@@ -124,7 +124,7 @@ namespace Murky.Utils
             //
             VK_OEM_NEC_EQUAL = 0x92,   // '=' key on numpad
                                        //
-            VK_OEM_FJ_JISHO = 0x92,   // 'Dictionary' key
+            VK_OEM_FJ_JISHO = VK_OEM_NEC_EQUAL,   // 'Dictionary' key
             VK_OEM_FJ_MASSHOU = 0x93,   // 'Unregister word' key
             VK_OEM_FJ_TOUROKU = 0x94,   // 'Register word' key
             VK_OEM_FJ_LOYA = 0x95,   // 'Left OYAYUBI' key

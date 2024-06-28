@@ -53,7 +53,6 @@ namespace Murky.Utils
                     StreamWriter file = new StreamWriter(path + fileName, true);
                     file.Write(lines);
                     file.Close();
-
                 }
                 catch { }
             }
@@ -80,7 +79,6 @@ namespace Murky.Utils
                     StreamWriter file = new StreamWriter(path + fileName, true);
                     file.WriteLine(lines);
                     file.Close();
-
                 }
                 catch {  }
             }

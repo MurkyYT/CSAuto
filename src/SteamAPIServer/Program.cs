@@ -53,7 +53,6 @@ namespace SteamAPIServer
                         Console.WriteLine("ERROR: {0}", e.Message);
                     }
                 }
-            
             }
         }
     }

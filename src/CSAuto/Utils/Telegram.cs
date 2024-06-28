@@ -64,11 +64,9 @@ namespace Murky.Utils
                 if (!ex.Message.Contains("(429)") &&
                     ex.Message != "Unable to connect to the remote server")
                 {
-                   
                 }
             }
         }
-
         public static bool CheckToken(string token)
         {
             try

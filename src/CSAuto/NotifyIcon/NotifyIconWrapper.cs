@@ -547,7 +547,7 @@ namespace NotifyIconLibrary
                 throw new ApplicationException(
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        "", // Shell_NotifyIcon function[{0}] failed and returned extended status code {1} = 0x{1:x8}
+                        "{0},{1}", // Shell_NotifyIcon function[{0}] failed and returned extended status code {1} = 0x{1:x8}
                         nim,
                         Marshal.GetLastWin32Error()));
             }

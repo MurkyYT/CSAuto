@@ -70,7 +70,6 @@ namespace CSAuto
         {
             return await this.ShowInputAsync(Languages.Strings.ResourceManager.GetString(title), 
                 Languages.Strings.ResourceManager.GetString(message));
-            
         }
         public void UpdateText(string data)
         {
@@ -79,7 +78,6 @@ namespace CSAuto
                 outputBox.Text = data;
                 lastRecieveTime.Text = $"Last recieved data from GSI: {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}";
             });
-           
         }
         public void UpdateDebug(string data)
         {
@@ -87,7 +85,6 @@ namespace CSAuto
             {
                 debugBox.Text += data+'\n';
             });
-
         }
 
         private void GUIWindow_Closed(object sender, EventArgs e)
@@ -181,10 +178,8 @@ namespace CSAuto
                         ParseWeaponsGSI(player);
                         break;
                 }
-            }
-            
+            }   
         }
-
         private static void ParseWeaponsGSI(Player player)
         {
             foreach (Weapon wep in player.Weapons)

@@ -264,24 +264,24 @@ namespace CSAuto
                 return Encoding.UTF8.GetString(mso.ToArray());
             }
         }
-        private string[] GetValues(string v)
-        {
-            string[] res = new string[2];
-            int count = 0;
-            string oneRes = "";
-            foreach(char ch in v)
-            {
-                if (ch == '"') { count++; }
-                if (count > 0 && 
-                    count % 2 == 0 && 
-                    res[count / 2 - 1] == null) 
-                {
-                    res[count / 2 - 1] = oneRes; oneRes = "";
-                }
-                if(count%2 == 1 && ch != '"') oneRes += ch;
-            }
-            return res;
-        }
+        //private string[] GetValues(string v)
+        //{
+        //    string[] res = new string[2];
+        //    int count = 0;
+        //    string oneRes = "";
+        //    foreach(char ch in v)
+        //    {
+        //        if (ch == '"') { count++; }
+        //        if (count > 0 && 
+        //            count % 2 == 0 && 
+        //            res[(count / 2) - 1] == null) 
+        //        {
+        //            res[(count / 2) - 1] = oneRes; oneRes = "";
+        //        }
+        //        if(count%2 == 1 && ch != '"') oneRes += ch;
+        //    }
+        //    return res;
+        //}
 
         public void LoadSettings()
         {

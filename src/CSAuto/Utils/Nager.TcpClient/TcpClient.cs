@@ -65,7 +65,6 @@ namespace Nager.TcpClient
 
             this._receiveBuffer = new byte[clientConfig.ReceiveBufferSize];
 
-
             this._streamCancellationTokenRegistration = this._cancellationTokenSource.Token.Register(() =>
             {
                 if (this._stream == null)
@@ -94,7 +93,6 @@ namespace Nager.TcpClient
         {
             if (disposing)
             {
-
                 if (this._cancellationTokenSource != null)
                 {
                     if (!this._cancellationTokenSource.IsCancellationRequested)
@@ -104,7 +102,6 @@ namespace Nager.TcpClient
 
                     this._cancellationTokenSource.Dispose();
                 }
-
                 if (this._dataReceiverTask != null)
                 {
                     if (this._dataReceiverTask.Status == TaskStatus.Running)
@@ -112,14 +109,11 @@ namespace Nager.TcpClient
                         this._dataReceiverTask.Wait(50);
                     }
                 }
-
                 this._streamCancellationTokenRegistration.Dispose();
 
                 this.DisposeTcpClientAndStream();
-
             }
         }
-
         private void DisposeTcpClientAndStream()
         {
             if (this._stream != null)
@@ -246,7 +240,6 @@ namespace Nager.TcpClient
                     //Try connect with timeout
                     if (!asyncResult.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(connectTimeoutInMilliseconds), exitContext: false))
                     {
-
                         /*
                          * INFO
                          * Do not include a dispose for the waitHandle here this will cause an exception
@@ -348,7 +341,6 @@ namespace Nager.TcpClient
 
             this._tcpClient = new System.Net.Sockets.TcpClient();
 
-
             try
             {
                 var cancellationCompletionSource = new TaskCompletionSource<bool>();
@@ -373,7 +365,6 @@ namespace Nager.TcpClient
             {
                 return false;
             }
-
             this.PrepareStream();
             this.SwitchToConnected();
 
@@ -413,10 +404,8 @@ namespace Nager.TcpClient
             await this._stream.FlushAsync(cancellationToken).ConfigureAwait(false);
 
 #else
-
             await this._stream.WriteAsync(data, 0, data.Length, cancellationToken).ConfigureAwait(false);
             await this._stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-
 #endif
         }
 
@@ -436,7 +425,6 @@ namespace Nager.TcpClient
 
                     continue;
                 }
-
                 if (!this._tcpClient.Connected)
                 {
                     this.SwitchToDisconnected();
@@ -448,10 +436,8 @@ namespace Nager.TcpClient
 
                     continue;
                 }
-
                 if (this._stream == null)
                 {
-
                     await Task
                         .Delay(defaultTimeout, cancellationToken)
                         .ContinueWith(task => { }, CancellationToken.None)
@@ -459,8 +445,6 @@ namespace Nager.TcpClient
 
                     continue;
                 }
-
-
                 var readTaskSuccessful = await DataReadAsync(cancellationToken)
                     .ContinueWith(async task =>
                     {
@@ -468,7 +452,6 @@ namespace Nager.TcpClient
                         {
                             return false;
                         }
-
                         if (task.IsFaulted)
                         {
                             if (this.IsKnownException(task.Exception))
@@ -476,17 +459,12 @@ namespace Nager.TcpClient
                                 this.SwitchToDisconnected();
                                 return true;
                             }
-
-
                             this.SwitchToDisconnected();
                             return false;
                         }
-
                         byte[] data = task.Result;
-
                         if (data == null || data.Length == 0)
                         {
-
                             await Task
                             .Delay(defaultTimeout, cancellationToken)
                             .ContinueWith(task1 => { }, CancellationToken.None)
@@ -498,7 +476,6 @@ namespace Nager.TcpClient
                             this.SwitchToDisconnected();
                             return true;
                         }
-
                         if (this.DataReceived != null)
                         {
                             this.DataReceived?.Invoke(data);
@@ -506,7 +483,6 @@ namespace Nager.TcpClient
                         else
                         {
                         }
-
                         return true;
                     }, cancellationToken)
                     .ContinueWith(task =>
@@ -554,11 +530,8 @@ namespace Nager.TcpClient
                     }
                 }
             }
-
-
             return false;
         }
-
         private async Task<byte[]> DataReadAsync(CancellationToken cancellationToken)
         {
             if (this._stream == null)
@@ -589,18 +562,14 @@ namespace Nager.TcpClient
                 return memoryStream.ToArray();
 
 #else
-
-
                 var numberOfBytesToRead = await this._stream.ReadAsync(this._receiveBuffer, 0, this._receiveBuffer.Length, cancellationToken).ConfigureAwait(false);
                 if (numberOfBytesToRead == 0)
                 {
                     return Array.Empty<byte>();
                 }
-
                 var memoryStream = new MemoryStream();
                 await memoryStream.WriteAsync(this._receiveBuffer, 0, numberOfBytesToRead, cancellationToken).ConfigureAwait(false);
                 return memoryStream.ToArray();
-
 #endif
             }
             catch (ObjectDisposedException)

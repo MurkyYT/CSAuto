@@ -46,8 +46,6 @@ namespace CSAuto_Mobile
             byte[]? addr = GetMyIpAddress();
             if(addr != null) { myIpAddress = new IPAddress(addr); }
         }
-
-
         public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
         {
             if (intent == null)
@@ -276,19 +274,16 @@ namespace CSAuto_Mobile
             // Turn on sound if the sound switch is on:                 
             notification.Visibility = NotificationVisibility.Public;
             // Turn on vibrate if the sound switch is on:                 
-            notification.Vibrate = new long[0];
+            notification.Vibrate = Array.Empty<long>();
             var notificationManager = NotificationManagerCompat.From(this);
             notificationManager.Notify(id, notification);
         }
-
         public override IBinder? OnBind(Intent? intent)
         {
             // Return null because this is a pure started service. A hybrid service would return a binder that would
             // allow access to the GetFormattedStamp() method.
             return null;
         }
-
-
         public override void OnDestroy()
         {
             // We need to shut things down.
@@ -390,7 +385,7 @@ namespace CSAuto_Mobile
                 .AddAction(BuildStopServiceAction())
                 .Build();              
 
-            notification.Vibrate = new long[0];
+            notification.Vibrate = Array.Empty<long>();
 
             // Enlist this instance of the service as a foreground service
             StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
@@ -425,8 +420,7 @@ namespace CSAuto_Mobile
             var builder = new NotificationCompat.Action.Builder(Android.Resource.Drawable.IcMediaPause,
                                                           GetText(Resource.String.stop_service),
                                                           stopServicePendingIntent);
-            return builder.Build();
-
+            return builder.Build(); 
         }
     }
 }

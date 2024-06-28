@@ -15,7 +15,6 @@ namespace CSAuto_Mobile
     [Activity(Label = "@string/app_name", MainLauncher = true)]
     public class MainActivity : Activity
     {
-
         static readonly string? TAG = typeof(MainActivity).FullName;
         public required Button? stopServiceButton;
         public required Button? startServiceButton;
@@ -49,7 +48,6 @@ namespace CSAuto_Mobile
             isStarted = IsStarted();
             WifiManager? wifiManager = (WifiManager?)Application.Context.GetSystemService(WifiService);
 
-
             byte[]? ip = GetMyIpAddress();
             ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
             outputText = FindViewById<TextView>(Resource.Id.OutputText);
@@ -76,7 +74,6 @@ namespace CSAuto_Mobile
 
             stopServiceIntent = new Intent(this, typeof(ServerService));
             stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
-
 
             stopServiceButton = FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
             startServiceButton = FindViewById<Button>(Resource.Id.start_timestamp_service_button);
@@ -181,7 +178,6 @@ namespace CSAuto_Mobile
                 intent.SetData(Android.Net.Uri.Parse("package:" + packageName));
                 StartActivity(intent);
             }
-
         }
     }
 }

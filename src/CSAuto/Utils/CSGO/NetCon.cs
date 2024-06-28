@@ -40,8 +40,7 @@ namespace Murky.Utils.CSGO
             if (data.Contains("vport 0] connected") && data.Contains("SDR server steamid"))
                 MatchFound?.Invoke(this, new EventArgs());
             if (Log.debugWind != null)
-                Log.debugWind.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); })); ;
-            
+                Log.debugWind.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); }));
         }
         public void SendCommand(string command)
         {

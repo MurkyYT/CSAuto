@@ -32,7 +32,7 @@ namespace Murky.Utils
         Windows_10_22H2  = 19045,
         Windows_11_21H2  = 22000,
         Windows_11_22H2  = 22621,
-    };
+    }
 
 public class WinVersion
     {

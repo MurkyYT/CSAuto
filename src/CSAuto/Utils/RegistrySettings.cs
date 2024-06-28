@@ -278,9 +278,9 @@ namespace Murky.Utils
         public override int GetHashCode()
         {
             int hashCode = 1330260032;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(name);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(type);
-            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(data);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(name);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(type);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<object>.Default.GetHashCode(data);
             return hashCode;
         }
 
