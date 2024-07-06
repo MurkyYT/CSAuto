@@ -10,7 +10,7 @@ namespace Murky.Utils
 {
     public class DXGICapture
     {
-        const string dllname = "DXGICapture.dll";
+        const string dllname = "bin\\DXGICapture.dll";
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool InitCapture();
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
