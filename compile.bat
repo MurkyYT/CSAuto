@@ -1,13 +1,6 @@
 @echo off
 title Compiling CSAuto...
 rm -r Output
-@echo Cleaning csauto project...
-msbuild src\CSAuto\CSAuto.csproj /t:Clean /property:Configuration=Release > nul
-@echo Cleaned csauto project
-@echo Compiling csauto project...
-msbuild CSAuto.sln /t:CSAuto /p:Configuration="Release"
-@echo Compiled csauto project
-@echo ------------------------------------------------------------------
 @echo Cleaning steamapiserver project...
 msbuild src\SteamAPIServer\SteamAPIServer.csproj /t:Clean /property:Configuration=Release > nul
 @echo Cleaned steamapiserver project
@@ -29,6 +22,13 @@ msbuild src\Updater\Updater.csproj /t:Clean /property:Configuration=Release > nu
 msbuild src\Updater\Updater.csproj /property:Configuration=Release
 @echo Compiled updater project
 @echo ------------------------------------------------------------------
+@echo Cleaning csauto project...
+msbuild src\CSAuto\CSAuto.csproj /t:Clean /property:Configuration=Release > nul
+@echo Cleaned csauto project
+@echo Compiling csauto project...
+msbuild CSAuto.sln /t:CSAuto /p:Configuration="Release"
+@echo Compiled csauto project
+@echo ------------------------------------------------------------------
 @echo Compiling the installer...
 ISCC.exe installer.iss
 @echo Compiled the installer
@@ -38,7 +38,7 @@ echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net7.0-android33.0\com.murky.
 @echo Copied csauto_mobile apk
 @echo ------------------------------------------------------------------
 @echo Zipping csauto...
-tar -caf Output\CSAuto_Portable.zip -C src\CSAuto\bin\Release *.dll *.exe resource ru
+tar -caf Output\CSAuto_Portable.zip -C src\CSAuto\bin\Release *.exe resource bin
 @echo Zipped csauto
 @echo ------------------------------------------------------------------
 @echo Everything should be in the Output folder

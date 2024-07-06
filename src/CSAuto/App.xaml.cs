@@ -1,12 +1,9 @@
-﻿using ControlzEx.Theming;
-using CSAuto.Properties;
+﻿using CSAuto.Properties;
 using Microsoft.Win32;
 using Murky.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -14,7 +11,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -39,13 +35,35 @@ namespace CSAuto
         private string languageName = null;
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AppendPrivatePath("bin");
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+            RealStartup(e);
+        }
+        void RealStartup(StartupEventArgs e)
+        {
+            Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute)
+            });
+            Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute)
+            });
+            Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml", UriKind.RelativeOrAbsolute)
+            });
+            Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/VectorResources/VectorImages.xaml", UriKind.RelativeOrAbsolute)
+            });
+
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             if (File.Exists(Log.WorkPath + "\\resource\\.portable"))
                 IsPortable = true;
             ParseArgs(e);
-            
+
             if (IsPortable)
             {
                 bool oldSettingsExist = settings.Exists();
@@ -59,7 +77,7 @@ namespace CSAuto
                     Log.WriteLine("|App.cs| Loading original settings to portable, first run of portable, but has old settings");
                     settings.Import(Log.WorkPath + "\\.tmp");
                 }
-                if(oldSettingsExist)
+                if (oldSettingsExist)
                     File.Delete(Log.WorkPath + "\\.tmp");
             }
             //LoadLanguage(languageName?.ToLower());
@@ -88,13 +106,6 @@ namespace CSAuto
 
             base.OnStartup(e);
 
-            if (Settings.Default.darkTheme)
-                // Set the application theme to Dark + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Dark.{Settings.Default.currentColor}");
-            else
-                // Set the application theme to Light + selected color
-                ThemeManager.Current.ChangeTheme(this, $"Light.{Settings.Default.currentColor}");
-
             //Clear error log
             if (File.Exists("Error_Log.txt"))
                 File.Delete("Error_Log.txt");
@@ -105,6 +116,25 @@ namespace CSAuto
 
             new MainApp().Show();
             NativeMethods.OptimizeMemory();
+        }
+
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+
+            var probingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\bin";
+            var assyName = new AssemblyName(args.Name);
+
+            var newPath = Path.Combine(probingPath, assyName.Name);
+            if (!newPath.EndsWith(".dll"))
+            {
+                newPath = newPath + ".dll";
+            }
+            if (File.Exists(newPath))
+            {
+                var assy = Assembly.LoadFile(newPath);
+                return assy;
+            }
+            return null;
         }
         private void ParseArgs(StartupEventArgs e)
         {

@@ -56,7 +56,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "6";
+        const string DEBUG_REVISION = "7";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -166,6 +166,13 @@ namespace CSAuto
             InitializeComponent();
             try
             {
+                if (Properties.Settings.Default.darkTheme)
+                    // Set the application theme to Dark + selected color
+                    ThemeManager.Current.ChangeTheme(current, $"Dark.{CSAuto.Properties.Settings.Default.currentColor}");
+                else
+                    // Set the application theme to Light + selected color
+                    ThemeManager.Current.ChangeTheme(current, $"Light.{CSAuto.Properties.Settings.Default.currentColor}");
+
                 Task.Run(() =>
                 {
                     BUTTON_COLORS = LoadButtonColors();
@@ -759,7 +766,7 @@ namespace CSAuto
                                 if (Directory.Exists(path))
                                     Directory.Delete(path, true);
                                 Directory.CreateDirectory(path);
-                                File.Copy(Log.WorkPath + "\\updater.exe", path + "\\updater.exe");
+                                File.Copy(Log.WorkPath + "\\bin\\updater.exe", path + "\\updater.exe");
                                 Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} {(guiWindow == null ? "" : "--show")} --restart\" .portable");
                                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
                             }
@@ -935,7 +942,7 @@ namespace CSAuto
                             }
                             if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
                             {
-                                steamAPIServer = new Process() { StartInfo = { FileName = "steamapi.exe" } };
+                                steamAPIServer = new Process() { StartInfo = { FileName = "bin\\steamapi.exe" } };
                                 if (!steamAPIServer.Start())
                                 {
                                     Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
@@ -1522,7 +1529,7 @@ namespace CSAuto
                                 if (Directory.Exists(path))
                                     Directory.Delete(path, true);
                                 Directory.CreateDirectory(path);
-                                File.Copy(Log.WorkPath + "\\updater.exe", path + "\\updater.exe");
+                                File.Copy(Log.WorkPath + "\\bin\\updater.exe", path + "\\updater.exe");
                                 Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} {(guiWindow == null ? "" : "--show")} --restart\" .portable");
                                 Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
                             }

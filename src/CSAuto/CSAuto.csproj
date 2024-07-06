@@ -279,13 +279,18 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>rm -r $(ProjectDir)$(OutDir)resource
+rm -r $(ProjectDir)$(OutDir)debug
+rm -r $(ProjectDir)$(OutDir)bin
 mkdir $(ProjectDir)$(OutDir)resource
+mkdir $(ProjectDir)$(OutDir)bin
 call $(SolutionDir)Misc\prebuild.bat $(SolutionDir)
 call $(SolutionDir)Misc\impack.exe $(ProjectDir)resource\images $(TargetDir)resource\images.pac
 copy $(ProjectDir)resource\.portable $(ProjectDir)$(OutDir)resource\.portable</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>move $(ProjectDir)$(OutDir)*.dll $(ProjectDir)$(OutDir)bin\
+move $(ProjectDir)$(OutDir)updater.exe $(ProjectDir)$(OutDir)bin\
+move $(ProjectDir)$(OutDir)steamapi.exe $(ProjectDir)$(OutDir)bin\
+call $(SolutionDir)Misc\fldmv.exe $(ProjectDir)$(OutDir) $(ProjectDir)$(OutDir)bin</PostBuildEvent>
   </PropertyGroup>
 </Project>
