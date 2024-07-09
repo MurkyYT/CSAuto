@@ -668,4 +668,10 @@
   <data name="warning_language" xml:space="preserve">
     <value>Указанный язык не найден, приложение возвращается к использованию английского</value>
   </data>
+  <data name="tooltip_github" xml:space="preserve">
+    <value>Откройте репозиторий на GitHub</value>
+  </data>
+  <data name="tooltip_discord" xml:space="preserve">
+    <value>Присоединяйтесь к серверу Discord</value>
+  </data>
 </root>

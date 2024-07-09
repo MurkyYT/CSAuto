@@ -668,4 +668,10 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="warning_language" xml:space="preserve">
     <value>The specified language was not found, app fallbacked to using English</value>
   </data>
+  <data name="tooltip_github" xml:space="preserve">
+    <value>Open the GitHub repository</value>
+  </data>
+  <data name="tooltip_discord" xml:space="preserve">
+    <value>Join the Discord server</value>
+  </data>
 </root>

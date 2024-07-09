@@ -1692,6 +1692,24 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Join the Discord server.
+        /// </summary>
+        public static string tooltip_discord {
+            get {
+                return ResourceManager.GetString("tooltip_discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the GitHub repository.
+        /// </summary>
+        public static string tooltip_github {
+            get {
+                return ResourceManager.GetString("tooltip_github", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter here your bot token which will send you messages, if the token is wrong or doesn&apos;t exist the app will fallback to the default token.
         /// </summary>
         public static string tooltip_telegramcustomtoken {

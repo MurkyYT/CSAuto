@@ -35,13 +35,13 @@
     </mahapps:MetroWindow.TitleTemplate>
     <mahapps:MetroWindow.LeftWindowCommands>
         <mahapps:WindowCommands>
-            <Button Click="LaunchGitHubSite" ToolTip="Opens GitHub repository">
+            <Button Click="LaunchGitHubSite" ToolTip="{x:Static p:Strings.tooltip_github}">
                 <!--<Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>-->
                 <Viewbox Width="18" Height="18" Stretch="Fill">
                     <Path Fill="#FFFFFFFF" Data="{StaticResource GithubMark}" />
                 </Viewbox>
             </Button>
-            <Button ToolTip="Opens the discord server" Click="OpenDiscordServer">
+            <Button ToolTip="{x:Static p:Strings.tooltip_discord}" Click="OpenDiscordServer">
                 <!--<Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>-->
                 <Viewbox Width="24" Height="18" Stretch="Fill">
                     <Path Fill="#5865F2" Data="{StaticResource DiscordBadge}"/>
