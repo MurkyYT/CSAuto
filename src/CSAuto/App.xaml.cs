@@ -114,6 +114,12 @@ namespace CSAuto
             if (ver.BuildNum >= (uint)BuildNumber.Windows_11_21H2)
                 IsWindows11 = true;
 
+            if (IsWindows11)
+                Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/RoundedResources/RoundedResources.xaml", UriKind.RelativeOrAbsolute)
+                });
+
             new MainApp().Show();
             NativeMethods.OptimizeMemory();
         }

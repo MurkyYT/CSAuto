@@ -56,7 +56,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "8";
+        const string DEBUG_REVISION = "9";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -228,6 +228,8 @@ namespace CSAuto
                     throw new WebException("Couldn't load button colors");
                 string[] lines = data.Split(new char[] { '\n' });
                 string path = DiscordRPCButtonSerializer.Path + "\\colors";
+                if (App.Current == null)
+                    return new Color[2];
                 (App.Current as App).settings.Set("ButtonColors", data);
                 return SplitColorsLines(lines);
             }

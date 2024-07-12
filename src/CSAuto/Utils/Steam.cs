@@ -90,7 +90,11 @@ namespace Murky.Utils
             catch (IOException)
             {
                 Log.WriteLine("|Steam.cs| Couldn't read SteamID3 from log, reading from Registry");
-                steamID3 = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam\\ActiveProcess", "ActiveUser", 0);
+                try
+                {
+                    steamID3 = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam\\ActiveProcess", "ActiveUser", 0);
+                }
+                catch { Log.WriteLine("|Steam.cs| Steam id not found at all"); }
             }
             return steamID3;
         }

@@ -259,12 +259,16 @@ namespace CSAuto
                 Steam.GetLaunchOptions(730, out string launchOpt);
                 Dispatcher.InvokeAsync(() =>
                 {
-                    steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
-                        $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
-                        $"SteamID64: {Steam.GetSteamID64()}\n" +
-                        $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
-                        $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
-                        $"CS:GO LaunchOptions: \"{launchOpt}\"";
+                    try
+                    {
+                        steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
+                            $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
+                            $"SteamID64: {Steam.GetSteamID64()}\n" +
+                            $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
+                            $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
+                            $"CS:GO LaunchOptions: \"{launchOpt}\"";
+                    }
+                    catch { }
                     GenerateLanguages();
                     string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                     if (File.Exists(finalPath))
@@ -421,7 +425,8 @@ namespace CSAuto
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {
                 OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
-                DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
+                if(main.BUTTON_COLORS != null)
+                    DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
             }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
             {

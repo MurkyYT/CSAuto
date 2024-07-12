@@ -174,6 +174,10 @@
       <DependentUpon>MainApp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RoundedResources\RoundedResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="VectorResources\VectorImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
