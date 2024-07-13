@@ -56,7 +56,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "9";
+        const string DEBUG_REVISION = "10";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -1099,6 +1099,9 @@ namespace CSAuto
                         System.Windows.Forms.Cursor.Position.X,
                         System.Windows.Forms.Cursor.Position.Y,
                         0, 0);
+                    NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONUP, 0, 
+                        NativeMethods.MakeLPARAM(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
+                    Keyboard.LMouseUp(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
                     //netCon.SendCommand("+reload");
                     //netCon.SendCommand("-attack");
                     Log.WriteLine("|MainApp.cs| Auto reloading");
@@ -1119,6 +1122,9 @@ namespace CSAuto
                             System.Windows.Forms.Cursor.Position.X,
                             System.Windows.Forms.Cursor.Position.Y,
                             0, 0);
+                        NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONDOWN, 0,
+                        NativeMethods.MakeLPARAM(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
+                        Keyboard.LMouseDown(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
                         Log.WriteLine($"|MainApp.cs| Continue spraying ({weaponName} - {weaponType})");
                         //}
                     }
@@ -1148,11 +1154,14 @@ namespace CSAuto
                 return $"{csgoDir}\\";
             return null;
         }
-        public static void LeftMouseClick(int xpos, int ypos)
+        public void LeftMouseClick(int xpos, int ypos)
         {
             NativeMethods.SetCursorPos(xpos, ypos);
-            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN, xpos, ypos, 0, 0);
-            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP, xpos, ypos, 0, 0);
+            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN | NativeMethods.MOUSEEVENTF_ABSOLUTE, xpos, ypos, 0, 0);
+            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP | NativeMethods.MOUSEEVENTF_ABSOLUTE, xpos, ypos, 0, 0);
+            Keyboard.ClickLeftMouse(xpos, ypos);
+            NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONDOWN, 0, NativeMethods.MakeLPARAM(xpos, ypos));
+            NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONUP, 0, NativeMethods.MakeLPARAM(xpos, ypos));
             Log.WriteLine($"|MainApp.cs| Left clicked at X:{xpos} Y:{ypos}");
         }
         private async Task AutoAcceptMatchAsync()

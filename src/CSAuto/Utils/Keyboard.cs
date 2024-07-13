@@ -1,9 +1,11 @@
-﻿using System;
+﻿using CSAuto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Murky.Utils
 {
@@ -385,6 +387,69 @@ namespace Murky.Utils
             DIK_MOUSEWHEELDOWN = 0x109,
         }
 
+        public static void ClickLeftMouse(int dx,int dy)
+        {
+            Input[] mi = new Input[2];
+            mi[0].type = (int)InputType.Mouse;
+            mi[0].u = new InputUnion
+            {
+                mi = new MouseInput
+                {
+                    dx = dx,
+                    dy = dy,
+                    dwFlags = NativeMethods.MOUSEEVENTF_LEFTDOWN | NativeMethods.MOUSEEVENTF_ABSOLUTE,
+                    dwExtraInfo = GetMessageExtraInfo()
+                }
+            };
+            mi[1].type = (int)InputType.Mouse;
+            mi[1].u = new InputUnion
+            {
+                mi = new MouseInput
+                {
+                    dx = dx,
+                    dy = dy,
+                    dwFlags = NativeMethods.MOUSEEVENTF_LEFTUP | NativeMethods.MOUSEEVENTF_ABSOLUTE,
+                    dwExtraInfo = GetMessageExtraInfo()
+                }
+            };
+
+            SendInput(2, mi, Marshal.SizeOf(mi[0]));
+        }
+        public static void LMouseUp(int dx, int dy)
+        {
+            Input[] mi = new Input[1];
+            mi[0].type = (int)InputType.Mouse;
+            mi[0].u = new InputUnion
+            {
+                mi = new MouseInput
+                {
+                    dx = dx,
+                    dy = dy,
+                    dwFlags = NativeMethods.MOUSEEVENTF_LEFTUP | NativeMethods.MOUSEEVENTF_ABSOLUTE,
+                    dwExtraInfo = GetMessageExtraInfo()
+                }
+            };
+
+            SendInput(1, mi, Marshal.SizeOf(mi[0]));
+        }
+        public static void LMouseDown(int dx, int dy)
+        {
+            Input[] mi = new Input[1];
+            mi[0].type = (int)InputType.Mouse;
+            mi[0].u = new InputUnion
+            {
+                mi = new MouseInput
+                {
+                    dx = dx,
+                    dy = dy,
+                    dwFlags = NativeMethods.MOUSEEVENTF_LEFTDOWN | NativeMethods.MOUSEEVENTF_ABSOLUTE,
+                    dwExtraInfo = GetMessageExtraInfo()
+                }
+            };
+
+            SendInput(1, mi, Marshal.SizeOf(mi[0]));
+        }
+
         /// <summary>
         /// Sends a directx key.
         /// http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
@@ -480,7 +545,7 @@ namespace Murky.Utils
         [StructLayout(LayoutKind.Explicit)]
         public struct InputUnion
         {
-            [FieldOffset(0)] public readonly MouseInput mi;
+            [FieldOffset(0)] public MouseInput mi;
             [FieldOffset(0)] public KeyboardInput ki;
             [FieldOffset(0)] public readonly HardwareInput hi;
         }
@@ -488,12 +553,12 @@ namespace Murky.Utils
         [StructLayout(LayoutKind.Sequential)]
         public struct MouseInput
         {
-            public readonly int dx;
-            public readonly int dy;
-            public readonly uint mouseData;
-            public readonly uint dwFlags;
-            public readonly uint time;
-            public readonly IntPtr dwExtraInfo;
+            public int dx;
+            public int dy;
+            public uint mouseData;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
         }
 
         [StructLayout(LayoutKind.Sequential)]

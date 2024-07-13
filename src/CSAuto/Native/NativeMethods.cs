@@ -17,6 +17,8 @@ namespace CSAuto
     public static class NativeMethods
     {
         [DllImport("user32.dll")]
+        public static extern int SendMessage(int hWnd, uint Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeregisterShellHookWindow(IntPtr hWnd);
         [DllImport("user32.dll")]
@@ -40,6 +42,11 @@ namespace CSAuto
 
         [DllImport("user32.dll", EntryPoint = "CopyIcon")]
         public static extern IntPtr CopyIcon(IntPtr hIcon);
+
+        public static int MakeLPARAM(int LoWord, int HiWord)
+        {
+            return ((HiWord << 16) | (LoWord & 0xffff));
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct CURSORINFO
@@ -161,8 +168,11 @@ namespace CSAuto
         public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
         [DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
+        public const int MOUSEEVENTF_ABSOLUTE = 0x8000;
         public const int MOUSEEVENTF_LEFTDOWN = 0x02;
         public const int MOUSEEVENTF_LEFTUP = 0x04;
+        public const int WM_LBUTTONUP = 0x0202;
+        public const int WM_LBUTTONDOWN = 0x0201;
         public static bool IsForegroundProcess(uint pid)
         {
             IntPtr hwnd = GetForegroundWindow();
