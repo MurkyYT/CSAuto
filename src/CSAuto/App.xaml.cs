@@ -104,6 +104,8 @@ namespace CSAuto
             }
             catch { CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-EN"); Settings.Default.currentLanguage = "en-EN"; MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning); }
 
+            Log.WriteLine($"|App.cs| Selected culture is: {CultureInfo.CurrentUICulture}");
+
             base.OnStartup(e);
 
             //Clear error log
