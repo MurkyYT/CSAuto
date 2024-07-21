@@ -269,9 +269,6 @@
   <data name="menu_bombnotification" xml:space="preserve">
     <value>Информация о бомбе</value>
   </data>
-  <data name="server_timeleft" xml:space="preserve">
-    <value>До взрыва осталось: </value>
-  </data>
   <data name="server_bombexplode" xml:space="preserve">
     <value>Бомба взорвалась</value>
   </data>
@@ -679,5 +676,11 @@
   </data>
   <data name="title_serverclients" xml:space="preserve">
     <value>Клиенты:</value>
+  </data>
+  <data name="menu_server" xml:space="preserve">
+    <value>Сервер</value>
+  </data>
+  <data name="server_timeleft" xml:space="preserve">
+    <value>До взрыва осталось:</value>
   </data>
 </root>

@@ -62,13 +62,14 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 
 ## FAQ
 
-### How to connect to the mobile app
+### How to connect thru the mobile app
 
   1. Make sure you have installed the app on your phone
   2. Make sure you are connected to the same network
-  3. In the mobile app start the server (and allow ignoring battery optimization)
-  4. Go to the desktop app, in the 'Phone notifications' category and make sure it is enabled
-  5. Go again to the 'Phone notifications' category and enter the IP address you see in the notification on the phone
+  3. In the mobile app dekstop app go to the `Server` category and remember the `IP` and `Port`
+  4. Go to the desktop app, in the `Settings -> Phone notifications` category and make sure it is enabled
+  5. Go to the mobile app and enter the `IP` and `Port` you saw in the `Server` category
+  6. Launch cs and try to connect to the server in the mobile app
 
 ### The app couldn't set the launch options, what to do?
 
