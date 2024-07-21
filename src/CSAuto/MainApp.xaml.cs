@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
+using Commands = CSAuto.Shared.NetworkTypes.Commands;
 using CSAuto.Exceptions;
 using Murky.Utils;
 using Murky.Utils.CSGO;
@@ -39,24 +40,10 @@ namespace CSAuto
     /// </summary>
     public partial class MainApp : Window
     {
-        #region Server Commands
-        enum Commands
-        {
-            None,
-            AcceptedMatch,
-            LoadedOnMap,
-            LoadedInLobby,
-            Connected,
-            Crashed,
-            Bomb,
-            Clear,
-            GameState
-        }
-        #endregion
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "11";
+        const string DEBUG_REVISION = "12";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -101,6 +88,7 @@ namespace CSAuto
         private string currentMapIcon = null;
         private Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
         private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
+        private string localIp;
         #endregion
         #region Members
         RECT csResolution = new RECT();
@@ -125,6 +113,10 @@ namespace CSAuto
         IntPtr hCursorOriginal = IntPtr.Zero;
         HwndSource windowSource;
         ContextMenu exitCm;
+        TcpListener server;
+        Thread serverThread;
+        internal List<TcpClient> clients;
+        Dictionary<TcpClient, DateTime> lastKeepAlive;
         DateTime lastGameStateSend = DateTime.Now;
         #endregion
         #region ToImageSource
@@ -207,11 +199,77 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
-
-        //private void ConDump_OnChange(object sender, EventArgs e)
-        //{
-        //    Log.WriteLine(sender);
-        //}
+        public async void ServerThread()
+        {
+            server.Start();
+            Log.WriteLine($"|MainApp.cs| [SERVER]: Started listening at {server.LocalEndpoint}");
+            byte[] keepAliveBuf = BitConverter.GetBytes(1).ToList().Append((byte)Commands.KeepAlive).ToArray();
+            while (server != null)
+            {
+                if (server.Pending())
+                {
+                    TcpClient client = await server.AcceptTcpClientAsync();
+                    clients.Add(client);
+                    Log.WriteLine($"|MainApp.cs| [SERVER]: Accepted tcp client {client.Client.RemoteEndPoint}");
+                    await client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
+                    lastKeepAlive[client] = DateTime.Now;
+                    guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Add(client.Client.RemoteEndPoint); });
+                }
+                if (clients != null)
+                {
+                    lock (clients)
+                    {
+                        for (int i = clients.Count - 1; i >= 0; i--)
+                        {
+                            TcpClient client = clients[i];
+                            try
+                            {
+                                if (!client.Connected)
+                                {
+                                    DeleteClient(client);
+                                    continue;
+                                }
+                                if (client.Available > 0)
+                                {
+                                    ReadData(client);
+                                    continue;
+                                }
+                                if (DateTime.Now - lastKeepAlive[client] > TimeSpan.FromSeconds(10))
+                                {
+                                   
+                                    client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
+                                    lastKeepAlive[client] = DateTime.Now;
+                                }
+                            }
+                            catch { DeleteClient(client); }
+                        }
+                    }
+                }
+                Thread.Sleep(1);
+            }
+        }
+        private void DeleteClient(TcpClient client)
+        {
+            clients.Remove(client);
+            lastKeepAlive.Remove(client);
+            Log.WriteLine($"|MainApp.cs| [SERVER]: Tcp client disconnected {client.Client.RemoteEndPoint}");
+            guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Remove(client.Client.RemoteEndPoint); });
+        }
+        private async void ReadData(TcpClient client)
+        {
+            byte[] buffer = new byte[4];
+            await client.GetStream().ReadAsync(buffer, 0, 4);
+            int length = BitConverter.ToInt32(buffer, 0);
+            buffer = new byte[length];
+            await client.GetStream().ReadAsync(buffer, 0, length);
+            var sb = new StringBuilder("{ ");
+            foreach (var b in buffer)
+            {
+                sb.Append(b + ", ");
+            }
+            sb.Append("}");
+            Log.WriteLine($"|MainApp.cs| [SERVER]: Received {sb} with length {length} from {client.Client.RemoteEndPoint}");
+        }
 
         public void UpdateColors()
         {
@@ -331,10 +389,10 @@ namespace CSAuto
                     switch (currentBombState)
                     {
                         case BombState.Defused:
-                            SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_bombdefuse"),command:Commands.Bomb);
+                            SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_bombdefuse"),command:Commands.Bomb);
                             break;
                         case BombState.Exploded:
-                            SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_bombexplode"), command: Commands.Bomb);
+                            SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_bombexplode"), command: Commands.Bomb);
                             break;
                     }
                 }
@@ -363,7 +421,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToServer(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode),command:Commands.LoadedOnMap);
+                        SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode),command:Commands.LoadedOnMap);
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -395,7 +453,7 @@ namespace CSAuto
                         Buttons = GetDiscordRPCButtons()
                     });
                     if (Properties.Settings.Default.lobbyNotification)
-                        SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_loadedlobby"),command:Commands.LoadedInLobby);
+                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_loadedlobby"),command:Commands.LoadedInLobby);
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
                         DXGIcapture.Init();
@@ -421,7 +479,7 @@ namespace CSAuto
                 if(DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
                 {
                     lastGameStateSend = DateTime.Now;
-                    SendMessageToServer(gameState.JSON, onlyServer: true, command: Commands.GameState);
+                    SendMessageToClients(gameState.JSON, onlyClients: true, command: Commands.GameState);
                 }
             }
             catch (Exception ex)
@@ -792,12 +850,12 @@ namespace CSAuto
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
             int diff = (int)(gameState.Timestamp - result);
-            SendMessageToServer($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true,command:Commands.Bomb);
+            SendMessageToClients($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true,command:Commands.Bomb);
             bombTimerThread = new Thread(() =>
             {
                 for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
                 {
-                    SendMessageToServer($"{Languages.Strings.ResourceManager.GetString("server_timeleft")} {seconds}", onlyServer: true, command: Commands.Bomb);
+                    SendMessageToClients($"{Languages.Strings.ResourceManager.GetString("server_timeleft")} {seconds}", onlyClients: true, command: Commands.Bomb);
                     Thread.Sleep(BOMB_TIMER_DELAY);
                 }
                 bombTimerThread = null;
@@ -891,35 +949,43 @@ namespace CSAuto
                 Spotify.Resume();
             }
         }
-        private void SendMessageToServer(string message, bool onlyTelegram = false, bool onlyServer = false,Commands command = Commands.None)
+        private void SendMessageToClients(string message, bool onlyTelegram = false, bool onlyClients = false,Commands command = Commands.None)
         {
+            
             new Thread(() =>
             {
-                if (Properties.Settings.Default.telegramChatId != "" && !onlyServer)
+                if (Properties.Settings.Default.telegramChatId != "" && !onlyClients)
                     Telegram.SendMessage(message, Properties.Settings.Default.telegramChatId,
-                        Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ? 
+                        Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
                         Properties.Settings.Default.customTelegramToken : APIKeys.TELEGRAM_BOT_TOKEN);
-                if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
-                    return;
-                try // Try connecting and send the message bytes  
-                {
-                    TcpClient client = new TcpClient(Properties.Settings.Default.phoneIpAddress, 11_000); // Create a new connection  
-                    NetworkStream stream = client.GetStream();
-                    byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-                    // message + command
-                    int length = messageBytes.Length + 1;
-                    byte[] lengthBuf = BitConverter.GetBytes(length);
-                    byte[] buffer = new byte[4 + length];
-                    for (int i = 0; i < 4; i++)
-                        buffer[i] = lengthBuf[i];
-                    buffer[4] = (byte)command;
-                    for (int i = 0; i < messageBytes.Length; i++)
-                        buffer[5 + i] = messageBytes[i];
-                    stream.Write(buffer, 0, buffer.Length);
-                    stream.Dispose();
-                    client.Close();
+                if (clients != null) {
+                    lock (clients) {
+                        if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
+                            return;
+                        try // Try connecting and send the message bytes  
+                        {
+                            foreach(TcpClient client in clients)
+                            {
+                                try
+                                {
+                                    byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+                                    // message + command
+                                    int length = messageBytes.Length + 1;
+                                    byte[] lengthBuf = BitConverter.GetBytes(length);
+                                    byte[] buffer = new byte[4 + length];
+                                    for (int i = 0; i < 4; i++)
+                                        buffer[i] = lengthBuf[i];
+                                    buffer[4] = (byte)command;
+                                    for (int i = 0; i < messageBytes.Length; i++)
+                                        buffer[5 + i] = messageBytes[i];
+                                    client.GetStream().WriteAsync(buffer, 0, buffer.Length);
+                                }
+                                catch { }
+                            }
+                        }
+                        catch (Exception ex) { Log.WriteLine(ex); }
+                    }
                 }
-                catch (Exception ex){ Log.WriteLine(ex); }
             }).Start();
         }
         private void TimerCallback(object sender, EventArgs e)
@@ -950,6 +1016,14 @@ namespace CSAuto
                                     Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
                                     steamAPIServer = null;
                                 }
+                            }
+                            if (server == null)
+                            {
+                                clients = new List<TcpClient>();
+                                lastKeepAlive = new Dictionary<TcpClient, DateTime>();
+                                server = new TcpListener(IPAddress.Any, int.Parse(Properties.Settings.Default.serverPort));
+                                serverThread = new Thread(ServerThread);
+                                serverThread.Start();
                             }
                             //ConDump.StartListening();
                             //ConDump.OnChange += ConDump_OnChange;
@@ -1040,7 +1114,7 @@ namespace CSAuto
             {
                 Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
                 if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                    SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_gamecrash"),command:Commands.Crashed);
+                    SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_gamecrash"),command:Commands.Crashed);
                 if (windowSource.Handle != IntPtr.Zero)
                     NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
                 if (RPCClient.IsInitialized)
@@ -1057,7 +1131,7 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| Stopping GSI Server");
                     GameStateListener.StopGSIServer();
                     //NetConCloseConnection();
-                    SendMessageToServer("", onlyServer: true,command:Commands.Clear);
+                    SendMessageToClients("", onlyClients: true,command:Commands.Clear);
                 }
                 if (steamAPIServer != null)
                 {
@@ -1075,6 +1149,12 @@ namespace CSAuto
                 }
                 if (Properties.Settings.Default.autoCloseCSAuto)
                     Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+
+                clients?.Clear();
+                lastKeepAlive?.Clear();
+                server = null;
+                Log.WriteLine("|MainApp.cs| Stopped server");
+                guiWindow?.ClientsListBox?.Items.Clear();
                 csProcess = null;
                 inLobby = false;
                 csRunning = false;
@@ -1221,7 +1301,7 @@ namespace CSAuto
                                 if (CheckIfAccepted(bitmap, Y))
                                 {
                                     if (Properties.Settings.Default.acceptedNotification)
-                                        SendMessageToServer(Languages.Strings.ResourceManager.GetString("server_acceptmatch"),command:Commands.AcceptedMatch);
+                                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_acceptmatch"),command:Commands.AcceptedMatch);
                                     acceptedGame = true;
                                     if (acceptButtonTimer.IsEnabled)
                                         acceptButtonTimer.Stop();
@@ -1349,6 +1429,8 @@ namespace CSAuto
             Properties.Settings.Default.Save();
             current.MoveSettings();
 
+            server = null;
+
             if (current.IsPortable)
             {
                 File.WriteAllText(Log.WorkPath+"\\.conf", current.settings.ToString(), Encoding.UTF8);
@@ -1368,17 +1450,20 @@ namespace CSAuto
                 duplicates.ToList().ForEach(dupl => dupl.Kill());
             }
         }
-        string GetLocalIPAddress()
+        public string GetLocalIPAddress()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            if (localIp == null)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
                 {
-                    return ip.ToString();
+                    socket.Connect("8.8.8.8", 65530);
+                    IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                    localIp = endPoint.Address.ToString();
                 }
+                return localIp;
             }
-            throw new Exception(Languages.Strings.ResourceManager.GetString("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
+            return localIp;
+            //throw new Exception(Languages.Strings.ResourceManager.GetString("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -1394,7 +1479,7 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification && !current.Restarted)
-                    SendMessageToServer(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(),FULL_VER),command:Commands.Connected);
+                    SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(),FULL_VER),command:Commands.Connected);
                 if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)

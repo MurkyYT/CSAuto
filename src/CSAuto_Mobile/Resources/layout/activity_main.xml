@@ -21,19 +21,32 @@
             android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_above="@+id/start_timestamp_service_button"/>
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:textColor="#ff000000"
-        android:text="ip"
-        android:id="@+id/IpAdressText"
-        android:textStyle="bold"
-        android:textSize="25dp"
-        android:layout_gravity="left"
-        android:layout_marginLeft="15px"
-        tools:ignore="HardcodedText,HardcodedSize,HardcodedColor"
-            android:layout_toRightOf="@id/logButton"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textColor="#ff000000"
+            android:text="IP"
+            android:id="@+id/IpAdressText"
+            android:textStyle="bold"
+            android:textSize="11dp"
+            android:layout_gravity="left"
+            tools:ignore="HardcodedText,HardcodedSize,HardcodedColor"
+            android:layout_toRightOf="@id/logButton"
+            android:inputType="text" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textColor="#ff000000"
+            android:text="Port"
+            android:id="@+id/PortText"
+            android:textStyle="bold"
+            android:textSize="11dp"
+            android:layout_gravity="left"
+            android:layout_toRightOf="@+id/IpAdressText"
+            tools:ignore="HardcodedText,HardcodedSize,HardcodedColor"
+            android:inputType="number" />
         <Button
             android:id="@+id/start_timestamp_service_button"
             android:layout_width="match_parent"

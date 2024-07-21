@@ -4,6 +4,7 @@ using Android.Net.Wifi;
 using Android.OS;
 using Android.Preferences;
 using Android.Systems;
+using Commands = CSAuto.Shared.NetworkTypes.Commands;
 using Android.Util;
 using AndroidX.Core.App;
 using Java.Lang;
@@ -14,29 +15,18 @@ using System.Net.Sockets;
 using System.Text;
 using Exception = System.Exception;
 using Thread = Java.Lang.Thread;
+using static Android.Provider.Telephony.Mms;
 
 namespace CSAuto_Mobile
 {
 	[Service]
     public class ServerService : Service
     {
-        enum Commands
-        {
-            None,
-            AcceptedMatch,
-            LoadedOnMap,
-            LoadedInLobby,
-            Connected,
-            Crashed,
-            Bomb,
-            Clear,
-            GameState
-        }
         static readonly string? TAG = typeof(ServerService).FullName;
 
         bool isStarted;
         IPAddress? myIpAddress;
-        TcpListener? listener;
+        TcpClient? client;
         Thread? thread;
         int lastRound = -1;
         public override void OnCreate()
@@ -60,7 +50,7 @@ namespace CSAuto_Mobile
                 {
                     Log.Info(TAG, "OnStartCommand: The service is starting.");
                     CreateNotificationChannel();
-                    RegisterForegroundService();
+                    
                     thread = new Thread(StartServer);
                     thread.Start();
                     isStarted = true;
@@ -71,7 +61,7 @@ namespace CSAuto_Mobile
             else if (intent.Action.Equals(Constants.ACTION_STOP_SERVICE))
             {
                 Log.Info(TAG, "OnStartCommand: The service is stopping.");
-                StopServer();
+                StopClient();
                 StopForeground(StopForegroundFlags.Remove);
                 StopSelf();
                 thread?.Join();
@@ -118,9 +108,10 @@ namespace CSAuto_Mobile
             {
                 if (myIpAddress != null)
                 {
-                    IPEndPoint? ipEndPoint = new IPEndPoint(CastIp(myIpAddress.GetAddressBytes()), 11_000);
-                    listener = new TcpListener(ipEndPoint);
-                    listener.Start();
+                    client = new TcpClient();
+                    IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(Globals.IP.Trim()), int.Parse(Globals.PORT));
+                    client.Connect(endPoint);
+                    RegisterForegroundService();
                     while (true)
                     {
                         if (isStarted && MainActivity.Instance.stopServiceButton != null && !MainActivity.Instance.stopServiceButton.Enabled)
@@ -129,8 +120,7 @@ namespace CSAuto_Mobile
                             MainActivity.Instance.startServiceButton.Enabled = false;
                         }
                         // Receive message.
-                        var sender = listener.AcceptTcpClient();
-                        Stream stream = sender.GetStream();
+                        Stream stream = client.GetStream();
                         while (!stream.IsDataAvailable()) { }
                         byte[] buf = new byte[4];
                         stream.ReadExactly(buf, 0, 4);
@@ -140,16 +130,16 @@ namespace CSAuto_Mobile
                         string message = CleanMessage(buf);
                         Commands command = (Commands)buf[0];
                         Log.Debug(TAG, $"Received message: '{message}', command: '{command}'");
-                        if (MainActivity.Active)
-                        {
-                            MainActivity.Instance.RunOnUiThread(() =>
-                            {
-                                new Runnable(() =>
-                                {
-                                    MainActivity.Instance.outputText.Text += $"[{DateTime.Now:HH:mm:ss}] Received message: '{message}', command: '{command}'\n";
-                                }).Run();
-                            });
-                        }
+                        //if (MainActivity.Active)
+                        //{
+                        //    MainActivity.Instance.RunOnUiThread(() =>
+                        //    {
+                        //        new Runnable(() =>
+                        //        {
+                        //            MainActivity.Instance.outputText.Text += $"[{DateTime.Now:HH:mm:ss}] Received message: '{message}', command: '{command}'\n";
+                        //        }).Run();
+                        //    });
+                        //}
                         switch (command)
                         {
                             case Commands.AcceptedMatch:
@@ -231,13 +221,13 @@ namespace CSAuto_Mobile
                 }
                 else
                 {
-                    Toast.MakeText(Application.Context, "Couldn't start server, ip is null",ToastLength.Short).Show();
+                    Toast.MakeText(Application.Context, "Couldn't start client, ip is null",ToastLength.Short).Show();
                 }
             }
             catch (SocketException ex)
             {
                 ShowNotification("Socket exception", $"{ex.Message}", Constants.SOCKET_EXCEPTION_NOTIFICATION_ID, Constants.SERVICE_CHANNEL_ID);
-                listener.Stop();
+                client.Close();
             }
             catch (ObjectDisposedException ex)
             {
@@ -290,7 +280,7 @@ namespace CSAuto_Mobile
             Log.Info(TAG, "OnDestroy: The started service is shutting down.");
 
             // Stop the handler.
-            StopServer();
+            StopClient();
 
             // Remove the notification from the status bar.
             NotificationManager? notificationManager = (NotificationManager?)GetSystemService(NotificationService);
@@ -300,11 +290,11 @@ namespace CSAuto_Mobile
             base.OnDestroy();
         }
 
-        private void StopServer()
+        private void StopClient()
         {
             try
             {
-                listener?.Stop();
+                client?.Close();
                 thread = null;
             }
             catch { }
@@ -378,7 +368,7 @@ namespace CSAuto_Mobile
         {
             var notification = new NotificationCompat.Builder(this, Constants.SERVICE_CHANNEL_ID)
                 .SetContentTitle(Resources.GetString(Resource.String.app_name))
-                .SetContentText($"Server running on ip {myIpAddress}")
+                .SetContentText($"Client connected to {Globals.IP}:{Globals.PORT}")
                 .SetSmallIcon(Resource.Mipmap.ic_launcher)
                 .SetContentIntent(BuildIntentToShowMainActivity())
                 .SetOngoing(true)

@@ -24,6 +24,8 @@ namespace CSAuto_Mobile
         public const int DISPOSED_EXCEPTION_NOTIFICATION_ID = 6;
         public const int BOMB_NOTIFICATION_ID = 7;
         public const int CRASHED_NOTIFICATION_ID = 8;
+        public const string PORT_KEY = "SERVER_PORT";
+        public const string IP_KEY = "SERVER_IP";
         public const string SERVICE_STARTED_KEY = "has_service_been_started";
         public const string BROADCAST_MESSAGE_KEY = "broadcast_message";
         public const string NOTIFICATION_BROADCAST_ACTION = "CSAuto.Notification.Action";

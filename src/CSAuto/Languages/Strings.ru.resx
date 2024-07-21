@@ -309,7 +309,7 @@
     <value>Пожалуйста, введите свой идентификатор чата Telegram, воспользуйтесь FAQ если вы не знаете как это сделать</value>
   </data>
   <data name="menu_mobileappenabled" xml:space="preserve">
-    <value>Мобильное приложение включено</value>
+    <value>Уведомления мобильного приложения включены</value>
   </data>
   <data name="error_telegrammessage" xml:space="preserve">
     <value>Произошла ошибка при отправке сообщения Telegram, убедитесь, что ваш идентификатор чата указан правильно</value>
@@ -673,5 +673,11 @@
   </data>
   <data name="tooltip_discord" xml:space="preserve">
     <value>Присоединяйтесь к серверу Discord</value>
+  </data>
+  <data name="title_serverport" xml:space="preserve">
+    <value>Порт: </value>
+  </data>
+  <data name="title_serverclients" xml:space="preserve">
+    <value>Клиенты:</value>
   </data>
 </root>

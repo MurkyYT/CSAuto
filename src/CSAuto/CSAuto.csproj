@@ -127,6 +127,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>DebugSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Shared\NetworkTypes.cs" />
     <Compile Include="StreamString.cs" />
     <Compile Include="Utils\CSGO\ConDump.cs" />
     <Compile Include="Utils\DXGICapture.cs" />

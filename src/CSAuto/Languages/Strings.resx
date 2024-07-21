@@ -309,7 +309,7 @@ Try to download the latest version from github, if it didn't help create a bug r
     <value>Please enter your Telegram chat id, use the faq if you dont know how</value>
   </data>
   <data name="menu_mobileappenabled" xml:space="preserve">
-    <value>Mobile App Enabled</value>
+    <value>Mobile App Notifications Enabled</value>
   </data>
   <data name="error_telegrammessage" xml:space="preserve">
     <value>There was an error when sending the Telegram message, make sure your chat id is correct</value>
@@ -673,5 +673,14 @@ Try to download the latest version from github, if it didn't help create a bug r
   </data>
   <data name="tooltip_discord" xml:space="preserve">
     <value>Join the Discord server</value>
+  </data>
+  <data name="menu_server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="title_serverport" xml:space="preserve">
+    <value>Port: </value>
+  </data>
+  <data name="title_serverclients" xml:space="preserve">
+    <value>Clients:</value>
   </data>
 </root>

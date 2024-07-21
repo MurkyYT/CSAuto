@@ -20,7 +20,8 @@ namespace CSAuto_Mobile
         public required Button? startServiceButton;
         public required Button? logButton;
         public required TextView? outputText;
-        public required TextView? ipAdressText;
+        public required EditText? ipAdressText;
+        public required EditText? portText;
         public required TextView? ctScoreText;
         public required TextView? tScoreText;
         public required TextView? roundStateText;
@@ -49,7 +50,8 @@ namespace CSAuto_Mobile
             WifiManager? wifiManager = (WifiManager?)Application.Context.GetSystemService(WifiService);
 
             byte[]? ip = GetMyIpAddress();
-            ipAdressText = FindViewById<TextView>(Resource.Id.IpAdressText);
+            ipAdressText = FindViewById<EditText>(Resource.Id.IpAdressText);
+            portText = FindViewById<EditText>(Resource.Id.PortText);
             outputText = FindViewById<TextView>(Resource.Id.OutputText);
             logGrid = FindViewById<GridLayout>(Resource.Id.LogGrid);
             inGameGrid = FindViewById<GridLayout>(Resource.Id.inGameGrid);
@@ -66,8 +68,8 @@ namespace CSAuto_Mobile
             scrollView = FindViewById<ScrollView>(Resource.Id.outputScrollView);
             FindViewById(Resource.Id.ctScoreLayout).SetBackgroundDrawable(GetRoundedDrawable(140, 157, 165));
             FindViewById(Resource.Id.tScoreLayout).SetBackgroundDrawable(GetRoundedDrawable(203, 186, 125));
-            if (ip != null)
-                ipAdressText.Text = $"Your IP Address: {new IPAddress(ip)}";
+            portText.Text = AppPreferences.ServerPort;
+            ipAdressText.Text = AppPreferences.ServerIp;
             Instance = this;
             startServiceIntent = new Intent(this, typeof(ServerService));
             startServiceIntent.SetAction(Constants.ACTION_START_SERVICE);
@@ -167,9 +169,13 @@ namespace CSAuto_Mobile
             Log.Info(TAG, "User requested that the service be started.");
             isStarted = true;
             stopServiceButton.Enabled = true;
+            Globals.IP = ipAdressText.Text.Replace(" ","");
+            Globals.PORT = portText.Text;
             Intent intent = new Intent();
             string? packageName = PackageName;
             PowerManager? pm = (PowerManager?)GetSystemService(PowerService);
+            AppPreferences.ServerIp = ipAdressText.Text;
+            AppPreferences.ServerPort = portText.Text;
             if (pm.IsIgnoringBatteryOptimizations(packageName))
                 Log.Info(TAG, "Already ignoring battery optimizations");
             else

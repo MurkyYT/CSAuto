@@ -45,6 +45,14 @@ namespace CSAuto
         public GUIWindow()
         {
             InitializeComponent();
+            if (main.clients != null)
+            {
+                lock (main.clients)
+                {
+                    foreach (var client in main.clients)
+                        ClientsListBox?.Items.Add(client.Client.RemoteEndPoint);
+                }
+            }
             if(main.current.IsWindows11)
             {
                 IntPtr hWnd = new WindowInteropHelper(GetWindow(this)).EnsureHandle();
@@ -269,6 +277,7 @@ namespace CSAuto
                             $"CS:GO LaunchOptions: \"{launchOpt}\"";
                     }
                     catch { }
+                    ServerIP.Text = $"IP: {main.GetLocalIPAddress()}";
                     GenerateLanguages();
                     string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                     if (File.Exists(finalPath))

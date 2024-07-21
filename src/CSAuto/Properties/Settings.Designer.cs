@@ -476,5 +476,17 @@ namespace CSAuto.Properties {
                 this["autoBuyEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("21724")]
+        public string serverPort {
+            get {
+                return ((string)(this["serverPort"]));
+            }
+            set {
+                this["serverPort"] = value;
+            }
+        }
     }
 }

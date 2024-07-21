@@ -1323,7 +1323,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mobile App Enabled.
+        ///   Looks up a localized string similar to Mobile App Notifications Enabled.
         /// </summary>
         public static string menu_mobileappenabled {
             get {
@@ -1436,6 +1436,15 @@ namespace CSAuto.Languages {
         public static string menu_sendacceptbutton {
             get {
                 return ResourceManager.GetString("menu_sendacceptbutton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server.
+        /// </summary>
+        public static string menu_server {
+            get {
+                return ResourceManager.GetString("menu_server", resourceCulture);
             }
         }
         
@@ -1661,6 +1670,24 @@ namespace CSAuto.Languages {
         public static string title_restartneeded {
             get {
                 return ResourceManager.GetString("title_restartneeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clients:.
+        /// </summary>
+        public static string title_serverclients {
+            get {
+                return ResourceManager.GetString("title_serverclients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port: .
+        /// </summary>
+        public static string title_serverport {
+            get {
+                return ResourceManager.GetString("title_serverport", resourceCulture);
             }
         }
         

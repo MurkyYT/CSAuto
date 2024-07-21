@@ -135,5 +135,8 @@
     <Setting Name="autoBuyEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="serverPort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">21724</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
