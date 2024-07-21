@@ -66,7 +66,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 
   1. Make sure you have installed the app on your phone
   2. Make sure you are connected to the same network
-  3. In the mobile app dekstop app go to the `Server` category and remember the `IP` and `Port`
+  3. In the dekstop app go to the `Server` category and remember the `IP` and `Port`
   4. Go to the desktop app, in the `Settings -> Phone notifications` category and make sure it is enabled
   5. Go to the mobile app and enter the `IP` and `Port` you saw in the `Server` category
   6. Launch cs and try to connect to the server in the mobile app
