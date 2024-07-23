@@ -1147,8 +1147,6 @@ namespace CSAuto
                     DXGIcapture.DeInit();
                     Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                 }
-                if (Properties.Settings.Default.autoCloseCSAuto)
-                    Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
 
                 clients?.Clear();
                 lastKeepAlive?.Clear();
@@ -1159,6 +1157,9 @@ namespace CSAuto
                 csProcess = null;
                 inLobby = false;
                 csRunning = false;
+
+                if (Properties.Settings.Default.autoCloseCSAuto)
+                    Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
                 //ConDump.StopListening();
                 //ConDump.OnChange -= ConDump_OnChange;
                 NativeMethods.OptimizeMemory();
