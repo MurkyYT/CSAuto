@@ -13,7 +13,7 @@ namespace Murky.Utils
     /// My own question as reference: https://stackoverflow.com/questions/35138778/sending-keys-to-a-directx-game
     /// http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
     /// </summary>
-    public class Keyboard
+    public class Input
     {
         [DllImport("USER32.dll")]
         public static extern short GetKeyState(VirtualKeyStates nVirtKey);
@@ -228,7 +228,7 @@ namespace Murky.Utils
         }
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint SendInput(uint nInputs, Input[] pInputs, int cbSize);
+        private static extern uint SendInput(uint nInputs, NativeInput[] pInputs, int cbSize);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetMessageExtraInfo();
@@ -389,7 +389,7 @@ namespace Murky.Utils
 
         public static void ClickLeftMouse(int dx,int dy)
         {
-            Input[] mi = new Input[2];
+            NativeInput[] mi = new NativeInput[2];
             mi[0].type = (int)InputType.Mouse;
             mi[0].u = new InputUnion
             {
@@ -417,7 +417,7 @@ namespace Murky.Utils
         }
         public static void LMouseUp(int dx, int dy)
         {
-            Input[] mi = new Input[1];
+            NativeInput[] mi = new NativeInput[1];
             mi[0].type = (int)InputType.Mouse;
             mi[0].u = new InputUnion
             {
@@ -434,7 +434,7 @@ namespace Murky.Utils
         }
         public static void LMouseDown(int dx, int dy)
         {
-            Input[] mi = new Input[1];
+            NativeInput[] mi = new NativeInput[1];
             mi[0].type = (int)InputType.Mouse;
             mi[0].u = new InputUnion
             {
@@ -469,9 +469,9 @@ namespace Murky.Utils
                 flagtosend = (uint)(KeyEventF.KeyDown | KeyEventF.Scancode);
             }
 
-            Input[] inputs =
+            NativeInput[] inputs =
             {
-            new Input
+            new NativeInput
             {
                 type = (int) inputType,
                 u = new InputUnion
@@ -487,7 +487,7 @@ namespace Murky.Utils
             }
         };
 
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(NativeInput)));
         }
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void keybd_event(uint bVk, uint bScan, uint dwFlags, uint dwExtraInfo);
@@ -515,9 +515,9 @@ namespace Murky.Utils
                 flagtosend = (uint)(KeyEventF.KeyDown | KeyEventF.Scancode);
             }
 
-            Input[] inputs =
+            NativeInput[] inputs =
             {
-            new Input
+            new NativeInput
             {
                 type = (int) inputType,
                 u = new InputUnion
@@ -533,10 +533,10 @@ namespace Murky.Utils
             }
         };
 
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(NativeInput)));
         }
 
-        public struct Input
+        public struct NativeInput
         {
             public int type;
             public InputUnion u;

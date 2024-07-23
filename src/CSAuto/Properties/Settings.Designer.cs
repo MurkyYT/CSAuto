@@ -488,5 +488,17 @@ namespace CSAuto.Properties {
                 this["serverPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool oldMouseInput {
+            get {
+                return ((bool)(this["oldMouseInput"]));
+            }
+            set {
+                this["oldMouseInput"] = value;
+            }
+        }
     }
 }

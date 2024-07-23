@@ -43,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "12";
+        const string DEBUG_REVISION = "13";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -340,11 +340,11 @@ namespace CSAuto
                         hCursorOriginal = NativeMethods.GetCursorHandle();
                     else
                     {
-                        PressKey(Keyboard.DirectXKeyStrokes.DIK_ESCAPE);
+                        PressKey(Input.DirectXKeyStrokes.DIK_ESCAPE);
                         Thread.Sleep(100);
                         hCursorOriginal = NativeMethods.GetCursorHandle();
                         Thread.Sleep(100);
-                        PressKey(Keyboard.DirectXKeyStrokes.DIK_ESCAPE);
+                        PressKey(Input.DirectXKeyStrokes.DIK_ESCAPE);
                     }
                     Log.WriteLine($"|MainApp.cs| hCurosr when in CS -> {hCursorOriginal}");
                 }
@@ -495,25 +495,25 @@ namespace CSAuto
                 List<BuyItem> items = current.buyMenu.GetItemsToBuy(gameState,MAX_ARMOR_AMOUNT_TO_REBUY);
                 if (items.Count != 0 && !BuyMenuOpen())
                 {
-                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    PressKey(Input.DirectXKeyStrokes.DIK_B);
                     Thread.Sleep(100);
                 }
                 foreach (BuyItem item in items)
                 {
                     Log.WriteLine($"|MainApp.cs| Auto buying {item.Name}");
-                    PressKeys(new Keyboard.DirectXKeyStrokes[]
+                    PressKeys(new Input.DirectXKeyStrokes[]
                     {
                         //Category key
-                        (Keyboard.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
+                        (Input.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
                         //Weapon key
-                        (Keyboard.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
+                        (Input.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
                     });
                     //Have to press b after buying grenades because the buy menu stays at the grenades category
                     if (item.IsGrenade())
-                        PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                        PressKey(Input.DirectXKeyStrokes.DIK_B);
                 }
                 if (items.Count != 0)
-                    PressKey(Keyboard.DirectXKeyStrokes.DIK_B);
+                    PressKey(Input.DirectXKeyStrokes.DIK_B);
             }
         }
 
@@ -1152,6 +1152,7 @@ namespace CSAuto
 
                 clients?.Clear();
                 lastKeepAlive?.Clear();
+                server?.Stop();
                 server = null;
                 Log.WriteLine("|MainApp.cs| Stopped server");
                 guiWindow?.ClientsListBox?.Items.Clear();
@@ -1165,7 +1166,7 @@ namespace CSAuto
         }
         private void TryToAutoReload()
         {
-            bool isMousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
+            bool isMousePressed = (Input.GetKeyState(Input.VirtualKeyStates.VK_LBUTTON) < 0);
             if (!isMousePressed || weapon == null)
                 return;
             try
@@ -1175,13 +1176,8 @@ namespace CSAuto
                 string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
-                    NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
-                        System.Windows.Forms.Cursor.Position.X,
-                        System.Windows.Forms.Cursor.Position.Y,
-                        0, 0);
-                    NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONUP, 0, 
-                        NativeMethods.MakeLPARAM(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
-                    Keyboard.LMouseUp(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
+                    
+                    LeftMouseUp(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
                     //netCon.SendCommand("+reload");
                     //netCon.SendCommand("-attack");
                     Log.WriteLine("|MainApp.cs| Auto reloading");
@@ -1198,13 +1194,7 @@ namespace CSAuto
                         //{
                         //netCon.SendCommand("+attack");
 
-                        NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
-                            System.Windows.Forms.Cursor.Position.X,
-                            System.Windows.Forms.Cursor.Position.Y,
-                            0, 0);
-                        NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONDOWN, 0,
-                        NativeMethods.MakeLPARAM(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
-                        Keyboard.LMouseDown(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
+                        LeftMouseDown(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
                         Log.WriteLine($"|MainApp.cs| Continue spraying ({weaponName} - {weaponType})");
                         //}
                     }
@@ -1213,12 +1203,47 @@ namespace CSAuto
             }
             catch { return; }
         }
-        void PressKey(Keyboard.DirectXKeyStrokes key)
+
+        private void LeftMouseDown(int x, int y)
         {
-            Keyboard.SendKey(key, false, Keyboard.InputType.Keyboard);
-            Keyboard.SendKey(key, true, Keyboard.InputType.Keyboard);
+            if (Properties.Settings.Default.oldMouseInput)
+            {
+                Log.WriteLine("|MainApp.cs| Sending mouse down with mouse_event");
+                NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
+                            x,
+                            y,
+                            0, 0);
+            }
+            else
+            {
+                Log.WriteLine("|MainApp.cs| Sending mouse down with SendInput");
+                Input.LMouseDown(x, y);
+            }
         }
-        void PressKeys(Keyboard.DirectXKeyStrokes[] keys)
+
+        private void LeftMouseUp(int x, int y)
+        {
+            if (Properties.Settings.Default.oldMouseInput)
+            {
+                Log.WriteLine("|MainApp.cs| Sending mouse up with mouse_event");
+                NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
+                        x,
+                        y,
+                        0, 0);
+            }
+            else
+            {
+                Log.WriteLine("|MainApp.cs| Sending mouse up with SendInput");
+                Input.LMouseUp(x, y);
+            }
+        }
+
+        void PressKey(Input.DirectXKeyStrokes key)
+        {
+            Input.SendKey(key, false, Input.InputType.Keyboard);
+            Input.SendKey(key, true, Input.InputType.Keyboard);
+        }
+        void PressKeys(Input.DirectXKeyStrokes[] keys)
         {
             for (int i = 0; i < keys.Length; i++)
             {
@@ -1237,11 +1262,8 @@ namespace CSAuto
         public void LeftMouseClick(int xpos, int ypos)
         {
             NativeMethods.SetCursorPos(xpos, ypos);
-            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN | NativeMethods.MOUSEEVENTF_ABSOLUTE, xpos, ypos, 0, 0);
-            NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP | NativeMethods.MOUSEEVENTF_ABSOLUTE, xpos, ypos, 0, 0);
-            Keyboard.ClickLeftMouse(xpos, ypos);
-            NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONDOWN, 0, NativeMethods.MakeLPARAM(xpos, ypos));
-            NativeMethods.SendMessage((int)csProcess.MainWindowHandle, NativeMethods.WM_LBUTTONUP, 0, NativeMethods.MakeLPARAM(xpos, ypos));
+            LeftMouseDown(xpos, ypos);
+            LeftMouseUp(xpos, ypos);
             Log.WriteLine($"|MainApp.cs| Left clicked at X:{xpos} Y:{ypos}");
         }
         private async Task AutoAcceptMatchAsync()
@@ -1429,6 +1451,7 @@ namespace CSAuto
             Properties.Settings.Default.Save();
             current.MoveSettings();
 
+            server?.Stop();
             server = null;
 
             if (current.IsPortable)

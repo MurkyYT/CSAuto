@@ -457,6 +457,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use old mouse input technique.
+        /// </summary>
+        public static string ckbox_oldmouseinput {
+            get {
+                return ResourceManager.GetString("ckbox_oldmouseinput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use old screen capture technique.
         /// </summary>
         public static string ckbox_oldscreencapture {

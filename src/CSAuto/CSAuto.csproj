@@ -169,7 +169,7 @@
     <Compile Include="GUIWindow.xaml.cs">
       <DependentUpon>GUIWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\Keyboard.cs" />
+    <Compile Include="Utils\Input.cs" />
     <Compile Include="Utils\Log.cs" />
     <Compile Include="MainApp.xaml.cs">
       <DependentUpon>MainApp.xaml</DependentUpon>

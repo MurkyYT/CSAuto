@@ -17,6 +17,8 @@ namespace CSAuto
     public static class NativeMethods
     {
         [DllImport("user32.dll")]
+        public static extern int PostMessage(int hWnd, uint Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
         public static extern int SendMessage(int hWnd, uint Msg, int wParam, int lParam);
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]

@@ -683,4 +683,7 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="title_serverclients" xml:space="preserve">
     <value>Clients:</value>
   </data>
+  <data name="ckbox_oldmouseinput" xml:space="preserve">
+    <value>Use old mouse input technique</value>
+  </data>
 </root>

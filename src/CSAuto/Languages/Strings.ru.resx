@@ -683,4 +683,7 @@
   <data name="server_timeleft" xml:space="preserve">
     <value>До взрыва осталось:</value>
   </data>
+  <data name="ckbox_oldmouseinput" xml:space="preserve">
+    <value>Использовать старую технику ввода мыши</value>
+  </data>
 </root>
