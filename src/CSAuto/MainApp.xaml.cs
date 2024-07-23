@@ -1114,7 +1114,7 @@ namespace CSAuto
             {
                 Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
                 if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                    SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_gamecrash"),command:Commands.Crashed);
+                    SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_gamecrash"), command: Commands.Crashed);
                 if (windowSource.Handle != IntPtr.Zero)
                     NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
                 if (RPCClient.IsInitialized)
@@ -1131,7 +1131,7 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| Stopping GSI Server");
                     GameStateListener.StopGSIServer();
                     //NetConCloseConnection();
-                    SendMessageToClients("", onlyClients: true,command:Commands.Clear);
+                    SendMessageToClients("", onlyClients: true, command: Commands.Clear);
                 }
                 if (steamAPIServer != null)
                 {
@@ -1155,7 +1155,7 @@ namespace CSAuto
                 server?.Stop();
                 server = null;
                 Log.WriteLine("|MainApp.cs| Stopped server");
-                guiWindow?.ClientsListBox?.Items.Clear();
+                guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Clear(); });
                 csProcess = null;
                 inLobby = false;
                 csRunning = false;
