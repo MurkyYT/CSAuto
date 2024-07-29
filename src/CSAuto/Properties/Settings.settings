@@ -111,9 +111,6 @@
     <Setting Name="inGameState" Type="System.String" Scope="User">
       <Value Profile="(Default)">{TeamScore} [{MyTeam}] ({RoundState}) {EnemyScore} [{EnemyTeam}]</Value>
     </Setting>
-    <Setting Name="oldAutoBuy" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="sendAcceptImage" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

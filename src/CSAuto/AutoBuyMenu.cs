@@ -93,10 +93,10 @@ namespace CSAuto
         // Mid-Tier - 5
         // Rifles - 5
         // Grenades - 5
-        private readonly List<BuyItem> ctItems = new List<BuyItem>();
-        private readonly List<BuyItem> tItems = new List<BuyItem>();
-        private readonly List<CustomBuyItem> ctCustomItems = new List<CustomBuyItem>();
-        private readonly List<CustomBuyItem> tCustomItems = new List<CustomBuyItem>();
+        private List<BuyItem> ctItems = new List<BuyItem>();
+        private List<BuyItem> tItems = new List<BuyItem>();
+        private List<CustomBuyItem> ctCustomItems = new List<CustomBuyItem>();
+        private List<CustomBuyItem> tCustomItems = new List<CustomBuyItem>();
         public enum NAMES {
             None,
             KevlarVest, 
@@ -422,34 +422,14 @@ namespace CSAuto
         {
             InitBuyItems();
             if (settings["CTCustomAutoBuyConfig"] != null)
-            {
-                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["CTCustomAutoBuyConfig"]);
-                CustomBuyItem[] temp = ar.ToObject<CustomBuyItem[]>();
-                for (int i = 0; i < temp.Length && i < ctCustomItems.Count; i++)
-                    ctCustomItems[i] = temp[i];
-            }
+                ctCustomItems = JsonConvert.DeserializeObject<List<CustomBuyItem>>(settings["CTCustomAutoBuyConfig"]);
             if (settings["CTAutoBuyConfig"] != null)
-            {
-                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["CTAutoBuyConfig"]);
-                BuyItem[] temp = ar.ToObject<BuyItem[]>();
-                for (int i = 0; i < temp.Length && i < ctItems.Count; i++)
-                    ctItems[i] = temp[i];
-            }
+                ctItems = JsonConvert.DeserializeObject<List<BuyItem>>(settings["CTAutoBuyConfig"]);
             
             if (settings["TAutoBuyConfig"] != null)
-            {
-                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["TAutoBuyConfig"]);
-                BuyItem[] temp = ar.ToObject<BuyItem[]>();
-                for (int i = 0; i < temp.Length && i < tItems.Count; i++)
-                    tItems[i] = temp[i];
-            }
+                tItems = JsonConvert.DeserializeObject<List<BuyItem>>(settings["TAutoBuyConfig"]);
             if (settings["TCustomAutoBuyConfig"] != null)
-            {
-                Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings["TCustomAutoBuyConfig"]);
-                CustomBuyItem[] temp = ar.ToObject<CustomBuyItem[]>();
-                for (int i = 0; i < temp.Length && i < tCustomItems.Count; i++)
-                    tCustomItems[i] = temp[i];
-            }
+                tCustomItems = JsonConvert.DeserializeObject<List<CustomBuyItem>>(settings["TCustomAutoBuyConfig"]);
         }
         public static BuyItem[] GetEnabled(RegistrySettings settings,bool isCt)
         {
