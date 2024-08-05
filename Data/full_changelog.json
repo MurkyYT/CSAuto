@@ -64,7 +64,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 14819113,
-                "download_count": 0,
+                "download_count": 10,
                 "created_at": "2024-05-24T12:17:20Z",
                 "updated_at": "2024-05-24T12:17:23Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.1/CSAuto_Android.apk"
@@ -98,7 +98,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 3386010,
-                "download_count": 0,
+                "download_count": 26,
                 "created_at": "2024-05-24T12:17:17Z",
                 "updated_at": "2024-05-24T12:17:19Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.1/CSAuto_Installer.exe"
@@ -132,7 +132,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 2710882,
-                "download_count": 0,
+                "download_count": 262,
                 "created_at": "2024-05-24T12:17:19Z",
                 "updated_at": "2024-05-24T12:17:20Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.1/CSAuto_Portable.zip"
@@ -140,7 +140,7 @@
         ],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.1.1",
         "zipball_url": "https://api.github.com/repos/MurkyYT/CSAuto/zipball/2.1.1",
-        "body": "### Version 2.1.1 changelog\r\n- Added global toggle for auto buy\r\n- Added more in depth debug settings in the debug category (they are resetted every startup)\r\n- Added newer style to default message boxes\r\n- Corrected `M4A4` and `Incendiary Grenade` prices according to the [24.5.24 update](https://steamcommunity.com/games/CSGO/announcements/detail/4177730135016140041)\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.1.0...2.1.1"
+        "body": "### Version 2.1.1 changelog\r\n- Added global toggle for auto buy\r\n- Added more in depth debug settings in the debug category (they are resetted every startup)\r\n- Added newer style to default message boxes\r\n- Corrected `M4A4` and `Incendiary Grenade` prices according to the [24.5.24 update](https://steamcommunity.com/games/CSGO/announcements/detail/4177730135016140041)\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.1.0...2.1.1\n\n\ud83d\udee1 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:\n  * [`CSAuto_Android.apk`](https://www.virustotal.com/gui/file-analysis/NDQ3YzhhNDYyNDRiZGQ5Yjg1MmI0MGY3ZjQ2YzhkODg6MTcxNjU1MzEwMg==/detection)\n  * [`CSAuto_Installer.exe`](https://www.virustotal.com/gui/file-analysis/ZjliOWFiOGI3ZTQzNzM4NTI5OGM1Yjg0MDc0YmQ1NTY6MTcxNjU1MzEwNw==/detection)\n  * [`CSAuto_Portable.zip`](https://www.virustotal.com/gui/file-analysis/NjI2YTg0ZDY5MmRiYWEwY2E5OTViNThkZGVhNjYxMzQ6MTcxNjU1MzExMQ==/detection)"
     },
     {
         "filtered_body": "### Version 2.1.0 changelog\r\n- Changed the title, it is now centered and shows `CSAuto` in bold with the version\r\n- Added new launch option, `--log`, enabling logging, regardless of whether it is enabled in the settings, doesn't change the settings\r\n- Small fix with spotify process finding\r\n- Changes to russian translation (`\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438` -> `\u042d\u043a\u0441\u043f\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438`)\r\n- Settings importing now shows the gui window only if it was open before\r\n- Languages now interpolates '\\n' correctly\r\n- Languages are now stored as resources, fixes gui window not always showing text\r\n- Fixed a bug when entering debug category, log will always scroll down\r\n- Added new automation feature, `CSAuto` can try to focus on cs window when game is found, only if enabled in settings\r\n- If `CSAuto` focused on cs window it can focus back to the original window\r\n- New launch option, `--cs`, launches CS together with `CSAuto`\r\n- `CSAuto` now tries to load workshop maps icons as well\r\n- `--language` now uses two letters to represent languages, e.g `en` or `ru`",
@@ -207,7 +207,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 14819113,
-                "download_count": 11,
+                "download_count": 12,
                 "created_at": "2024-03-26T18:52:08Z",
                 "updated_at": "2024-03-26T18:52:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.0/CSAuto_Android.apk"
@@ -241,7 +241,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 3384275,
-                "download_count": 19,
+                "download_count": 20,
                 "created_at": "2024-03-26T18:52:12Z",
                 "updated_at": "2024-03-26T18:52:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.0/CSAuto_Installer.exe"
@@ -275,7 +275,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 2708214,
-                "download_count": 147,
+                "download_count": 150,
                 "created_at": "2024-03-26T18:52:06Z",
                 "updated_at": "2024-03-26T18:52:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.0/CSAuto_Portable.zip"
@@ -350,7 +350,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 14819113,
-                "download_count": 12,
+                "download_count": 13,
                 "created_at": "2024-02-15T17:16:25Z",
                 "updated_at": "2024-02-15T17:16:29Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.9/CSAuto_Android.apk"
@@ -384,7 +384,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 3380220,
-                "download_count": 25,
+                "download_count": 26,
                 "created_at": "2024-02-15T17:16:29Z",
                 "updated_at": "2024-02-15T17:16:30Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.9/CSAuto_Installer.exe"
@@ -418,7 +418,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 2675586,
-                "download_count": 115,
+                "download_count": 116,
                 "created_at": "2024-02-15T17:16:23Z",
                 "updated_at": "2024-02-15T17:16:25Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.9/CSAuto_Portable.zip"
@@ -494,7 +494,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9730079,
-                "download_count": 4,
+                "download_count": 6,
                 "created_at": "2024-01-20T12:02:05Z",
                 "updated_at": "2024-01-20T12:02:09Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.8/CSAuto_Android.apk"
@@ -528,7 +528,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 3160674,
-                "download_count": 15,
+                "download_count": 16,
                 "created_at": "2024-01-20T12:02:09Z",
                 "updated_at": "2024-01-20T12:02:10Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.8/CSAuto_Installer.exe"
@@ -562,7 +562,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 2387816,
-                "download_count": 22,
+                "download_count": 24,
                 "created_at": "2024-01-20T12:02:10Z",
                 "updated_at": "2024-01-20T12:02:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.8/CSAuto_Portable.zip"
@@ -637,7 +637,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9730079,
-                "download_count": 12,
+                "download_count": 13,
                 "created_at": "2023-12-13T13:43:54Z",
                 "updated_at": "2023-12-13T13:43:58Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.7/CSAuto_Android.apk"
@@ -671,7 +671,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2557296,
-                "download_count": 15,
+                "download_count": 16,
                 "created_at": "2023-12-13T13:43:58Z",
                 "updated_at": "2023-12-13T13:43:59Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.7/CSAuto_Installer.exe"
@@ -705,7 +705,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1796883,
-                "download_count": 10,
+                "download_count": 11,
                 "created_at": "2023-12-13T13:43:59Z",
                 "updated_at": "2023-12-13T13:44:00Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.7/CSAuto_Portable.zip"
@@ -781,7 +781,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9730079,
-                "download_count": 21,
+                "download_count": 22,
                 "created_at": "2023-11-14T16:08:47Z",
                 "updated_at": "2023-11-14T16:08:51Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.6/CSAuto_Android.apk"
@@ -815,7 +815,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2560541,
-                "download_count": 20,
+                "download_count": 21,
                 "created_at": "2023-11-14T16:08:51Z",
                 "updated_at": "2023-11-14T16:08:52Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.6/CSAuto_Installer.exe"
@@ -849,7 +849,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1804487,
-                "download_count": 12,
+                "download_count": 13,
                 "created_at": "2023-11-14T16:08:52Z",
                 "updated_at": "2023-11-14T16:08:53Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.6/CSAuto_Portable.zip"
@@ -924,7 +924,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 6,
+                "download_count": 7,
                 "created_at": "2023-10-19T12:42:18Z",
                 "updated_at": "2023-10-19T12:42:20Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.5a/CSAuto_Android.apk"
@@ -958,7 +958,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2559505,
-                "download_count": 19,
+                "download_count": 20,
                 "created_at": "2023-10-19T12:42:16Z",
                 "updated_at": "2023-10-19T12:42:18Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.5a/CSAuto_Installer.exe"
@@ -992,7 +992,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1796055,
-                "download_count": 15,
+                "download_count": 16,
                 "created_at": "2023-10-19T12:42:14Z",
                 "updated_at": "2023-10-19T12:42:16Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.5a/CSAuto_Portable.zip"
@@ -1067,7 +1067,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-10-18T12:12:08Z",
                 "updated_at": "2023-10-18T12:12:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.5/CSAuto_Android.apk"
@@ -1101,7 +1101,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2559418,
-                "download_count": 6,
+                "download_count": 7,
                 "created_at": "2023-10-18T12:12:07Z",
                 "updated_at": "2023-10-18T12:12:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.5/CSAuto_Installer.exe"
@@ -1135,7 +1135,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1795980,
-                "download_count": 7,
+                "download_count": 8,
                 "created_at": "2023-10-18T12:12:05Z",
                 "updated_at": "2023-10-18T12:12:07Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.5/CSAuto_Portable.zip"
@@ -1210,7 +1210,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 7,
+                "download_count": 8,
                 "created_at": "2023-10-14T10:34:12Z",
                 "updated_at": "2023-10-14T10:34:15Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.4/CSAuto_Android.apk"
@@ -1244,7 +1244,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2560364,
-                "download_count": 10,
+                "download_count": 11,
                 "created_at": "2023-10-14T10:34:15Z",
                 "updated_at": "2023-10-14T10:34:16Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.4/CSAuto_Installer.exe"
@@ -1278,7 +1278,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1795694,
-                "download_count": 8,
+                "download_count": 10,
                 "created_at": "2023-10-14T10:34:16Z",
                 "updated_at": "2023-10-14T10:34:17Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.4/CSAuto_Portable.zip"
@@ -1353,7 +1353,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 7,
+                "download_count": 8,
                 "created_at": "2023-10-10T09:25:03Z",
                 "updated_at": "2023-10-10T09:25:07Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.3/CSAuto_Android.apk"
@@ -1387,7 +1387,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2558248,
-                "download_count": 6,
+                "download_count": 8,
                 "created_at": "2023-10-10T09:25:07Z",
                 "updated_at": "2023-10-10T09:25:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.3/CSAuto_Installer.exe"
@@ -1421,7 +1421,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1794317,
-                "download_count": 9,
+                "download_count": 11,
                 "created_at": "2023-10-10T09:25:08Z",
                 "updated_at": "2023-10-10T09:25:09Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.3/CSAuto_Portable.zip"
@@ -1496,7 +1496,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 6,
+                "download_count": 7,
                 "created_at": "2023-10-08T14:36:09Z",
                 "updated_at": "2023-10-08T14:36:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.2/CSAuto_Android.apk"
@@ -1530,7 +1530,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2558796,
-                "download_count": 8,
+                "download_count": 9,
                 "created_at": "2023-10-08T14:36:12Z",
                 "updated_at": "2023-10-08T14:36:13Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.2/CSAuto_Installer.exe"
@@ -1564,7 +1564,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1794216,
-                "download_count": 8,
+                "download_count": 9,
                 "created_at": "2023-10-08T14:36:07Z",
                 "updated_at": "2023-10-08T14:36:09Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.2/CSAuto_Portable.zip"
@@ -1639,7 +1639,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 6,
+                "download_count": 8,
                 "created_at": "2023-10-05T07:16:02Z",
                 "updated_at": "2023-10-05T07:16:05Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.1/CSAuto_Android.apk"
@@ -1673,7 +1673,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2556852,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-10-05T07:16:05Z",
                 "updated_at": "2023-10-05T07:16:07Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.1/CSAuto_Installer.exe"
@@ -1707,7 +1707,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1792798,
-                "download_count": 6,
+                "download_count": 7,
                 "created_at": "2023-10-05T07:16:07Z",
                 "updated_at": "2023-10-05T07:16:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.1/CSAuto_Portable.zip"
@@ -1782,7 +1782,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9824287,
-                "download_count": 8,
+                "download_count": 9,
                 "created_at": "2023-09-28T02:57:23Z",
                 "updated_at": "2023-09-28T02:57:27Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0/CSAuto_Android.apk"
@@ -1816,7 +1816,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2557290,
-                "download_count": 10,
+                "download_count": 11,
                 "created_at": "2023-09-28T02:57:27Z",
                 "updated_at": "2023-09-28T02:57:28Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0/CSAuto_Installer.exe"
@@ -1850,7 +1850,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1792911,
-                "download_count": 9,
+                "download_count": 10,
                 "created_at": "2023-09-28T02:57:28Z",
                 "updated_at": "2023-09-28T02:57:29Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0/CSAuto_Portable.zip"
@@ -1926,7 +1926,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-23T08:09:47Z",
                 "updated_at": "2023-09-23T08:09:49Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.6/CSAuto_Android.apk"
@@ -1960,7 +1960,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2528276,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-09-23T08:09:49Z",
                 "updated_at": "2023-09-23T08:09:50Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.6/CSAuto_Installer.exe"
@@ -1994,7 +1994,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1774223,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-09-23T08:09:45Z",
                 "updated_at": "2023-09-23T08:09:47Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.6/CSAuto_Portable.zip"
@@ -2069,7 +2069,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-09-17T16:06:14Z",
                 "updated_at": "2023-09-17T16:06:16Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.5/CSAuto_Android.apk"
@@ -2103,7 +2103,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2520591,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-17T16:06:16Z",
                 "updated_at": "2023-09-17T16:06:17Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.5/CSAuto_Installer.exe"
@@ -2137,7 +2137,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1765814,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-17T16:06:12Z",
                 "updated_at": "2023-09-17T16:06:14Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.5/CSAuto_Portable.zip"
@@ -2213,7 +2213,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 6,
+                "download_count": 7,
                 "created_at": "2023-09-14T13:38:54Z",
                 "updated_at": "2023-09-14T13:38:57Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.4/CSAuto_Android.apk"
@@ -2247,7 +2247,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2530154,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-09-14T13:38:57Z",
                 "updated_at": "2023-09-14T13:38:58Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.4/CSAuto_Installer.exe"
@@ -2281,7 +2281,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1776360,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-14T13:38:58Z",
                 "updated_at": "2023-09-14T13:38:58Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.4/CSAuto_Portable.zip"
@@ -2356,7 +2356,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 6,
+                "download_count": 7,
                 "created_at": "2023-09-12T14:53:48Z",
                 "updated_at": "2023-09-12T14:53:58Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.3/CSAuto_Android.apk"
@@ -2390,7 +2390,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2530019,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-09-12T14:53:58Z",
                 "updated_at": "2023-09-12T14:53:59Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.3/CSAuto_Installer.exe"
@@ -2424,7 +2424,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1776353,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-12T14:53:39Z",
                 "updated_at": "2023-09-12T14:53:48Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.3/CSAuto_Portable.zip"
@@ -2499,7 +2499,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-09T05:11:32Z",
                 "updated_at": "2023-09-09T05:11:35Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.2/CSAuto_Android.apk"
@@ -2533,7 +2533,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2530374,
-                "download_count": 5,
+                "download_count": 7,
                 "created_at": "2023-09-09T05:11:35Z",
                 "updated_at": "2023-09-09T05:11:36Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.2/CSAuto_Installer.exe"
@@ -2567,7 +2567,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1776205,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-09-09T05:11:30Z",
                 "updated_at": "2023-09-09T05:11:32Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.2/CSAuto_Portable.zip"
@@ -2642,7 +2642,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 4,
+                "download_count": 6,
                 "created_at": "2023-09-07T16:57:38Z",
                 "updated_at": "2023-09-07T16:57:42Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.1/CSAuto_Android.apk"
@@ -2676,7 +2676,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2530050,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-09-07T16:57:42Z",
                 "updated_at": "2023-09-07T16:57:43Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.1/CSAuto_Installer.exe"
@@ -2710,7 +2710,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1774158,
-                "download_count": 4,
+                "download_count": 6,
                 "created_at": "2023-09-07T16:57:43Z",
                 "updated_at": "2023-09-07T16:57:44Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta.1/CSAuto_Portable.zip"
@@ -2785,7 +2785,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 4,
+                "download_count": 6,
                 "created_at": "2023-09-05T18:53:12Z",
                 "updated_at": "2023-09-05T18:53:16Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta/CSAuto_Android.apk"
@@ -2819,7 +2819,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 2417083,
-                "download_count": 6,
+                "download_count": 8,
                 "created_at": "2023-09-05T18:53:16Z",
                 "updated_at": "2023-09-05T18:53:17Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta/CSAuto_Installer.exe"
@@ -2853,7 +2853,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1641187,
-                "download_count": 4,
+                "download_count": 6,
                 "created_at": "2023-09-05T18:53:10Z",
                 "updated_at": "2023-09-05T18:53:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta/CSAuto_Portable.zip"
@@ -2928,7 +2928,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-08-16T19:59:54Z",
                 "updated_at": "2023-08-16T19:59:55Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.2/CSAuto_Android.apk"
@@ -2962,7 +2962,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1869318,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-08-16T19:59:53Z",
                 "updated_at": "2023-08-16T19:59:54Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.2/CSAuto_Installer.exe"
@@ -2996,7 +2996,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 584051,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-08-16T19:59:51Z",
                 "updated_at": "2023-08-16T19:59:53Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.2/CSAuto_Portable.zip"
@@ -3072,7 +3072,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-08-10T15:24:04Z",
                 "updated_at": "2023-08-10T15:24:07Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.1/CSAuto_Android.apk"
@@ -3106,7 +3106,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1919454,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-08-10T15:24:07Z",
                 "updated_at": "2023-08-10T15:24:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.1/CSAuto_Installer.exe"
@@ -3140,7 +3140,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 621763,
-                "download_count": 3,
+                "download_count": 5,
                 "created_at": "2023-08-10T15:24:08Z",
                 "updated_at": "2023-08-10T15:24:09Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.1/CSAuto_Portable.zip"
@@ -3215,7 +3215,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 7,
+                "download_count": 8,
                 "created_at": "2023-07-20T12:04:17Z",
                 "updated_at": "2023-07-20T12:04:21Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.0/CSAuto_Android.apk"
@@ -3249,7 +3249,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1859518,
-                "download_count": 3,
+                "download_count": 5,
                 "created_at": "2023-07-20T12:04:15Z",
                 "updated_at": "2023-07-20T12:04:17Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.0/CSAuto_Installer.exe"
@@ -3283,7 +3283,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 571508,
-                "download_count": 2,
+                "download_count": 3,
                 "created_at": "2023-07-20T12:04:13Z",
                 "updated_at": "2023-07-20T12:04:15Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.1.0/CSAuto_Portable.zip"
@@ -3359,7 +3359,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1692699,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-07-14T09:41:14Z",
                 "updated_at": "2023-07-14T09:41:15Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.9/CSAuto1.0.9_installer.exe"
@@ -3393,7 +3393,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 316373,
-                "download_count": 2,
+                "download_count": 3,
                 "created_at": "2023-07-14T09:41:07Z",
                 "updated_at": "2023-07-14T09:41:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.9/CSAuto1.0.9_Portable.zip"
@@ -3427,7 +3427,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-07-15T14:28:29Z",
                 "updated_at": "2023-07-15T14:28:32Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.9/CSAuto_Android.apk"
@@ -3503,7 +3503,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1662584,
-                "download_count": 4,
+                "download_count": 5,
                 "created_at": "2023-07-12T15:28:32Z",
                 "updated_at": "2023-07-12T15:28:34Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.8/CSAuto1.0.8_installer.exe"
@@ -3537,7 +3537,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 314085,
-                "download_count": 2,
+                "download_count": 3,
                 "created_at": "2023-07-12T15:28:39Z",
                 "updated_at": "2023-07-12T15:28:40Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.8/CSAuto1.0.8_Portable.zip"
@@ -3571,7 +3571,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 7,
+                "download_count": 8,
                 "created_at": "2023-07-12T15:28:49Z",
                 "updated_at": "2023-07-12T15:30:11Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.8/CSAuto_Android.apk"
@@ -3646,7 +3646,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1660548,
-                "download_count": 2,
+                "download_count": 3,
                 "created_at": "2023-07-06T12:49:54Z",
                 "updated_at": "2023-07-06T12:49:55Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.7/CSAuto1.0.7_installer.exe"
@@ -3680,7 +3680,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 311547,
-                "download_count": 0,
+                "download_count": 1,
                 "created_at": "2023-07-06T12:49:50Z",
                 "updated_at": "2023-07-06T12:49:51Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.7/CSAuto1.0.7_Portable.zip"
@@ -3755,7 +3755,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 310054,
-                "download_count": 2,
+                "download_count": 4,
                 "created_at": "2023-07-02T12:36:20Z",
                 "updated_at": "2023-07-05T07:00:38Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.6/CSAuto1.0.6-Portable.zip"
@@ -3789,7 +3789,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 1659898,
-                "download_count": 0,
+                "download_count": 1,
                 "created_at": "2023-07-05T20:22:42Z",
                 "updated_at": "2023-07-05T20:22:44Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.6/CSAuto1.0.6_installer.exe"
@@ -3864,7 +3864,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 450560,
-                "download_count": 6,
+                "download_count": 8,
                 "created_at": "2023-06-28T12:51:01Z",
                 "updated_at": "2023-06-28T12:51:03Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.5a/CSAuto.exe"
@@ -3939,7 +3939,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 450560,
-                "download_count": 7,
+                "download_count": 9,
                 "created_at": "2023-06-25T11:41:14Z",
                 "updated_at": "2023-06-25T11:41:16Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.5/CSAuto.exe"
@@ -4014,7 +4014,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 445440,
-                "download_count": 6,
+                "download_count": 8,
                 "created_at": "2023-06-22T07:16:27Z",
                 "updated_at": "2023-06-22T07:16:28Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.4/CSAuto.exe"
@@ -4239,7 +4239,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 138752,
-                "download_count": 3,
+                "download_count": 4,
                 "created_at": "2023-06-15T11:58:05Z",
                 "updated_at": "2023-06-15T11:58:06Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.2/CSAuto.exe"
@@ -4314,7 +4314,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 136704,
-                "download_count": 7,
+                "download_count": 8,
                 "created_at": "2023-05-12T10:52:04Z",
                 "updated_at": "2023-05-12T10:52:05Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.1/CSAuto.exe"
