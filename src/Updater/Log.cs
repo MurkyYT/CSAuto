@@ -15,6 +15,7 @@ namespace Updater
         static string path = strWorkPath;
         static string lineTemplate = "[%date%] (%caller%) - %message%";
 
+        public static string WorkPath { get { return strWorkPath; } }
         public static void VerifyDir()
         {
             try

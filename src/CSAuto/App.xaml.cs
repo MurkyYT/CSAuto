@@ -35,10 +35,17 @@ namespace CSAuto
         private string languageName = null;
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AppendPrivatePath("bin");
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            string[] files = Directory.GetFiles(Log.WorkPath, "*.dll");
+            bool didCleanOld = files.Length > 0;
             RealStartup(e);
+            if (didCleanOld)
+            {
+                Process.Start(Log.WorkPath + "\\bin\\updater.exe", "--cleanup \"" + Args + " --restart\"");
+                App.Current.Shutdown();
+            }
         }
         void RealStartup(StartupEventArgs e)
         {
