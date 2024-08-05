@@ -36,9 +36,21 @@ namespace Updater
                 }
                 if (didCleanOld)
                 {
-                    Directory.Delete(Log.WorkPath + "\\..\\ru");
-                    File.Delete(Log.WorkPath + "\\..\\steamapi.exe");
-                    File.Delete(Log.WorkPath + "\\..\\updater.exe");
+                    while (true)
+                    {
+                        try
+                        {
+                            Directory.Delete(Log.WorkPath + "\\..\\ru");
+                            break;
+                        }
+                        catch { }
+                    }
+                    try
+                    {
+                        File.Delete(Log.WorkPath + "\\..\\steamapi.exe");
+                        File.Delete(Log.WorkPath + "\\..\\updater.exe");
+                    }
+                    catch { }
                 }
                 Process.Start(Log.WorkPath + "\\..\\CSAuto.exe", e.Args[1]);
                 App.Current.Shutdown();

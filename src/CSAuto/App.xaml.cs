@@ -38,17 +38,12 @@ namespace CSAuto
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AppendPrivatePath("bin");
-            string[] files = Directory.GetFiles(Log.WorkPath, "*.dll");
-            bool didCleanOld = files.Length > 0;
-            RealStartup(e);
-            if (didCleanOld)
-            {
-                Process.Start(Log.WorkPath + "\\bin\\updater.exe", "--cleanup \"" + Args + " --restart\"");
-                App.Current.Shutdown();
-            }
+            RealStartup(e); 
         }
         void RealStartup(StartupEventArgs e)
         {
+            string[] files = Directory.GetFiles(Log.WorkPath, "*.dll");
+            bool didCleanOld = files.Length > 0;
             Current.Resources.MergedDictionaries.Add(new ResourceDictionary
             {
                 Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute)
@@ -70,6 +65,12 @@ namespace CSAuto
             if (File.Exists(Log.WorkPath + "\\resource\\.portable"))
                 IsPortable = true;
             ParseArgs(e);
+
+            if (didCleanOld)
+            {
+                Process.Start(Log.WorkPath + "\\bin\\updater.exe", "--cleanup \"" + Args + " --restart\"");
+                App.Current.Shutdown();
+            }
 
             if (IsPortable)
             {
