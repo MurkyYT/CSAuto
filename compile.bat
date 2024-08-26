@@ -1,6 +1,7 @@
 @echo off
 title Compiling CSAuto...
-rm -r Output
+del /f /s /q Output
+rmdir Output
 @echo Cleaning steamapiserver project...
 msbuild src\SteamAPIServer\SteamAPIServer.csproj /t:Clean /property:Configuration=Release > nul
 @echo Cleaned steamapiserver project
