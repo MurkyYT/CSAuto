@@ -41,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.2";
+        public const string VER = "2.1.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -428,7 +428,9 @@ namespace CSAuto
                         Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                     }
                 }
-                else if (gameState.Match.Map == null && (inLobby == false || inLobby == null))
+                else if (gameState.Match.Map == null &&
+                    (inLobby == false || inLobby == null || 
+                    RPCClient.CurrentPresence.Assets.LargeImageKey != "Menu" || RPCClient.CurrentPresence.Assets.LargeImageKey != "cs2_icon"))
                 {
                     inLobby = true;
                     currentMapIcon = null;
