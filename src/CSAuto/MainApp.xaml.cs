@@ -430,7 +430,7 @@ namespace CSAuto
                 }
                 else if (gameState.Match.Map == null &&
                     (inLobby == false || inLobby == null || 
-                    RPCClient.CurrentPresence.Assets.LargeImageKey != "Menu" || RPCClient.CurrentPresence.Assets.LargeImageKey != "cs2_icon"))
+                    RPCClient.CurrentPresence.Assets.LargeImageText != "Menu" || RPCClient.CurrentPresence.Assets.LargeImageKey != "cs2_icon"))
                 {
                     inLobby = true;
                     currentMapIcon = null;
