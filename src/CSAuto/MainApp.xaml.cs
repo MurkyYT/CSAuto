@@ -201,52 +201,56 @@ namespace CSAuto
         }
         public async void ServerThread()
         {
-            server.Start();
-            Log.WriteLine($"|MainApp.cs| [SERVER]: Started listening at {server.LocalEndpoint}");
-            byte[] keepAliveBuf = BitConverter.GetBytes(1).ToList().Append((byte)Commands.KeepAlive).ToArray();
-            while (server != null)
+            try
             {
-                if (server.Pending())
+                server.Start();
+                Log.WriteLine($"|MainApp.cs| [SERVER]: Started listening at {server.LocalEndpoint}");
+                byte[] keepAliveBuf = BitConverter.GetBytes(1).ToList().Append((byte)Commands.KeepAlive).ToArray();
+                while (server != null)
                 {
-                    TcpClient client = await server.AcceptTcpClientAsync();
-                    clients.Add(client);
-                    Log.WriteLine($"|MainApp.cs| [SERVER]: Accepted tcp client {client.Client.RemoteEndPoint}");
-                    await client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
-                    lastKeepAlive[client] = DateTime.Now;
-                    guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Add(client.Client.RemoteEndPoint); });
-                }
-                if (clients != null)
-                {
-                    lock (clients)
+                    if (server.Pending())
                     {
-                        for (int i = clients.Count - 1; i >= 0; i--)
+                        TcpClient client = await server.AcceptTcpClientAsync();
+                        clients.Add(client);
+                        Log.WriteLine($"|MainApp.cs| [SERVER]: Accepted tcp client {client.Client.RemoteEndPoint}");
+                        await client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
+                        lastKeepAlive[client] = DateTime.Now;
+                        guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Add(client.Client.RemoteEndPoint); });
+                    }
+                    if (clients != null)
+                    {
+                        lock (clients)
                         {
-                            TcpClient client = clients[i];
-                            try
+                            for (int i = clients.Count - 1; i >= 0; i--)
                             {
-                                if (!client.Connected)
+                                TcpClient client = clients[i];
+                                try
                                 {
-                                    DeleteClient(client);
-                                    continue;
+                                    if (!client.Connected)
+                                    {
+                                        DeleteClient(client);
+                                        continue;
+                                    }
+                                    if (client.Available > 0)
+                                    {
+                                        ReadData(client);
+                                        continue;
+                                    }
+                                    if (DateTime.Now - lastKeepAlive[client] > TimeSpan.FromSeconds(10))
+                                    {
+
+                                        client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
+                                        lastKeepAlive[client] = DateTime.Now;
+                                    }
                                 }
-                                if (client.Available > 0)
-                                {
-                                    ReadData(client);
-                                    continue;
-                                }
-                                if (DateTime.Now - lastKeepAlive[client] > TimeSpan.FromSeconds(10))
-                                {
-                                   
-                                    client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
-                                    lastKeepAlive[client] = DateTime.Now;
-                                }
+                                catch { DeleteClient(client); }
                             }
-                            catch { DeleteClient(client); }
                         }
                     }
+                    Thread.Sleep(1);
                 }
-                Thread.Sleep(1);
             }
+            catch (Exception ex) { Log.WriteLine("|MainApp.cs| Error ocurred in server thread"); serverThread = null; server?.Stop(); server = null; }
         }
         private void DeleteClient(TcpClient client)
         {
