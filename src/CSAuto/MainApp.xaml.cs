@@ -43,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -89,6 +89,7 @@ namespace CSAuto
         private Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
         private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         private string localIp;
+        private bool serverRunning = false;
         #endregion
         #region Members
         RECT csResolution = new RECT();
@@ -206,7 +207,7 @@ namespace CSAuto
                 server.Start();
                 Log.WriteLine($"|MainApp.cs| [SERVER]: Started listening at {server.LocalEndpoint}");
                 byte[] keepAliveBuf = BitConverter.GetBytes(1).ToList().Append((byte)Commands.KeepAlive).ToArray();
-                while (server != null)
+                while (serverRunning)
                 {
                     if (server.Pending())
                     {
@@ -251,6 +252,9 @@ namespace CSAuto
                 }
             }
             catch (Exception ex) { Log.WriteLine("|MainApp.cs| Error ocurred in server thread"); serverThread = null; server?.Stop(); server = null; }
+            server?.Stop();
+            server = null;
+            Log.WriteLine("|MainApp.cs| Stopped server");
         }
         private void DeleteClient(TcpClient client)
         {
@@ -1028,6 +1032,7 @@ namespace CSAuto
                                 clients = new List<TcpClient>();
                                 lastKeepAlive = new Dictionary<TcpClient, DateTime>();
                                 server = new TcpListener(IPAddress.Any, int.Parse(Properties.Settings.Default.serverPort));
+                                serverRunning = true;
                                 serverThread = new Thread(ServerThread);
                                 serverThread.Start();
                             }
@@ -1156,9 +1161,7 @@ namespace CSAuto
 
                 clients?.Clear();
                 lastKeepAlive?.Clear();
-                server?.Stop();
-                server = null;
-                Log.WriteLine("|MainApp.cs| Stopped server");
+                serverRunning = false;
                 guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Clear(); });
                 csProcess = null;
                 inLobby = false;
