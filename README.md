@@ -93,6 +93,10 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
    2. Get your chat id by sending a message to [this bot](https://t.me/raw_info_bot)
    3. Copy your 'Chat ID'
    4. Go to the 'Phone notifications' category and enter the Chat ID you got
+   
+### What is the latest version for CS:GO
+	
+	The latest version released for CS:GO is 1.1.2 and can be downloaded [here](https://github.com/MurkyYT/CSAuto/releases/tag/1.1.2), be warned that some features might not work as intended
 
 ## Suggestions
 
