@@ -1,3 +1,9 @@
+### Version 2.1.2a changelog
+- Fixed Discord Activity being stuck in last match when player is already in lobby
+- Fix with server thread when closing cs which caused a crash
+
+---
+
 ### Version 2.1.2 changelog
 - Right click menu title is now in the same color as the accent color
 - No need to restart the application when changing from dark to light theme and vice versa
