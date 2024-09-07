@@ -257,9 +257,11 @@
 
 ---
 
+## This is the last version that will be compatible with CS:GO
+
 ### Version 1.1.2 changelog
 1. Changed how bomb notifications work in telegram (#16 )
-  - Telegram bot shows only when bomb is planted without the timer
+   - Telegram bot shows only when bomb is planted without the timer
 ## What's Changed
 * VirusTotal detection fixes + new class for api keys by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/12
 * Fix telegram notifications + compilation fix by @MurkyYT in https://github.com/MurkyYT/CSAuto/pull/13
