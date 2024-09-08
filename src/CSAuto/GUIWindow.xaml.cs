@@ -269,10 +269,12 @@ namespace CSAuto
                 {
                     try
                     {
+                        long id3 = Steam.GetCurrentSteamID3();
+                        long id64 = id3 + Steam.VALVE_STEAMID64_CONST;
                         steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
-                            $"SteamID3: {Steam.GetCurrentSteamID3()}\n" +
-                            $"SteamID64: {Steam.GetSteamID64()}\n" +
-                            $"CS:GO FriendCode: {CSGOFriendCode.Encode(Steam.GetSteamID64().ToString())}\n" +
+                            $"SteamID3: {id3}\n" +
+                            $"SteamID64: {id64}\n" +
+                            $"CS:GO FriendCode: {CSGOFriendCode.Encode(id64.ToString())}\n" +
                             $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
                             $"CS:GO LaunchOptions: \"{launchOpt}\"";
                     }

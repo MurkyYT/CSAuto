@@ -9,7 +9,7 @@ namespace Murky.Utils
 {
     public static class Steam
     {
-        const long VALVE_STEAMID64_CONST = 76561197960265728L;
+        public const long VALVE_STEAMID64_CONST = 76561197960265728L;
         /// <summary>
         /// Tries to get the game folder.
         /// </summary>
