@@ -852,8 +852,8 @@ namespace CSAuto
                         {
                             LargeImageKey = currentMapIcon ?? "cs2_icon",
                             LargeImageText = gameState.Match.Map,
-                            SmallImageKey = null,
-                            SmallImageText = null
+                            SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team.ToString().ToLower(),
+                            SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
                         },
                         Timestamps = new Timestamps()
                         {
