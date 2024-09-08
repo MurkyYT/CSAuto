@@ -41,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.2a";
+        public const string VER = "2.1.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -90,6 +90,7 @@ namespace CSAuto
         private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
         private string localIp;
         private bool serverRunning = false;
+        private DateTime startTimeStamp = DateTime.MinValue;
         #endregion
         #region Members
         RECT csResolution = new RECT();
@@ -409,25 +410,6 @@ namespace CSAuto
                     inLobby = false;
                     Log.WriteLine($"|MainApp.cs| Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
                     currentMapIcon = CSGOMap.GetMapIcon(gameState.Match.Map);
-                    RPCClient.SetPresence(new RichPresence()
-                    {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
-                        Party = new Party() { ID = "", Size = 0, Max = 0 },
-                        Assets = new Assets()
-                        {
-                            LargeImageKey = currentMapIcon ?? "cs2_icon",
-                            LargeImageText = gameState.Match.Map,
-                            SmallImageKey = null,
-                            SmallImageText = null
-                        },
-                        Timestamps = new Timestamps()
-                        {
-                            Start = UnixTimeStampToDateTime(gameState.Timestamp),
-                            End = null
-                        },
-                        Buttons = GetDiscordRPCButtons()
-                    });
                     if (Properties.Settings.Default.mapNotification)
                         SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode),command:Commands.LoadedOnMap);
                     if (DXGIcapture.Enabled)
@@ -435,33 +417,14 @@ namespace CSAuto
                         DXGIcapture.DeInit();
                         Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                     }
+                    startTimeStamp = UnixTimeStampToDateTime(gameState.Timestamp);
                 }
                 else if (gameState.Match.Map == null &&
-                    (inLobby == false || inLobby == null || 
-                    RPCClient.CurrentPresence.Assets.LargeImageText != "Menu" || RPCClient.CurrentPresence.Assets.LargeImageKey != "cs2_icon"))
+                    (inLobby == false || inLobby == null))
                 {
                     inLobby = true;
                     currentMapIcon = null;
                     Log.WriteLine($"|MainApp.cs| Player is back in main menu");
-                    RPCClient.SetPresence(new RichPresence()
-                    {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
-                        Party = new Party() { ID = "", Size = 0, Max = 0 },
-                        Assets = new Assets()
-                        {
-                            LargeImageKey = "cs2_icon",
-                            LargeImageText = "Menu",
-                            SmallImageKey = null,
-                            SmallImageText = null
-                        },
-                        Timestamps = new Timestamps()
-                        {
-                            Start = UnixTimeStampToDateTime(gameState.Timestamp),
-                            End = null
-                        },
-                        Buttons = GetDiscordRPCButtons()
-                    });
                     if (Properties.Settings.Default.lobbyNotification)
                         SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_loadedlobby"),command:Commands.LoadedInLobby);
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
@@ -469,6 +432,7 @@ namespace CSAuto
                         DXGIcapture.Init();
                         Log.WriteLine("|MainApp.cs| Init DXGI Capture");
                     }
+                    startTimeStamp = UnixTimeStampToDateTime(gameState.Timestamp);
                 }
                 lastActivity = activity;
                 matchState = currentMatchState;
@@ -875,27 +839,25 @@ namespace CSAuto
 
         private void UpdateDiscordRPC()
         {
-            if (RPCClient.CurrentPresence == null)
-                return;
             try
             {
                 if (csRunning && inGame)
                 {
                     RPCClient.SetPresence(new RichPresence()
                     {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState),128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState),128),
-                        Party = new Party(),
+                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
+                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
+                        Party = new Party() { ID = "", Size = 0, Max = 0 },
                         Assets = new Assets()
                         {
                             LargeImageKey = currentMapIcon ?? "cs2_icon",
-                            LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
-                            SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team.ToString().ToLower(),
-                            SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
+                            LargeImageText = gameState.Match.Map,
+                            SmallImageKey = null,
+                            SmallImageText = null
                         },
                         Timestamps = new Timestamps()
                         {
-                            Start = RPCClient.CurrentPresence.Timestamps.Start,
+                            Start = startTimeStamp,
                             End = null
                         },
                         Buttons = GetDiscordRPCButtons()
@@ -911,20 +873,42 @@ namespace CSAuto
                         string partysize = steamworksRes.Split('/')[0];
                         RPCClient.SetPresence(new RichPresence()
                         {
-                            Details = RPCClient.CurrentPresence.Details,
-                            State = RPCClient.CurrentPresence.State,
+                            Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                            State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
                             Party = new Party()
                             { ID = lobbyid == "0" ? "0" : lobbyid, Max = int.Parse(partyMax), Size = int.Parse(partysize) },
                             Assets = new Assets()
                             {
-                                LargeImageKey = RPCClient.CurrentPresence.Assets.LargeImageKey,
-                                LargeImageText = RPCClient.CurrentPresence.Assets.LargeImageText,
-                                SmallImageKey = RPCClient.CurrentPresence.Assets.SmallImageKey,
-                                SmallImageText = RPCClient.CurrentPresence.Assets.SmallImageText
+                                LargeImageKey = "cs2_icon",
+                                LargeImageText = "Menu",
+                                SmallImageKey = null,
+                                SmallImageText = null
                             },
                             Timestamps = new Timestamps()
                             {
-                                Start = RPCClient.CurrentPresence.Timestamps.Start,
+                                Start = startTimeStamp,
+                                End = null
+                            },
+                            Buttons = GetDiscordRPCButtons()
+                        });
+                    }
+                    else
+                    {
+                        RPCClient.SetPresence(new RichPresence()
+                        {
+                            Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                            State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
+                            Party = new Party() { ID = "", Size = 0, Max = 0 },
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = "cs2_icon",
+                                LargeImageText = "Menu",
+                                SmallImageKey = null,
+                                SmallImageText = null
+                            },
+                            Timestamps = new Timestamps()
+                            {
+                                Start = startTimeStamp,
                                 End = null
                             },
                             Buttons = GetDiscordRPCButtons()
@@ -1461,8 +1445,7 @@ namespace CSAuto
             Properties.Settings.Default.Save();
             current.MoveSettings();
 
-            server?.Stop();
-            server = null;
+            serverRunning = false;
 
             if (current.IsPortable)
             {
