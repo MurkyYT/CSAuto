@@ -43,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -97,7 +97,9 @@ namespace CSAuto
         //Only workshop tools have netconport? https://github.com/ValveSoftware/csgo-osx-linux/issues/3603#issuecomment-2163695087
         //NetCon netCon = null;
         int frame = 0;
+        int lastRound = 0;
         bool csRunning = false;
+        bool autoBuy = true;
         bool inGame = false;
         bool csActive = false;
         bool? inLobby = null;
@@ -434,17 +436,24 @@ namespace CSAuto
                     }
                     startTimeStamp = UnixTimeStampToDateTime(gameState.Timestamp);
                 }
+
+                if(roundState == Phase.Freezetime && roundState != currentRoundState || lastRound != gameState.Round.CurrentRound)
+                    autoBuy = true;
+
+                lastRound = gameState.Round.CurrentRound;
                 lastActivity = activity;
                 matchState = currentMatchState;
                 roundState = currentRoundState;
                 weapon = currentWeapon;
                 bombState = currentBombState;
                 inGame = gameState.Match.Map != null;
+
+
                 if (csActive && !gameState.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu && csActive)
                         TryToAutoReload();
-                    if (lastActivity == Activity.Playing && csActive && Properties.Settings.Default.autoBuyEnabled)
+                    if (lastActivity == Activity.Playing && csActive && Properties.Settings.Default.autoBuyEnabled && autoBuy)
                         AutoBuy();
                     if (Properties.Settings.Default.autoPausePlaySpotify)
                         AutoPauseResumeSpotify();
@@ -467,6 +476,11 @@ namespace CSAuto
             if (matchState == Phase.Live && roundState == Phase.Freezetime)
             {
                 List<BuyItem> items = current.buyMenu.GetItemsToBuy(gameState,MAX_ARMOR_AMOUNT_TO_REBUY);
+                if(items.Count == 0 && !Properties.Settings.Default.autoBuyRebuy)
+                {
+                    autoBuy = false;
+                    return;
+                }
                 if (items.Count != 0 && !BuyMenuOpen())
                 {
                     PressKey(Input.DirectXKeyStrokes.DIK_B);

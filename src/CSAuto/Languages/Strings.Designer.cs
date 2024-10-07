@@ -1674,6 +1674,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rebuy.
+        /// </summary>
+        public static string title_rebuy {
+            get {
+                return ResourceManager.GetString("title_rebuy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart app.
         /// </summary>
         public static string title_restartneeded {

@@ -686,4 +686,7 @@
   <data name="ckbox_oldmouseinput" xml:space="preserve">
     <value>Использовать старую технику ввода мыши</value>
   </data>
+  <data name="title_rebuy" xml:space="preserve">
+    <value>Покупать снова</value>
+  </data>
 </root>

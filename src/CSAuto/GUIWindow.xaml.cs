@@ -267,6 +267,9 @@ namespace CSAuto
                 Steam.GetLaunchOptions(730, out string launchOpt);
                 Dispatcher.InvokeAsync(() =>
                 {
+                    string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
+                    if (File.Exists(finalPath))
+                        debugBox.Text = File.ReadAllText(finalPath);
                     try
                     {
                         long id3 = Steam.GetCurrentSteamID3();
@@ -281,9 +284,6 @@ namespace CSAuto
                     catch { }
                     ServerIP.Text = $"IP: {main.GetLocalIPAddress()}";
                     GenerateLanguages();
-                    string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
-                    if (File.Exists(finalPath))
-                        debugBox.Text = File.ReadAllText(finalPath);
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;
                     //LoadLanguages(this);
@@ -585,7 +585,7 @@ namespace CSAuto
                     BuyItemProperties.Visibility = Visibility.Visible;
                     AutoBuyImage.Visibility = Visibility.Hidden;
                     AutoBuyTab.Visibility = Visibility.Hidden;
-                    AutoBuyEnabledCheckBox.Visibility = Visibility.Hidden;
+                    AutoBuySettingsStack.Visibility = Visibility.Hidden;
                     BuyItemName.Text = Languages.Strings.ResourceManager.GetString($"buyitem_{item.Name.ToString().ToLower()}");
                     BuyItemPriority.Value = item.GetPriority();
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
@@ -649,7 +649,7 @@ namespace CSAuto
                 BuyItemProperties.Visibility = Visibility.Hidden;
                 AutoBuyImage.Visibility = Visibility.Visible;
                 AutoBuyTab.Visibility = Visibility.Visible;
-                AutoBuyEnabledCheckBox.Visibility = Visibility.Visible;
+                AutoBuySettingsStack.Visibility = Visibility.Visible;
                 if (customSelectedItem != null)
                 {
                     CustomBuyItem item = customSelectedItem;

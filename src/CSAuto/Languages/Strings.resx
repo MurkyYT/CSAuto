@@ -686,4 +686,7 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="ckbox_oldmouseinput" xml:space="preserve">
     <value>Use old mouse input technique</value>
   </data>
+  <data name="title_rebuy" xml:space="preserve">
+    <value>Rebuy</value>
+  </data>
 </root>

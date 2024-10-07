@@ -353,7 +353,10 @@
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
                 <Grid>
-                    <CheckBox x:Name="AutoBuyEnabledCheckBox" Content="{x:Static p:Strings.text_enabled}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,15,0,0"/>
+                    <StackPanel x:Name="AutoBuySettingsStack" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0">
+                        <CheckBox Content="{x:Static p:Strings.text_enabled}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <CheckBox Content="{x:Static p:Strings.title_rebuy}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyRebuy}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom" Height="48">
                             <mahapps:MetroTabItem Header="{x:Static p:Strings.team_ct}"/>
