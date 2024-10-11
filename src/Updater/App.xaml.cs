@@ -18,6 +18,11 @@ namespace Updater
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            if(e.Args.Length == 0)
+            {
+                MessageBox.Show("Not enough arguments supplied","Error",MessageBoxButton.OK,MessageBoxImage.Error);
+                return;
+            }
             if (e.Args[0] == "--cleanup")
             {
                 string[] files = Directory.GetFiles(Log.WorkPath + "\\..", "*.dll");

@@ -62,7 +62,7 @@
     <ApplicationIcon>Icons\main.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest>csauto.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -220,7 +220,7 @@
       <LastGenOutput>Strings.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
-    <None Include="app.manifest" />
+    <None Include="csauto.manifest" />
     <None Include="Properties\DebugSettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>DebugSettings.Designer.cs</LastGenOutput>
@@ -274,9 +274,7 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>rmdir /q /s $(ProjectDir)$(OutDir)resource

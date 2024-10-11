@@ -4,7 +4,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Text;
 
 // ReSharper disable InconsistentNaming
 
@@ -53,46 +52,6 @@ namespace NotifyIconLibrary
         [ResourceExposure(ResourceScope.None)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool Shell_NotifyIcon(int message, NotifyIconData pnId);
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public extern static bool DestroyIcon(IntPtr handle);
-        [DllImport("Shell32.dll", SetLastError = false)]
-        public static extern Int32 SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
-
-        public enum SHSTOCKICONID : uint
-        {
-            SIID_SHIELD = 77
-        }
-
-        [Flags]
-        public enum SHGSI : uint
-        {
-            SHGSI_ICON = 0x000000100,
-            SHGSI_SMALLICON = 0x000000001
-        }
-
-        [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct SHSTOCKICONINFO
-        {
-            public UInt32 cbSize;
-            public IntPtr hIcon;
-            public Int32 iSysIconIndex;
-            public Int32 iIcon;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string szPath;
-        }
-        public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
-
-        [DllImport("user32.dll")]
-        static public extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
-
-        public const uint WINEVENT_OUTOFCONTEXT = 0;
-        public const uint EVENT_SYSTEM_FOREGROUND = 3;
-
-        [DllImport("user32.dll")]
-        static public extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        static public extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+       
     }
 }
