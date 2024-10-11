@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SteamAPIServer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Server used to gather information from Steam API by CSAuto")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Murky")]
 [assembly: AssemblyProduct("SteamAPIServer")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
