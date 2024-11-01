@@ -644,11 +644,12 @@ namespace CSAuto
             launchCS.Click += LaunchCs_Click;
             MenuItem about = new MenuItem
             {
-                Header = $"{typeof(MainApp).Namespace} - {FULL_VER}",
+                Header = new TextBlock() { Text = $"{typeof(MainApp).Namespace} - {FULL_VER}", VerticalAlignment = VerticalAlignment.Center },
                 IsEnabled = false,
                 Icon = new System.Windows.Controls.Image
                 {
-                    Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location))
+                    Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location)),
+                    Margin = new Thickness(5,5,0,0)
                 },
                 Foreground = new SolidColorBrush(ThemeManager.Current.GetTheme($"Dark.{Properties.Settings.Default.currentColor}").PrimaryAccentColor)
             };
