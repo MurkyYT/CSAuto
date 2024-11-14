@@ -1,3 +1,12 @@
+### Version 2.1.3 changelog
+- Fixed spamming player is in lobby notification
+- Added an option to disable auto buy rebuying after refunding
+- Made updater window non-resizable
+- Context menu about menu item look was enhanced
+- Fixed parsing of map icons
+
+---
+
 ### Version 2.1.2a changelog
 - Fixed Discord Activity being stuck in last match when player is already in lobby
 - Fix with server thread when closing cs which caused a crash
