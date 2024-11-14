@@ -34,12 +34,21 @@ namespace Murky.Utils.CSGO
                         string link = splt[i].Split('"')[0];
                         try
                         {
+                            bool isNew = false;
                             string[] imageInfo = link.Split('/');
                             string mapName = imageInfo[2].Split('.')[0];
+                            if (mapName.StartsWith("Map_icon_"))
+                            {
+                                mapName = mapName.Substring("Map_icon_".Length);
+                                isNew = true;
+                            }
+                            mapName = mapName.ToLower();
                             if (IsOfficial(mapName))
                             {
+                                if (!isNew && MapIcons.ContainsKey(mapName))
+                                    continue;
                                 string finalLink = $"https://developer.valvesoftware.com/w/images/{imageInfo[0]}/{imageInfo[1]}/{imageInfo[2]}";
-                                MapIcons[mapName.ToLower()] = finalLink;
+                                MapIcons[mapName] = finalLink;
                             }
                         }
                         catch { }
