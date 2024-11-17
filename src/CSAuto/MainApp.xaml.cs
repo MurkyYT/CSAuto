@@ -41,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.3";
+        public const string VER = "2.1.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -58,7 +58,7 @@ namespace CSAuto
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
-        const float ACCEPT_BUTTON_DELAY = 20;
+        const float ACCEPT_BUTTON_DELAY = 15;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         const int MIN_AMOUNT_OF_PIXELS_TO_ACCEPT = 5;
         const int BOMB_SECONDS_DELAY = 2;
@@ -122,6 +122,8 @@ namespace CSAuto
         internal List<TcpClient> clients;
         Dictionary<TcpClient, DateTime> lastKeepAlive;
         DateTime lastGameStateSend = DateTime.Now;
+        bool thinkThatAccepted = false;
+        Point assumedButtonLocation = new Point();
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -1271,6 +1273,7 @@ namespace CSAuto
         public void LeftMouseClick(int xpos, int ypos)
         {
             NativeMethods.SetCursorPos(xpos, ypos);
+            Thread.Sleep(100);
             LeftMouseDown(xpos, ypos);
             LeftMouseUp(xpos, ypos);
             Log.WriteLine($"|MainApp.cs| Left clicked at X:{xpos} Y:{ypos}");
@@ -1329,36 +1332,40 @@ namespace CSAuto
                             if (Properties.DebugSettings.Default.pressAcceptButton)
                             {
                                 LeftMouseClick(X, Y);
-                                if (CheckIfAccepted(bitmap, Y))
-                                {
-                                    if (Properties.Settings.Default.acceptedNotification)
-                                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_acceptmatch"),command:Commands.AcceptedMatch);
-                                    acceptedGame = true;
-                                    if (acceptButtonTimer.IsEnabled)
-                                        acceptButtonTimer.Stop();
-                                    if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
-                                        Telegram.SendPhoto(bitmap,
-                                            Properties.Settings.Default.telegramChatId,
-                                            Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
-                                                Properties.Settings.Default.customTelegramToken
-                                                : APIKeys.TELEGRAM_BOT_TOKEN,
-                                            $"{csResolution.Width}X{csResolution.Height}\n" +
-                                            $"({X},{Y})\n" +
-                                            $"{DateTime.Now}");
-                                    if (originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
-                                    {
-                                        if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
-                                        {
-                                            Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
-                                            originalProcess = null;
-                                        }
-                                    }
-                                    acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
-                                }
+                                thinkThatAccepted = true;
+                                assumedButtonLocation = new Point(X, Y);
                             }
                         }
                         count++;
                     }
+                }
+                if (thinkThatAccepted && !found)
+                {
+                    Log.WriteLine($"|MainApp.cs| Button was really pressed", caller: "AutoAcceptMatch");
+                    if (Properties.Settings.Default.acceptedNotification)
+                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_acceptmatch"), command: Commands.AcceptedMatch);
+                    acceptedGame = true;
+                    if (acceptButtonTimer.IsEnabled)
+                        acceptButtonTimer.Stop();
+                    if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
+                        Telegram.SendPhoto(bitmap,
+                            Properties.Settings.Default.telegramChatId,
+                            Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
+                                Properties.Settings.Default.customTelegramToken
+                                : APIKeys.TELEGRAM_BOT_TOKEN,
+                            $"{csResolution.Width}X{csResolution.Height}\n" +
+                            $"({assumedButtonLocation.X},{assumedButtonLocation.Y})\n" +
+                            $"{DateTime.Now}");
+                    if (originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
+                    {
+                        if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
+                        {
+                            Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
+                            originalProcess = null;
+                        }
+                    }
+                    acceptedGame = await MakeFalse(ACCEPT_BUTTON_DELAY);
+                    thinkThatAccepted = false;
                 }
                 if(!Properties.Settings.Default.oldScreenCaptureWay)
                     NativeMethods.DeleteObject(_handle);
@@ -1401,28 +1408,6 @@ namespace CSAuto
             else
                 bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
             return (bitmap, _handle);
-        }
-
-        private bool CheckIfAccepted(Bitmap bitmap, int maxY)
-        {
-            int count = 0;
-            for (int y = bitmap.Height - 1; y >= maxY; y--)
-            {
-                Color pixelColor = bitmap.GetPixel(0, y);
-                if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
-                {
-                    if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
-                                         * just in case the program finds the 0:20 timer tick
-                                         * didnt happen for a while but can happen still
-                                         * happend while trying to create a while loop to search for button
-                                         */
-                    {
-                        return false;
-                    }
-                    count++;
-                }
-            }
-            return true;
         }
         async Task<bool> MakeFalse(float afterSeconds)
         {

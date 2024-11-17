@@ -81,9 +81,18 @@ namespace Murky.Utils.CSGO
                     {
                         try
                         {
-                            string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
-                            result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
-                            MapIcons[mapName] = result;
+                            try
+                            {
+                                string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:map_icon_{mapName}.png");
+                                result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
+                                MapIcons[mapName] = result;
+                            }
+                            catch
+                            {
+                                string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
+                                result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
+                                MapIcons[mapName] = result;
+                            }
                             return result;
                         }
                         catch { Log.WriteLine($"|CSGOMap.cs| Couldn't load official map icon for '{mapName}'"); }
