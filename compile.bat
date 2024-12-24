@@ -35,7 +35,7 @@ ISCC.exe installer.iss
 @echo Compiled the installer
 @echo ------------------------------------------------------------------
 @echo Copying the apk...
-echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net7.0-android33.0\com.murky.csauto-Signed.apk Output\CSAuto_Android.apk > nul
+echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net8.0-android34.0\com.murky.csauto-Signed.apk Output\CSAuto_Android.apk > nul
 @echo Copied csauto_mobile apk
 @echo ------------------------------------------------------------------
 @echo Zipping csauto...
