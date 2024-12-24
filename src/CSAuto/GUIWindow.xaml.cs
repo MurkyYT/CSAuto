@@ -575,8 +575,8 @@ namespace CSAuto
             {
                 Point pos = e.GetPosition(AutoBuyImage);
                 Size size = AutoBuyImage.RenderSize;
-                double x_ratio = size.Width / main.current.buyMenu.size.Width;
-                double y_ratio = size.Height / main.current.buyMenu.size.Height;
+                double x_ratio = size.Width / main.current.buyMenu.Size.Width;
+                double y_ratio = size.Height / main.current.buyMenu.Size.Height;
                 BuyItem item = main.current.buyMenu.GetItem(new Point(pos.X / x_ratio, pos.Y / y_ratio), isCt);
                 if (item != null)
                 {

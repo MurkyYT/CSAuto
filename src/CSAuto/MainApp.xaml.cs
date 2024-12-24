@@ -43,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -58,7 +58,7 @@ namespace CSAuto
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
-        const float ACCEPT_BUTTON_DELAY = 15;
+        //const float ACCEPT_BUTTON_DELAY = 15;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         const int MIN_AMOUNT_OF_PIXELS_TO_ACCEPT = 5;
         const int BOMB_SECONDS_DELAY = 2;
@@ -112,7 +112,7 @@ namespace CSAuto
         Process csProcess = null;
         Process originalProcess = null;
         Thread bombTimerThread = null;
-        bool hadError = false;
+        //bool hadError = false;
         IntPtr hCursorOriginal = IntPtr.Zero;
         HwndSource windowSource;
         ContextMenu exitCm;
@@ -253,7 +253,7 @@ namespace CSAuto
                     Thread.Sleep(1);
                 }
             }
-            catch (Exception ex) { Log.WriteLine("|MainApp.cs| Error ocurred in server thread"); serverThread = null; server?.Stop(); server = null; }
+            catch (Exception ex) { Log.WriteLine($"|MainApp.cs| Error ocurred in server thread\n\t'{ex}'"); serverThread = null; server?.Stop(); server = null; }
             server?.Stop();
             server = null;
             Log.WriteLine("|MainApp.cs| Stopped server");
@@ -1398,11 +1398,11 @@ namespace CSAuto
                 bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
             return (bitmap, _handle);
         }
-        async Task<bool> MakeFalse(float afterSeconds)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(afterSeconds));
-            return false;
-        }
+        //async Task<bool> MakeFalse(float afterSeconds)
+        //{
+        //    await Task.Delay(TimeSpan.FromSeconds(afterSeconds));
+        //    return false;
+        //}
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             if(exitCm != null)
@@ -1506,7 +1506,7 @@ namespace CSAuto
                     //autoBuyMenu.IsEnabled = false;
                     //autoPauseResumeSpotify.IsEnabled = false;
                     //discordMenu.IsEnabled = false;
-                    hadError = true;
+                    //hadError = true;
                 }
                 MessageBox.Show($"{ex.Message}", Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
             }

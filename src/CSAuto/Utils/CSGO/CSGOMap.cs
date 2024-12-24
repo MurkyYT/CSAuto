@@ -11,7 +11,7 @@ namespace Murky.Utils.CSGO
 {
     public static class CSGOMap
     {
-        static Dictionary<string, string> MapIcons = new Dictionary<string, string>();
+        static readonly Dictionary<string, string> MapIcons = new Dictionary<string, string>();
         readonly static WebClient client = new WebClient();
         static CSGOMap()
         {

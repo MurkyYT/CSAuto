@@ -143,7 +143,7 @@ namespace CSAuto
             var newPath = Path.Combine(probingPath, assyName.Name);
             if (!newPath.EndsWith(".dll"))
             {
-                newPath = newPath + ".dll";
+                newPath += ".dll";
             }
             if (File.Exists(newPath))
             {
@@ -245,7 +245,7 @@ namespace CSAuto
 
                     int registryValue = (int)registryValueObject;
 
-                    return registryValue > 0 ? false : true;
+                    return registryValue <= 0;
                 }
             }
             catch { return false; }

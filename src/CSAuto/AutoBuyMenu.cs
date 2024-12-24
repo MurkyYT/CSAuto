@@ -87,7 +87,7 @@ namespace CSAuto
         private BitmapImage ctSrc = new BitmapImage();
         private BitmapImage tSrc = new BitmapImage();
         private Color[] colors = new Color[16];
-        public Size size { get { return new Size(ctSrc.PixelWidth, ctSrc.PixelHeight); } } 
+        public Size Size { get { return new Size(ctSrc.PixelWidth, ctSrc.PixelHeight); } } 
         // Equip  - 4
         // Pistols - 5
         // Mid-Tier - 5
