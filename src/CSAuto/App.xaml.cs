@@ -208,7 +208,7 @@ namespace CSAuto
         private void ImportAutoBuy()
         {
             buyMenu.Load(settings);
-            if (settings["AutoBuyArmor"] != null && settings["AutoBuyArmor"])
+            if (settings.KeyExists("AutoBuyArmor") && settings["AutoBuyArmor"])
             {
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetEnabled(true);
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetEnabled(true);
@@ -216,12 +216,12 @@ namespace CSAuto
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetEnabled(true);
                 settings.Delete("AutoBuyArmor");
             }
-            if (settings["AutoBuyDefuseKit"] != null && settings["AutoBuyDefuseKit"])
+            if (settings.KeyExists("AutoBuyDefuseKit") && settings["AutoBuyDefuseKit"])
             {
                 buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit, true).SetEnabled(true);
                 settings.Delete("AutoBuyDefuseKit");
             }
-            if (settings["PreferArmor"] != null && settings["PreferArmor"])
+            if (settings.KeyExists("PreferArmor") && settings["PreferArmor"])
             {
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetPriority(-2);
                 buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetPriority(-1);

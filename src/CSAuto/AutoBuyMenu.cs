@@ -421,20 +421,20 @@ namespace CSAuto
         public void Load(RegistrySettings settings) 
         {
             InitBuyItems();
-            if (settings["CTCustomAutoBuyConfig"] != null)
+            if (settings.KeyExists("CTCustomAutoBuyConfig"))
                 ctCustomItems = JsonConvert.DeserializeObject<List<CustomBuyItem>>(settings["CTCustomAutoBuyConfig"]);
-            if (settings["CTAutoBuyConfig"] != null)
+            if (settings.KeyExists("CTAutoBuyConfig"))
                 ctItems = JsonConvert.DeserializeObject<List<BuyItem>>(settings["CTAutoBuyConfig"]);
             
-            if (settings["TAutoBuyConfig"] != null)
+            if (settings.KeyExists("TAutoBuyConfig"))
                 tItems = JsonConvert.DeserializeObject<List<BuyItem>>(settings["TAutoBuyConfig"]);
-            if (settings["TCustomAutoBuyConfig"] != null)
+            if (settings.KeyExists("TCustomAutoBuyConfig"))
                 tCustomItems = JsonConvert.DeserializeObject<List<CustomBuyItem>>(settings["TCustomAutoBuyConfig"]);
         }
-        public static BuyItem[] GetEnabled(RegistrySettings settings,bool isCt)
+        public static BuyItem[] GetEnabled(RegistrySettings settings, bool isCt)
         {
             List<BuyItem> enabled = new List<BuyItem>();
-            if (settings[isCt ? "CTAutoBuyConfig" : "TAutoBuyConfig"] != null)
+            if (settings.KeyExists(isCt ? "CTAutoBuyConfig" : "TAutoBuyConfig"))
             {
                 Newtonsoft.Json.Linq.JArray ar = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(settings[isCt ? "CTAutoBuyConfig" : "TAutoBuyConfig"]);
                 BuyItem[] temp = ar.ToObject<BuyItem[]>();

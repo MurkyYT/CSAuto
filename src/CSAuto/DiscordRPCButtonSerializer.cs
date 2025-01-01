@@ -32,7 +32,7 @@ namespace CSAuto
         }
         public static List<DiscordRPCButton> Deserialize()
         {
-            if ((App.Current as App).settings["DiscordButtons"] != null)
+            if ((App.Current as App).settings.KeyExists("DiscordButtons"))
                 return JsonConvert.DeserializeObject<List<DiscordRPCButton>>((App.Current as App).settings["DiscordButtons"]);
             else
                 return new List<DiscordRPCButton>();

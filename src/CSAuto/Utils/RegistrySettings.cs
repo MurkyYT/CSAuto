@@ -196,9 +196,9 @@ namespace Murky.Utils
             }
         }
 
-        public bool KeyExists(string res)
+        public bool KeyExists(string key)
         {
-            return settingsKey.GetValue(res) != null;
+            return settingsKey.GetValue(key) != null;
         }
     }
     public struct Setting

@@ -648,6 +648,7 @@ namespace CSAuto
         {
             TabControl control = (TabControl)sender;
             isCt = control.SelectedIndex == 0;
+            UpdateImage();
         }
 
         private async void PortableModeCheck_Click(object sender, RoutedEventArgs e)

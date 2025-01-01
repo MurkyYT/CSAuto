@@ -305,7 +305,7 @@ namespace CSAuto
             {
                 Log.WriteLine("|MainApp.cs| Couldn't load colors from web, trying to load latest loaded colors");
                 //string path = DiscordRPCButtonSerializer.Path + "\\colors";
-                if ((App.Current as App).settings["ButtonColors"] != null)
+                if ((App.Current as App).settings.KeyExists("ButtonColors"))
                 {
                     string data = (App.Current as App).settings["ButtonColors"];
                     if (data != "")
