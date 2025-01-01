@@ -208,25 +208,32 @@ namespace CSAuto
         private void ImportAutoBuy()
         {
             buyMenu.Load(settings);
-            if (settings.KeyExists("AutoBuyArmor") && settings["AutoBuyArmor"])
+            if (settings.KeyExists("AutoBuyArmor"))
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetEnabled(true);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetEnabled(true);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetEnabled(true);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetEnabled(true);
+                if (settings["AutoBuyArmor"])
+                {
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetEnabled(true);
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetEnabled(true);
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetEnabled(true);
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetEnabled(true);
+                }
                 settings.Delete("AutoBuyArmor");
             }
-            if (settings.KeyExists("AutoBuyDefuseKit") && settings["AutoBuyDefuseKit"])
+            if (settings.KeyExists("AutoBuyDefuseKit"))
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit, true).SetEnabled(true);
+                if(settings["AutoBuyDefuseKit"])
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit, true).SetEnabled(true);
                 settings.Delete("AutoBuyDefuseKit");
             }
-            if (settings.KeyExists("PreferArmor") && settings["PreferArmor"])
+            if (settings.KeyExists("PreferArmor"))
             {
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetPriority(-2);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetPriority(-1);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetPriority(-2);
-                buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetPriority(-1);
+                if (settings["PreferArmor"])
+                {
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, true).SetPriority(-2);
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, true).SetPriority(-1);
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarVest, false).SetPriority(-2);
+                    buyMenu.GetItem(AutoBuyMenu.NAMES.KevlarAndHelmet, false).SetPriority(-1);
+                }
                 settings.Delete("PreferArmor");
             }
         }
