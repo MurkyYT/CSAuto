@@ -62,7 +62,6 @@ namespace CSAuto
             }
             Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt); });
             PortableModeCheck.IsChecked = File.Exists(Log.WorkPath + "\\resource\\.portable");
-            IsPortableText.Text = $"Portable: {PortableModeCheck.IsChecked}";
             Title += $" {MainApp.FULL_VER}";
         }
         private async Task RestartMessageBox()
@@ -84,7 +83,7 @@ namespace CSAuto
             Dispatcher.InvokeAsync(() =>
             {
                 outputBox.Text = data;
-                lastRecieveTime.Text = $"Last recieved data from GSI: {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}";
+                lastRecieveTime.Text = $"Last recieved data from GSI: {DateTime.Now:HH:mm:ss}";
             });
         }
         public void UpdateDebug(string data)
@@ -264,24 +263,11 @@ namespace CSAuto
         {
             new Thread(() =>
             {
-                Steam.GetLaunchOptions(730, out string launchOpt);
                 Dispatcher.InvokeAsync(() =>
                 {
                     string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
                     if (File.Exists(finalPath))
                         debugBox.Text = File.ReadAllText(finalPath);
-                    try
-                    {
-                        long id3 = Steam.GetCurrentSteamID3();
-                        long id64 = id3 + Steam.VALVE_STEAMID64_CONST;
-                        steamInfo.Text = $"Steam Path: \"{Steam.GetSteamPath()}\"\n" +
-                            $"SteamID3: {id3}\n" +
-                            $"SteamID64: {id64}\n" +
-                            $"CS:GO FriendCode: {CSGOFriendCode.Encode(id64.ToString())}\n" +
-                            $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n" +
-                            $"CS:GO LaunchOptions: \"{launchOpt}\"";
-                    }
-                    catch { }
                     ServerIP.Text = $"IP: {main.GetLocalIPAddress()}";
                     GenerateLanguages();
                     if (main.current.AlwaysMaximized)
@@ -433,12 +419,6 @@ namespace CSAuto
                 CategoriesTabControl.SelectedIndex == 1
                 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
                 new Thread(() => { LoadChangelog(); }).Start();
-            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
-            {
-                OldCaptureText.Text = Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture";
-                if(main.BUTTON_COLORS != null)
-                    DebugButtonColor.Text = $"Regular: {main.BUTTON_COLORS[0]}, Active: {main.BUTTON_COLORS[1]}";
-            }
             else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
             {
                 UpdateImage();
@@ -729,7 +709,12 @@ namespace CSAuto
 
         private void DebugSettings_Click(object sender, RoutedEventArgs e)
         {
-            new DebugSettings(this.main).Show();
+            new DebugSettings(main).Show();
+        }
+
+        private void DebugInfo_Click(object sender, RoutedEventArgs e)
+        {
+            new DebugInfo(main).Show();
         }
     }
 }

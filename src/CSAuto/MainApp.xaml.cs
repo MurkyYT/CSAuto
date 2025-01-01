@@ -43,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "4";
+        const string DEBUG_REVISION = "5";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -1303,7 +1303,7 @@ namespace CSAuto
                     guiWindow.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
                     Point pixelPos = new Point(csResolution.Width / 2, (int)(csResolution.Height / (1050f / 473f)) + 1);
                     Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
-                    guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): {pixelColor}";
+                    guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): [{pixelColor.R},{pixelColor.G},{pixelColor.B}]";
                 }
                 bool found = false;
                 int count = 0;

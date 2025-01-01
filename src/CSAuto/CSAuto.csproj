@@ -100,6 +100,9 @@
       <DependentUpon>APIKeys.resx</DependentUpon>
     </Compile>
     <Compile Include="AutoBuyMenu.cs" />
+    <Compile Include="DebugInfo.xaml.cs">
+      <DependentUpon>DebugInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DebugSettings.xaml.cs">
       <DependentUpon>DebugSettings.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,10 @@
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Compile Include="Utils\WinVersion.cs" />
+    <Page Include="DebugInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DebugSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

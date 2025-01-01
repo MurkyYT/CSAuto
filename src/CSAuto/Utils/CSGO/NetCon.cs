@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Windows.Threading;
 using TcpClient = Nager.TcpClient.TcpClient;
 
 namespace Murky.Utils.CSGO
@@ -24,7 +23,7 @@ namespace Murky.Utils.CSGO
                 _client = new TcpClient();
                 _client.Connect(_ip, _port);
                 if (!_client.IsConnected)
-                    throw new WebException("Couldn't connect to the netcon");
+                    throw new WebException("Connection refused");
                 _client.DataReceived += OnDataReceived;
                 Log.WriteLine($"|NetCon.cs| Successfully connected to netCon");
             }
@@ -39,12 +38,11 @@ namespace Murky.Utils.CSGO
             string data = Encoding.UTF8.GetString(receivedData);
             if (data.Contains("vport 0] connected") && data.Contains("SDR server steamid"))
                 MatchFound?.Invoke(this, new EventArgs());
-            if (Log.debugWind != null)
-                Log.debugWind.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); }));
+            Log.debugWind?.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); }));
         }
         public void SendCommand(string command)
         {
-            Byte[] data = Encoding.ASCII.GetBytes(command + "\n");
+            byte[] data = Encoding.ASCII.GetBytes(command + "\n");
             _ = _client.SendAsync(data);
             Log.WriteLine("|NetCon.cs| Sent: '" + command +"'");
         }
