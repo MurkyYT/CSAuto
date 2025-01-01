@@ -118,7 +118,9 @@
                                 <CheckBox Content="{x:Static p:Strings.menu_autofocus}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoFocusOnCS}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_focusback}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=focusBackOnOriginalWindow}"/>
                                 <!--<TextBlock Text="menu_autobuy" FontSize="20" FontWeight="Bold"/>
-                                --><!-- <CheckBox Content="menu_oldautobuy" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldAutoBuy}"/>--><!--
+                                -->
+                                <!-- <CheckBox Content="menu_oldautobuy" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldAutoBuy}"/>-->
+                                <!--
                                 <CheckBox Content="menu_preferarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=preferArmor}"/>
                                 <CheckBox Content="menu_autobuyarmor" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyArmor}"/>
                                 <CheckBox Content="menu_autobuydefuse" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoBuyDefuseKit}"/>-->
@@ -135,101 +137,6 @@
                             </StackPanel>
                         </mahapps:MetroTabItem>
                     </TabControl>
-                </Grid>
-            </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem>
-                <TabItem.HeaderTemplate>
-                    <ItemContainerTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="22.5" Height="30" Stretch="Fill">
-                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource ChangelogBadge}" />
-                            </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_changelog}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
-                        </StackPanel>
-                    </ItemContainerTemplate>
-                </TabItem.HeaderTemplate>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <mahapps:DropDownButton Name="ChangeLogAlternatives"
-                        Content="{x:Static p:Strings.menu_alternativelocations}">
-                        <mahapps:DropDownButton.Items>
-                            <TextBlock Text="GitHub" MouseDown="OpenGithubChangelog_MouseDown"/>
-                            <TextBlock Text="{x:Static p:Strings.menu_website}" MouseDown="OpenWebSite_MouseDown"/>
-                        </mahapps:DropDownButton.Items>
-                    </mahapps:DropDownButton>
-                    <FlowDocumentScrollViewer x:Name="ChangeLogFlowDocument"
-                                                VerticalAlignment="Stretch"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalScrollBarVisibility="Auto"
-                                                Margin="5"
-                                              Grid.Row="1">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run Text="Loading..."/>
-                            </Paragraph>
-                        </FlowDocument>
-                    </FlowDocumentScrollViewer>
-                </Grid>
-               
-            </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem>
-                <TabItem.HeaderTemplate>
-                    <ItemContainerTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="22.5" Height="26" Stretch="Fill">
-                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource DebugBadge}" RenderTransformOrigin="0.5,0.5" >
-                                    <Path.RenderTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform/>
-                                            <SkewTransform/>
-                                            <RotateTransform/>
-                                            <TranslateTransform X="-2.5"/>
-                                        </TransformGroup>
-                                    </Path.RenderTransform>
-                                </Path>
-                            </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_debug}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
-                        </StackPanel>
-                    </ItemContainerTemplate>
-                </TabItem.HeaderTemplate>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <DockPanel Grid.Row ="0" Grid.ColumnSpan="2">
-                        <Menu DockPanel.Dock="Top">
-                            <MenuItem Header="_File">
-                                <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
-                                <MenuItem x:Name="SaveFile" Header="_Save" Click="SaveFile_Click"/>
-                            </MenuItem>
-                            <MenuItem Header="_Debug settings" Click="DebugSettings_Click"/>
-                            <MenuItem Header="Debug _info" Click="DebugInfo_Click"/>
-                        </Menu>
-                    </DockPanel>
-                    <!--<TextBlock x:Name="IsPortableText" Text="Portable: {}" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Bottom" Margin="0,0,0,30"/>-->
-                    <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
-                    <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" TextChanged="debugBox_TextChanged" Loaded="debugBox_Loaded"/>
-                    <!--<TextBlock Text="CS Console Output:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom"/> -->
-                    <!--<TextBlock Text="{Binding Source={x:Static csauto:DiscordRPCButtonSerializer.Path}}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,15" TextWrapping="WrapWithOverflow"/>-->
-                    <!--<TextBlock Text="" x:Name="OldCaptureText" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,0,15"/>-->
-                    <!--<TextBlock x:Name="DebugButtonColor" Text="Active: {color}, Regular: {color}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom"/>-->
-                    <TextBlock x:Name="DebugPixelColor" Text="Pixel Color at (x,y): res" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,0,15"/>
-                    <TextBlock Text="Latest Captured Frame:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,15,0"/>
-                    <Image Grid.Row="2" Grid.RowSpan="1" Grid.Column="2" x:Name="latestCapturedFrame"/>
-                    <TextBox x:Name="csConsoleOutput" IsReadOnly="True" Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" VerticalScrollBarVisibility="Auto" Visibility="Hidden"/>
-                    <!--<TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,30"/>-->
                 </Grid>
             </mahapps:MetroTabItem>
             <mahapps:MetroTabItem >
@@ -388,6 +295,43 @@
                 <TabItem.HeaderTemplate>
                     <ItemContainerTemplate>
                         <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="22.5" Height="30" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource ChangelogBadge}" />
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_changelog}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <mahapps:DropDownButton Name="ChangeLogAlternatives"
+            Content="{x:Static p:Strings.menu_alternativelocations}">
+                        <mahapps:DropDownButton.Items>
+                            <TextBlock Text="GitHub" MouseDown="OpenGithubChangelog_MouseDown"/>
+                            <TextBlock Text="{x:Static p:Strings.menu_website}" MouseDown="OpenWebSite_MouseDown"/>
+                        </mahapps:DropDownButton.Items>
+                    </mahapps:DropDownButton>
+                    <FlowDocumentScrollViewer x:Name="ChangeLogFlowDocument"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalScrollBarVisibility="Auto"
+                                    Margin="5"
+                                  Grid.Row="1">
+                        <FlowDocument>
+                            <Paragraph>
+                                <Run Text="Loading..."/>
+                            </Paragraph>
+                        </FlowDocument>
+                    </FlowDocumentScrollViewer>
+                </Grid>
+            </mahapps:MetroTabItem>
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
                             <Viewbox Width="21" Height="21" Stretch="Fill">
                                 <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource ServerBadge}" RenderTransformOrigin="0.5,0.5" >
                                     <Path.RenderTransform>
@@ -418,6 +362,63 @@
                         <TextBlock Text="{x:Static p:Strings.title_serverclients}"/>
                     </StackPanel>
                     <ListBox Grid.Row="1" x:Name="ClientsListBox"/>
+                </Grid>
+            </mahapps:MetroTabItem>
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="22.5" Height="26" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource DebugBadge}" RenderTransformOrigin="0.5,0.5" >
+                                    <Path.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform X="-2.5"/>
+                                        </TransformGroup>
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_debug}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Row ="0" Grid.ColumnSpan="2">
+                        <Menu DockPanel.Dock="Top">
+                            <MenuItem Header="_File">
+                                <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
+                                <MenuItem x:Name="SaveFile" Header="_Save" Click="SaveFile_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="_Debug settings" Click="DebugSettings_Click"/>
+                            <MenuItem Header="Debug _info" Click="DebugInfo_Click"/>
+                        </Menu>
+                    </DockPanel>
+                    <!--<TextBlock x:Name="IsPortableText" Text="Portable: {}" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Bottom" Margin="0,0,0,30"/>-->
+                    <TextBlock x:Name="lastRecieveTime" Text="Last recieve time from GSI" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom"/>
+                    <TextBox x:Name="outputBox" IsReadOnly="True" Text="None" Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="debugBox" IsReadOnly="True" Grid.Row="3" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" TextChanged="debugBox_TextChanged" Loaded="debugBox_Loaded"/>
+                    <!--<TextBlock Text="CS Console Output:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom"/> -->
+                    <!--<TextBlock Text="{Binding Source={x:Static csauto:DiscordRPCButtonSerializer.Path}}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,15" TextWrapping="WrapWithOverflow"/>-->
+                    <!--<TextBlock Text="" x:Name="OldCaptureText" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,0,15"/>-->
+                    <!--<TextBlock x:Name="DebugButtonColor" Text="Active: {color}, Regular: {color}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom"/>-->
+                    <TextBlock x:Name="DebugPixelColor" Text="Pixel Color at (x,y): res" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,0,15"/>
+                    <TextBlock Text="Latest Captured Frame:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,15,0"/>
+                    <Image Grid.Row="2" Grid.RowSpan="1" Grid.Column="2" x:Name="latestCapturedFrame"/>
+                    <TextBox x:Name="csConsoleOutput" IsReadOnly="True" Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" VerticalScrollBarVisibility="Auto" Visibility="Hidden"/>
+                    <!--<TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,30"/>-->
                 </Grid>
             </mahapps:MetroTabItem>
         </TabControl>
