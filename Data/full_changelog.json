@@ -66,7 +66,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 14886020,
-                "download_count": 0,
+                "download_count": 2,
                 "created_at": "2024-11-14T16:12:41Z",
                 "updated_at": "2024-11-14T16:12:44Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.3/CSAuto_Android.apk"
@@ -101,7 +101,7 @@
                 "content_type": "application/x-msdownload",
                 "state": "uploaded",
                 "size": 3708794,
-                "download_count": 0,
+                "download_count": 15,
                 "created_at": "2024-11-14T16:12:44Z",
                 "updated_at": "2024-11-14T16:12:45Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.3/CSAuto_Installer.exe"
@@ -136,7 +136,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 2726944,
-                "download_count": 0,
+                "download_count": 122,
                 "created_at": "2024-11-14T16:12:45Z",
                 "updated_at": "2024-11-14T16:12:46Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.3/CSAuto_Portable.zip"
@@ -144,7 +144,7 @@
         ],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.1.3",
         "zipball_url": "https://api.github.com/repos/MurkyYT/CSAuto/zipball/2.1.3",
-        "body": "### Version 2.1.3 changelog\r\n- Fixed spamming player is in lobby notification\r\n- Added an option to disable auto buy rebuying after refunding\r\n- Made updater window non-resizable\r\n- Context menu about menu item look was enhanced\r\n- Fixed parsing of map icons\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.1.2...2.1.3"
+        "body": "### Version 2.1.3 changelog\r\n- Fixed spamming player is in lobby notification\r\n- Added an option to disable auto buy rebuying after refunding\r\n- Made updater window non-resizable\r\n- Context menu about menu item look was enhanced\r\n- Fixed parsing of map icons\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.1.2...2.1.3\n\n\ud83d\udee1 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:\n  * [`CSAuto_Android.apk`](https://www.virustotal.com/gui/file-analysis/MmY0YmU3MTRhMTY5NjBiMzg4NTE4YTZhOGFjOGM0ZGQ6MTczMTYwMDgwMA==/detection)\n  * [`CSAuto_Installer.exe`](https://www.virustotal.com/gui/file-analysis/NDUxYzQ2YWY4N2ZhYjA4Mzc1YWM2YTBmOTRkNGE4ZmQ6MTczMTYwMDgwMg==/detection)\n  * [`CSAuto_Portable.zip`](https://www.virustotal.com/gui/file-analysis/NjllY2Y4MzQwZDZkODAwNDJlNjBiODAyMzNlY2M3NGM6MTczMTYwMDgwNQ==/detection)"
     },
     {
         "filtered_body": "### Version 2.1.2a changelog\r\n- Fixed Discord Activity being stuck in last match when player is already in lobby\r\n- Fix with server thread when closing cs which caused a crash",
@@ -2196,7 +2196,7 @@
                 "content_type": "application/x-zip-compressed",
                 "state": "uploaded",
                 "size": 1792798,
-                "download_count": 8,
+                "download_count": 9,
                 "created_at": "2023-10-05T07:16:07Z",
                 "updated_at": "2023-10-05T07:16:08Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.1/CSAuto_Portable.zip"
@@ -3964,7 +3964,7 @@
                 "content_type": "application/vnd.android.package-archive",
                 "state": "uploaded",
                 "size": 9754655,
-                "download_count": 5,
+                "download_count": 6,
                 "created_at": "2023-07-15T14:28:29Z",
                 "updated_at": "2023-07-15T14:28:32Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/1.0.9/CSAuto_Android.apk"
