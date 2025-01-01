@@ -395,10 +395,10 @@ namespace CSAuto
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CategoriesTabControl.SelectedItem != null &&
-                CategoriesTabControl.SelectedIndex == 1
+                CategoriesTabControl.SelectedIndex == 3
                 && ChangeLogFlowDocument.Document.Blocks.LastBlock.ContentStart.Paragraph != null)
                 new Thread(() => { LoadChangelog(); }).Start();
-            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 4)
+            else if (CategoriesTabControl.SelectedItem != null && CategoriesTabControl.SelectedIndex == 2)
             {
                 UpdateImage();
             }
@@ -648,7 +648,6 @@ namespace CSAuto
         {
             TabControl control = (TabControl)sender;
             isCt = control.SelectedIndex == 0;
-            UpdateImage();
         }
 
         private async void PortableModeCheck_Click(object sender, RoutedEventArgs e)
