@@ -6,17 +6,11 @@ using Microsoft.Win32;
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,9 +19,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using Button = System.Windows.Controls.Button;
-using CheckBox = System.Windows.Controls.CheckBox;
 
 namespace CSAuto
 {
@@ -220,26 +211,14 @@ namespace CSAuto
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                InitialDirectory = @"C:\",
-                Title = "Browse Text Files",
-
-                CheckFileExists = true,
-                CheckPathExists = true,
-
-                DefaultExt = "txt",
                 Filter = "txt files (*.txt)|*.txt",
-                FilterIndex = 2,
-                RestoreDirectory = true,
-
-                ReadOnlyChecked = true,
-                ShowReadOnly = true
+                DefaultExt = "txt"
             };
-
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if ((bool)openFileDialog.ShowDialog())
             {
-                ParseGameState(File.ReadAllText(openFileDialog1.FileName));
+                ParseGameState(File.ReadAllText(openFileDialog.FileName));
             }
         }
 
