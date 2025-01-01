@@ -236,6 +236,9 @@ namespace CSAuto
                 }
                 settings.Delete("PreferArmor");
             }
+
+            if (settings.KeyExists("OldAutoBuy"))
+                settings.Delete("OldAutoBuy");
         }
 
         private bool WindowsDarkMode()

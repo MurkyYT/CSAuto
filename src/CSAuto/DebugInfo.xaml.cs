@@ -51,6 +51,7 @@ namespace CSAuto
                 + $"Mouse Input Type: {(Properties.Settings.Default.oldMouseInput ? "Old input" : "New input")}\n"
                 + $"Active Button Color: {activeButtonColor}\n"
                 + $"Regular Button Color: {regularButtonColor}\n"
+                + $"Settings Path: {DiscordRPCButtonSerializer.Path}\n"
                 + $"\n====Steam info====\n"
                 + $"Steam Path: \"{Steam.GetSteamPath()}\"\n"
                 + $"SteamID3: {id3}\n"
