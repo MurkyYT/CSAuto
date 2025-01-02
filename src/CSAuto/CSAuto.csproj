@@ -258,6 +258,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\App_Icon.png" />
     <Resource Include="Images\CS_ICON.png" />
     <Content Include="DXGICapture.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

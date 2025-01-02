@@ -421,6 +421,39 @@
                     <!--<TextBlock x:Name="steamInfo" Text="SteamID3 : none LaunchOptions ''" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap" Margin="0,0,10,30"/>-->
                 </Grid>
             </mahapps:MetroTabItem>
+            <mahapps:MetroTabItem>
+                <TabItem.HeaderTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="25" Height="25" Stretch="Fill">
+                                <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource InfoBadge}" RenderTransformOrigin="0.5,0.5" >
+                                    <Path.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform X="-2.5"/>
+                                        </TransformGroup>
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Viewbox>
+                            <TextBlock Text="{x:Static p:Strings.menu_about}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </TabItem.HeaderTemplate>
+                <Grid>
+                    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6" Background="Black" MinWidth="300" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Margin="15,15,15,15">
+                            <Image Width="64" Height="64" Source="/Images/App_Icon.png"/>
+                            <TextBlock Text="CSAuto" FontSize="48" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{x:Static p:Strings.text_description}" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" FontSize="24" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="" Foreground="White" HorizontalAlignment="Center" FontSize="20" TextAlignment="Center" TextWrapping="WrapWithOverflow">
+                                <Hyperlink Foreground="White" Click="AboutLicense_Click">Copyright (c) 2023, Murky</Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </mahapps:MetroTabItem>
         </TabControl>
         <!--<TextBlock x:Name="VersionText" Text="ver smthn" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="Gray"/>-->
     </Grid>

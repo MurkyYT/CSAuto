@@ -981,6 +981,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string menu_about {
+            get {
+                return ResourceManager.GetString("menu_about", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accepted match.
         /// </summary>
         public static string menu_acceptednotification {
@@ -1598,6 +1607,15 @@ namespace CSAuto.Languages {
         public static string team_t {
             get {
                 return ResourceManager.GetString("team_t", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Counter-Strike 2 companion that automates in-game tasks, such as accepting match, buying items and more.
+        /// </summary>
+        public static string text_description {
+            get {
+                return ResourceManager.GetString("text_description", resourceCulture);
             }
         }
         

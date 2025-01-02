@@ -204,11 +204,11 @@
   <data name="title_update" xml:space="preserve">
     <value>Проверка обновлений (CSAuto)</value>
   </data>
-  <data name="title_error" xml:space="preserve">
-    <value>Ошибка</value>
-  </data>
   <data name="title_restartneeded" xml:space="preserve">
     <value>Перезапустить программу</value>
+  </data>
+  <data name="title_error" xml:space="preserve">
+    <value>Ошибка</value>
   </data>
   <data name="inputtitle_mobileip" xml:space="preserve">
     <value>IP-адрес телефона</value>
@@ -268,6 +268,9 @@
   </data>
   <data name="menu_bombnotification" xml:space="preserve">
     <value>Информация о бомбе</value>
+  </data>
+  <data name="server_timeleft" xml:space="preserve">
+    <value>До взрыва осталось:</value>
   </data>
   <data name="server_bombexplode" xml:space="preserve">
     <value>Бомба взорвалась</value>
@@ -671,22 +674,25 @@
   <data name="tooltip_discord" xml:space="preserve">
     <value>Присоединяйтесь к серверу Discord</value>
   </data>
+  <data name="menu_server" xml:space="preserve">
+    <value>Сервер</value>
+  </data>
   <data name="title_serverport" xml:space="preserve">
     <value>Порт: </value>
   </data>
   <data name="title_serverclients" xml:space="preserve">
     <value>Клиенты:</value>
   </data>
-  <data name="menu_server" xml:space="preserve">
-    <value>Сервер</value>
-  </data>
-  <data name="server_timeleft" xml:space="preserve">
-    <value>До взрыва осталось:</value>
-  </data>
   <data name="ckbox_oldmouseinput" xml:space="preserve">
     <value>Использовать старую технику ввода мыши</value>
   </data>
   <data name="title_rebuy" xml:space="preserve">
     <value>Покупать снова</value>
+  </data>
+  <data name="menu_about" xml:space="preserve">
+    <value>О приложении</value>
+  </data>
+  <data name="text_description" xml:space="preserve">
+    <value>Компаньон Counter-Strike 2, автоматизирующий различные внутриигровые действия как принятие матча, покупка предметов и другие</value>
   </data>
 </root>

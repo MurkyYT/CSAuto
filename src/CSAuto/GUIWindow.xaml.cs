@@ -695,5 +695,10 @@ namespace CSAuto
         {
             new DebugInfo(main).Show();
         }
+
+        private void AboutLicense_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/MurkyYT/CSAuto/blob/master/LICENSE");
+        }
     }
 }

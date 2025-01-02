@@ -689,4 +689,10 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="title_rebuy" xml:space="preserve">
     <value>Rebuy</value>
   </data>
+  <data name="menu_about" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="text_description" xml:space="preserve">
+    <value>Counter-Strike 2 companion that automates in-game tasks, such as accepting match, buying items and more</value>
+  </data>
 </root>
