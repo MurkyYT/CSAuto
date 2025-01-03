@@ -6,7 +6,7 @@
   <a href="https://discord.gg/57ZEVZgm5W"><img src="https://dcbadge.vercel.app/api/server/57ZEVZgm5W"></a>
 </p>
 <p>
-  <a href="https://github.com/MurkyYT/CSAuto/releases/latest"><img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?label=Latest%20release&style=for-the-badge" alt="Latest Release"></a>
+  <a href="https://github.com/MurkyYT/CSAuto/releases/latest"><img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?display_date=published_at&label=Latest%20release&style=for-the-badge" alt="Latest Release"></a>
   <a href="https://github.com/MurkyYT/CSAuto/releases/latest"><img width="auto" src="https://img.shields.io/github/v/tag/murkyyt/csauto?label=Latest%20version&style=for-the-badge" alt="Latest Version"></a>
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads&style=for-the-badge" alt="Total Downloads">
 </p>
