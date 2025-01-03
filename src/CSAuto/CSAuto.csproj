@@ -100,14 +100,14 @@
       <DependentUpon>APIKeys.resx</DependentUpon>
     </Compile>
     <Compile Include="AutoBuyMenu.cs" />
-    <Compile Include="DebugInfo.xaml.cs">
+    <Compile Include="Windows\DebugInfo.xaml.cs">
       <DependentUpon>DebugInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DebugSettings.xaml.cs">
+    <Compile Include="Windows\DebugSettings.xaml.cs">
       <DependentUpon>DebugSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="DiscordRPCButtonSerializer.cs" />
-    <Compile Include="Exception\WriteException.cs" />
+    <Compile Include="Exceptions\WriteException.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="ImageLoader.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
@@ -148,15 +148,15 @@
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Compile Include="Utils\WinVersion.cs" />
-    <Page Include="DebugInfo.xaml">
+    <Page Include="Windows\DebugInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DebugSettings.xaml">
+    <Page Include="Windows\DebugSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUIWindow.xaml">
+    <Page Include="Windows\GUIWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -169,7 +169,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utils\CSGO\GameState.cs" />
-    <Compile Include="GUIWindow.xaml.cs">
+    <Compile Include="Windows\GUIWindow.xaml.cs">
       <DependentUpon>GUIWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Input.cs" />
