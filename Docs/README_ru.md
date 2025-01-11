@@ -3,7 +3,7 @@
 
    <h1>CSAuto</h1>
    
-  <a href="https://discord.gg/57ZEVZgm5W"><img src="https://dcbadge.vercel.app/api/server/57ZEVZgm5W"></a>
+  <a href="https://discord.gg/57ZEVZgm5W"><img src="https://img.shields.io/discord/1154291113352499232?style=for-the-badge&logo=Discord&label=DISCORD"></a>
 </p>
 <p>
   <img width="auto" src="https://img.shields.io/github/release-date/murkyyt/csauto?display_date=published_at&label=%D0%9F%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9%20%D1%80%D0%B5%D0%BB%D0%B8%D0%B7&style=for-the-badge" alt="Latest Release">
