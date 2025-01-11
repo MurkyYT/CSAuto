@@ -44,7 +44,7 @@ namespace CSAuto
                 activeButtonColor = $"({main.BUTTON_COLORS[1].R},{main.BUTTON_COLORS[1].G},{main.BUTTON_COLORS[1].B})";
             }
 
-            TextBlock.Text = $"CSAuto Version {MainApp.FULL_VER}\n"
+            TextBlock.Text = $"CSAuto Version {MainApp.FULL_VER}\nBuilt at: {CompileInfo.Date} {CompileInfo.Time}\n"
                 + $"\n====App info====\n"
                 + $"IsPortable: {File.Exists(Log.WorkPath + "\\resource\\.portable")}\n"
                 + $"Screen Capture Type: {(Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture")}\n"

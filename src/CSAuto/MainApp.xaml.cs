@@ -43,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "6";
+        const string DEBUG_REVISION = "7";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -292,13 +292,17 @@ namespace CSAuto
             {
                 string url = $"https://raw.githubusercontent.com/MurkyYT/CSAuto/{ONLINE_BRANCH_NAME}/Data/colors";
                 string data = Github.GetWebInfo(url);
+
                 if (data == "")
                     throw new WebException("Couldn't load button colors");
+
                 string[] lines = data.Split(new char[] { '\n' });
-                string path = DiscordRPCButtonSerializer.Path + "\\colors";
+
                 if (App.Current == null)
                     return new Color[2];
+
                 (App.Current as App).settings.Set("ButtonColors", data);
+
                 return SplitColorsLines(lines);
             }
             catch 
@@ -308,14 +312,18 @@ namespace CSAuto
                 if ((App.Current as App).settings.KeyExists("ButtonColors"))
                 {
                     string data = (App.Current as App).settings["ButtonColors"];
+
                     if (data != "")
                     {
                         string[] lines = data.Split(new char[] { '\n' });
                         return SplitColorsLines(lines);
                     }
                 }
+
                 Log.WriteLine("|MainApp.cs| Couldn't load colors at all");
-                MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_loadcolors"), Languages.Strings.ResourceManager.GetString("title_error"),MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_loadcolors"), 
+                    Languages.Strings.ResourceManager.GetString("title_error"),MessageBoxButton.OK, MessageBoxImage.Error);
+
                 return new Color[2];
             }
         }

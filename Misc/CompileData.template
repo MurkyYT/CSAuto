@@ -1,0 +1,8 @@
+namespace CSAuto
+{
+    public static class CompileInfo
+    {
+        public static string Date = "{date}";
+        public static string Time = "{time}";
+    }
+}
