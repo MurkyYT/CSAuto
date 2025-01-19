@@ -695,4 +695,10 @@
   <data name="text_description" xml:space="preserve">
     <value>Компаньон Counter-Strike 2, автоматизирующий различные внутриигровые действия как принятие матча, покупка предметов и другие</value>
   </data>
+  <data name="title_optimization" xml:space="preserve">
+    <value>Оптимизация</value>
+  </data>
+  <data name="msgbox_hdroptimization" xml:space="preserve">
+    <value>Найден дисплей с поддержкой HDR, текущие настройки не оптимизированы для HDR-дисплеев, хотите оптимизировать настройки?</value>
+  </data>
 </root>

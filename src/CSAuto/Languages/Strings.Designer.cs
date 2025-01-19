@@ -1485,6 +1485,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A display that supports HDR has been found, the current settings are not optimized for HDR displays, do you want to optimize the settings?.
+        /// </summary>
+        public static string msgbox_hdroptimization {
+            get {
+                return ResourceManager.GetString("msgbox_hdroptimization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have the latest version!.
         /// </summary>
         public static string msgbox_latestversion {
@@ -1688,6 +1697,15 @@ namespace CSAuto.Languages {
         public static string title_error {
             get {
                 return ResourceManager.GetString("title_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optimization.
+        /// </summary>
+        public static string title_optimization {
+            get {
+                return ResourceManager.GetString("title_optimization", resourceCulture);
             }
         }
         

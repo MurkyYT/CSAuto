@@ -129,6 +129,23 @@ namespace CSAuto
                 {
                     Source = new Uri("pack://application:,,,/RoundedResources/RoundedResources.xaml", UriKind.RelativeOrAbsolute)
                 });
+            if(!Settings.Default.oldScreenCaptureWay && Native.DisplayInfo.HasHDREnabledDisplay() && 
+                (!settings.KeyExists("OptimizeForHDR") || !settings["OptimizeForHDR"] == false))
+            {
+                Log.WriteLine("|App.cs| CSAuto not optimized for HDR, asking user to optimize");
+                if (MessageBox.Show(Languages.Strings.msgbox_hdroptimization, 
+                    Languages.Strings.title_optimization, MessageBoxButton.YesNo, 
+                    MessageBoxImage.Question) == MessageBoxResult.Yes) 
+                {
+                    Settings.Default.oldScreenCaptureWay = true;
+                    Settings.Default.Save();
+                    MoveSettings();
+                }
+                else
+                {
+                    settings.Set("OptimizeForHDR", false);
+                }
+            }
 
             new MainApp().Show();
             NativeMethods.OptimizeMemory();
@@ -137,17 +154,17 @@ namespace CSAuto
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
 
-            var probingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\bin";
-            var assyName = new AssemblyName(args.Name);
+            string probingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\bin";
+            AssemblyName assyName = new AssemblyName(args.Name);
 
-            var newPath = Path.Combine(probingPath, assyName.Name);
+            string newPath = Path.Combine(probingPath, assyName.Name);
             if (!newPath.EndsWith(".dll"))
             {
                 newPath += ".dll";
             }
             if (File.Exists(newPath))
             {
-                var assy = Assembly.LoadFile(newPath);
+                Assembly assy = Assembly.LoadFile(newPath);
                 return assy;
             }
             return null;
@@ -308,10 +325,10 @@ namespace CSAuto
         }
         public static string Unzip(byte[] bytes)
         {
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+            using (MemoryStream msi = new MemoryStream(bytes))
+            using (MemoryStream mso = new MemoryStream())
             {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+                using (GZipStream gs = new GZipStream(msi, CompressionMode.Decompress))
                 {
                     //gs.CopyTo(mso);
                     CopyTo(gs, mso);
