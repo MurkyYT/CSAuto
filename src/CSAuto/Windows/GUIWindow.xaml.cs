@@ -91,6 +91,8 @@ namespace CSAuto
             Log.debugWind = null;
             Properties.Settings.Default.Save();
             main.current.MoveSettings();
+            if (main.current.IsPortable)
+                File.WriteAllText(Log.WorkPath + "\\.conf", main.current.settings.ToString(), Encoding.UTF8);
             GameState.Dispose();
             Close();
             main.current.buyMenu.Save(main.current.settings);
