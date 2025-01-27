@@ -71,29 +71,30 @@ public enum AppComandCode : uint
         private static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
         private const int WM_APPCOMMAND = 0x0319;
+
+        private static bool SendMediaPauseResume()
+        {
+            Process prc = GetProcess();
+            if (prc == null)
+                return false;
+            SendMessageW(prc.MainWindowHandle, WM_APPCOMMAND, prc.MainWindowHandle, (IntPtr)(14 << 16));
+            return true;
+        }
         public static void Pause()
         {
             if (IsPlaying())
             {
-                SendMediaPauseResume();
-                Log.WriteLine("|Spotify.cs| Pausing Spotify");
+                if (SendMediaPauseResume())
+                    Log.WriteLine("|Spotify.cs| Pausing Spotify");
             }
-        }
-
-        private static void SendMediaPauseResume()
-        {
-            Process prc = GetProcess();
-            if (prc == null)
-                return;
-            SendMessageW(prc.MainWindowHandle, WM_APPCOMMAND, prc.MainWindowHandle, (IntPtr)(14 << 16));
         }
 
         public static void Resume()
         {
             if (!IsPlaying())
             {
-                SendMediaPauseResume();
-                Log.WriteLine("|Spotify.cs| Resuming Spotify");
+                if(SendMediaPauseResume())
+                    Log.WriteLine("|Spotify.cs| Resuming Spotify");
             }
         }
         public static bool IsRunning()
