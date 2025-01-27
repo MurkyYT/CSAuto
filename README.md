@@ -100,7 +100,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
   
 ### Auto pause/resume spotify doesn't work
   
-  Make sure the spotify window is open and not hiden in the tray
+  Make sure the spotify window is open and not hidden in the tray
 
 ## Suggestions
 
