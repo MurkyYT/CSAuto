@@ -83,6 +83,8 @@ public enum AppComandCode : uint
         private static void SendMediaPauseResume()
         {
             Process prc = GetProcess();
+            if (prc == null)
+                return;
             SendMessageW(prc.MainWindowHandle, WM_APPCOMMAND, prc.MainWindowHandle, (IntPtr)(14 << 16));
         }
 

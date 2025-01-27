@@ -97,6 +97,10 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 ### What is the latest version for CS:GO
 	
   The latest version released for CS:GO is 1.1.2 and can be downloaded [here](https://github.com/MurkyYT/CSAuto/releases/tag/1.1.2), be warned that some features might not work as intended
+  
+### Auto pause/resume spotify doesn't work
+  
+  Make sure the spotify window is open and not hiden in the tray
 
 ## Suggestions
 
