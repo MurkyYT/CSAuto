@@ -1,3 +1,18 @@
+### Version 2.1.4 changelog
+- Added a slight delay when auto accepting to hopefully eliminate not clicking in the right place
+- Auto accept now always checks for accept button even if accepted, this way the app shouldn't miss the accept button at all
+- Reordered categories placements from most useful to less useful
+- Cleaned up debug ui
+- Moved relevant debug info to a seperate window with a copyable text box
+- Added about menu with copyright notice
+- Added auto optimization on startup for HDR displays
+- Fixed spotify auto pause/resume crashing (thanks @nevespt for pointing out that there is a problem when spotify window is hidden)
+- Added a clarification about spotify auto pause/resume
+- Fixed portable settings not always saved
+- Adjusted M4A4's and FAMAS's price according to [premier season 2 update](https://steamcommunity.com/games/CSGO/announcements/detail/520830071182721027?utm_source=SteamDB)
+
+---
+
 ### Version 2.1.3 changelog
 - Fixed spamming player is in lobby notification
 - Added an option to disable auto buy rebuying after refunding
