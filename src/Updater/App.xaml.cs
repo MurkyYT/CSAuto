@@ -29,26 +29,34 @@ namespace Updater
                 bool didCleanOld = files.Length > 0;
                 foreach (var file in files)
                 {
+                    int attempts = 0;
                     while (true)
                     {
+                        if (attempts > 5)
+                            break;
                         try
                         {
+                            attempts++;
                             File.Delete(file);
                             break;
                         }
-                        catch { }
+                        catch { Thread.Sleep(100); }
                     }
                 }
                 if (didCleanOld)
                 {
+                    int attempts = 0;
                     while (true)
                     {
+                        if (attempts > 5)
+                            break;
                         try
                         {
+                            attempts++;
                             Directory.Delete(Log.WorkPath + "\\..\\ru");
                             break;
                         }
-                        catch { }
+                        catch { Thread.Sleep(100); }
                     }
                     try
                     {

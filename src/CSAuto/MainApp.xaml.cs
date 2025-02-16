@@ -41,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.4";
+        public const string VER = "2.1.5";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -463,7 +463,7 @@ namespace CSAuto
                     if (lastActivity == Activity.Playing && csActive && Properties.Settings.Default.autoBuyEnabled && autoBuy)
                         AutoBuy();
                     if (Properties.Settings.Default.autoPausePlaySpotify)
-                        AutoPauseResumeSpotify();
+                        AutoPauseResumeMusic();
                 }
                 UpdateDiscordRPC();
                 if(DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
@@ -946,23 +946,23 @@ namespace CSAuto
             catch(NullReferenceException) { }
         }
 
-        private void AutoPauseResumeSpotify()
+        private void AutoPauseResumeMusic()
         {
             if (gameState.Player.CurrentActivity == Activity.Playing)
             {
                 if (gameState.Player.Health > 0 && gameState.Player.SteamID == gameState.MySteamID)
                 {
-                    Spotify.Pause();
+                    Music.Pause();
                 }
                 else if (gameState.Player.SteamID != gameState.MySteamID ||
                     (gameState.Player.Health <= 0 && gameState.Player.SteamID == gameState.MySteamID))
                 {
-                    Spotify.Resume();
+                    Music.Resume();
                 }
             }
             else if (gameState.Player.CurrentActivity != Activity.Textinput)
             {
-                Spotify.Resume();
+                Music.Resume();
             }
         }
         private void SendMessageToClients(string message, bool onlyTelegram = false, bool onlyClients = false,Commands command = Commands.None)
