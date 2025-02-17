@@ -377,6 +377,10 @@ namespace CSAuto
                 BombState? currentBombState = gameState.Round.Bombstate;
                 Weapon currentWeapon = gameState.Player.ActiveWeapon;
                 guiWindow?.UpdateText(gameState.JSON);
+                //if (netCon == null)
+                //{
+                //    NetConEstablishConnection();
+                //}
                 if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
                 {
                     StartBombTimer();
