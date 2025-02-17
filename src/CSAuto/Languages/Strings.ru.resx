@@ -166,7 +166,7 @@
     <value>Проверять обновления</value>
   </data>
   <data name="menu_autospotify" xml:space="preserve">
-    <value>Автоматическая пауза/возобновление Spotify</value>
+    <value>Автоматическая пауза/возобновление медии</value>
   </data>
   <data name="menu_startup" xml:space="preserve">
     <value>Автозапуск</value>

@@ -1098,7 +1098,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Pause/Resume Spotify.
+        ///   Looks up a localized string similar to Auto Pause/Resume media.
         /// </summary>
         public static string menu_autospotify {
             get {

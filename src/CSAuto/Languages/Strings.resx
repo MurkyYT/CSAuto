@@ -166,7 +166,7 @@
     <value>Auto Check For Updates</value>
   </data>
   <data name="menu_autospotify" xml:space="preserve">
-    <value>Auto Pause/Resume Spotify</value>
+    <value>Auto Pause/Resume media</value>
   </data>
   <data name="menu_startup" xml:space="preserve">
     <value>Start With Windows</value>
