@@ -34,7 +34,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 * Auto accept matches for you
 * Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)
 * Auto buy selected items in customizable menu!
-* Auto pause/resume spotify song
+* Auto pause/resume currently playing song/video
 * Show customizable game info in Discord Rich Presence (show amount of players in lobby can be bannable!)
 * Send time left till bomb exploded to mobile! (not accurate as of right now)
 * Bring game to front when accept button appears and return to previous window!
