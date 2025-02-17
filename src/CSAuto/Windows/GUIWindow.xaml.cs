@@ -197,20 +197,6 @@ namespace CSAuto
             }
         }
 
-        //private static void ParseWeaponGSI(Player player, PropertyInfo pi2)
-        //{
-        //    foreach (PropertyInfo pi3 in pi2.PropertyType.GetProperties())
-        //    {
-        //        Log.WriteLine(
-        //            string.Format("Name: {0} | Value: {1}",
-        //                    pi3.Name,
-        //                    pi3.GetValue(TypeConvertor.ConvertPropertyInfoToOriginalType<Weapon>(pi2, player), null)
-        //                )
-        //        );
-        //    }
-        //    Log.WriteLine("-----------------------------");
-        //}
-
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -253,8 +239,6 @@ namespace CSAuto
                     GenerateLanguages();
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;
-                    //LoadLanguages(this);
-                    //VersionText.Text = $"ver {MainApp.FULL_VER}";
                     UpdateDiscordRPCResult(true);
                     LoadDiscordButtons();
                 });
@@ -293,34 +277,6 @@ namespace CSAuto
                 ChangeLogFlowDocument.Document = document;
                 });
         }
-
-        //private void LoadLanguages(DependencyObject obj)
-        //{
-        //    Dispatcher.InvokeAsync(() =>
-        //    {
-        //        foreach (CheckBox ch in FindVisualChildren<CheckBox>(obj))
-        //            ch.Content = Languages.Strings.ResourceManager.GetString((string)ch.Content];
-        //        foreach (MetroTabItem ch in FindVisualChildren<MetroTabItem>(obj))
-        //            ch.Header = Languages.Strings.ResourceManager.GetString((string)ch.Header];
-        //        foreach (TextBlock ch in FindVisualChildren<TextBlock>(obj))
-        //        {
-        //            if (Colors.Contains(ch.Text) ||
-        //                ch.Text == "" ||
-        //                ch.Text == "Steam" ||
-        //                ch.Text == "Faceit" ||
-        //                ch.Text == "CSGOStats")
-        //                continue;
-        //            ch.Text = Languages.Strings.ResourceManager.GetString(ch.Text];
-        //        }
-        //        foreach (Button ch in FindVisualChildren<Button>(obj))
-        //            if (ch.Content != null && ch.Content.GetType().Name == "String")
-        //                ch.Content = Languages.Strings.ResourceManager.GetString((string)ch.Content];
-        //        foreach (DropDownButton ch in FindVisualChildren<DropDownButton>(obj))
-        //            ch.Content = Languages.Strings.ResourceManager.GetString((string)ch.Content];
-        //        foreach (TextBox tb in FindVisualChildren<TextBox>(obj))
-        //            tb.ToolTip = tb.ToolTip != null ? tb.ToolTip = Languages.Strings.ResourceManager.GetString((string)tb.ToolTip] : null;
-        //    });
-        //}
 
         private void LaunchGitHubSite(object sender, RoutedEventArgs e)
         {
@@ -366,7 +322,6 @@ namespace CSAuto
         }
         private void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {
-            //await RestartMessageBox();
             UpdateTheme();
         }
 
@@ -551,9 +506,7 @@ namespace CSAuto
                     BuyItemPriority.Value = item.GetPriority();
                     BuyItemEnabledCheckBox.IsChecked = item.IsEnabled();
                     CheckIsCustom(item);
-                }
-                //else
-                //    await ShowMessage("title_error", "error_notimplemented", MessageDialogStyle.Affirmative);         
+                }  
             }
         }
 
@@ -639,9 +592,6 @@ namespace CSAuto
 
         private void UpdateImage()
         {
-            //BitmapSource src = main.current.buyMenu.GetImage(isCt);
-            //src.Freeze();
-            //await Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = src; });
             AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt);
             NativeMethods.OptimizeMemory();
         }

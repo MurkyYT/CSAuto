@@ -58,7 +58,6 @@ namespace CSAuto
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
             "throttle\" \"" + THROTTLE + "\"\r\n\"" +
             "heartbeat\" \"" + HEARTBEAT + "\"\r\n\"data\"\r\n{\r\n   \"provider\"            \"1\"\r\n   \"map\"                 \"1\"\r\n   \"round\"               \"1\"\r\n   \"player_id\"           \"1\"\r\n   \"player_state\"        \"1\"\r\n   \"player_weapons\"      \"1\"\r\n   \"player_match_stats\"  \"1\"\r\n   \"bomb\" \"1\"\r\n}\r\n}";
-        //const float ACCEPT_BUTTON_DELAY = 15;
         const int MAX_ARMOR_AMOUNT_TO_REBUY = 70;
         const int MIN_AMOUNT_OF_PIXELS_TO_ACCEPT = 5;
         const int BOMB_SECONDS_DELAY = 2;
@@ -308,7 +307,6 @@ namespace CSAuto
             catch 
             {
                 Log.WriteLine("|MainApp.cs| Couldn't load colors from web, trying to load latest loaded colors");
-                //string path = DiscordRPCButtonSerializer.Path + "\\colors";
                 if ((App.Current as App).settings.KeyExists("ButtonColors"))
                 {
                     string data = (App.Current as App).settings["ButtonColors"];
@@ -335,13 +333,10 @@ namespace CSAuto
             {
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    //This gives us an array of 3 strings each representing a number in text form.
                     var splitString = lines[i].Split(',');
 
-                    //converts the array of 3 strings in to an array of 3 ints.
                     var splitInts = splitString.Select(item => int.Parse(item)).ToArray();
 
-                    //takes each element of the array of 3 and passes it in to the correct slot
                     res[i] = Color.FromArgb(splitInts[0], splitInts[1], splitInts[2]);
                 }
             }
@@ -382,20 +377,6 @@ namespace CSAuto
                 BombState? currentBombState = gameState.Round.Bombstate;
                 Weapon currentWeapon = gameState.Player.ActiveWeapon;
                 guiWindow?.UpdateText(gameState.JSON);
-                //if (lastActivity != activity)
-                //    Log.WriteLine($"Activity: {(lastActivity == null ? "None" : lastActivity.ToString())} -> {(activity == null ? "None" : activity.ToString())}");
-                //if (currentMatchState != matchState)
-                //    Log.WriteLine($"Match State: {(matchState == null ? "None" : matchState.ToString())} -> {(currentMatchState == null ? "None" : currentMatchState.ToString())}");
-                //if (currentRoundState != roundState)
-                //    Log.WriteLine($"Round State: {(roundState == null ? "None" : roundState.ToString())} -> {(currentRoundState == null ? "None" : currentRoundState.ToString())}");
-                //if (round != currentRound)
-                //    Log.WriteLine($"RoundNo: {(round == -1 ? "None" : round.ToString())} -> {(currentRound == -1 ? "None" : currentRound.ToString())}");
-                //if (GetWeaponName(weapon) != GetWeaponName(currentWeapon))
-                //    Log.WriteLine($"Current Weapon: {(weapon == null ? "None" : GetWeaponName(weapon))} -> {(currentWeapon == null ? "None" : GetWeaponName(currentWeapon))}");
-                //if (netCon == null)
-                //{
-                //    NetConEstablishConnection();
-                //}
                 if (bombState == null && currentBombState == BombState.Planted && bombTimerThread == null && Properties.Settings.Default.bombNotification)
                 {
                     StartBombTimer();
@@ -728,20 +709,6 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
-        // Making the context menu rounded leaves some trasparent artifacts :(
-        //private void ExitCm_Opened(object sender, RoutedEventArgs e)
-        //{
-        //    if (current.IsWindows11)
-        //    {
-        //        PresentationSource src = HwndSource.FromDependencyObject(exitCm);
-        //        IntPtr handle = ((HwndSource)src).Handle;
-        //        var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
-        //        var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
-        //        NativeMethods.DwmSetWindowAttribute(handle, attribute, ref preference, sizeof(uint));
-        //        NativeMethods.SetWindowPos(handle, IntPtr.Zero, 0, 0, (int)(exitCm.Width + 50), (int)(exitCm.Height + 50), 2);
-        //        NativeMethods.UpdateWindow(handle);
-        //    }
-        //}
 
         private void LaunchCs_Click(object sender, RoutedEventArgs e)
         {
@@ -761,7 +728,6 @@ namespace CSAuto
             }
             catch { }
             RPCClient = new DiscordRpcClient(APIKeys.DISCORD_BOT_ID);
-            //Subscribe to events
 #if DEBUG
             File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt").Close();
             RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt",DiscordRPC.Logging.LogLevel.Trace);
@@ -1042,8 +1008,6 @@ namespace CSAuto
                                 serverThread = new Thread(ServerThread);
                                 serverThread.Start();
                             }
-                            //ConDump.StartListening();
-                            //ConDump.OnChange += ConDump_OnChange;
                             hCursorOriginal = IntPtr.Zero;
                             NativeMethods.OptimizeMemory();
                         }
@@ -1055,9 +1019,6 @@ namespace CSAuto
                     if (csActive)
                     {
                         bool success = NativeMethods.GetWindowRect(csProcess.MainWindowHandle, out RECT windSize);
-                        //screenResolution = new Size(
-                        //        (int)SystemParameters.PrimaryScreenWidth,
-                        //        (int)SystemParameters.PrimaryScreenHeight);
                         if (success)
                             csResolution = windSize;
                         if (Properties.Settings.Default.autoAcceptMatch && !inGame)
@@ -1096,12 +1057,8 @@ namespace CSAuto
             pipeClient.Connect();
 
             var ss = new StreamString(pipeClient);
-            // Validate the server's signature string.
             if (ss.ReadString() == "I am the one true server!")
             {
-                // The client security token is sent with the first write.
-                // Send the name of the file whose contents are returned
-                // by the server.
                 ss.WriteString(GetLobbyID());
                 res = ss.ReadString();
             }
@@ -1175,8 +1132,6 @@ namespace CSAuto
 
                 if (Properties.Settings.Default.autoCloseCSAuto)
                     Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
-                //ConDump.StopListening();
-                //ConDump.OnChange -= ConDump_OnChange;
                 NativeMethods.OptimizeMemory();
             }
         }
@@ -1266,8 +1221,6 @@ namespace CSAuto
                 PressKey(keys[i]);
             }
         }
-
-        // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
         private string GetCSGODir()
         {
             string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
@@ -1406,11 +1359,7 @@ namespace CSAuto
                 bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
             return (bitmap, _handle);
         }
-        //async Task<bool> MakeFalse(float afterSeconds)
-        //{
-        //    await Task.Delay(TimeSpan.FromSeconds(afterSeconds));
-        //    return false;
-        //}
+
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
             if(exitCm != null)
@@ -1449,7 +1398,6 @@ namespace CSAuto
                 File.WriteAllText(Log.WorkPath+"\\.conf", current.settings.ToString(), Encoding.UTF8);
                 current.settings.DeleteSettings();
             }
-            //Application.Current.Shutdown();
         }
         private void CheckForDuplicates()
         {
@@ -1457,9 +1405,6 @@ namespace CSAuto
             var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
             if (duplicates.Any())
             {
-                //notifyIcon.Close();
-                //Application.Current.Shutdown();
-                //Log.WriteLine($"Shutting down, found another CSAuto process");
                 duplicates.ToList().ForEach(dupl => dupl.Kill());
             }
         }
@@ -1476,7 +1421,6 @@ namespace CSAuto
                 return localIp;
             }
             return localIp;
-            //throw new Exception(Languages.Strings.ResourceManager.GetString("exception_nonetworkadapter")/*"No network adapters with an IPv4 address in the system!"*/);
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -1506,16 +1450,6 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                Type type = ex.GetType();
-                if (type == typeof(WriteException) ||
-                    type == typeof(DirectoryNotFoundException))
-                {
-                    //autoReloadMenu.IsEnabled = false;
-                    //autoBuyMenu.IsEnabled = false;
-                    //autoPauseResumeSpotify.IsEnabled = false;
-                    //discordMenu.IsEnabled = false;
-                    //hadError = true;
-                }
                 MessageBox.Show($"{ex.Message}", Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             NativeMethods.OptimizeMemory();

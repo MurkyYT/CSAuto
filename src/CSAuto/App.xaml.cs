@@ -88,7 +88,7 @@ namespace CSAuto
                 if (oldSettingsExist)
                     File.Delete(Log.WorkPath + "\\.tmp");
             }
-            //LoadLanguage(languageName?.ToLower());
+
             buyMenu = new AutoBuyMenu();
             ImportSettings();
             ImportAutoBuy();
@@ -278,40 +278,6 @@ namespace CSAuto
             catch { return false; }
         }
 
-        //private void LoadLanguage(string languageName)
-        //{
-        //    string[] englishFile = ReadLanguageFile($"{Log.WorkPath}\\resource\\lang\\language_english.pac");
-        //    string[] file = null;
-        //    try { file = ReadLanguageFile($"{Log.WorkPath}\\resource\\lang\\{(languageName == null ? Settings.Default.currentLanguage : "language_"+languageName)}.pac"); }
-        //    catch (FileNotFoundException) 
-        //    { 
-        //        MessageBox.Show($"Couldn't load {(languageName == null ? Settings.Default.currentLanguage : "language_" + languageName)}, the app will fallback to english", 
-        //            "Warning", 
-        //            MessageBoxButton.OK, 
-        //            MessageBoxImage.Warning); 
-        //    }
-        //    if(file!= null)
-        //    {
-        //        for (int i = 0; i < file.Length; i++)
-        //        {
-        //            string[] values = GetValues(file[i]);
-        //            if (values != null && values[0] != null && values[1] != null)
-        //                Languages._Language.translation.Add(values[0], values[1].Replace("\\n","\n"));
-        //        }
-        //    }
-        //    for (int i = 0; i < englishFile.Length; i++)
-        //    {
-        //        string[] values = GetValues(englishFile[i]);
-        //        if (values != null && values[0] != null && values[1] != null)
-        //            Languages._Language.englishTranslation.Add(values[0], values[1].Replace("\\n", "\n"));
-        //    }
-        //}
-
-        //private string[] ReadLanguageFile(string path)
-        //{
-        //    string file = Unzip(File.ReadAllBytes(path));
-        //    return file.Split('\n');
-        //}
         static void CopyTo(Stream src, Stream dest)
         {
             byte[] bytes = new byte[4096];
@@ -330,31 +296,12 @@ namespace CSAuto
             {
                 using (GZipStream gs = new GZipStream(msi, CompressionMode.Decompress))
                 {
-                    //gs.CopyTo(mso);
                     CopyTo(gs, mso);
                 }
 
                 return Encoding.UTF8.GetString(mso.ToArray());
             }
         }
-        //private string[] GetValues(string v)
-        //{
-        //    string[] res = new string[2];
-        //    int count = 0;
-        //    string oneRes = "";
-        //    foreach(char ch in v)
-        //    {
-        //        if (ch == '"') { count++; }
-        //        if (count > 0 && 
-        //            count % 2 == 0 && 
-        //            res[(count / 2) - 1] == null) 
-        //        {
-        //            res[(count / 2) - 1] = oneRes; oneRes = "";
-        //        }
-        //        if(count%2 == 1 && ch != '"') oneRes += ch;
-        //    }
-        //    return res;
-        //}
 
         public void LoadSettings()
         {
@@ -408,11 +355,6 @@ namespace CSAuto
             MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.OK, MessageBoxImage.Error);
             Process.Start(Log.WorkPath + "\\Error_Log.txt");
         }
-        //private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
-        //{
-        //    if (e.Exception.Message.Contains("Could not load file or assembly 'System.XmlSerializers"))
-        //        return;
-        //    Log.WriteLine($"EXCEPTION: {e.Exception.Message}, StackTrace: {e.Exception.StackTrace}");
-        //}
+
     }
 }
