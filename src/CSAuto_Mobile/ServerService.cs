@@ -19,7 +19,7 @@ using static Android.Provider.Telephony.Mms;
 
 namespace CSAuto_Mobile
 {
-	[Service]
+    [Service(ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
     public class ServerService : Service
     {
         static readonly string? TAG = typeof(ServerService).FullName;
@@ -377,8 +377,15 @@ namespace CSAuto_Mobile
 
             notification.Vibrate = Array.Empty<long>();
 
-            // Enlist this instance of the service as a foreground service
-            StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
+            if (Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Tiramisu)
+            {
+                StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
+            }
+            else
+            {
+                StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification, Android.Content.PM.ForegroundService.TypeDataSync);
+            }
+            
         }
 
         /// <summary>
