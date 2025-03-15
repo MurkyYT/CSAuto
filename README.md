@@ -32,11 +32,11 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 ## Features
 
 * Auto accept matches for you
-* Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out trying to find a fix)
+* Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out, will be fixed when [this issue](https://github.com/ValveSoftware/csgo-osx-linux/issues/3603) will be resolved)
 * Auto buy selected items in customizable menu!
 * Auto pause/resume spotify song
 * Show customizable game info in Discord Rich Presence (show amount of players in lobby can be bannable!)
-* Send time left till bomb exploded to mobile! (not accurate as of right now)
+* Send time left till bomb exploded to mobile!
 * Bring game to front when accept button appears and return to previous window!
 
 ## Screenshots
