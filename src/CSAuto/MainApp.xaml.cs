@@ -21,7 +21,6 @@ using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Commands = CSAuto.Shared.NetworkTypes.Commands;
-using CSAuto.Exceptions;
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using System.Net.Sockets;
