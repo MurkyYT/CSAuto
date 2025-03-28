@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.5";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -69,6 +69,7 @@ namespace CSAuto
         public Color[] BUTTON_COLORS;
         public readonly App current = Application.Current as App;
         public const string ONLINE_BRANCH_NAME = "master";
+        public string integrationPath = null;
         #endregion
         #region Readonly
         readonly object csProcessLock = new object();
@@ -82,7 +83,6 @@ namespace CSAuto
         #endregion
         #region Privates
         private DiscordRpcClient RPCClient;
-        private string integrationPath = null;
         private string currentMapIcon = null;
         private Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
         private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
@@ -1226,9 +1226,12 @@ namespace CSAuto
         }
         private string GetCSGODir()
         {
-            string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
-            if (csgoDir != null)
-                return $"{csgoDir}\\";
+            List<string> csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
+            foreach (string path in csgoDir)
+            {
+                if (Directory.Exists(Path.Combine(path, "game\\csgo\\cfg\\")))
+                    return $"{path}\\";
+            }
             return null;
         }
         public void LeftMouseClick(int xpos, int ypos)
@@ -1445,6 +1448,7 @@ namespace CSAuto
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException(Languages.Strings.ResourceManager.GetString("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
+                Log.WriteLine($"|MainApp.cs| Integration file path is: '{integrationPath}'");
                 InitializeGSIConfig();
                 windowSource = PresentationSource.FromVisual(this) as HwndSource;
                 windowSource.AddHook(WndProc);

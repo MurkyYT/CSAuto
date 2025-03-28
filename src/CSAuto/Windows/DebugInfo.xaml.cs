@@ -58,7 +58,7 @@ namespace CSAuto
                 + $"SteamID64: {id64}\n"
                 + $"\n====CS:GO info====\n"
                 + $"CS:GO FriendCode: {friendCode}\n"
-                + $"CS:GO Path: \"{Steam.GetGameDir("Counter-Strike Global Offensive")}\"\n"
+                + $"CS:GO Integration Path: \"{main.integrationPath}\"\n"
                 + $"CS:GO LaunchOptions: \"{launchOpt}\"";
         }
     }

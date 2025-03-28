@@ -17,7 +17,7 @@ namespace Murky.Utils
         /// <returns>Game folder if found,  <see langword="null"/> if wasn't</returns>
         /// <exception cref="DirectoryNotFoundException"></exception>
         // from - https://gist.github.com/moritzuehling/7f1c512871e193c0222f
-        public static string GetGameDir(string game)
+        public static List<string> GetGameDir(string game)
         {
             string steamPath = Steam.GetSteamPath();
             if (steamPath == null)
@@ -47,16 +47,18 @@ namespace Murky.Utils
                 }
             }
 
+            List<string> result = new List<string>();
+
             foreach (var library in libraries)
             {
-                string gamePatj = Path.Combine(library, $"steamapps\\common\\{game}");
-                if (Directory.Exists(gamePatj))
+                string gamePath = Path.Combine(library, $"steamapps\\common\\{game}");
+                if (Directory.Exists(gamePath))
                 {
-                    return gamePatj;
+                    result.Add(gamePath);
                 }
             }
 
-            return null;
+            return result;
         }
         /// <summary>
         /// Tries to get steam path.

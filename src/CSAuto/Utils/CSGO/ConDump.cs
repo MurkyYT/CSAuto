@@ -17,7 +17,7 @@ namespace Murky.Utils.CSGO
         private static readonly string fileName = "console.log";
         static ConDump()
         {
-            string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive");
+            string csgoDir = Steam.GetGameDir("Counter-Strike Global Offensive").ElementAtOrDefault(0);
             if (csgoDir != null)
                 path = csgoDir + "\\game\\csgo";
             fileWathcer.Path = path;
