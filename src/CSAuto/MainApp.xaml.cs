@@ -439,7 +439,6 @@ namespace CSAuto
                 bombState = currentBombState;
                 inGame = gameState.Match.Map != null;
 
-
                 if (csActive && !gameState.IsSpectating)
                 {
                     if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu && csActive)
@@ -449,7 +448,9 @@ namespace CSAuto
                     if (Properties.Settings.Default.autoPausePlaySpotify)
                         AutoPauseResumeMusic();
                 }
+
                 UpdateDiscordRPC();
+
                 if(DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
                 {
                     lastGameStateSend = DateTime.Now;
@@ -995,8 +996,8 @@ namespace CSAuto
                             }
                             if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
                             {
-                                steamAPIServer = new Process() { StartInfo = { FileName = "bin\\steamapi.exe" } };
-                                if (!steamAPIServer.Start())
+                                steamAPIServer = new Process() { StartInfo = { FileName = $"{Log.WorkPath}\\bin\\steamapi.exe" } };
+                                if (!steamAPIServer.Start() || !File.Exists($"{Log.WorkPath}\\bin\\steamapi.exe"))
                                 {
                                     Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
                                     steamAPIServer = null;
@@ -1253,79 +1254,79 @@ namespace CSAuto
             if ((DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay && inLobby == true) ||
                 (inLobby == true && Properties.Settings.Default.oldScreenCaptureWay))
             {
-                var res = GetBitmap();
-                Bitmap bitmap = res.Item1;
-                IntPtr _handle = res.Item2;
-                if (Properties.Settings.Default.saveDebugFrames)
+                using (Bitmap bitmap = GetBitmap())
                 {
-                    try
+                    if (Properties.Settings.Default.saveDebugFrames)
                     {
-                        Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
-                        bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                        try
+                        {
+                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
+                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                        }
+                        catch { }
                     }
-                    catch { }
-                }
-                if (guiWindow != null)
-                {
-                    guiWindow.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
-                    Point pixelPos = new Point(csResolution.Width / 2, (int)(csResolution.Height / (1050f / 473f)) + 1);
-                    Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
-                    guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): [{pixelColor.R},{pixelColor.G},{pixelColor.B}]";
-                }
-                bool found = false;
-                int count = 0;
-                int yStart = bitmap.Height - 1;
-                int xMiddle = csResolution.Width / 2;
-                for (int y = yStart; y >= 0 && !found; y--)
-                {
-                    Color pixelColor = bitmap.GetPixel(xMiddle, y);
-                    if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                    if (guiWindow != null)
                     {
-                        if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
+                        guiWindow.latestCapturedFrame.Source = CreateBitmapSourceFromBitmap(bitmap);
+                        Point pixelPos = new Point(csResolution.Width / 2, (int)(csResolution.Height / (1050f / 473f)) + 1);
+                        Color pixelColor = bitmap.GetPixel(pixelPos.X, pixelPos.Y);
+                        guiWindow.DebugPixelColor.Text = $"Pixel color at ({pixelPos.X},{pixelPos.Y}): [{pixelColor.R},{pixelColor.G},{pixelColor.B}]";
+                    }
+                    bool found = false;
+                    int count = 0;
+                    int yStart = bitmap.Height - 1;
+                    int xMiddle = csResolution.Width / 2;
+                    for (int y = yStart; y >= 0 && !found; y--)
+                    {
+                        Color pixelColor = bitmap.GetPixel(xMiddle, y);
+                        if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
+                        {
+                            if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                         * just in case the program finds the 0:20 timer tick
                                         * didnt happen for a while but can happen still
                                         * happend while trying to create a while loop to search for button
                                         */
-                        {
-                            var clickpoint = new Point(
-                                csResolution.X + xMiddle,
-                                y);
-                            int X = clickpoint.X;
-                            int Y = clickpoint.Y;
-                            Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y} Color:{pixelColor}", caller: "AutoAcceptMatch");
-                            found = true;
-                            if (Properties.DebugSettings.Default.pressAcceptButton)
                             {
-                                LeftMouseClick(X, Y);
-                                if (Properties.Settings.Default.acceptedNotification)
-                                    SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_acceptmatch"), command: Commands.AcceptedMatch);
-                                if (acceptButtonTimer.IsEnabled)
-                                    acceptButtonTimer.Stop();
-                                if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
-                                    Telegram.SendPhoto(bitmap,
-                                        Properties.Settings.Default.telegramChatId,
-                                        Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
-                                            Properties.Settings.Default.customTelegramToken
-                                            : APIKeys.TELEGRAM_BOT_TOKEN,
-                                        $"{csResolution.Width}X{csResolution.Height}\n" +
-                                        $"({X},{Y})\n" +
-                                        $"{DateTime.Now}");
-                                if (originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
+                                var clickpoint = new Point(
+                                    csResolution.X + xMiddle,
+                                    y);
+                                int X = clickpoint.X;
+                                int Y = clickpoint.Y;
+                                Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y} Color:{pixelColor}", caller: "AutoAcceptMatch");
+                                found = true;
+                                if (Properties.DebugSettings.Default.pressAcceptButton)
                                 {
-                                    if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
+                                    LeftMouseClick(X, Y);
+                                    if (Properties.Settings.Default.acceptedNotification)
+                                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_acceptmatch"), command: Commands.AcceptedMatch);
+                                    if (acceptButtonTimer.IsEnabled)
+                                        acceptButtonTimer.Stop();
+                                    if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
+                                        Telegram.SendPhoto(bitmap,
+                                            Properties.Settings.Default.telegramChatId,
+                                            Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
+                                                Properties.Settings.Default.customTelegramToken
+                                                : APIKeys.TELEGRAM_BOT_TOKEN,
+                                            $"{csResolution.Width}X{csResolution.Height}\n" +
+                                            $"({X},{Y})\n" +
+                                            $"{DateTime.Now}");
+                                    if (originalProcess != null && Properties.Settings.Default.focusBackOnOriginalWindow)
                                     {
-                                        Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
-                                        originalProcess = null;
+                                        if (NativeMethods.BringToFront(originalProcess.MainWindowHandle))
+                                        {
+                                            Log.WriteLine($"|MainApp.cs| Switched back to '{originalProcess.MainWindowTitle}'");
+                                            originalProcess = null;
+                                        }
                                     }
                                 }
                             }
+                            count++;
                         }
-                        count++;
                     }
                 }
-                if(!Properties.Settings.Default.oldScreenCaptureWay)
-                    NativeMethods.DeleteObject(_handle);
-                bitmap.Dispose();
+
+                //Added in order to fix high memory usage (hopefully..)
+                GC.Collect();
             }
             else if (inLobby == true && !DXGIcapture.Enabled && Properties.Settings.Default.oldScreenCaptureWay)
             {
@@ -1334,9 +1335,10 @@ namespace CSAuto
             }
         }
 
-        private (Bitmap,IntPtr) GetBitmap()
+        private Bitmap GetBitmap()
         {
             IntPtr _handle = IntPtr.Zero;
+
             if (!Properties.Settings.Default.oldScreenCaptureWay)
             {
                 _handle = DXGIcapture.GetCapture();
@@ -1346,12 +1348,14 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                     DXGIcapture.Init();
                     Log.WriteLine("|MainApp.cs| Init DXGI Capture");
+                    return null;
                 }
             }
-            Bitmap bitmap = Properties.Settings.Default.oldScreenCaptureWay ?
-                new Bitmap(csResolution.Width, csResolution.Height) : Image.FromHbitmap(_handle);
+
+            Bitmap bitmap;
             if (Properties.Settings.Default.oldScreenCaptureWay)
             {
+                bitmap = new Bitmap(csResolution.Width, csResolution.Height);
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
                     g.CopyFromScreen(new Point(
@@ -1362,8 +1366,22 @@ namespace CSAuto
                 }
             }
             else
-                bitmap = bitmap.Clone(new Rectangle() { X = csResolution.X, Y = csResolution.Y, Width = csResolution.Width, Height = csResolution.Height }, bitmap.PixelFormat);
-            return (bitmap, _handle);
+            {
+                Bitmap origBitmap = Image.FromHbitmap(_handle);
+                bitmap = origBitmap.Clone(
+                    new Rectangle() 
+                    { 
+                        X = csResolution.X, 
+                        Y = csResolution.Y, 
+                        Width = csResolution.Width, 
+                        Height = csResolution.Height 
+                    },
+                    origBitmap.PixelFormat);
+                origBitmap.Dispose();
+                NativeMethods.DeleteObject(_handle);
+            }
+
+            return bitmap;
         }
 
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
