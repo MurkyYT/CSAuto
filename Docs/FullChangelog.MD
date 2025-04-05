@@ -1,3 +1,16 @@
+### Version 2.1.5 changelog
+- Added support for all music players
+- Spotify can be in the tray when auto pause/resume feature is enabled
+- Fixed mobile app android 14 compatibility
+- Little updater fixes
+- Added searching all folders where cs:go presumably is
+- Little fixes with screenshotting
+- Small fix with steamapi exe path
+- Fixed auto reload spraying bugging out using a workaround to send commands
+- Fixed DXGI capture crashing when cs window is not on primary desktop
+
+---
+
 ### Version 2.1.4 changelog
 - Added a slight delay when auto accepting to hopefully eliminate not clicking in the right place
 - Auto accept now always checks for accept button even if accepted, this way the app shouldn't miss the accept button at all
