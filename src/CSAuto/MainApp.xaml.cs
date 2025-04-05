@@ -1140,7 +1140,8 @@ namespace CSAuto
                 if (Properties.Settings.Default.autoCloseCSAuto)
                     Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
 
-                File.Delete(bindCfgPath);
+                if(File.Exists(bindCfgPath))
+                    File.Delete(bindCfgPath);
                 NativeMethods.OptimizeMemory();
             }
         }
