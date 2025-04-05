@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
@@ -142,7 +143,7 @@ namespace CSAuto
             SCAR20,
             G3SG1
         }
-        private readonly Dictionary<NAMES, object[]> weaponsInfo = new Dictionary<NAMES, object[]>()
+        public readonly Dictionary<NAMES, object[]> WeaponsInfo = new Dictionary<NAMES, object[]>()
         {
             { NAMES.G3SG1,new object[] { "weapon_g3sg1", 5000 } },
             { NAMES.SCAR20,new object[] { "weapon_scar20", 5000 } },
@@ -474,6 +475,44 @@ namespace CSAuto
             return false;
         }
 
+        public List<string> GetWeaponsName(List<BuyItem> items, GameState gameState)
+        {
+            List<string> names = new List<string>();
+            foreach (BuyItem item in items)
+            {
+                switch (item.Name)
+                {
+                    case NAMES.KevlarVest:
+                        names.Add("vest");
+                        break;
+                    case NAMES.KevlarAndHelmet:
+                        names.Add("vesthelm");
+                        break;
+                    case NAMES.DefuseKit:
+                        names.Add("defuser");
+                        break;
+                    case NAMES.USP_S:
+                        names.Add("usp_silencer");
+                        names.Add("hkp2000");
+                        break;
+                    case NAMES.Molotov:
+                        {
+                            if (gameState.Player.Team == Team.T)
+                                names.Add("molotov");
+                            if (gameState.Player.Team == Team.CT)
+                                names.Add("incgrenade");
+                        }
+                        break;
+                    default:
+                        object[] info = WeaponsInfo[item.Name];
+                        int price = (int)info[1];
+                        string weaponName = (string)info[0];
+                        names.Add(weaponName);
+                        break;
+                }
+            }
+            return names;
+        }
         public List<BuyItem> GetItemsToBuy(GameState gameState,int armorAmountToRebuy)
         {
             BuyItem[] items = GetEnabled(gameState.Player.Team == Team.CT);
@@ -569,7 +608,7 @@ namespace CSAuto
                         }
                         break;
                     default:
-                        object[] info = weaponsInfo[item.Name];
+                        object[] info = WeaponsInfo[item.Name];
                         int price = (int)info[1];
                         string weaponName = (string)info[0];
                         if (money >= price && !gameState.Player.HasWeapon(weaponName))

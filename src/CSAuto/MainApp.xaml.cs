@@ -41,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.5";
+        public const string VER = "2.1.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -476,27 +476,29 @@ namespace CSAuto
                     autoBuy = false;
                     return;
                 }
-                if (items.Count != 0 && !BuyMenuOpen())
+                List<string> names = current.buyMenu.GetWeaponsName(items, gameState);
+                //if (items.Count != 0 && !BuyMenuOpen())
+                //{
+                //    PressKey(Input.DirectXKeyStrokes.DIK_B);
+                //    Thread.Sleep(100);
+                //}
+                foreach (string item in names)
                 {
-                    PressKey(Input.DirectXKeyStrokes.DIK_B);
-                    Thread.Sleep(100);
+                    Log.WriteLine($"|MainApp.cs| Auto buying {item}");
+                    commandSender.SendCommand($"buy {item}");
+                    //PressKeys(new Input.DirectXKeyStrokes[]
+                    //{
+                    //    //Category key
+                    //    (Input.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
+                    //    //Weapon key
+                    //    (Input.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
+                    //});
+                    ////Have to press b after buying grenades because the buy menu stays at the grenades category
+                    //if (item.IsGrenade())
+                    //    PressKey(Input.DirectXKeyStrokes.DIK_B);
                 }
-                foreach (BuyItem item in items)
-                {
-                    Log.WriteLine($"|MainApp.cs| Auto buying {item.Name}");
-                    PressKeys(new Input.DirectXKeyStrokes[]
-                    {
-                        //Category key
-                        (Input.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
-                        //Weapon key
-                        (Input.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
-                    });
-                    //Have to press b after buying grenades because the buy menu stays at the grenades category
-                    if (item.IsGrenade())
-                        PressKey(Input.DirectXKeyStrokes.DIK_B);
-                }
-                if (items.Count != 0)
-                    PressKey(Input.DirectXKeyStrokes.DIK_B);
+                //if (items.Count != 0)
+                //    PressKey(Input.DirectXKeyStrokes.DIK_B);
             }
         }
 
