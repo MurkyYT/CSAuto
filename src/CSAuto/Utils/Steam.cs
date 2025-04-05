@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,6 +11,11 @@ namespace Murky.Utils
     public static class Steam
     {
         public const long VALVE_STEAMID64_CONST = 76561197960265728L;
+
+        public static bool IsRunning()
+        {
+            return Process.GetProcessesByName("Steam").Length > 0;
+        }
         /// <summary>
         /// Tries to get the game folder.
         /// </summary>

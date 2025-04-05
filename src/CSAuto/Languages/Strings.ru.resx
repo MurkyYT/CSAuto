@@ -172,7 +172,7 @@
     <value>Автозапуск</value>
   </data>
   <data name="menu_continuespray" xml:space="preserve">
-    <value>Продолжить стрелять (экспериментальное)</value>
+    <value>Продолжить стрелять</value>
   </data>
   <data name="menu_savedebugframes" xml:space="preserve">
     <value>Сохранение кадров</value>
@@ -700,5 +700,11 @@
   </data>
   <data name="msgbox_hdroptimization" xml:space="preserve">
     <value>Найден дисплей с поддержкой HDR, текущие настройки не оптимизированы для HDR-дисплеев, хотите оптимизировать настройки?</value>
+  </data>
+  <data name="error_steamrunning" xml:space="preserve">
+    <value>Steam запущен, пожалуйста, закройте его и перезапустите приложение</value>
+  </data>
+  <data name="error_bindlaunchoption" xml:space="preserve">
+    <value>Не удалось добавить 'bind f13 exe c csautobindcommandsender.cfg' в параметры запуска, пожалуйста, добавьте его вручную</value>
   </data>
 </root>

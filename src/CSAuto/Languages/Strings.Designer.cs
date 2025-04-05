@@ -700,6 +700,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t add &apos;bind f13 exec csautobindcommandsender.cfg&apos; to launch options, please add it manually.
+        /// </summary>
+        public static string error_bindlaunchoption {
+            get {
+                return ResourceManager.GetString("error_bindlaunchoption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t create files, logs and debug stuff wont be saved.
         /// </summary>
         public static string error_createfiles {
@@ -770,6 +779,15 @@ namespace CSAuto.Languages {
         public static string error_startup {
             get {
                 return ResourceManager.GetString("error_startup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam is running, please close it and restart the app.
+        /// </summary>
+        public static string error_steamrunning {
+            get {
+                return ResourceManager.GetString("error_steamrunning", resourceCulture);
             }
         }
         
@@ -1143,7 +1161,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Continue Spraying (Experimental).
+        ///   Looks up a localized string similar to Continue Spraying.
         /// </summary>
         public static string menu_continuespray {
             get {

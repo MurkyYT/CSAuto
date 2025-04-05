@@ -172,7 +172,7 @@
     <value>Start With Windows</value>
   </data>
   <data name="menu_continuespray" xml:space="preserve">
-    <value>Continue Spraying (Experimental)</value>
+    <value>Continue Spraying</value>
   </data>
   <data name="menu_savedebugframes" xml:space="preserve">
     <value>Save Frames</value>
@@ -700,5 +700,11 @@ Try to download the latest version from github, if it didn't help create a bug r
   </data>
   <data name="msgbox_hdroptimization" xml:space="preserve">
     <value>A display that supports HDR has been found, the current settings are not optimized for HDR displays, do you want to optimize the settings?</value>
+  </data>
+  <data name="error_steamrunning" xml:space="preserve">
+    <value>Steam is running, please close it and restart the app</value>
+  </data>
+  <data name="error_bindlaunchoption" xml:space="preserve">
+    <value>Couldn't add 'bind f13 exec csautobindcommandsender.cfg' to launch options, please add it manually</value>
   </data>
 </root>

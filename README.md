@@ -35,7 +35,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 ## Features
 
 * Auto accept matches for you
-* Auto reload for you when you have 0 bullets left and keep spraying after reloading! (continue spraying might lag out, will be fixed when [this issue](https://github.com/ValveSoftware/csgo-osx-linux/issues/3603) will be resolved)
+* Auto reload for you when you have 0 bullets left and keep spraying after reloading!
 * Auto buy selected items in customizable menu!
 * Auto pause/resume currently playing song/video
 * Show customizable game info in Discord Rich Presence (show amount of players in lobby can be bannable!)
@@ -79,7 +79,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
   1. Open Steam library
   2. Right-click on CS2 and press properties
   3. In the general tab you have launch options at the bottom
-  4. Add `-gamestateintegration` to the launch options
+  4. Add `bind f13 exec csautobindcommandsender.cfg` to the launch options
   5. Close and start the game
 
 ### Discord doesn't show amount of players in lobby

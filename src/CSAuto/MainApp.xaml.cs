@@ -31,6 +31,7 @@ using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using ControlzEx.Theming;
+using CSAuto.Exceptions;
 #endregion
 namespace CSAuto
 {
@@ -42,7 +43,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.1.5";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -70,6 +71,7 @@ namespace CSAuto
         public readonly App current = Application.Current as App;
         public const string ONLINE_BRANCH_NAME = "master";
         public string integrationPath = null;
+        public string bindCfgPath = null;
         #endregion
         #region Readonly
         readonly object csProcessLock = new object();
@@ -119,6 +121,7 @@ namespace CSAuto
         internal List<TcpClient> clients;
         Dictionary<TcpClient, DateTime> lastKeepAlive;
         DateTime lastGameStateSend = DateTime.Now;
+        BindCommandSender commandSender;
         #endregion
         #region ToImageSource
         public ImageSource ToImageSource(Icon icon)
@@ -1151,29 +1154,20 @@ namespace CSAuto
                 string weaponName = weapon.Name;
                 if (bullets == 0)
                 {
-                    
-                    LeftMouseUp(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
-                    //netCon.SendCommand("+reload");
-                    //netCon.SendCommand("-attack");
+                    commandSender.SendCommand("+reload");
+                    commandSender.SendCommand("-attack");
                     Log.WriteLine("|MainApp.cs| Auto reloading");
-                    if ((weaponType == WeaponType.Rifle
-                        || weaponType == WeaponType.MachineGun
-                        || weaponType == WeaponType.SubmachineGun
-                        || weaponName == "weapon_cz75a")
-                        && (weaponName != "weapon_sg556")
-                        && Properties.Settings.Default.ContinueSpraying)
+                    if (Properties.Settings.Default.ContinueSpraying)
                     {
-                        Thread.Sleep(100);
-                        //bool mousePressed = (Keyboard.GetKeyState(Keyboard.VirtualKeyStates.VK_LBUTTON) < 0);
-                        //if (mousePressed)
-                        //{
-                        //netCon.SendCommand("+attack");
-
-                        LeftMouseDown(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
-                        Log.WriteLine($"|MainApp.cs| Continue spraying ({weaponName} - {weaponType})");
-                        //}
+                        Thread.Sleep(10);
+                        bool mousePressed = (Input.GetKeyState(Input.VirtualKeyStates.VK_LBUTTON) < 0);
+                        if (mousePressed)
+                        {
+                            commandSender.SendCommand("+attack");
+                            Log.WriteLine($"|MainApp.cs| Continue spraying ({weaponName} - {weaponType})");
+                        }
                     }
-                    //netCon.SendCommand("-reload");
+                    commandSender.SendCommand("-reload");
                 }
             }
             catch { return; }
@@ -1256,6 +1250,9 @@ namespace CSAuto
             {
                 using (Bitmap bitmap = GetBitmap())
                 {
+                    if (bitmap == null)
+                        return;
+
                     if (Properties.Settings.Default.saveDebugFrames)
                     {
                         try
@@ -1324,9 +1321,6 @@ namespace CSAuto
                         }
                     }
                 }
-
-                //Added in order to fix high memory usage (hopefully..)
-                GC.Collect();
             }
             else if (inLobby == true && !DXGIcapture.Enabled && Properties.Settings.Default.oldScreenCaptureWay)
             {
@@ -1368,6 +1362,15 @@ namespace CSAuto
             else
             {
                 Bitmap origBitmap = Image.FromHbitmap(_handle);
+
+                if (csResolution.X < 0 || csResolution.Y < 0)
+                {
+                    Properties.Settings.Default.oldScreenCaptureWay = true;
+                    Properties.Settings.Default.Save();
+                    Log.WriteLine("|MainApp.cs| Changed to old screen capture way because cs window x and y were less then 0 and this is not supported with DXGI capture");
+                    return null;
+                }
+
                 bitmap = origBitmap.Clone(
                     new Rectangle() 
                     { 
@@ -1377,8 +1380,8 @@ namespace CSAuto
                         Height = csResolution.Height 
                     },
                     origBitmap.PixelFormat);
-                origBitmap.Dispose();
                 NativeMethods.DeleteObject(_handle);
+                origBitmap.Dispose();
             }
 
             return bitmap;
@@ -1466,18 +1469,52 @@ namespace CSAuto
                 if (csgoDir == null)
                     throw new DirectoryNotFoundException(Languages.Strings.ResourceManager.GetString("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
+                bindCfgPath = csgoDir + "game\\csgo\\cfg\\csautobindcommandsender.cfg";
+                commandSender = new BindCommandSender(bindCfgPath);
                 Log.WriteLine($"|MainApp.cs| Integration file path is: '{integrationPath}'");
                 InitializeGSIConfig();
                 windowSource = PresentationSource.FromVisual(this) as HwndSource;
                 windowSource.AddHook(WndProc);
                 //InitializeGameStateLaunchOption();
                 //InitializeNetConLaunchOption();
+                InitializeBindLaunchOption();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"{ex.Message}", Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             NativeMethods.OptimizeMemory();
+        }
+
+        private void InitializeBindLaunchOption()
+        {
+            try
+            {
+                Steam.GetLaunchOptions(730, out string launchOpt);
+                if (launchOpt != null && !HasBind(launchOpt))
+                {
+                    if (Steam.IsRunning())
+                        throw new Exception(Languages.Strings.error_steamrunning);
+                    Steam.SetLaunchOptions(730, launchOpt + $" bind f13 exec csautobindcommandsender.cfg");
+                }
+                else if (launchOpt == null)
+                {
+                    if (Steam.IsRunning())
+                        throw new Exception(Languages.Strings.error_steamrunning);
+                    Steam.SetLaunchOptions(730, $"bind f13 exec csautobindcommandsender.cfg");
+                }
+                else
+                    Log.WriteLine($"Already has \'bind f13 exec csautobindcommandsender.cfg\' in launch options.");
+            }
+            catch
+            {
+                throw new WriteException(Languages.Strings.error_bindlaunchoption);
+            }
+        }
+
+        private bool HasBind(string launchOpt)
+        {
+            return launchOpt.Contains("bind f13 exec csautobindcommandsender.cfg");
         }
 
         //private void InitializeNetConLaunchOption()

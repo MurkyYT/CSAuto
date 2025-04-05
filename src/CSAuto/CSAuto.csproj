@@ -102,6 +102,7 @@
     <Compile Include="AutoBuyMenu.cs" />
     <Compile Include="CompileInfo.cs" />
     <Compile Include="Native\DisplayInfo.cs" />
+    <Compile Include="Utils\CSGO\BindCommandSender.cs" />
     <Compile Include="Windows\DebugInfo.xaml.cs">
       <DependentUpon>DebugInfo.xaml</DependentUpon>
     </Compile>
