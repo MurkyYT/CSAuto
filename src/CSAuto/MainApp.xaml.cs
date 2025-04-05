@@ -1142,6 +1142,7 @@ namespace CSAuto
 
                 if(File.Exists(bindCfgPath))
                     File.Delete(bindCfgPath);
+
                 NativeMethods.OptimizeMemory();
             }
         }
@@ -1162,7 +1163,7 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| Auto reloading");
                     if (Properties.Settings.Default.ContinueSpraying)
                     {
-                        Thread.Sleep(10);
+                        Thread.Sleep(100);
                         bool mousePressed = (Input.GetKeyState(Input.VirtualKeyStates.VK_LBUTTON) < 0);
                         if (mousePressed)
                         {
@@ -1421,6 +1422,8 @@ namespace CSAuto
             Properties.Settings.Default.Save();
             current.MoveSettings();
 
+            serverThread?.Abort();
+
             serverRunning = false;
 
             if (current.IsPortable)
@@ -1428,6 +1431,9 @@ namespace CSAuto
                 File.WriteAllText(Log.WorkPath+"\\.conf", current.settings.ToString(), Encoding.UTF8);
                 current.settings.DeleteSettings();
             }
+
+            if (File.Exists(bindCfgPath))
+                File.Delete(bindCfgPath);
         }
         private void CheckForDuplicates()
         {
