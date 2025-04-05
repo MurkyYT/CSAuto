@@ -705,6 +705,6 @@
     <value>Steam запущен, пожалуйста, закройте его и перезапустите приложение</value>
   </data>
   <data name="error_bindlaunchoption" xml:space="preserve">
-    <value>Не удалось добавить 'bind f13 exec csautobindcommandsender.cfg' в параметры запуска, пожалуйста, добавьте его вручную</value>
+    <value>Не удалось добавить '+exec csautobindcommandsender.cfg' в параметры запуска, пожалуйста, добавьте его вручную</value>
   </data>
 </root>

@@ -705,6 +705,6 @@ Try to download the latest version from github, if it didn't help create a bug r
     <value>Steam is running, please close it and restart the app</value>
   </data>
   <data name="error_bindlaunchoption" xml:space="preserve">
-    <value>Couldn't add 'bind f13 exec csautobindcommandsender.cfg' to launch options, please add it manually</value>
+    <value>Couldn't add '+exec csautobindcommandsender.cfg' to launch options, please add it manually</value>
   </data>
 </root>

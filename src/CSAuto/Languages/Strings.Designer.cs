@@ -700,7 +700,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t add &apos;bind f13 exec csautobindcommandsender.cfg&apos; to launch options, please add it manually.
+        ///   Looks up a localized string similar to Couldn&apos;t add &apos;+exec csautobindcommandsender.cfg&apos; to launch options, please add it manually.
         /// </summary>
         public static string error_bindlaunchoption {
             get {

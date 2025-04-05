@@ -79,7 +79,7 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
   1. Open Steam library
   2. Right-click on CS2 and press properties
   3. In the general tab you have launch options at the bottom
-  4. Add `bind f13 exec csautobindcommandsender.cfg` to the launch options
+  4. Add `+exec csautobindcommandsender.cfg` to the launch options
   5. Close and start the game
 
 ### Discord doesn't show amount of players in lobby

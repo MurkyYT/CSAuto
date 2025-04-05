@@ -1478,6 +1478,7 @@ namespace CSAuto
                 //InitializeGameStateLaunchOption();
                 //InitializeNetConLaunchOption();
                 InitializeBindLaunchOption();
+                File.WriteAllText(bindCfgPath, "bind f13 exec csautobindcommandsender.cfg");
             }
             catch (Exception ex)
             {
@@ -1488,33 +1489,26 @@ namespace CSAuto
 
         private void InitializeBindLaunchOption()
         {
-            try
+            Steam.GetLaunchOptions(730, out string launchOpt);
+            if (launchOpt != null && !HasBind(launchOpt))
             {
-                Steam.GetLaunchOptions(730, out string launchOpt);
-                if (launchOpt != null && !HasBind(launchOpt))
-                {
-                    if (Steam.IsRunning())
-                        throw new Exception(Languages.Strings.error_steamrunning);
-                    Steam.SetLaunchOptions(730, launchOpt + $" bind f13 exec csautobindcommandsender.cfg");
-                }
-                else if (launchOpt == null)
-                {
-                    if (Steam.IsRunning())
-                        throw new Exception(Languages.Strings.error_steamrunning);
-                    Steam.SetLaunchOptions(730, $"bind f13 exec csautobindcommandsender.cfg");
-                }
-                else
-                    Log.WriteLine($"Already has \'bind f13 exec csautobindcommandsender.cfg\' in launch options.");
+                if (Steam.IsRunning())
+                    throw new Exception(Languages.Strings.error_steamrunning);
+                Steam.SetLaunchOptions(730, launchOpt + $" +exec csautobindcommandsender.cfg");
             }
-            catch
+            else if (launchOpt == null)
             {
-                throw new WriteException(Languages.Strings.error_bindlaunchoption);
+                if (Steam.IsRunning())
+                    throw new Exception(Languages.Strings.error_steamrunning);
+                Steam.SetLaunchOptions(730, $"+exec csautobindcommandsender.cfg");
             }
+            else
+                Log.WriteLine($"Already has \'+exec csautobindcommandsender.cfg\' in launch options.");
         }
 
         private bool HasBind(string launchOpt)
         {
-            return launchOpt.Contains("bind f13 exec csautobindcommandsender.cfg");
+            return launchOpt.Contains("+exec csautobindcommandsender.cfg");
         }
 
         //private void InitializeNetConLaunchOption()
