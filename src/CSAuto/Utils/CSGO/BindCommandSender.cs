@@ -19,17 +19,20 @@ namespace Murky.Utils.CSGO
         }
 
         public void SendCommand(string command) 
-        { 
-            if(File.Exists(_cfgPath))
-                File.Delete(_cfgPath);
+        {
+            lock (this)
+            {
+                if (File.Exists(_cfgPath))
+                    File.Delete(_cfgPath);
 
-            File.WriteAllText(_cfgPath, command);
+                File.WriteAllText(_cfgPath, command);
 
-            Input.SendKey(Input.DirectXKeyStrokes.DIK_F13, false, Input.InputType.Keyboard);
-            Thread.Sleep(15);
-            Input.SendKey(Input.DirectXKeyStrokes.DIK_F13, true, Input.InputType.Keyboard);
+                Input.SendKey(Input.DirectXKeyStrokes.DIK_F13, false, Input.InputType.Keyboard);
+                Thread.Sleep(15);
+                Input.SendKey(Input.DirectXKeyStrokes.DIK_F13, true, Input.InputType.Keyboard);
 
-            Log.WriteLine($"|BindCommandSender.cs| Sent '{command}'");
+                Log.WriteLine($"|BindCommandSender.cs| Sent '{command}'");
+            }
         }
     }
 }

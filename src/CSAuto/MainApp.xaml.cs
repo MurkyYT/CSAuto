@@ -31,7 +31,6 @@ using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using ControlzEx.Theming;
-using CSAuto.Exceptions;
 #endregion
 namespace CSAuto
 {
