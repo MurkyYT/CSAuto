@@ -1023,14 +1023,17 @@ namespace CSAuto
                 }
                 else
                 {
-                    csActive = NativeMethods.IsForegroundProcess((uint)csProcess.Id);
-                    if (csActive)
+                    lock (csProcessLock)
                     {
-                        bool success = NativeMethods.GetWindowRect(csProcess.MainWindowHandle, out RECT windSize);
-                        if (success)
-                            csResolution = windSize;
-                        if (Properties.Settings.Default.autoAcceptMatch && !inGame)
-                            AutoAcceptMatch();
+                        csActive = NativeMethods.IsForegroundProcess((uint)csProcess.Id);
+                        if (csActive)
+                        {
+                            bool success = NativeMethods.GetWindowRect(csProcess.MainWindowHandle, out RECT windSize);
+                            if (success)
+                                csResolution = windSize;
+                            if (Properties.Settings.Default.autoAcceptMatch && !inGame)
+                                AutoAcceptMatch();
+                        }
                     }
                 } 
             }
@@ -1041,15 +1044,18 @@ namespace CSAuto
         }
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (Properties.Settings.Default.autoFocusOnCS &&
-                Properties.Settings.Default.autoAcceptMatch &&
-                csProcess != null && !csActive && inLobby == true &&
-                lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH)
+            lock (csProcessLock)
             {
-                if (Properties.Settings.Default.focusBackOnOriginalWindow)
-                    originalProcess = NativeMethods.GetForegroundProcess();
-                if(NativeMethods.BringToFront(csProcess.MainWindowHandle))
-                    Log.WriteLine("|MainApp.cs| Switching to CS window");
+                if (Properties.Settings.Default.autoFocusOnCS &&
+                    Properties.Settings.Default.autoAcceptMatch &&
+                    csProcess != null && !csActive && inLobby == true &&
+                    lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH)
+                {
+                    if (Properties.Settings.Default.focusBackOnOriginalWindow)
+                        originalProcess = NativeMethods.GetForegroundProcess();
+                    if (NativeMethods.BringToFront(csProcess.MainWindowHandle))
+                        Log.WriteLine("|MainApp.cs| Switching to CS window");
+                }
             }
             return IntPtr.Zero;
         }
