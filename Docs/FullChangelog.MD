@@ -1,3 +1,9 @@
+### Version 2.1.6 changelog
+- Auto buy now doesnt open the buy menu
+- Fixed crash associated with cs proccess
+
+---
+
 ### Version 2.1.5 changelog
 - Added support for all music players
 - Spotify can be in the tray when auto pause/resume feature is enabled
