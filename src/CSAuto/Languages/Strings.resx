@@ -429,7 +429,7 @@ Try to download the latest version from github, if it didn't help create a bug r
     <value>There is a max amount of 1 button (Discord Limitations)</value>
   </data>
   <data name="error_appcrashed" xml:space="preserve">
-    <value>An unexpected error has occurred!, a crash report has been sent</value>
+    <value>An unexpected error has occurred!, would you like to send a crash report?</value>
   </data>
   <data name="error_discordselecttemplate" xml:space="preserve">
     <value>Please select a button template</value>
