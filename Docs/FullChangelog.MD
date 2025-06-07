@@ -1,3 +1,8 @@
+### Version 2.1.8 changelog
+- Hot fix for en-EN locale
+
+---
+
 Version 2.1.7 changelog
 - Added automatic crash report sending via telegram
 
