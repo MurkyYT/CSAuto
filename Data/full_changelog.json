@@ -147,7 +147,7 @@
         ],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.1.9",
         "zipball_url": "https://api.github.com/repos/MurkyYT/CSAuto/zipball/2.1.9",
-        "body": "### Version 2.1.9 changelog\r\n- Added yes/no button to send crash report or not\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.1.8...2.1.9"
+        "body": "### Version 2.1.9 changelog\r\n- Added yes/no button to send crash report or not\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.1.8...2.1.9\n\n\ud83d\udee1 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:\n  * [`CSAuto_Android.apk`](https://www.virustotal.com/gui/file-analysis/OGVhNDczYTg4MWNiNGYzNjAyMmQzZDgyOWU3ZGMxMTk6MTc0OTI5MzM5MA==/detection)\n  * [`CSAuto_Installer.exe`](https://www.virustotal.com/gui/file-analysis/OWZmZWRhODVkODgwNWRmNTU4NjA0MDBmM2IzMjVjMWQ6MTc0OTI5MzM5Mg==/detection)\n  * [`CSAuto_Portable.zip`](https://www.virustotal.com/gui/file-analysis/ZDFlNzAwZDBkYmU4ODkxNDExYmFlNmQxNmQ4NTkzODA6MTc0OTI5MzM5Mw==/detection)"
     },
     {
         "filtered_body": "### Version 2.1.8 changelog\r\n- Hot fix for en-EN locale",
