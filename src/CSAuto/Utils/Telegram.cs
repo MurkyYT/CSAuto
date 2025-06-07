@@ -24,7 +24,7 @@ namespace Murky.Utils
                 {
                     webclient.DownloadString(urlString);
                 }
-                Log.WriteLine($"|Telegram.cs| Sent telegram message \"{text}\" to \"{chatID}\"");
+                Log.WriteLine($"|Telegram.cs| Sent telegram message \"{text}\"");
             }
             catch (WebException ex)
             {
