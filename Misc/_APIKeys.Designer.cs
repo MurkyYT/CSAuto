@@ -72,6 +72,24 @@ namespace CSAuto {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string REPORT_BOT_TOKEN {
+            get {
+                return ResourceManager.GetString("REPORT_BOT_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string REPORT_CHAT_ID {
+            get {
+                return ResourceManager.GetString("REPORT_CHAT_ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string TELEGRAM_BOT_TOKEN {
             get {
                 return ResourceManager.GetString("TELEGRAM_BOT_TOKEN", resourceCulture);

@@ -407,7 +407,7 @@ namespace CSAuto
         {
             Telegram.SendMessage("Test Message!",Properties.Settings.Default.telegramChatId, 
                 Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ? 
-                Properties.Settings.Default.customTelegramToken : APIKeys.TELEGRAM_BOT_TOKEN);
+                Properties.Settings.Default.customTelegramToken : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")));
         }
 
         private void RemoveDiscordButton_Click(object sender, RoutedEventArgs e)

@@ -40,7 +40,7 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.6";
+        public const string VER = "2.1.7";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
         const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
@@ -947,7 +947,7 @@ namespace CSAuto
                 if (Properties.Settings.Default.telegramChatId != "" && !onlyClients)
                     Telegram.SendMessage(message, Properties.Settings.Default.telegramChatId,
                         Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
-                        Properties.Settings.Default.customTelegramToken : APIKeys.TELEGRAM_BOT_TOKEN);
+                        Properties.Settings.Default.customTelegramToken : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")));
                 if (clients != null) {
                     lock (clients) {
                         if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
@@ -1314,7 +1314,7 @@ namespace CSAuto
                                             Properties.Settings.Default.telegramChatId,
                                             Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
                                                 Properties.Settings.Default.customTelegramToken
-                                                : APIKeys.TELEGRAM_BOT_TOKEN,
+                                                : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")),
                                             $"{csResolution.Width}X{csResolution.Height}\n" +
                                             $"({X},{Y})\n" +
                                             $"{DateTime.Now}");

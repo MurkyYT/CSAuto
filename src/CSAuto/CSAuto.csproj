@@ -216,6 +216,7 @@
     <EmbeddedResource Include="APIKeys.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>APIKeys.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -18,7 +18,7 @@ namespace Murky.Utils
         {
             try
             {
-                string urlString = $"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatID}&text={text}";
+                string urlString = $"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatID}&text={text}&parse_mode=markdown";
 
                 using (WebClient webclient = new WebClient())
                 {

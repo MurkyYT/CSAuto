@@ -120,6 +120,12 @@
   <data name="DISCORD_BOT_ID" xml:space="preserve">
     <value />
   </data>
+  <data name="REPORT_BOT_TOKEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="REPORT_CHAT_ID" xml:space="preserve">
+    <value />
+  </data>
   <data name="TELEGRAM_BOT_TOKEN" xml:space="preserve">
     <value />
   </data>
