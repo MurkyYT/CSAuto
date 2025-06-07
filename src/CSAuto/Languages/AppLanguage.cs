@@ -5,7 +5,7 @@ namespace CSAuto
     {
         public static string[] Available = new string[]
         {
-            "en-EN",
+            "en-US",
             "ru-RU"
         };
     }

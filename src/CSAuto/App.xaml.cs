@@ -98,10 +98,19 @@ namespace CSAuto
                 switch (Settings.Default.currentLanguage)
                 {
                     case "language_english":
-                        Settings.Default.currentLanguage = "en-EN";
+                        Settings.Default.currentLanguage = "en-US";
                         break;
                     case "language_russian":
                         Settings.Default.currentLanguage = "ru-RU";
+                        break;
+                }
+            }
+            else
+            {
+                switch (Settings.Default.currentLanguage)
+                {
+                    case "en-EN":
+                        Settings.Default.currentLanguage = "en-US";
                         break;
                 }
             }
@@ -110,7 +119,7 @@ namespace CSAuto
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(
                     languageName ?? Settings.Default.currentLanguage);
             }
-            catch { CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-EN"); Settings.Default.currentLanguage = "en-EN"; MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning); }
+            catch { CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US"); Settings.Default.currentLanguage = "en-US"; MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning); }
 
             Log.WriteLine($"|App.cs| Selected culture is: {CultureInfo.CurrentUICulture}");
 
