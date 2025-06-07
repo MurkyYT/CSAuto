@@ -14,11 +14,11 @@ namespace Murky.Utils
 {
     public static class Telegram
     {
-        public static void SendMessage(string text,string chatID,string token)
+        public static void SendMessage(string text,string chatID,string token, bool markdown = false)
         {
             try
             {
-                string urlString = $"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatID}&text={text}&parse_mode=markdown";
+                string urlString = $"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatID}&text={text}" + (markdown ? "&parse_mode=markdown" : "");
 
                 using (WebClient webclient = new WebClient())
                 {

@@ -368,7 +368,7 @@ namespace CSAuto
                 Telegram.SendMessage($"\nCSAuto ({MainApp.FULL_VER} - {CompileInfo.Date} - {CompileInfo.Time}) crash report:\n```csharp\n{ex.GetType()}: {ex.Message}\n" +
                     $"StackTrace:{ex.StackTrace}\n" +
                     $"Source: {ex.Source}\n" +
-                    $"Inner Exception: {ex.InnerException}\r\n```", Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")));
+                    $"Inner Exception: {ex.InnerException}\r\n```", Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")),true);
         }
 
     }
