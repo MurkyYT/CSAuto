@@ -1,3 +1,8 @@
+### Version 2.1.9 changelog
+- Added yes/no button to send crash report or not
+
+---
+
 ### Version 2.1.8 changelog
 - Hot fix for en-EN locale
 
