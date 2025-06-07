@@ -983,9 +983,9 @@ namespace CSAuto.Languages {
         /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
-        public static string language_en_EN {
+        public static string language_en_US {
             get {
-                return ResourceManager.GetString("language_en-EN", resourceCulture);
+                return ResourceManager.GetString("language_en-US", resourceCulture);
             }
         }
         
