@@ -40,7 +40,7 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.9";
+        public const string VER = "2.1.10";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
         const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
