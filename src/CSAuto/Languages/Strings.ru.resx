@@ -429,7 +429,7 @@
     <value>Максимальное количество кнопок - 1 (Ограничения Discord)</value>
   </data>
   <data name="error_appcrashed" xml:space="preserve">
-    <value>Произошла неожиданная ошибка!, я открою Error_Log.txt , пожалуйста, откройте проблему на github с прикрепленным журналом!</value>
+    <value>Произошла непредвиденная ошибка!, отправлен отчет о сбое.</value>
   </data>
   <data name="error_discordselecttemplate" xml:space="preserve">
     <value>Пожалуйста, выберите шаблон кнопки</value>

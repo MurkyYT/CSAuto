@@ -691,7 +691,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected error has accured!, i will open Error_Log.txt, please open an issue on github with the log Attached!.
+        ///   Looks up a localized string similar to An unexpected error has occurred!, a crash report has been sent.
         /// </summary>
         public static string error_appcrashed {
             get {

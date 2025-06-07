@@ -118,6 +118,8 @@ namespace CSAuto
             {
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(
                     languageName ?? Settings.Default.currentLanguage);
+                if (languageName != null && !AppLanguage.Available.Contains(languageName))
+                    throw new Exception();
             }
             catch { CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US"); Settings.Default.currentLanguage = "en-US"; MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning); }
 
