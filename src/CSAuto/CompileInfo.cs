@@ -2,7 +2,7 @@ namespace CSAuto
 {
     public static class CompileInfo
     {
-        public static string Date = "07/06/25";
-        public static string Time = "14:19:24";
+        public static string Date = "08/06/25";
+        public static string Time = "13:37:07";
     }
 }

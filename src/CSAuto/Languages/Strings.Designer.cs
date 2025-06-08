@@ -772,7 +772,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error ocurred
+        ///   Looks up a localized string similar to An error occurred
         ///&apos;{0}&apos;
         ///Try to download the latest version from github, if it didn&apos;t help create a bug report with the error log attached..
         /// </summary>
@@ -986,6 +986,15 @@ namespace CSAuto.Languages {
         public static string language_en_US {
             get {
                 return ResourceManager.GetString("language_en-US", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hebrew.
+        /// </summary>
+        public static string language_he_IL {
+            get {
+                return ResourceManager.GetString("language_he-IL", resourceCulture);
             }
         }
         

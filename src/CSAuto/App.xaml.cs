@@ -118,10 +118,32 @@ namespace CSAuto
             {
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(
                     languageName ?? Settings.Default.currentLanguage);
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(
+                   languageName ?? Settings.Default.currentLanguage);
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(
+                   languageName ?? Settings.Default.currentLanguage);
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(
+                  languageName ?? Settings.Default.currentLanguage);
                 if (languageName != null && !AppLanguage.Available.Contains(languageName))
                     throw new Exception();
             }
-            catch { CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US"); Settings.Default.currentLanguage = "en-US"; MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning); }
+            catch 
+            { 
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US"); 
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");  
+                CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+                Settings.Default.currentLanguage = "en-US";
+                MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+            if (AppLanguage.IsRTL[languageName ?? Settings.Default.currentLanguage])
+            {
+                Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/RTLResource.xaml", UriKind.RelativeOrAbsolute)
+                });
+            }
 
             Log.WriteLine($"|App.cs| Selected culture is: {CultureInfo.CurrentUICulture}");
 

@@ -2,6 +2,7 @@
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Windows.Interop;
 
@@ -22,6 +23,11 @@ namespace CSAuto
                 var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
+            }
+
+            if (AppLanguage.IsRTL[CultureInfo.CurrentUICulture.Name])
+            {
+                FlowDirection = System.Windows.FlowDirection.RightToLeft;
             }
 
             Steam.GetLaunchOptions(730, out string launchOpt);

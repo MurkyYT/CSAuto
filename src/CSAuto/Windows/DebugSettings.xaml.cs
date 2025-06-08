@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -36,6 +37,11 @@ namespace CSAuto
                 var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
+            }
+
+            if (AppLanguage.IsRTL[CultureInfo.CurrentUICulture.Name])
+            {
+                this.FlowDirection = FlowDirection.RightToLeft;
             }
 
             Color regularColor = main.BUTTON_COLORS[0];

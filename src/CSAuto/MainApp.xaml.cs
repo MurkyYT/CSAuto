@@ -31,6 +31,7 @@ using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using ControlzEx.Theming;
+using System.Globalization;
 #endregion
 namespace CSAuto
 {
@@ -40,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.1.10";
+        public const string VER = "2.1.11";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -421,7 +422,9 @@ namespace CSAuto
                     currentMapIcon = null;
                     Log.WriteLine($"|MainApp.cs| Player is back in main menu");
                     if (Properties.Settings.Default.lobbyNotification)
-                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_loadedlobby"),command:Commands.LoadedInLobby);
+                    {
+                        SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_loadedlobby"), command: Commands.LoadedInLobby);
+                    }
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
                         DXGIcapture.Init();

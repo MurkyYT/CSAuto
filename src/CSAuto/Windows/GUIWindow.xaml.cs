@@ -51,6 +51,12 @@ namespace CSAuto
                 var preference = NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
+
+            if (AppLanguage.IsRTL[CultureInfo.CurrentUICulture.Name])
+            {
+                this.FlowDirection = FlowDirection.RightToLeft;
+            }
+
             Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt); });
             PortableModeCheck.IsChecked = File.Exists(Log.WorkPath + "\\resource\\.portable");
             Title += $" {MainApp.FULL_VER}";
@@ -427,10 +433,9 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(Languages.Strings.ResourceManager.GetString("inputtext_label"),
-                Languages.Strings.ResourceManager.GetString("inputtext_enterlabel"));
-            string url = await CallInputDialogAsync(Languages.Strings.ResourceManager.GetString("inputtext_url")
-                , Languages.Strings.ResourceManager.GetString("inputtext_enterurl"));
+            string label = await CallInputDialogAsync("inputtext_label","inputtext_enterlabel");
+            string url = await CallInputDialogAsync("inputtext_url"
+                , "inputtext_enterurl");
             if(label == null || url == null || label.Trim() == "" || url.Trim() == "" || !Uri.IsWellFormedUriString(url,UriKind.Absolute))
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);
@@ -454,8 +459,8 @@ namespace CSAuto
                 await ShowMessage("title_error", "error_max1discord", MessageDialogStyle.Affirmative);
                 return;
             }
-            string label = await CallInputDialogAsync(Languages.Strings.ResourceManager.GetString("inputtext_label")
-                , Languages.Strings.ResourceManager.GetString("inputtext_enterlabel"));
+            string label = await CallInputDialogAsync("inputtext_label"
+                , "inputtext_enterlabel");
             if (label == null || label.Trim() == "")
             {
                 await ShowMessage("title_error", "error_entervalid", MessageDialogStyle.Affirmative);

@@ -707,4 +707,7 @@
   <data name="error_bindlaunchoption" xml:space="preserve">
     <value>Не удалось добавить '+exec csautobindcommandsender.cfg' в параметры запуска, пожалуйста, добавьте его вручную</value>
   </data>
+  <data name="language_he-IL" xml:space="preserve">
+    <value>Иврит</value>
+  </data>
 </root>

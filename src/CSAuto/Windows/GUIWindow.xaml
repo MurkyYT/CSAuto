@@ -22,7 +22,7 @@
         TitleCharacterCasing="Normal">
     <mahapps:MetroWindow.TitleTemplate>
         <DataTemplate>
-            <TextBlock Text="{TemplateBinding Content}"
+            <TextBlock FlowDirection="LeftToRight" Text="{TemplateBinding Content}"
                    TextTrimming="CharacterEllipsis"
                    VerticalAlignment="Center"
                    FontWeight="SemiBold"
@@ -30,19 +30,16 @@
                    FontSize="{DynamicResource WindowTitleFontSize}"
                    FontFamily="{DynamicResource HeaderFontFamily}"
                    />
-            <!--Foreground="{DynamicResource MahApps.Brushes.Accent}"/>-->
         </DataTemplate>
     </mahapps:MetroWindow.TitleTemplate>
     <mahapps:MetroWindow.LeftWindowCommands>
         <mahapps:WindowCommands>
             <Button Click="LaunchGitHubSite" ToolTip="{x:Static p:Strings.tooltip_github}">
-                <!--<Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>-->
                 <Viewbox Width="18" Height="18" Stretch="Fill">
                     <Path Fill="#FFFFFFFF" Data="{StaticResource GithubMark}" />
                 </Viewbox>
             </Button>
             <Button ToolTip="{x:Static p:Strings.tooltip_discord}" Click="OpenDiscordServer">
-                <!--<Image Source="Icons/GitHub-Mark.png" Width="20" Height="20"/>-->
                 <Viewbox Width="24" Height="18" Stretch="Fill">
                     <Path Fill="#5865F2" Data="{StaticResource DiscordBadge}"/>
                 </Viewbox>
@@ -223,19 +220,19 @@
                     </StackPanel>
                     <TextBlock Text="{x:Static p:Strings.discord_result}" HorizontalAlignment="Center"/>
                     <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="6" Background="Black" MinWidth="300" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="PLAYING A GAME" Foreground="#FFF2F3F5" FontWeight="Bold" Margin="10,0,0,0"/>
-                            <StackPanel Orientation="Horizontal">
-                                <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="5" Width="50" Height="50" Margin="20,10,0,0">
+                        <StackPanel Orientation="Vertical" FlowDirection="LeftToRight">
+                            <TextBlock FlowDirection="LeftToRight" Text="PLAYING A GAME" Foreground="#FFF2F3F5" FontWeight="Bold" Margin="10,0,0,0"/>
+                            <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                                <Border FlowDirection="LeftToRight" BorderBrush="#FF000000" BorderThickness="1" CornerRadius="5" Width="50" Height="50" Margin="20,10,0,0">
                                     <Border.Background>
                                         <ImageBrush ImageSource="/Images/CS_ICON.png"/>
                                     </Border.Background>
                                 </Border>
-                                <StackPanel Orientation="Vertical"  Margin="10,10,0,0">
-                                    <TextBlock Text="Counter-Strike 2" Foreground="White" FontWeight="Bold"/>
-                                    <TextBlock x:Name="DiscordRpcDetails" Text="Details text" Foreground="LightGray"/>
-                                    <TextBlock x:Name="DiscordRpcState" Text="State text" Foreground="LightGray"/>
-                                    <TextBlock Text="00:00 elapsed" Foreground="LightGray" Margin="0,0,0,5"/>
+                                <StackPanel FlowDirection="LeftToRight" Orientation="Vertical"  Margin="10,10,0,0">
+                                    <TextBlock FlowDirection="LeftToRight" Text="Counter-Strike 2" Foreground="White" FontWeight="Bold"/>
+                                    <TextBlock FlowDirection="LeftToRight" x:Name="DiscordRpcDetails" Text="Details text" Foreground="LightGray"/>
+                                    <TextBlock FlowDirection="LeftToRight" x:Name="DiscordRpcState" Text="State text" Foreground="LightGray"/>
+                                    <TextBlock FlowDirection="LeftToRight" Text="00:00 elapsed" Foreground="LightGray" Margin="0,0,0,5"/>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

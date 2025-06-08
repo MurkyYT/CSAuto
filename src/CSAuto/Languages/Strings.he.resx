@@ -118,596 +118,489 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="language_en-US" xml:space="preserve">
-    <value>English</value>
+    <value>אנגלית</value>
   </data>
   <data name="language_ru-RU" xml:space="preserve">
-    <value>Russian</value>
+    <value>רוסית</value>
   </data>
   <data name="menu_debug" xml:space="preserve">
-    <value>Debug</value>
+    <value>דיבג</value>
   </data>
   <data name="menu_language" xml:space="preserve">
-    <value>Language</value>
+    <value>שפה</value>
   </data>
   <data name="menu_mobile" xml:space="preserve">
-    <value>Phone notifications</value>
+    <value>התראות בטלפון</value>
   </data>
   <data name="menu_exit" xml:space="preserve">
-    <value>Exit</value>
+    <value>יציאה</value>
   </data>
   <data name="menu_automation" xml:space="preserve">
-    <value>Automation</value>
+    <value>אוטומציה</value>
   </data>
   <data name="menu_general" xml:space="preserve">
-    <value>General</value>
+    <value>כללי</value>
   </data>
   <data name="menu_options" xml:space="preserve">
-    <value>Settings</value>
+    <value>הגדרות</value>
   </data>
   <data name="menu_opendebug" xml:space="preserve">
-    <value>Open Debug Window</value>
+    <value>לפתוח את חלון הדיבג</value>
   </data>
   <data name="menu_autocheckforupdates" xml:space="preserve">
-    <value>Check for updates on startup</value>
+    <value>בדוק אם קיימים עדכונים בעת ההפעלה</value>
   </data>
   <data name="menu_checkforupdates" xml:space="preserve">
-    <value>Check for updates</value>
+    <value>בדוק אם קיימים עדכונים</value>
   </data>
   <data name="menu_enterip" xml:space="preserve">
-    <value>Enter IP address</value>
+    <value>הזן כתובת IP</value>
   </data>
   <data name="menu_discordrpc" xml:space="preserve">
     <value>Discord RPC</value>
   </data>
   <data name="menu_enabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>מופעל</value>
   </data>
   <data name="menu_autocheckupdates" xml:space="preserve">
-    <value>Auto Check For Updates</value>
+    <value>בדיקה אוטומטית של עדכונים</value>
   </data>
   <data name="menu_autospotify" xml:space="preserve">
-    <value>Auto Pause/Resume media</value>
+    <value>השהיה או הפעלה אוטומטית של מדיה</value>
   </data>
   <data name="menu_startup" xml:space="preserve">
-    <value>Start With Windows</value>
+    <value>התחל עם Windows</value>
   </data>
   <data name="menu_continuespray" xml:space="preserve">
-    <value>Continue Spraying</value>
+    <value>המשך ריסוס</value>
   </data>
   <data name="menu_savedebugframes" xml:space="preserve">
-    <value>Save Frames</value>
+    <value>שמור תמונות</value>
   </data>
   <data name="menu_savedebuglogs" xml:space="preserve">
-    <value>Save Logs</value>
+    <value>שמור לוגים</value>
   </data>
   <data name="menu_autoaccept" xml:space="preserve">
-    <value>Auto Accept Match</value>
+    <value>אישור אוטומטי של משחקים</value>
   </data>
   <data name="menu_autobuyarmor" xml:space="preserve">
-    <value>Auto Buy Armor</value>
+    <value>קניה אוטומטית של אפוד מגן</value>
   </data>
   <data name="menu_autobuydefuse" xml:space="preserve">
-    <value>Auto Buy Defuse Kit</value>
+    <value>קניה אוטומטית של ערכת נטרול</value>
   </data>
   <data name="menu_preferarmor" xml:space="preserve">
-    <value>Prefer armor</value>
+    <value>העדפה לאפוד מגן</value>
   </data>
   <data name="menu_autobuy" xml:space="preserve">
-    <value>Auto Buy</value>
+    <value>קניה אוטומטית</value>
   </data>
   <data name="menu_discord" xml:space="preserve">
     <value>Discord</value>
   </data>
   <data name="menu_autoreload" xml:space="preserve">
-    <value>Auto Reload</value>
+    <value>טעינה אוטומטית</value>
   </data>
   <data name="title_update" xml:space="preserve">
-    <value>Check for updates (CSAuto)</value>
+    <value>בדיקת עדכונים (CSAuto)</value>
   </data>
   <data name="title_restartneeded" xml:space="preserve">
-    <value>Restart app</value>
+    <value>הפעל מחדש את האפליקציה</value>
   </data>
   <data name="title_error" xml:space="preserve">
-    <value>Error</value>
+    <value>שגיאה</value>
   </data>
   <data name="inputtitle_mobileip" xml:space="preserve">
-    <value>Mobile Phone IP Address</value>
+    <value>כתובת טלפון נייד</value>
   </data>
   <data name="inputtext_mobileip" xml:space="preserve">
-    <value>Enter the IP address you see in the app:</value>
+    <value>הזן את כתובת האיי פי שאתה רואה באפליקציה:</value>
   </data>
   <data name="msgbox_latestversion" xml:space="preserve">
-    <value>You have the latest version!</value>
+    <value>יש לך את הגרסה האחרונה!</value>
   </data>
   <data name="msgbox_newerversion" xml:space="preserve">
-    <value>Found newer verison ({0}) would you like to download it?</value>
+    <value>נמצא גרסה חדשה יותר ({0}) האם תרצה להוריד אותה?</value>
   </data>
   <data name="msgbox_restartneeded" xml:space="preserve">
-    <value>You must restart the program to apply these changes</value>
+    <value>עליך להפעיל מחדש את האפליקציה כדי להחיל שינויים אלה</value>
   </data>
   <data name="error_update" xml:space="preserve">
-    <value>Couldn't check for updates. Try again later</value>
+    <value>אירעה שגיאה בעת בדיקת עדכונים. נסה שוב מאוחר יותר</value>
   </data>
   <data name="error_startup" xml:space="preserve">
-    <value>An error occurred
+    <value>אירעה שגיאה
 '{0}'
-Try to download the latest version from github, if it didn't help create a bug report with the error log attached.</value>
+נסה להוריד את הגרסה האחרונה מgithub, אם זה לא עזר ליצור דוח באגים עם יומן השגיאות המצורף.</value>
   </data>
   <data name="menu_notifications" xml:space="preserve">
-    <value>Notifications</value>
+    <value>הודעות</value>
   </data>
   <data name="menu_acceptednotification" xml:space="preserve">
-    <value>Accepted match</value>
+    <value>אישרתי משחק</value>
   </data>
   <data name="menu_mapnotification" xml:space="preserve">
-    <value>Loaded on map</value>
+    <value>נטען על המפה</value>
   </data>
   <data name="menu_lobbynotification" xml:space="preserve">
-    <value>Loaded in lobby</value>
+    <value>טעון בלובי</value>
   </data>
   <data name="menu_connectednotification" xml:space="preserve">
-    <value>Computer connected</value>
+    <value>מחשב מחובר</value>
   </data>
   <data name="menu_crashednotification" xml:space="preserve">
-    <value>Game crashed</value>
+    <value>משחק קרס</value>
   </data>
   <data name="server_computeronline" xml:space="preserve">
-    <value>Computer {0} ({1}) is online (CSAuto v{2})</value>
+    <value>המחשב {0} ({1}) דלוק (CSAuto v{2})</value>
   </data>
   <data name="server_loadedmap" xml:space="preserve">
-    <value>Loaded on map {0} in mode {1}</value>
+    <value>נטען במפה {0} במצב {1}</value>
   </data>
   <data name="server_loadedlobby" xml:space="preserve">
-    <value>Loaded in lobby!</value>
+    <value>טעון בלובי!</value>
   </data>
   <data name="server_gamecrash" xml:space="preserve">
-    <value>The game crashed!</value>
+    <value>המשחק קרס!</value>
   </data>
   <data name="server_acceptmatch" xml:space="preserve">
-    <value>Accepted a match!</value>
+    <value>אישרתי משחק!</value>
   </data>
   <data name="menu_bombnotification" xml:space="preserve">
-    <value>Bomb information</value>
+    <value>מידע על הפצצה</value>
   </data>
   <data name="server_timeleft" xml:space="preserve">
-    <value>Bomb seconds left:</value>
+    <value>שניות שנותרו לפצצה:</value>
   </data>
   <data name="server_bombexplode" xml:space="preserve">
-    <value>The bomb exploded</value>
+    <value>הפצצה התפוצצה</value>
   </data>
   <data name="server_bombdefuse" xml:space="preserve">
-    <value>Bomb has been defused</value>
+    <value>פצצה נוטרלה</value>
   </data>
   <data name="exception_steamnotfound" xml:space="preserve">
-    <value>Couldn't find Steam Path</value>
+    <value>לא הצלחתי למצוא את מיקום Steam</value>
   </data>
   <data name="exception_nonetworkadapter" xml:space="preserve">
-    <value>No network adapters with an IPv4 address in the system!</value>
+    <value>אין מתאמי רשת עם כתובת IPv4 במערכת!</value>
   </data>
   <data name="exception_csgonotfound" xml:space="preserve">
-    <value>Couldn't find CS:GO directory</value>
+    <value>לא הצלחתי למצוא את מיקום CS:GO</value>
   </data>
   <data name="menu_entersteamkey" xml:space="preserve">
-    <value>Enter Steam Web API Key</value>
+    <value>הזן מפתח Steam Web API</value>
   </data>
   <data name="inputtitle_steamkey" xml:space="preserve">
-    <value>Steam Web API Key</value>
+    <value>מפתח Steam Web API</value>
   </data>
   <data name="inputtext_steamkey" xml:space="preserve">
-    <value>Please enter your Steam Web API Key</value>
+    <value>הזן מפתח Steam Web API</value>
   </data>
   <data name="menu_lobbycount" xml:space="preserve">
-    <value>Show players lobby count</value>
+    <value>הצג כמות שחקנים בלובי</value>
   </data>
   <data name="menu_entertelegramid" xml:space="preserve">
-    <value>Enter Telegram Chat ID</value>
+    <value>הזן מזהה צ'אט טלגרם</value>
   </data>
   <data name="inputtitle_telegramid" xml:space="preserve">
-    <value>Telegram ID</value>
+    <value>מזהה טלגרם</value>
   </data>
   <data name="inputtext_telegramid" xml:space="preserve">
-    <value>Please enter your Telegram chat id, use the faq if you dont know how</value>
+    <value>אנא הזן את מזהה הצ'אט שלך בטלגרם, השתמש בשאלות הנפוצות אם אינך יודע כיצד</value>
   </data>
   <data name="menu_mobileappenabled" xml:space="preserve">
-    <value>Mobile App Notifications Enabled</value>
+    <value>התראות לנייד מופעלות</value>
   </data>
   <data name="error_telegrammessage" xml:space="preserve">
-    <value>There was an error when sending the Telegram message, make sure your chat id is correct</value>
+    <value>הייתה שגיאה בעת שליחת הודעת הטלגרם, ודא שמזהה הצ'אט שלך נכון</value>
   </data>
   <data name="inputtext_botlinkbutton" xml:space="preserve">
-    <value>Bot Link</value>
+    <value>קישור לבוט</value>
   </data>
   <data name="menu_darktheme" xml:space="preserve">
-    <value>Dark Theme</value>
+    <value>נושא כהה</value>
   </data>
   <data name="menu_changelog" xml:space="preserve">
-    <value>Changelog</value>
+    <value>יומן השינויים</value>
   </data>
   <data name="title_color" xml:space="preserve">
-    <value>Color: </value>
+    <value>צבע: </value>
   </data>
   <data name="inputtext_linkbutton" xml:space="preserve">
-    <value>Bot Link</value>
+    <value>קישור לבוט</value>
   </data>
   <data name="server_bombplanted" xml:space="preserve">
-    <value>Bomb has been planted</value>
+    <value>הוטמנה הפצצה</value>
   </data>
   <data name="title_discordstate" xml:space="preserve">
-    <value>State template</value>
+    <value>תבנית מצב</value>
   </data>
   <data name="title_discorddetails" xml:space="preserve">
-    <value>Details template</value>
+    <value>תבנית פרטים</value>
   </data>
   <data name="menu_discordlobby" xml:space="preserve">
-    <value>Lobby RPC</value>
+    <value>RPC בלובי</value>
   </data>
   <data name="menu_discordingame" xml:space="preserve">
-    <value>In Game RPC</value>
+    <value>RPC במשחק</value>
   </data>
   <data name="title_discordrpctemplates" xml:space="preserve">
-    <value>Templates:</value>
+    <value>תבניות:</value>
   </data>
   <data name="discord_friendcode" xml:space="preserve">
-    <value>{FriendCode} - Your friencode</value>
+    <value>{FriendCode} - קוד החברים שלך</value>
   </data>
   <data name="discord_gamemode" xml:space="preserve">
-    <value>{Gamemode} - The current match mode</value>
+    <value>{Gamemode} - מצב נוכחי של המשחק</value>
   </data>
   <data name="discord_map" xml:space="preserve">
-    <value>{Map} - The current match map</value>
+    <value>{Map} - המפה הנוכחית של המשחק</value>
   </data>
   <data name="discord_teamscore" xml:space="preserve">
-    <value>{TeamScore} - Your team score</value>
+    <value>{TeamScore} - הניקוד של הקבוצה שלך</value>
   </data>
   <data name="discord_myteam" xml:space="preserve">
-    <value>{MyTeam} - Your current team</value>
+    <value>{MyTeam} - הקבוצה הנוכחית שלך</value>
   </data>
   <data name="discord_roundstate" xml:space="preserve">
-    <value>{RoundState} - Current round state</value>
+    <value>{RoundState} - המצב הנוכחי של הסיבוב</value>
   </data>
   <data name="discord_matchstate" xml:space="preserve">
-    <value>{MatchState} - Current match state</value>
+    <value>{MatchState} - המצב הנוכחי של המשחק</value>
   </data>
   <data name="discord_enemyscore" xml:space="preserve">
-    <value>{EnemyScore} - Enemy team score</value>
+    <value>{EnemyScore} - הניקוד של הקבוצה היריבה</value>
   </data>
   <data name="discord_enemyteam" xml:space="preserve">
-    <value>{EnemyTeam} - Enemy team name</value>
+    <value>{EnemyTeam} - השם של הקבוצה היריבה</value>
   </data>
   <data name="discord_tscore" xml:space="preserve">
-    <value>{TScore} - T side score</value>
+    <value>{TScore} - הניקוד של הT's</value>
   </data>
   <data name="discord_ctscore" xml:space="preserve">
-    <value>{CTScore} - CT side score</value>
+    <value>{CTScore} - הניקוד של הCT's</value>
   </data>
   <data name="discord_steamid" xml:space="preserve">
-    <value>{SteamID} - Your steam id</value>
+    <value>{SteamID} - המזהה Steam שלך</value>
   </data>
   <data name="discord_result" xml:space="preserve">
-    <value>Result</value>
+    <value>תוצאה</value>
   </data>
   <data name="discord_restartneeded" xml:space="preserve">
-    <value>You may need to restart the app for changes to apply</value>
+    <value>ייתכן שיהיה עליך להפעיל מחדש את האפליקציה כדי להחיל שינויים</value>
   </data>
   <data name="menu_oldautobuy" xml:space="preserve">
-    <value>Disable Chat/Console before auto buy</value>
+    <value>לסגור צ'אט / קונסולה לפני קנייה אוטומטית</value>
   </data>
   <data name="inputtext_testmessagetelegram" xml:space="preserve">
-    <value>Send test message</value>
+    <value>שלח הודעת בדיקה</value>
   </data>
   <data name="discord_label" xml:space="preserve">
-    <value>Button Label</value>
+    <value>תווית כפתור</value>
   </data>
   <data name="discord_url" xml:space="preserve">
-    <value>Button Url</value>
+    <value>כתובת אתר של הכפתור</value>
   </data>
   <data name="menu_discordbuttons" xml:space="preserve">
-    <value>Discord RPC Buttons</value>
+    <value>כפתורי Discord RPC</value>
   </data>
   <data name="discord_removebutton" xml:space="preserve">
-    <value>Remove Button</value>
+    <value>הסר כפתור</value>
   </data>
   <data name="discord_addbutton" xml:space="preserve">
-    <value>Add Button</value>
+    <value>הוסף כפתור</value>
   </data>
   <data name="inputtext_label" xml:space="preserve">
-    <value>Enter Label</value>
+    <value>הזן תווית</value>
   </data>
   <data name="inputtext_enterlabel" xml:space="preserve">
-    <value>Please enter your desired label</value>
+    <value>אנא הכנס את התווית הרצויה</value>
   </data>
   <data name="inputtext_url" xml:space="preserve">
-    <value>Enter URL</value>
+    <value>הזן כתובת אתר</value>
   </data>
   <data name="inputtext_enterurl" xml:space="preserve">
-    <value>Please enter your desired URL</value>
+    <value>נא להזין את כתובת האתר הרצויה</value>
   </data>
   <data name="error_entervalid" xml:space="preserve">
-    <value>Please enter valid inputs</value>
+    <value>נא להזין ערכים חוקיים</value>
   </data>
   <data name="error_max1discord" xml:space="preserve">
-    <value>There is a max amount of 1 button (Discord Limitations)</value>
+    <value>יש כמות מקסימלית של כפתור 1 (מגבלות דיסקורד)</value>
   </data>
   <data name="error_appcrashed" xml:space="preserve">
-    <value>An unexpected error has occurred!, would you like to send a crash report?</value>
+    <value>אירעה שגיאה בלתי צפויה!, האם תרצה לשלוח דוח התרסקות?</value>
   </data>
   <data name="error_discordselecttemplate" xml:space="preserve">
-    <value>Please select a button template</value>
+    <value>אנא בחר תבנית כפתור</value>
   </data>
   <data name="discord_createtemplate" xml:space="preserve">
-    <value>Use template</value>
+    <value>השתמש בתבנית</value>
   </data>
   <data name="error_loadcolors" xml:space="preserve">
-    <value>Couldn't load colors for button, be aware that auto accept wont work!</value>
+    <value>לא ניתן היה לטעון צבעים עבור הכפתור, שימו לב שאישור אוטומטית לא יעבוד!</value>
   </data>
   <data name="menu_sendacceptbutton" xml:space="preserve">
-    <value>Send capture to telegram on accept</value>
+    <value>שלח צילום לטלגרם כאשר משחק אושר</value>
   </data>
   <data name="error_loadchangelog" xml:space="preserve">
-    <value>Couldn't load the changelog, please check your internet connection</value>
+    <value>לא ניתן היה לטעון את יומן השינויים, אנא בדוק את חיבור האינטרנט שלך</value>
   </data>
   <data name="title_warning" xml:space="preserve">
-    <value>Warning</value>
+    <value>אזהרה</value>
   </data>
   <data name="error_createfiles" xml:space="preserve">
-    <value>Can't create files, logs and debug stuff wont be saved</value>
+    <value>לא ניתן ליצור קבצים, יומנים ונתוני דיבג לא יישמרו</value>
   </data>
   <data name="discord_name" xml:space="preserve">
-    <value>{Name} - Current player name</value>
+    <value>{Name} - השם של השחקן הנוכחי</value>
   </data>
   <data name="discord_kills" xml:space="preserve">
-    <value>{Kills} - Current player kills</value>
+    <value>{Kills} - כמות ההריגות של השחקן הנוכחי</value>
   </data>
   <data name="discord_deaths" xml:space="preserve">
-    <value>{Deaths} - Current player deaths</value>
+    <value>{Deaths} - כמות המוות של השחקן הנוכחי</value>
   </data>
   <data name="discord_mvps" xml:space="preserve">
-    <value>{MVPS} - Current player mvps</value>
+    <value>{MVPS} - כמות הMVP's של השחקן הנוכחי</value>
   </data>
   <data name="ckbox_oldscreencapture" xml:space="preserve">
-    <value>Use old screen capture technique</value>
+    <value>השתמש בטכניקת לכידת מסך ישנה</value>
   </data>
   <data name="menu_launchcs" xml:space="preserve">
-    <value>Launch CS2</value>
+    <value>הפעל את CS2</value>
   </data>
   <data name="menu_autoclosecsauto" xml:space="preserve">
-    <value>Close CSAuto when exiting CS2</value>
+    <value>סגור את CSAuto בעת יציאה מ-CS2</value>
   </data>
   <data name="error_notimplemented" xml:space="preserve">
-    <value>Not implemented yet</value>
+    <value>עדיין לא מיושם</value>
   </data>
   <data name="button_apply" xml:space="preserve">
-    <value>Apply</value>
+    <value>החל</value>
   </data>
   <data name="text_enabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>מופעל</value>
   </data>
   <data name="text_itempriority" xml:space="preserve">
-    <value>Priority (the lower, the more chance it will be bought)</value>
+    <value>עדיפות (ככל שהוא נמוך יותר, הסיכוי שהוא ייקנה גדול יותר)</value>
   </data>
-  <data name="team_ct" xml:space="preserve">
-    <value>Counter-Terrorist</value>
-  </data>
-  <data name="team_t" xml:space="preserve">
-    <value>Terrorist</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="team_ct" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="text_selecteditem" xml:space="preserve">
-    <value>Selected item:</value>
+    <value>פריט נבחר:</value>
   </data>
   <data name="error_alreadycontainscustom" xml:space="preserve">
-    <value>The custom weapon has already been selected</value>
+    <value>הנשק המותאם אישית כבר נבחר</value>
   </data>
-  <data name="buyitem_defusekit" xml:space="preserve">
-    <value>Defuse Kit</value>
+  <data name="title_success" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="buyitem_kevlarvest" xml:space="preserve">
-    <value>Kevlar Vest</value>
+  <data name="file_importsucess" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="buyitem_kevlarandhelmet" xml:space="preserve">
-    <value>Kevlar &amp; Helmet</value>
+  <data name="menu_open" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="buyitem_zeus" xml:space="preserve">
-    <value>Zeus x27</value>
+  <data name="menu_alternativelocations" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="buyitem_flashbang" xml:space="preserve">
-    <value>Flashbang</value>
+  <data name="menu_website" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="buyitem_smoke" xml:space="preserve">
-    <value>Smoke Grenade</value>
+  <data name="menu_autofocus" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="buyitem_he" xml:space="preserve">
-    <value>High Explosive Grenade</value>
-  </data>
-  <data name="buyitem_molotov" xml:space="preserve">
-    <value>Incendiary Grenade / Molotov</value>
-  </data>
-  <data name="buyitem_decoy" xml:space="preserve">
-    <value>Decoy Grenade</value>
-  </data>
-  <data name="buyitem_usp_s" xml:space="preserve">
-    <value>USP-S / P2000</value>
-  </data>
-  <data name="buyitem_glock18" xml:space="preserve">
-    <value>Glock-18</value>
-  </data>
-  <data name="buyitem_r8revolver" xml:space="preserve">
-    <value>R8 Revolver</value>
-  </data>
-  <data name="buyitem_cz75auto" xml:space="preserve">
-    <value>CZ75-Auto</value>
-  </data>
-  <data name="buyitem_dualberettas" xml:space="preserve">
-    <value>Dual Berettas</value>
-  </data>
-  <data name="buyitem_p250" xml:space="preserve">
-    <value>P250</value>
-  </data>
-  <data name="buyitem_tec9" xml:space="preserve">
-    <value>Tec-9</value>
-  </data>
-  <data name="buyitem_fiveseven" xml:space="preserve">
-    <value>Five Seven</value>
-  </data>
-  <data name="buyitem_deagle" xml:space="preserve">
-    <value>Desert Eagle</value>
-  </data>
-  <data name="buyitem_none" xml:space="preserve">
-    <value>None</value>
-  </data>
-  <data name="buyitem_nova" xml:space="preserve">
-    <value>Nova</value>
-  </data>
-  <data name="buyitem_mp7" xml:space="preserve">
-    <value>MP7</value>
-  </data>
-  <data name="buyitem_negev" xml:space="preserve">
-    <value>Negev</value>
-  </data>
-  <data name="buyitem_mag7" xml:space="preserve">
-    <value>MAG-7</value>
-  </data>
-  <data name="buyitem_ppbizon" xml:space="preserve">
-    <value>PP-Bizon</value>
-  </data>
-  <data name="buyitem_ump45" xml:space="preserve">
-    <value>UMP-45</value>
-  </data>
-  <data name="buyitem_m249" xml:space="preserve">
-    <value>M249</value>
-  </data>
-  <data name="buyitem_xm1014" xml:space="preserve">
-    <value>XM1014</value>
-  </data>
-  <data name="buyitem_mp5sd" xml:space="preserve">
-    <value>MP5-SD</value>
-  </data>
-  <data name="buyitem_p90" xml:space="preserve">
-    <value>P90</value>
-  </data>
-  <data name="buyitem_mac10" xml:space="preserve">
-    <value>MAC-10</value>
-  </data>
-  <data name="buyitem_sawedoff" xml:space="preserve">
-    <value>Sawed-Off</value>
-  </data>
-  <data name="buyitem_mp9" xml:space="preserve">
-    <value>MP9</value>
-  </data>
-  <data name="buyitem_famas" xml:space="preserve">
-    <value>FAMAS</value>
-  </data>
-  <data name="buyitem_galilar" xml:space="preserve">
-    <value>Galil-AR</value>
-  </data>
-  <data name="buyitem_m4a4" xml:space="preserve">
-    <value>M4A4</value>
-  </data>
-  <data name="buyitem_m4a1s" xml:space="preserve">
-    <value>M4A1-S</value>
-  </data>
-  <data name="buyitem_ak47" xml:space="preserve">
-    <value>AK-47</value>
-  </data>
-  <data name="buyitem_aug" xml:space="preserve">
-    <value>AUG</value>
-  </data>
-  <data name="buyitem_sg553" xml:space="preserve">
-    <value>SG 553</value>
-  </data>
-  <data name="buyitem_ssg08" xml:space="preserve">
-    <value>SSG 08</value>
-  </data>
-  <data name="buyitem_awp" xml:space="preserve">
-    <value>AWP</value>
-  </data>
-  <data name="buyitem_scar20" xml:space="preserve">
-    <value>SCAR 20</value>
-  </data>
-  <data name="buyitem_g3sg1" xml:space="preserve">
-    <value>G3SG1</value>
-  </data>
-  <data name="title_success" xml:space="preserve">
-    <value>Success!</value>
-  </data>
-  <data name="file_importsucess" xml:space="preserve">
-    <value>Successfully imported file at '{0}'</value>
-  </data>
-  <data name="file_savesucess" xml:space="preserve">
-    <value>Successfully saved file at '{0}'</value>
-  </data>
-  <data name="menu_open" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="menu_optionsexport" xml:space="preserve">
-    <value>Export settings</value>
-  </data>
-  <data name="menu_optionsimport" xml:space="preserve">
-    <value>Import settings</value>
-  </data>
-  <data name="menu_alternativelocations" xml:space="preserve">
-    <value>Alternative Locations</value>
-  </data>
-  <data name="menu_website" xml:space="preserve">
-    <value>Website</value>
-  </data>
-  <data name="menu_portablemode" xml:space="preserve">
-    <value>Portable Mode</value>
-  </data>
-  <data name="inputtitle_telegramcustomtoken" xml:space="preserve">
-    <value>Custom Telegram Bot Token</value>
-  </data>
-  <data name="tooltip_telegramcustomtoken" xml:space="preserve">
-    <value>Enter here your bot token which will send you messages, if the token is wrong or doesn't exist the app will fallback to the default token</value>
-  </data>
-  <data name="menu_autofocus" xml:space="preserve">
-    <value>Try to focus on cs window when game is found</value>
-  </data>
-  <data name="menu_focusback" xml:space="preserve">
-    <value>Focus back to original window on accept</value>
-  </data>
-  <data name="warning_language" xml:space="preserve">
-    <value>The specified language was not found, app fallbacked to using English</value>
-  </data>
-  <data name="tooltip_github" xml:space="preserve">
-    <value>Open the GitHub repository</value>
+  <data name="menu_focusback" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="tooltip_discord" xml:space="preserve">
-    <value>Join the Discord server</value>
+    <value>הצטרף לשרת הדיסקורד</value>
   </data>
   <data name="menu_server" xml:space="preserve">
-    <value>Server</value>
-  </data>
-  <data name="title_serverport" xml:space="preserve">
-    <value>Port: </value>
+    <value>שרת</value>
   </data>
   <data name="title_serverclients" xml:space="preserve">
-    <value>Clients:</value>
+    <value>לקוחות:</value>
   </data>
-  <data name="ckbox_oldmouseinput" xml:space="preserve">
-    <value>Use old mouse input technique</value>
-  </data>
-  <data name="title_rebuy" xml:space="preserve">
-    <value>Rebuy</value>
+  <data name="title_rebuy" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="menu_about" xml:space="preserve">
-    <value>About</value>
+    <value>אודות</value>
   </data>
   <data name="text_description" xml:space="preserve">
-    <value>Counter-Strike 2 companion that automates in-game tasks, such as accepting match, buying items and more</value>
+    <value>אפליקציית ליווי לCounter-Strike 2 אשר עושה אוטומציה למשימות במשחק, כגון אישור משחקים, קניית פריטים ועוד</value>
   </data>
   <data name="title_optimization" xml:space="preserve">
-    <value>Optimization</value>
+    <value>אופטימיזציה</value>
   </data>
   <data name="msgbox_hdroptimization" xml:space="preserve">
-    <value>A display that supports HDR has been found, the current settings are not optimized for HDR displays, do you want to optimize the settings?</value>
+    <value>נמצא צג שתומך ב-HDR, ההגדרות הנוכחיות אינן מותאמות לצגי HDR, האם ברצונך לבצע אופטימיזציה של ההגדרות?</value>
   </data>
   <data name="error_steamrunning" xml:space="preserve">
-    <value>Steam is running, please close it and restart the app</value>
+    <value>Steam פועל, אנא סגור אותו והפעל מחדש את האפליקציה</value>
   </data>
   <data name="error_bindlaunchoption" xml:space="preserve">
-    <value>Couldn't add '+exec csautobindcommandsender.cfg' to launch options, please add it manually</value>
+    <value>לא ניתן להוסיף את '+exec csautobindcommandsender.cfg' לאפשרויות ההשקה, אנא הוסף אותו ידנית</value>
   </data>
   <data name="language_he-IL" xml:space="preserve">
-    <value>Hebrew</value>
+    <value>עברית</value>
+  </data>
+  <data name="ckbox_oldmouseinput" xml:space="preserve">
+    <value>השתמש בטכניקת קלט עכבר ישנה</value>
+  </data>
+  <data name="title_rebuy" xml:space="preserve">
+    <value>קנייה חוזרת</value>
+  </data>
+  <data name="title_serverport" xml:space="preserve">
+    <value>פורט:</value>
+  </data>
+  <data name="title_success" xml:space="preserve">
+    <value>הצלחה!</value>
+  </data>
+  <data name="file_importsucess" xml:space="preserve">
+    <value>קובץ מיובא בהצלחה ב '{0}'</value>
+  </data>
+  <data name="file_savesucess" xml:space="preserve">
+    <value>קובץ נשמר בהצלחה ב '{0}'</value>
+  </data>
+  <data name="menu_open" xml:space="preserve">
+    <value>לפתוח</value>
+  </data>
+  <data name="menu_optionsexport" xml:space="preserve">
+    <value>ייצוא הגדרות</value>
+  </data>
+  <data name="menu_optionsimport" xml:space="preserve">
+    <value>ייבוא הגדרות</value>
+  </data>
+  <data name="menu_alternativelocations" xml:space="preserve">
+    <value>מיקומים חלופיים</value>
+  </data>
+  <data name="menu_website" xml:space="preserve">
+    <value>אתר אינטרנט</value>
+  </data>
+  <data name="menu_portablemode" xml:space="preserve">
+    <value>מצב נייד</value>
+  </data>
+  <data name="inputtitle_telegramcustomtoken" xml:space="preserve">
+    <value>טוקן בוט טלגרם מותאם אישית</value>
+  </data>
+  <data name="tooltip_telegramcustomtoken" xml:space="preserve">
+    <value>הזן כאן את טוקן הבוט שלך שישלח לך הודעות, אם הטוקן שגוי או שאינו קיים האפליקציה תחזור לטוקן ברירת המחדל</value>
+  </data>
+  <data name="menu_autofocus" xml:space="preserve">
+    <value>נסה להתמקד בחלון cs כאשר המשחק נמצא</value>
+  </data>
+  <data name="menu_focusback" xml:space="preserve">
+    <value>התמקד בחזרה לחלון המקורי לאחר אישור המשחק</value>
+  </data>
+  <data name="warning_language" xml:space="preserve">
+    <value>השפה שצוינה לא נמצאה, האפליקציה חזרה לשימוש באנגלית</value>
+  </data>
+  <data name="tooltip_github" xml:space="preserve">
+    <value>פתח את מאגר GitHub</value>
   </data>
 </root>
