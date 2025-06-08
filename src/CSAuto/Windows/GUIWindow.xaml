@@ -47,7 +47,7 @@
         </mahapps:WindowCommands>
     </mahapps:MetroWindow.LeftWindowCommands>
     <Grid>
-        <TabControl BorderThickness="1.5,0,0,0" Padding="6,0,0,0" x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+        <TabControl BorderThickness="1.5,0,0,0" Padding="5,0,0,0" x:Name="CategoriesTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Left" mahapps:TabControlHelper.UnderlinePlacement="Left" SelectionChanged="CategoriesTabControl_SelectionChanged" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
             <mahapps:MetroTabItem>
                 <TabItem.HeaderTemplate>
                     <ItemContainerTemplate>
@@ -61,7 +61,7 @@
                 </TabItem.HeaderTemplate>
                 <Grid>
                     <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top">
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_general}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_general}" Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <CheckBox x:Name="StartUpCheck" Content="{x:Static p:Strings.menu_startup}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=runAtStartUp}" Click="StartUpCheck_Click"/>
                                 <CheckBox x:Name="DarkThemeCheck" Content="{x:Static p:Strings.menu_darktheme}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=darkTheme}" Click="DarkThemeCheck_Click"/>
@@ -78,7 +78,7 @@
                                 <StackPanel x:Name="languagesStackPanel" Orientation="Vertical"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_mobile}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_mobile}"  Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="{x:Static p:Strings.menu_mobileappenabled}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mobileAppEnabled}"/>
                                 <!--<TextBlock Text="{x:Static p:Strings.inputtitle_mobileip}" FontSize="20" FontWeight="Bold"/>
@@ -108,7 +108,7 @@
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=steamAPIkey}"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>-->
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_automation}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_automation}"  Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="{x:Static p:Strings.menu_autoaccept}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoAcceptMatch}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_autospotify}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoPausePlaySpotify}"/>
@@ -126,7 +126,7 @@
                                 <CheckBox Content="{x:Static p:Strings.menu_continuespray}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ContinueSpraying}"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_debug}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_debug}" Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <CheckBox Content="{x:Static p:Strings.menu_savedebugframes}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveDebugFrames}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_savedebuglogs}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveLogs}"/>
@@ -149,7 +149,7 @@
                 </TabItem.HeaderTemplate>
                 <StackPanel Orientation="Vertical">
                     <TabControl x:Name="DiscordTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" SelectionChanged="DiscordTabControl_SelectionChanged">
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordlobby}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordlobby}" Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="{x:Static p:Strings.title_discorddetails}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBox x:Name="LobbyDetailsText" Text="{Binding Source={x:Static properties:Settings.Default},Path=lobbyDetails,Mode=OneTime}" TextChanged="LobbyDetailsText_TextChanged"/>
@@ -157,7 +157,7 @@
                                 <TextBox x:Name="LobbyStateText" Text="{Binding Source={x:Static properties:Settings.Default},Path=lobbyState,Mode=OneTime}" TextChanged="LobbyStateText_TextChanged"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordingame}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordingame}" Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="{x:Static p:Strings.title_discorddetails}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBox x:Name="InGameDetailsText" Text="{Binding Source={x:Static properties:Settings.Default},Path=inGameDetails,Mode=OneTime}" TextChanged="InGameDetailsText_TextChanged"/>
@@ -165,7 +165,7 @@
                                 <TextBox x:Name="InGameStateText" Text="{Binding Source={x:Static properties:Settings.Default},Path=inGameState,Mode=OneTime}" TextChanged="InGameStateText_TextChanged"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordbuttons}">
+                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordbuttons}" Padding="5,0,5,0">
                             <StackPanel Orientation="Vertical">
                                 <ListView x:Name="DiscordRPCButtonsListView">
                                     <ListView.View>
@@ -268,8 +268,8 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <TabControl Panel.ZIndex="1" x:Name="AutoBuyTab" VerticalAlignment="Top" SelectionChanged="AutoBuyTab_SelectionChanged" mahapps:TabControlHelper.Underlined="SelectedTabItem" mahapps:TabControlHelper.UnderlinePlacement="Bottom" Height="48">
-                            <mahapps:MetroTabItem Header="{x:Static p:Strings.team_ct}"/>
-                            <mahapps:MetroTabItem Header="{x:Static p:Strings.team_t}"/>
+                            <mahapps:MetroTabItem Header="{x:Static p:Strings.team_ct}" Padding="5,0,5,0"/>
+                            <mahapps:MetroTabItem Header="{x:Static p:Strings.team_t}" Padding="5,0,5,0"/>
                         </TabControl>
                     </StackPanel>
                     <Image Grid.Column="1" Panel.ZIndex="0" x:Name="AutoBuyImage" MouseDown="AutoBuyImage_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,48,0,0"/>
