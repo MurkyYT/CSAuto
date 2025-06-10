@@ -15,7 +15,7 @@
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="10"
+                                    CornerRadius="6"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
 
                         <ScrollViewer x:Name="SubMenuScrollViewer"
@@ -121,7 +121,7 @@
                                     Background="{DynamicResource MahApps.Brushes.SubMenu.Background}"
                                     BorderBrush="{DynamicResource MahApps.Brushes.SubMenu.Border}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="10"
+                                    CornerRadius="6"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <ScrollViewer x:Name="SubMenuScrollViewer"
                                       CanContentScroll="True"

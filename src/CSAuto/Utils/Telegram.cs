@@ -14,11 +14,36 @@ namespace Murky.Utils
 {
     public static class Telegram
     {
+        public static string EscapeMarkdown(string text)
+        {
+            return text
+                    .Replace("\\", "\\\\")
+                    .Replace("_", "\\_")
+                    .Replace("*", "\\*")
+                    .Replace("[", "\\[")
+                    .Replace("]", "\\]")
+                    .Replace("(", "\\(")
+                    .Replace(")", "\\)")
+                    .Replace("~", "\\~")
+                    .Replace("`", "\\`")
+                    .Replace(">", "\\>")
+                    .Replace("#", "\\#")
+                    .Replace("+", "\\+")
+                    .Replace("-", "\\-")
+                    .Replace("=", "\\=")
+                    .Replace("|", "\\|")
+                    .Replace("{", "\\{")
+                    .Replace("}", "\\}")
+                    .Replace(".", "\\.")
+                    .Replace("!", "\\!");
+        }
         public static void SendMessage(string text,string chatID,string token, bool markdown = false)
         {
             try
             {
-                string urlString = $"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatID}&text={text}" + (markdown ? "&parse_mode=markdown" : "");
+                string escapedText = Uri.EscapeDataString(text);
+
+                string urlString = $"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatID}" + (markdown ? "&parse_mode=markdownv2" : "") + $"&text={escapedText}";
 
                 using (WebClient webclient = new WebClient())
                 {

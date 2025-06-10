@@ -58,7 +58,7 @@ namespace CSAuto
             });
             Current.Resources.MergedDictionaries.Add(new ResourceDictionary
             {
-                Source = new Uri("pack://application:,,,/VectorResources/VectorImages.xaml", UriKind.RelativeOrAbsolute)
+                Source = new Uri("pack://application:,,,/Resources/VectorImages.xaml", UriKind.RelativeOrAbsolute)
             });
 
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
@@ -141,7 +141,7 @@ namespace CSAuto
             {
                 Current.Resources.MergedDictionaries.Add(new ResourceDictionary
                 {
-                    Source = new Uri("pack://application:,,,/RTLResource.xaml", UriKind.RelativeOrAbsolute)
+                    Source = new Uri("pack://application:,,,/Resources/RTLResource.xaml", UriKind.RelativeOrAbsolute)
                 });
             }
 
@@ -160,7 +160,7 @@ namespace CSAuto
             if (IsWindows11)
                 Current.Resources.MergedDictionaries.Add(new ResourceDictionary
                 {
-                    Source = new Uri("pack://application:,,,/RoundedResources/RoundedResources.xaml", UriKind.RelativeOrAbsolute)
+                    Source = new Uri("pack://application:,,,/Resources/RoundedResources.xaml", UriKind.RelativeOrAbsolute)
                 });
             if(!Settings.Default.oldScreenCaptureWay && Native.DisplayInfo.HasHDREnabledDisplay() && 
                 (!settings.KeyExists("OptimizeForHDR") || !settings["OptimizeForHDR"] == false))
@@ -387,10 +387,12 @@ namespace CSAuto
                 $"Inner Exception: {ex.InnerException}");
 
             if(MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-                Telegram.SendMessage($"\nCSAuto ({MainApp.FULL_VER} - {CompileInfo.Date} - {CompileInfo.Time}) crash report:\n```csharp\n{ex.GetType()}: {ex.Message}\n" +
+                Telegram.SendMessage(Telegram.EscapeMarkdown($"CSAuto ({MainApp.FULL_VER} - {CompileInfo.Date} - {CompileInfo.Time}) crash report:\n")+"```csharp" +
+                    Telegram.EscapeMarkdown(
+                    $"\r\n{ex.GetType()}: {ex.Message}\n" +
                     $"StackTrace:{ex.StackTrace}\n" +
                     $"Source: {ex.Source}\n" +
-                    $"Inner Exception: {ex.InnerException}\r\n```", Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")),true);
+                    $"Inner Exception: {ex.InnerException}\r\n") + "```", Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")),true);
         }
 
     }

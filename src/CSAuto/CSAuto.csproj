@@ -151,10 +151,10 @@
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Compile Include="Utils\WinVersion.cs" />
-    <Page Include="RTLResource.xaml">
+    <Resource Include="Resources\RTLResource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Page Include="Windows\DebugInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -185,14 +185,14 @@
       <DependentUpon>MainApp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="RoundedResources\RoundedResources.xaml">
+    <Resource Include="Resources\RoundedResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="VectorResources\VectorImages.xaml">
+    </Resource>
+    <Resource Include="Resources\VectorImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NotifyIcon\Definitions.cs" />
