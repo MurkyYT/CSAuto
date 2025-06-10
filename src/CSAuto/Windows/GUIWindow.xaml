@@ -55,14 +55,19 @@
                             <Viewbox Width="22.5" Height="22.5" Stretch="Fill">
                                 <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource SettingsBadge}" />
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_options}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_options}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
                 <Grid>
-                    <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top">
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_general}" Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                    <TabControl mahapps:TabControlHelper.Underlined="SelectedTabItem" TabStripPlacement="Top" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Margin="-6,0,0,0">
+                        <mahapps:MetroTabItem Padding="5,0,5,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_general}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />    
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,6,0,0">
                                 <CheckBox x:Name="StartUpCheck" Content="{x:Static p:Strings.menu_startup}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=runAtStartUp}" Click="StartUpCheck_Click"/>
                                 <CheckBox x:Name="DarkThemeCheck" Content="{x:Static p:Strings.menu_darktheme}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=darkTheme}" Click="DarkThemeCheck_Click"/>
                                 <CheckBox x:Name="PortableModeCheck" Content="{x:Static p:Strings.menu_portablemode}" Height="Auto" Click="PortableModeCheck_Click"/>
@@ -78,8 +83,13 @@
                                 <StackPanel x:Name="languagesStackPanel" Orientation="Vertical"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_mobile}"  Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                        <mahapps:MetroTabItem Padding="5,0,5,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_mobile}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,6,0,0">
                                 <CheckBox Content="{x:Static p:Strings.menu_mobileappenabled}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mobileAppEnabled}"/>
                                 <!--<TextBlock Text="{x:Static p:Strings.inputtitle_mobileip}" FontSize="20" FontWeight="Bold"/>
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=phoneIpAddress}"/>-->
@@ -108,8 +118,13 @@
                                 <TextBox Text="{Binding Source={x:Static properties:Settings.Default},Path=steamAPIkey}"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>-->
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_automation}"  Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                        <mahapps:MetroTabItem Padding="5,0,5,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_automation}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,6,0,0">
                                 <CheckBox Content="{x:Static p:Strings.menu_autoaccept}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoAcceptMatch}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_autospotify}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoPausePlaySpotify}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_autofocus}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoFocusOnCS}"/>
@@ -126,8 +141,13 @@
                                 <CheckBox Content="{x:Static p:Strings.menu_continuespray}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ContinueSpraying}"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_debug}" Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                        <mahapps:MetroTabItem Padding="5,0,5,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_debug}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,6,0,0">
                                 <CheckBox Content="{x:Static p:Strings.menu_savedebugframes}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveDebugFrames}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_savedebuglogs}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=saveLogs}"/>
                                 <CheckBox Content="{x:Static p:Strings.menu_sendacceptbutton}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=sendAcceptImage}"/>
@@ -143,30 +163,45 @@
                             <Viewbox Width="22.5" Height="18" Stretch="Fill">
                                 <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource DiscordBadge}" />
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_discordrpc}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_discordrpc}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
                 <StackPanel Orientation="Vertical">
-                    <TabControl x:Name="DiscordTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" SelectionChanged="DiscordTabControl_SelectionChanged">
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordlobby}" Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                    <TabControl x:Name="DiscordTabControl" mahapps:TabControlHelper.Underlined="SelectedTabItem" SelectionChanged="DiscordTabControl_SelectionChanged"  BorderThickness="0,1,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Margin="-6,0,0,0">
+                        <mahapps:MetroTabItem Padding="10,0,10,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_discordlobby}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,0,0,0">
                                 <TextBlock Text="{x:Static p:Strings.title_discorddetails}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBox x:Name="LobbyDetailsText" Text="{Binding Source={x:Static properties:Settings.Default},Path=lobbyDetails,Mode=OneTime}" TextChanged="LobbyDetailsText_TextChanged"/>
                                 <TextBlock Text="{x:Static p:Strings.title_discordstate}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBox x:Name="LobbyStateText" Text="{Binding Source={x:Static properties:Settings.Default},Path=lobbyState,Mode=OneTime}" TextChanged="LobbyStateText_TextChanged"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordingame}" Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                        <mahapps:MetroTabItem Padding="10,0,10,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_discordingame}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,0,0,0">
                                 <TextBlock Text="{x:Static p:Strings.title_discorddetails}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBox x:Name="InGameDetailsText" Text="{Binding Source={x:Static properties:Settings.Default},Path=inGameDetails,Mode=OneTime}" TextChanged="InGameDetailsText_TextChanged"/>
                                 <TextBlock Text="{x:Static p:Strings.title_discordstate}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBox x:Name="InGameStateText" Text="{Binding Source={x:Static properties:Settings.Default},Path=inGameState,Mode=OneTime}" TextChanged="InGameStateText_TextChanged"/>
                             </StackPanel>
                         </mahapps:MetroTabItem>
-                        <mahapps:MetroTabItem Header="{x:Static p:Strings.menu_discordbuttons}" Padding="5,0,5,0">
-                            <StackPanel Orientation="Vertical">
+                        <mahapps:MetroTabItem Padding="10,0,10,0">
+                            <TabItem.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{x:Static p:Strings.menu_discordbuttons}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </TabItem.HeaderTemplate>
+                            <StackPanel Orientation="Vertical" Margin="6,0,0,0">
                                 <ListView x:Name="DiscordRPCButtonsListView">
                                     <ListView.View>
                                         <GridView>
@@ -196,7 +231,7 @@
                         </mahapps:MetroTabItem>
                     </TabControl>
                     <TextBlock Text="{x:Static p:Strings.title_discordrpctemplates}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
+                    <StackPanel Orientation="Horizontal" Margin="6,10,0,10">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="{x:Static p:Strings.discord_friendcode}"/>
                             <TextBlock Text="{x:Static p:Strings.discord_gamemode}"/>
@@ -253,7 +288,7 @@
                             <Viewbox Width="22.5" Height="18" Stretch="Fill">
                                 <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource AutoBuyBadge}" />
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_autobuy}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_autobuy}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
@@ -295,7 +330,7 @@
                             <Viewbox Width="22.5" Height="30" Stretch="Fill">
                                 <Path Fill="{DynamicResource MahApps.Brushes.Accent}" Data="{StaticResource ChangelogBadge}" />
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_changelog}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_changelog}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
@@ -341,7 +376,7 @@
                                     </Path.RenderTransform>
                                 </Path>
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_server}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_server}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
@@ -377,7 +412,7 @@
                                     </Path.RenderTransform>
                                 </Path>
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_debug}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_debug}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>
@@ -434,7 +469,7 @@
                                     </Path.RenderTransform>
                                 </Path>
                             </Viewbox>
-                            <TextBlock Text="{x:Static p:Strings.menu_about}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+                            <TextBlock FontSize="25" Text="{x:Static p:Strings.menu_about}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
                         </StackPanel>
                     </ItemContainerTemplate>
                 </TabItem.HeaderTemplate>

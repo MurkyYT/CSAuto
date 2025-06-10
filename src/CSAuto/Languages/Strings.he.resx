@@ -220,7 +220,7 @@
     <value>יש לך את הגרסה האחרונה!</value>
   </data>
   <data name="msgbox_newerversion" xml:space="preserve">
-    <value>נמצא גרסה חדשה יותר ({0}) האם תרצה להוריד אותה?</value>
+    <value>נמצאה גרסה חדשה יותר ({0}) האם תרצה להוריד אותה?</value>
   </data>
   <data name="msgbox_restartneeded" xml:space="preserve">
     <value>עליך להפעיל מחדש את האפליקציה כדי להחיל שינויים אלה</value>
