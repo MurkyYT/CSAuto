@@ -41,9 +41,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.2.0";
+        public const string VER = "2.2.1";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -112,8 +112,6 @@ namespace CSAuto
         Process csProcess = null;
         Process originalProcess = null;
         Thread bombTimerThread = null;
-        //bool hadError = false;
-        IntPtr hCursorOriginal = IntPtr.Zero;
         HwndSource windowSource;
         ContextMenu exitCm;
         TcpListener server;
@@ -163,11 +161,9 @@ namespace CSAuto
             try
             {
                 if (Properties.Settings.Default.darkTheme)
-                    // Set the application theme to Dark + selected color
-                    ThemeManager.Current.ChangeTheme(current, $"Dark.{CSAuto.Properties.Settings.Default.currentColor}");
+                    ThemeManager.Current.ChangeTheme(current, $"Dark.{Properties.Settings.Default.currentColor}");
                 else
-                    // Set the application theme to Light + selected color
-                    ThemeManager.Current.ChangeTheme(current, $"Light.{CSAuto.Properties.Settings.Default.currentColor}");
+                    ThemeManager.Current.ChangeTheme(current, $"Light.{Properties.Settings.Default.currentColor}");
 
                 Task.Run(() =>
                 {
@@ -349,20 +345,6 @@ namespace CSAuto
         {
             try
             {
-                if (hCursorOriginal == IntPtr.Zero && csActive)
-                {
-                    if (gameState.Player.CurrentActivity != Activity.Playing)
-                        hCursorOriginal = NativeMethods.GetCursorHandle();
-                    else
-                    {
-                        PressKey(Input.DirectXKeyStrokes.DIK_ESCAPE);
-                        Thread.Sleep(100);
-                        hCursorOriginal = NativeMethods.GetCursorHandle();
-                        Thread.Sleep(100);
-                        PressKey(Input.DirectXKeyStrokes.DIK_ESCAPE);
-                    }
-                    Log.WriteLine($"|MainApp.cs| hCurosr when in CS -> {hCursorOriginal}");
-                }
                 if (!RPCClient.IsInitialized && Properties.Settings.Default.enableDiscordRPC)
                 {
                     InitializeDiscordRPC();
@@ -504,12 +486,13 @@ namespace CSAuto
             }
         }
 
-        private bool BuyMenuOpen()
-        {
-            IntPtr res = NativeMethods.GetCursorHandle();
-            Log.WriteLine($"|MainApp.cs| Original hCurosr: {hCursorOriginal} || {hCursorOriginal - 2}: new one {res}");
-            return (hCursorOriginal == res || hCursorOriginal - 2 == res) && gameState.Player.CurrentActivity == Activity.Playing;
-        }
+        //private bool BuyMenuOpen()
+        //{
+        //    IntPtr res = NativeMethods.GetCursorHandle();
+        //    Log.WriteLine($"|MainApp.cs| Original hCurosr: {NativeMethods.LoadCursor(IntPtr.Zero, 32512)} || {NativeMethods.LoadCursor(IntPtr.Zero, 32513)}: new one {res}");
+        //    return (NativeMethods.LoadCursor(IntPtr.Zero, 32512) == res || NativeMethods.LoadCursor(IntPtr.Zero, 32513) == res) && gameState.Player.CurrentActivity == Activity.Playing;
+        //}
+
         private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
@@ -1019,7 +1002,6 @@ namespace CSAuto
                                 serverThread = new Thread(ServerThread);
                                 serverThread.Start();
                             }
-                            hCursorOriginal = IntPtr.Zero;
                             NativeMethods.OptimizeMemory();
                         }
                     }
