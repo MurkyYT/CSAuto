@@ -45,8 +45,10 @@ namespace Murky.Utils
                 Replace("%level%", level).
                 Replace("%caller%", caller == "" ? frm.GetMethod().Name : caller).
                 Replace("%message%", lines.ToString()).ToString();
-            if (debugWind != null)
-                debugWind.UpdateDebug(lines.ToString());
+            lock (_debugWindLock)
+            {
+                debugWind?.UpdateDebug(lines.ToString());
+            }
             Debug.WriteLine(lines);
             if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
             {
@@ -71,8 +73,10 @@ namespace Murky.Utils
                 Replace("%level%", level).
                 Replace("%caller%", caller == "" ? frm.GetMethod().Name : caller).
                 Replace("%message%", lines.ToString()).ToString();
-            if (debugWind != null)
-                debugWind.UpdateDebug(lines.ToString());
+            lock (_debugWindLock)
+            {
+                debugWind?.UpdateDebug(lines.ToString());
+            }
             Debug.WriteLine(lines);
             if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
             {
@@ -93,8 +97,10 @@ namespace Murky.Utils
             if (lines == null)
                 lines = "";
             lines = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} CRITICAL - {lines}";
-            if (debugWind != null)
-                debugWind.UpdateDebug(lines.ToString());
+            lock (_debugWindLock)
+            {
+                debugWind?.UpdateDebug(lines.ToString());
+            }
             Debug.WriteLine(lines);
             string fileName = "Error_Log.txt";
             try
