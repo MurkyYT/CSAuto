@@ -549,6 +549,12 @@ namespace CSAuto
                                 money -= 650;
                                 armor = 100;
                             }
+                            else if (hasHelmet && money >= 650 && armor <= armorAmountToRebuy)
+                            {
+                                res.Add(item);
+                                money -= 650;
+                                armor = 100;
+                            }
                         }
                         break;
                     case NAMES.KevlarAndHelmet:
@@ -565,12 +571,6 @@ namespace CSAuto
                                 money -= 1000;
                                 armor = 100;
                                 hasHelmet = true;
-                            }
-                            else if (hasHelmet && money >= 1000 && armor <= armorAmountToRebuy)
-                            {
-                                res.Add(item);
-                                money -= 1000;
-                                armor = 100;
                             }
                         }
                         break;

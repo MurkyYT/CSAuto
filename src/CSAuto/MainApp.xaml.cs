@@ -86,8 +86,8 @@ namespace CSAuto
         #region Privates
         private DiscordRpcClient RPCClient;
         private string currentMapIcon = null;
-        private Color BUTTON_COLOR;/* Color.FromArgb(16, 158, 89);*/
-        private Color ACTIVE_BUTTON_COLOR;/*Color.FromArgb(21, 184, 105)*/
+        private Color BUTTON_COLOR;
+        private Color ACTIVE_BUTTON_COLOR;
         private string localIp;
         private bool serverRunning = false;
         private DateTime startTimeStamp = DateTime.MinValue;
@@ -173,7 +173,8 @@ namespace CSAuto
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 // Try to encode my own steamid to see if its correct
-                CSGOFriendCode.Encode("76561198341800115");
+                if (CSGOFriendCode.Encode("76561198341800115") != "S4N2P-NZFJ")
+                    throw new Exception("FriendCode Error");
                 new Thread(() => { CSGOMap.LoadMapIcons(); }).Start();
                 InitializeDiscordRPC();
                 RPCClient.Deinitialize();
@@ -461,37 +462,14 @@ namespace CSAuto
                     return;
                 }
                 List<string> names = current.buyMenu.GetWeaponsName(items, gameState);
-                //if (items.Count != 0 && !BuyMenuOpen())
-                //{
-                //    PressKey(Input.DirectXKeyStrokes.DIK_B);
-                //    Thread.Sleep(100);
-                //}
+                string command = "// Auto buy items:";
                 foreach (string item in names)
-                {
-                    Log.WriteLine($"|MainApp.cs| Auto buying {item}");
-                    commandSender.SendCommand($"buy {item}");
-                    //PressKeys(new Input.DirectXKeyStrokes[]
-                    //{
-                    //    //Category key
-                    //    (Input.DirectXKeyStrokes)(item.GetSlot()[0] - '0' + 1),
-                    //    //Weapon key
-                    //    (Input.DirectXKeyStrokes)(item.GetSlot()[1] - '0' + 1)
-                    //});
-                    ////Have to press b after buying grenades because the buy menu stays at the grenades category
-                    //if (item.IsGrenade())
-                    //    PressKey(Input.DirectXKeyStrokes.DIK_B);
-                }
-                //if (items.Count != 0)
-                //    PressKey(Input.DirectXKeyStrokes.DIK_B);
+                    command += $"\nbuy {item}";
+
+                if (items.Count != 0)
+                    commandSender.SendCommand(command);
             }
         }
-
-        //private bool BuyMenuOpen()
-        //{
-        //    IntPtr res = NativeMethods.GetCursorHandle();
-        //    Log.WriteLine($"|MainApp.cs| Original hCurosr: {NativeMethods.LoadCursor(IntPtr.Zero, 32512)} || {NativeMethods.LoadCursor(IntPtr.Zero, 32513)}: new one {res}");
-        //    return (NativeMethods.LoadCursor(IntPtr.Zero, 32512) == res || NativeMethods.LoadCursor(IntPtr.Zero, 32513) == res) && gameState.Player.CurrentActivity == Activity.Playing;
-        //}
 
         private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
@@ -1153,9 +1131,10 @@ namespace CSAuto
                     commandSender.SendCommand("+reload");
                     commandSender.SendCommand("-attack");
                     Log.WriteLine("|MainApp.cs| Auto reloading");
+                    commandSender.SendCommand("-reload");
                     if (Properties.Settings.Default.ContinueSpraying)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(50);
                         bool mousePressed = (Input.GetKeyState(Input.VirtualKeyStates.VK_LBUTTON) < 0);
                         if (mousePressed)
                         {
@@ -1163,7 +1142,6 @@ namespace CSAuto
                             Log.WriteLine($"|MainApp.cs| Continue spraying ({weaponName} - {weaponType})");
                         }
                     }
-                    commandSender.SendCommand("-reload");
                 }
             }
             catch { return; }
@@ -1476,7 +1454,6 @@ namespace CSAuto
                 InitializeGSIConfig();
                 windowSource = PresentationSource.FromVisual(this) as HwndSource;
                 windowSource.AddHook(WndProc);
-                //InitializeGameStateLaunchOption();
                 //InitializeNetConLaunchOption();
                 InitializeBindLaunchOption();
                 File.WriteAllText(bindCfgPath, "bind f13 exec csautobindcommandsender.cfg");
@@ -1540,24 +1517,6 @@ namespace CSAuto
         //                return true;
         //    }
         //    return false;
-        //}
-        //private void InitializeGameStateLaunchOption()
-        //{
-        //    try
-        //    {
-        //        Steam.GetLaunchOptions(730, out string launchOpt);
-        //        if (launchOpt != null && !HasGSILaunchOption(launchOpt))
-        //            Steam.SetLaunchOptions(730, launchOpt + " -gamestateintegration");
-        //        else if (launchOpt == null)
-        //            Steam.SetLaunchOptions(730, "-gamestateintegration");
-        //        else
-        //            Log.WriteLine("Already has \'-gamestateintegration\' in launch options.");
-        //    }
-        //    catch
-        //    {
-        //        throw new WriteException("Couldn't add -gamestateintegration to launch options\n" +
-        //        "please refer the the FAQ at the git hub page");
-        //    }
         //}
 
         private void InitializeTimer()
@@ -1646,20 +1605,9 @@ namespace CSAuto
                 }
             }).Start();
         }
-        //private bool HasGSILaunchOption(string launchOpt)
-        //{
-        //    string[] split = launchOpt.Split(' ');
-        //    for (int i = 0; i < split.Length; i++)
-        //    {
-        //        if (split[i].Trim() == "-gamestateintegration")
-        //            return true;
-        //    }
-        //    return false;
-        //}
 
         internal void Notifyicon_LeftMouseButtonDoubleClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
-            //open debug menu
             if (guiWindow == null)
             {
                 guiWindow = new GUIWindow();
