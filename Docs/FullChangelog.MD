@@ -1,3 +1,12 @@
+### Version 2.2.0 changelog
+- Added Hebrew translation
+- Added support for RTL languages
+- Fixed notifications not being translated
+- Little UI fix ups
+- Fix with crash reports
+
+---
+
 ### Version 2.1.10 changelog
 - Hot fix for telegram messages
 
