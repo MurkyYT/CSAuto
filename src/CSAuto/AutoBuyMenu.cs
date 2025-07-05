@@ -559,12 +559,18 @@ namespace CSAuto
                                 money -= 350;
                                 hasHelmet = true;
                             }
-                            else if (money >= 1000 && armor <= armorAmountToRebuy && !hasHelmet)
+                            else if (!hasHelmet && money >= 1000)
                             {
                                 res.Add(item);
                                 money -= 1000;
                                 armor = 100;
                                 hasHelmet = true;
+                            }
+                            else if (hasHelmet && money >= 1000 && armor <= armorAmountToRebuy)
+                            {
+                                res.Add(item);
+                                money -= 1000;
+                                armor = 100;
                             }
                         }
                         break;
