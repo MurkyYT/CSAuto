@@ -1548,7 +1548,7 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Found newer verison ({0}) would you like to download it?.
+        ///   Looks up a localized string similar to Found newer version ({0}) would you like to download it?.
         /// </summary>
         public static string msgbox_newerversion {
             get {

@@ -220,7 +220,7 @@
     <value>You have the latest version!</value>
   </data>
   <data name="msgbox_newerversion" xml:space="preserve">
-    <value>Found newer verison ({0}) would you like to download it?</value>
+    <value>Found newer version ({0}) would you like to download it?</value>
   </data>
   <data name="msgbox_restartneeded" xml:space="preserve">
     <value>You must restart the program to apply these changes</value>
