@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -485,9 +485,11 @@
   <data name="text_itempriority" xml:space="preserve">
     <value>עדיפות (ככל שהוא נמוך יותר, הסיכוי שהוא ייקנה גדול יותר)</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="team_ct" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="team_ct" xml:space="preserve">
+    <value>Counter-Terrorist</value>
+  </data>
+  <data name="team_t" xml:space="preserve">
+    <value>Terrorist</value>
   </data>
   <data name="text_selecteditem" xml:space="preserve">
     <value>פריט נבחר:</value>
@@ -495,68 +497,134 @@
   <data name="error_alreadycontainscustom" xml:space="preserve">
     <value>הנשק המותאם אישית כבר נבחר</value>
   </data>
-  <data name="title_success" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_defusekit" xml:space="preserve">
+    <value>Defuse Kit</value>
   </data>
-  <data name="file_importsucess" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_kevlarvest" xml:space="preserve">
+    <value>Kevlar Vest</value>
   </data>
-  <data name="menu_open" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_kevlarandhelmet" xml:space="preserve">
+    <value>Kevlar &amp; Helmet</value>
   </data>
-  <data name="menu_alternativelocations" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_zeus" xml:space="preserve">
+    <value>Zeus x27</value>
   </data>
-  <data name="menu_website" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_flashbang" xml:space="preserve">
+    <value>Flashbang</value>
   </data>
-  <data name="menu_autofocus" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_smoke" xml:space="preserve">
+    <value>Smoke Grenade</value>
   </data>
-  <data name="menu_focusback" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_he" xml:space="preserve">
+    <value>High Explosive Grenade</value>
   </data>
-  <data name="tooltip_discord" xml:space="preserve">
-    <value>הצטרף לשרת הדיסקורד</value>
+  <data name="buyitem_molotov" xml:space="preserve">
+    <value>Incendiary Grenade / Molotov</value>
   </data>
-  <data name="menu_server" xml:space="preserve">
-    <value>שרת</value>
+  <data name="buyitem_decoy" xml:space="preserve">
+    <value>Decoy Grenade</value>
   </data>
-  <data name="title_serverclients" xml:space="preserve">
-    <value>לקוחות:</value>
+  <data name="buyitem_usp_s" xml:space="preserve">
+    <value>USP-S / P2000</value>
   </data>
-  <data name="title_rebuy" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buyitem_glock18" xml:space="preserve">
+    <value>Glock-18</value>
   </data>
-  <data name="menu_about" xml:space="preserve">
-    <value>אודות</value>
+  <data name="buyitem_r8revolver" xml:space="preserve">
+    <value>R8 Revolver</value>
   </data>
-  <data name="text_description" xml:space="preserve">
-    <value>אפליקציית ליווי לCounter-Strike 2 אשר עושה אוטומציה למשימות במשחק, כגון אישור משחקים, קניית פריטים ועוד</value>
+  <data name="buyitem_cz75auto" xml:space="preserve">
+    <value>CZ75-Auto</value>
   </data>
-  <data name="title_optimization" xml:space="preserve">
-    <value>אופטימיזציה</value>
+  <data name="buyitem_dualberettas" xml:space="preserve">
+    <value>Dual Berettas</value>
   </data>
-  <data name="msgbox_hdroptimization" xml:space="preserve">
-    <value>נמצא צג שתומך ב-HDR, ההגדרות הנוכחיות אינן מותאמות לצגי HDR, האם ברצונך לבצע אופטימיזציה של ההגדרות?</value>
+  <data name="buyitem_p250" xml:space="preserve">
+    <value>P250</value>
   </data>
-  <data name="error_steamrunning" xml:space="preserve">
-    <value>Steam פועל, אנא סגור אותו והפעל מחדש את האפליקציה</value>
+  <data name="buyitem_tec9" xml:space="preserve">
+    <value>Tec-9</value>
   </data>
-  <data name="error_bindlaunchoption" xml:space="preserve">
-    <value>לא ניתן להוסיף את '+exec csautobindcommandsender.cfg' לאפשרויות ההשקה, אנא הוסף אותו ידנית</value>
+  <data name="buyitem_fiveseven" xml:space="preserve">
+    <value>Five Seven</value>
   </data>
-  <data name="language_he-IL" xml:space="preserve">
-    <value>עברית</value>
+  <data name="buyitem_deagle" xml:space="preserve">
+    <value>Desert Eagle</value>
   </data>
-  <data name="ckbox_oldmouseinput" xml:space="preserve">
-    <value>השתמש בטכניקת קלט עכבר ישנה</value>
+  <data name="buyitem_none" xml:space="preserve">
+    <value>אף אחד</value>
   </data>
-  <data name="title_rebuy" xml:space="preserve">
-    <value>קנייה חוזרת</value>
+  <data name="buyitem_nova" xml:space="preserve">
+    <value>Nova</value>
   </data>
-  <data name="title_serverport" xml:space="preserve">
-    <value>פורט: </value>
+  <data name="buyitem_mp7" xml:space="preserve">
+    <value>MP7</value>
+  </data>
+  <data name="buyitem_negev" xml:space="preserve">
+    <value>Negev</value>
+  </data>
+  <data name="buyitem_mag7" xml:space="preserve">
+    <value>MAG-7</value>
+  </data>
+  <data name="buyitem_ppbizon" xml:space="preserve">
+    <value>PP-Bizon</value>
+  </data>
+  <data name="buyitem_ump45" xml:space="preserve">
+    <value>UMP-45</value>
+  </data>
+  <data name="buyitem_m249" xml:space="preserve">
+    <value>M249</value>
+  </data>
+  <data name="buyitem_xm1014" xml:space="preserve">
+    <value>XM1014</value>
+  </data>
+  <data name="buyitem_mp5sd" xml:space="preserve">
+    <value>MP5-SD</value>
+  </data>
+  <data name="buyitem_p90" xml:space="preserve">
+    <value>P90</value>
+  </data>
+  <data name="buyitem_mac10" xml:space="preserve">
+    <value>MAC-10</value>
+  </data>
+  <data name="buyitem_sawedoff" xml:space="preserve">
+    <value>Sawed-Off</value>
+  </data>
+  <data name="buyitem_mp9" xml:space="preserve">
+    <value>MP9</value>
+  </data>
+  <data name="buyitem_famas" xml:space="preserve">
+    <value>FAMAS</value>
+  </data>
+  <data name="buyitem_galilar" xml:space="preserve">
+    <value>Galil-AR</value>
+  </data>
+  <data name="buyitem_m4a4" xml:space="preserve">
+    <value>M4A4</value>
+  </data>
+  <data name="buyitem_m4a1s" xml:space="preserve">
+    <value>M4A1-S</value>
+  </data>
+  <data name="buyitem_ak47" xml:space="preserve">
+    <value>AK-47</value>
+  </data>
+  <data name="buyitem_aug" xml:space="preserve">
+    <value>AUG</value>
+  </data>
+  <data name="buyitem_sg553" xml:space="preserve">
+    <value>SG 553</value>
+  </data>
+  <data name="buyitem_ssg08" xml:space="preserve">
+    <value>SSG 08</value>
+  </data>
+  <data name="buyitem_awp" xml:space="preserve">
+    <value>AWP</value>
+  </data>
+  <data name="buyitem_scar20" xml:space="preserve">
+    <value>SCAR 20</value>
+  </data>
+  <data name="buyitem_g3sg1" xml:space="preserve">
+    <value>G3SG1</value>
   </data>
   <data name="title_success" xml:space="preserve">
     <value>הצלחה!</value>
@@ -602,6 +670,45 @@
   </data>
   <data name="tooltip_github" xml:space="preserve">
     <value>פתח את מאגר GitHub</value>
+  </data>
+  <data name="tooltip_discord" xml:space="preserve">
+    <value>הצטרף לשרת הדיסקורד</value>
+  </data>
+  <data name="menu_server" xml:space="preserve">
+    <value>שרת</value>
+  </data>
+  <data name="title_serverport" xml:space="preserve">
+    <value>פורט: </value>
+  </data>
+  <data name="title_serverclients" xml:space="preserve">
+    <value>לקוחות:</value>
+  </data>
+  <data name="ckbox_oldmouseinput" xml:space="preserve">
+    <value>השתמש בטכניקת קלט עכבר ישנה</value>
+  </data>
+  <data name="title_rebuy" xml:space="preserve">
+    <value>קנייה חוזרת</value>
+  </data>
+  <data name="menu_about" xml:space="preserve">
+    <value>אודות</value>
+  </data>
+  <data name="text_description" xml:space="preserve">
+    <value>אפליקציית ליווי לCounter-Strike 2 אשר עושה אוטומציה למשימות במשחק, כגון אישור משחקים, קניית פריטים ועוד</value>
+  </data>
+  <data name="title_optimization" xml:space="preserve">
+    <value>אופטימיזציה</value>
+  </data>
+  <data name="msgbox_hdroptimization" xml:space="preserve">
+    <value>נמצא צג שתומך ב-HDR, ההגדרות הנוכחיות אינן מותאמות לצגי HDR, האם ברצונך לבצע אופטימיזציה של ההגדרות?</value>
+  </data>
+  <data name="error_steamrunning" xml:space="preserve">
+    <value>Steam פועל, אנא סגור אותו והפעל מחדש את האפליקציה</value>
+  </data>
+  <data name="error_bindlaunchoption" xml:space="preserve">
+    <value>לא ניתן להוסיף את '+exec csautobindcommandsender.cfg' לאפשרויות ההשקה, אנא הוסף אותו ידנית</value>
+  </data>
+  <data name="language_he-IL" xml:space="preserve">
+    <value>עברית</value>
   </data>
   <data name="language_ko-KR" xml:space="preserve">
     <value>קוריאנית</value>
