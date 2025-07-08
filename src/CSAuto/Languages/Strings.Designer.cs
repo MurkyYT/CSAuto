@@ -999,6 +999,24 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Italian.
+        /// </summary>
+        public static string language_it_IT {
+            get {
+                return ResourceManager.GetString("language_it-IT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Korean.
+        /// </summary>
+        public static string language_ko_KR {
+            get {
+                return ResourceManager.GetString("language_ko-KR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Russian.
         /// </summary>
         public static string language_ru_RU {

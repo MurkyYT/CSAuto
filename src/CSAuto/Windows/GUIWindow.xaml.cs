@@ -52,7 +52,7 @@ namespace CSAuto
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
 
-            if (AppLanguage.IsRTL[CultureInfo.CurrentUICulture.Name])
+            if (main.current.RTLLanguage)
             {
                 this.FlowDirection = FlowDirection.RightToLeft;
             }
@@ -290,9 +290,12 @@ namespace CSAuto
         }
         private void GenerateLanguages()
         {
-            foreach (string language in AppLanguage.Available)
+            foreach (AppLanguage.Language language in AppLanguage.Available)
             {
-                RadioButton rb = new RadioButton() { Content = Languages.Strings.ResourceManager.GetString("language_"+language), IsChecked = language == Properties.Settings.Default.currentLanguage };
+                if (!language.Enabled)
+                    continue;
+
+                RadioButton rb = new RadioButton() { Content = Languages.Strings.ResourceManager.GetString("language_"+language.LanguageCode), IsChecked = language.LanguageCode == Properties.Settings.Default.currentLanguage };
                 rb.Checked += async (sender, args) =>
                 {
                     Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
@@ -300,7 +303,7 @@ namespace CSAuto
                     CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo((sender as RadioButton).Tag.ToString());
                     await RestartMessageBox();
                 };
-                rb.Tag = language;
+                rb.Tag = language.LanguageCode;
                 languagesStackPanel.Children.Add(rb);
             }
         }

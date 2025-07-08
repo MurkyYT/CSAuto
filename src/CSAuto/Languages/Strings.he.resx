@@ -603,4 +603,10 @@
   <data name="tooltip_github" xml:space="preserve">
     <value>פתח את מאגר GitHub</value>
   </data>
+  <data name="language_ko-KR" xml:space="preserve">
+    <value>קוריאנית</value>
+  </data>
+  <data name="language_it-IT" xml:space="preserve">
+    <value>איטלקית</value>
+  </data>
 </root>

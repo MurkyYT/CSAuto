@@ -27,6 +27,7 @@ namespace CSAuto
         public bool IsWindows11;
         public bool IsPortable;
         public bool LogArg;
+        public bool RTLLanguage;
         public string Args = "";
         public AutoBuyMenu buyMenu;
         public RegistrySettings settings = new RegistrySettings();
@@ -124,8 +125,25 @@ namespace CSAuto
                    languageName ?? Settings.Default.currentLanguage);
                 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(
                   languageName ?? Settings.Default.currentLanguage);
-                if (languageName != null && !AppLanguage.Available.Contains(languageName))
+
+                AppLanguage.Language language = AppLanguage.Available.Where(x => x.LanguageCode == (languageName ?? Settings.Default.currentLanguage)).FirstOrDefault();
+
+                if (languageName != null && language.LanguageCode == null)
                     throw new Exception();
+
+                if (!language.Enabled)
+                    throw new Exception();
+
+                if (language.IsRTL)
+                {
+                    Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+                    {
+                        Source = new Uri("pack://application:,,,/Resources/RTLResource.xaml", UriKind.RelativeOrAbsolute)
+                    });
+                    RTLLanguage = true;
+                }
+                else
+                    RTLLanguage = false;
             }
             catch 
             { 
@@ -134,15 +152,8 @@ namespace CSAuto
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
                 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
                 Settings.Default.currentLanguage = "en-US";
+                settings.Set("CurrentLanguage", "en-US");
                 MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-
-            if (AppLanguage.IsRTL[languageName ?? Settings.Default.currentLanguage])
-            {
-                Current.Resources.MergedDictionaries.Add(new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/Resources/RTLResource.xaml", UriKind.RelativeOrAbsolute)
-                });
             }
 
             Log.WriteLine($"|App.cs| Selected culture is: {CultureInfo.CurrentUICulture}");

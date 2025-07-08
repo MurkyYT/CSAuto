@@ -710,4 +710,10 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="language_he-IL" xml:space="preserve">
     <value>Hebrew</value>
   </data>
+  <data name="language_ko-KR" xml:space="preserve">
+    <value>Korean</value>
+  </data>
+  <data name="language_it-IT" xml:space="preserve">
+    <value>Italian</value>
+  </data>
 </root>

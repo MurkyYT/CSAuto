@@ -5,18 +5,45 @@ namespace CSAuto
 {
     public static class AppLanguage
     {
-        public static string[] Available = new string[]
+        public struct Language
         {
-            "en-US",
-            "ru-RU",
-            "he-IL"
-        };
+            public string LanguageCode;
+            public bool IsRTL;
+            public bool Enabled;
+        }
 
-        public static Dictionary<string, bool> IsRTL = new Dictionary<string, bool>
+        public static readonly Language[] Available = new Language[]
         {
-            ["en-US"] = false,
-            ["ru-RU"] = false,
-            ["he-IL"] = true
+            new Language() 
+            {
+                LanguageCode = "en-US",
+                IsRTL = false,
+                Enabled = true 
+            },
+            new Language()
+            {
+                LanguageCode = "ru-RU",
+                IsRTL = false,
+                Enabled = true
+            },
+            new Language()
+            {
+                LanguageCode = "he-IL",
+                IsRTL = true,
+                Enabled = true
+            },
+            new Language()
+            {
+                LanguageCode = "ko-KR",
+                IsRTL = false,
+                Enabled = false
+            },
+            new Language()
+            {
+                LanguageCode = "it-IT",
+                IsRTL = false,
+                Enabled = false
+            },
         };
     }
 }

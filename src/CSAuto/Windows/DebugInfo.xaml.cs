@@ -25,7 +25,7 @@ namespace CSAuto
                 NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
             }
 
-            if (AppLanguage.IsRTL[CultureInfo.CurrentUICulture.Name])
+            if (main.current.RTLLanguage)
             {
                 FlowDirection = System.Windows.FlowDirection.RightToLeft;
             }
