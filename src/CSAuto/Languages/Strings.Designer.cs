@@ -983,45 +983,45 @@ namespace CSAuto.Languages {
         /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
-        public static string language_en_US {
+        public static string language_en {
             get {
-                return ResourceManager.GetString("language_en-US", resourceCulture);
+                return ResourceManager.GetString("language_en", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hebrew.
         /// </summary>
-        public static string language_he_IL {
+        public static string language_he {
             get {
-                return ResourceManager.GetString("language_he-IL", resourceCulture);
+                return ResourceManager.GetString("language_he", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Italian.
         /// </summary>
-        public static string language_it_IT {
+        public static string language_it {
             get {
-                return ResourceManager.GetString("language_it-IT", resourceCulture);
+                return ResourceManager.GetString("language_it", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Korean.
         /// </summary>
-        public static string language_ko_KR {
+        public static string language_ko {
             get {
-                return ResourceManager.GetString("language_ko-KR", resourceCulture);
+                return ResourceManager.GetString("language_ko", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Russian.
         /// </summary>
-        public static string language_ru_RU {
+        public static string language_ru {
             get {
-                return ResourceManager.GetString("language_ru-RU", resourceCulture);
+                return ResourceManager.GetString("language_ru", resourceCulture);
             }
         }
         

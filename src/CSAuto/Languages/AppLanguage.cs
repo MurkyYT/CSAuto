@@ -16,31 +16,31 @@ namespace CSAuto
         {
             new Language() 
             {
-                LanguageCode = "en-US",
+                LanguageCode = "en",
                 IsRTL = false,
                 Enabled = true 
             },
             new Language()
             {
-                LanguageCode = "ru-RU",
+                LanguageCode = "ru",
                 IsRTL = false,
                 Enabled = true
             },
             new Language()
             {
-                LanguageCode = "he-IL",
+                LanguageCode = "he",
                 IsRTL = true,
                 Enabled = true
             },
             new Language()
             {
-                LanguageCode = "ko-KR",
+                LanguageCode = "ko",
                 IsRTL = false,
                 Enabled = false
             },
             new Language()
             {
-                LanguageCode = "it-IT",
+                LanguageCode = "it",
                 IsRTL = false,
                 Enabled = false
             },

@@ -36,7 +36,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="currentLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">language_english</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="acceptedNotification" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

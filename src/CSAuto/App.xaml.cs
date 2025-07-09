@@ -99,10 +99,14 @@ namespace CSAuto
                 switch (Settings.Default.currentLanguage)
                 {
                     case "language_english":
-                        Settings.Default.currentLanguage = "en-US";
+                        Settings.Default.currentLanguage = "en";
+                        settings.Set("CurrentLanguage", "en");
+                        Settings.Default.Save();
                         break;
                     case "language_russian":
-                        Settings.Default.currentLanguage = "ru-RU";
+                        Settings.Default.currentLanguage = "ru";
+                        settings.Set("CurrentLanguage", "ru");
+                        Settings.Default.Save();
                         break;
                 }
             }
@@ -110,13 +114,38 @@ namespace CSAuto
             {
                 switch (Settings.Default.currentLanguage)
                 {
+                    case "en-US":
                     case "en-EN":
-                        Settings.Default.currentLanguage = "en-US";
+                        Settings.Default.currentLanguage = "en";
+                        settings.Set("CurrentLanguage", "en");
+                        Settings.Default.Save();
+                        break;
+                    case "ru-RU":
+                        Settings.Default.currentLanguage = "ru";
+                        settings.Set("CurrentLanguage", "ru");
+                        Settings.Default.Save();
+                        break;
+                    case "he-IL":
+                        Settings.Default.currentLanguage = "he";
+                        settings.Set("CurrentLanguage", "he");
+                        Settings.Default.Save();
                         break;
                 }
             }
             try
             {
+                if (Settings.Default.currentLanguage == "")
+                {
+                    string defaultLang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+                    AppLanguage.Language defaultLanguage = AppLanguage.Available.Where(x => x.LanguageCode == defaultLang).FirstOrDefault();
+                    if (!defaultLanguage.Enabled)
+                        defaultLang = "en";
+
+                    Settings.Default.currentLanguage = defaultLang;
+                    settings.Set("CurrentLanguage", defaultLang);
+                    Settings.Default.Save();
+                }
+
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(
                     languageName ?? Settings.Default.currentLanguage);
                 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(
@@ -147,12 +176,13 @@ namespace CSAuto
             }
             catch 
             { 
-                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US"); 
-                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");  
-                CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-                Settings.Default.currentLanguage = "en-US";
-                settings.Set("CurrentLanguage", "en-US");
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en"); 
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en");  
+                CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en");
+                Settings.Default.currentLanguage = "en";
+                settings.Set("CurrentLanguage", "en");
+                Settings.Default.Save();
                 MessageBox.Show(Languages.Strings.warning_language, Languages.Strings.title_warning, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 

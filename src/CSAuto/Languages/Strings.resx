@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="language_en-US" xml:space="preserve">
+  <data name="language_en" xml:space="preserve">
     <value>English</value>
   </data>
-  <data name="language_ru-RU" xml:space="preserve">
+  <data name="language_ru" xml:space="preserve">
     <value>Russian</value>
   </data>
   <data name="menu_debug" xml:space="preserve">
@@ -707,13 +707,13 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="error_bindlaunchoption" xml:space="preserve">
     <value>Couldn't add '+exec csautobindcommandsender.cfg' to launch options, please add it manually</value>
   </data>
-  <data name="language_he-IL" xml:space="preserve">
+  <data name="language_he" xml:space="preserve">
     <value>Hebrew</value>
   </data>
-  <data name="language_ko-KR" xml:space="preserve">
+  <data name="language_ko" xml:space="preserve">
     <value>Korean</value>
   </data>
-  <data name="language_it-IT" xml:space="preserve">
+  <data name="language_it" xml:space="preserve">
     <value>Italian</value>
   </data>
 </root>
