@@ -21,6 +21,9 @@
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/README.md"><img src="https://img.shields.io/badge/lang-en-red.svg?style=for-the-badge"></a>
   <a href="https://github.com/MurkyYT/CSAuto/blob/master/Docs/README_ru.md"><img src="https://img.shields.io/badge/lang-ru-yellow.svg?style=for-the-badge"></a>
 </p>
+<p>
+<a href="https://crowdin.com/project/csauto"><img src="https://badges.crowdin.net/csauto/localized.svg"></a>
+</p>
 </div>
 
 ## Description
