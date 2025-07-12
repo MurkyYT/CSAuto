@@ -112,7 +112,7 @@
     <Compile Include="DiscordRPCButtonSerializer.cs" />
     <Compile Include="Exceptions\WriteException.cs" />
     <Compile Include="Extentions.cs" />
-    <Compile Include="ImageLoader.cs" />
+    <Compile Include="Utils\FileLoader.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -308,7 +308,7 @@ rmdir /q /s $(ProjectDir)$(OutDir)bin
 mkdir $(ProjectDir)$(OutDir)resource
 mkdir $(ProjectDir)$(OutDir)bin
 call $(SolutionDir)Misc\prebuild.bat $(SolutionDir)
-call $(SolutionDir)Misc\impack.exe $(ProjectDir)resource\images $(TargetDir)resource\images.pac
+call $(SolutionDir)Misc\filepack.exe $(ProjectDir)resource\images $(TargetDir)resource\images.mpf
 copy $(ProjectDir)resource\.portable $(ProjectDir)$(OutDir)resource\.portable
 call $(SolutionDir)Misc\compinfgen.exe $(SolutionDir)Misc\CompileData.template $(ProjectDir)CompileInfo.cs</PreBuildEvent>
   </PropertyGroup>

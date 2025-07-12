@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using CSAuto.Properties;
+using MdXaml.Plugins;
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using Newtonsoft.Json;
@@ -85,6 +86,9 @@ namespace CSAuto
         static readonly Size RIFLES_ITEM_SIZE = new Size(175, 80);
         static readonly int OFFSET_Y = 9;
         static readonly int OFFSET_X = 14;
+
+        private FileLoader ImageLoader = new FileLoader(Log.WorkPath + "\\resource\\images.mpf");
+        private Dictionary<string, BitmapImage> cachedImages = new Dictionary<string, BitmapImage>();
         private BitmapImage ctSrc = new BitmapImage();
         private BitmapImage tSrc = new BitmapImage();
         private Color[] colors = new Color[16];
@@ -185,10 +189,58 @@ namespace CSAuto
         };
         public AutoBuyMenu()
         {
-            ctSrc = ImageLoader.LoadBitmapImage("ct_auto_buy.png");
-            tSrc = ImageLoader.LoadBitmapImage("t_auto_buy.png");
+            ctSrc = LoadBitmapImage("ct_auto_buy.png");
+            tSrc = LoadBitmapImage("t_auto_buy.png");
             for (int i = 0; i < colors.Length; i++)
                 colors[i] = Color.FromArgb(50 + i, 50 + i, 50 + i);
+        }
+
+        private BitmapImage LoadBitmapImage(string name)
+        {
+            if(cachedImages.ContainsKey(name))
+                return cachedImages[name];
+
+            Stream memoryStream = ImageLoader.LoadFile(name);
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memoryStream;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+
+            cachedImages[name] = bitmapImage;
+
+            return bitmapImage;
+        }
+
+        private List<BitmapImage> LoadBitmapImages(List<string> names)
+        {
+            List<BitmapImage> images = new List<BitmapImage>();
+            List<Stream> streams = ImageLoader.LoadFiles(names);
+            for (int i = 0;i < streams.Count;i++)
+            {
+                string name = names[i];
+                if (cachedImages.ContainsKey(name))
+                {
+                    images.Add(cachedImages[name]);
+                    continue;
+                }
+
+                Stream memoryStream = streams[i];
+                if (memoryStream == null)
+                    continue;
+
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                cachedImages[name] = bitmapImage;
+
+                images.Add(bitmapImage);
+            }
+
+            return images;
         }
 
         private void InitBuyItems()
@@ -354,14 +406,20 @@ namespace CSAuto
         //}
         private void LoadCustomImages(List<CustomBuyItem> customItems, Bitmap copy)
         {
+            List<string> imagesNames = new List<string>();
             foreach (CustomBuyItem customItem in customItems)
+                imagesNames.Add($"weapon_{customItem.Name.ToString().ToLower()}.png");
+
+            List<BitmapImage> images = LoadBitmapImages(imagesNames);
+            for (int i = 0; i < images.Count; i++)
             {
+                CustomBuyItem customItem = customItems[i];
                 if (customItem.Name != NAMES.None)
                 {
                     try
                     {
-                        using (Bitmap customImg = BitmapImage2Bitmap(ImageLoader.LoadBitmapImage($"weapon_{customItem.Name.ToString().ToLower()}.png")))
-                        {    
+                        using (Bitmap customImg = BitmapImage2Bitmap(images[i]))
+                        {
                             GraphicsUnit units = GraphicsUnit.Pixel;
                             Rectangle destReg = new Rectangle()
                             {
@@ -389,7 +447,7 @@ namespace CSAuto
                         Log.WriteLine($"|AutoBuyMenu.cs| weapon_{customItem.Name.ToString().ToLower()}.png isn't found");
                     }
                 }
-            } 
+            }
         }
 
         private BitmapSource Bitmap2BitmapImage(Bitmap bitmap)
