@@ -42,7 +42,7 @@ namespace CSAuto
     {
         #region Constants
         public const string VER = "2.2.1";
-        public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV "+ DEBUG_REVISION);
+        public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
         const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
@@ -191,7 +191,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("error_startup"),ex.Message), Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("error_startup"), ex.Message), Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Log.Error(
                     $"{ex.Message}\n" +
                     $"StackTrace:{ex.StackTrace}\n" +
@@ -303,7 +303,7 @@ namespace CSAuto
 
                 return SplitColorsLines(lines);
             }
-            catch 
+            catch
             {
                 Log.WriteLine("|MainApp.cs| Couldn't load colors from web, trying to load latest loaded colors");
                 if ((App.Current as App).settings.KeyExists("ButtonColors"))
@@ -318,8 +318,8 @@ namespace CSAuto
                 }
 
                 Log.WriteLine("|MainApp.cs| Couldn't load colors at all");
-                MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_loadcolors"), 
-                    Languages.Strings.ResourceManager.GetString("title_error"),MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_loadcolors"),
+                    Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
 
                 return new Color[2];
             }
@@ -377,7 +377,7 @@ namespace CSAuto
                     switch (currentBombState)
                     {
                         case BombState.Defused:
-                            SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_bombdefuse"),command:Commands.Bomb);
+                            SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_bombdefuse"), command: Commands.Bomb);
                             break;
                         case BombState.Exploded:
                             SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_bombexplode"), command: Commands.Bomb);
@@ -390,7 +390,7 @@ namespace CSAuto
                     Log.WriteLine($"|MainApp.cs| Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
                     currentMapIcon = CSGOMap.GetMapIcon(gameState.Match.Map);
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode),command:Commands.LoadedOnMap);
+                        SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode), command: Commands.LoadedOnMap);
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -416,7 +416,7 @@ namespace CSAuto
                     startTimeStamp = UnixTimeStampToDateTime(gameState.Timestamp);
                 }
 
-                if(roundState == Phase.Freezetime && roundState != currentRoundState || lastRound != gameState.Round.CurrentRound)
+                if (roundState == Phase.Freezetime && roundState != currentRoundState || lastRound != gameState.Round.CurrentRound)
                     autoBuy = true;
 
                 lastRound = gameState.Round.CurrentRound;
@@ -439,7 +439,7 @@ namespace CSAuto
 
                 UpdateDiscordRPC();
 
-                if(DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
+                if (DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
                 {
                     lastGameStateSend = DateTime.Now;
                     SendMessageToClients(gameState.JSON, onlyClients: true, command: Commands.GameState);
@@ -455,8 +455,8 @@ namespace CSAuto
         {
             if (matchState == Phase.Live && roundState == Phase.Freezetime)
             {
-                List<BuyItem> items = current.buyMenu.GetItemsToBuy(gameState,MAX_ARMOR_AMOUNT_TO_REBUY);
-                if(items.Count == 0 && !Properties.Settings.Default.autoBuyRebuy)
+                List<BuyItem> items = current.buyMenu.GetItemsToBuy(gameState, MAX_ARMOR_AMOUNT_TO_REBUY);
+                if (items.Count == 0 && !Properties.Settings.Default.autoBuyRebuy)
                 {
                     autoBuy = false;
                     return;
@@ -532,13 +532,13 @@ namespace CSAuto
                     .Replace("{SteamID}", gameState.MySteamID)
                     .Replace("{Name}", gameState.Player.Name)
                     .Replace("{Kills}", gameState.Player.Kills.ToString())
-                    .Replace("{Deaths}",gameState.Player.Deaths.ToString())
+                    .Replace("{Deaths}", gameState.Player.Deaths.ToString())
                     .Replace("{MVPS}", gameState.Player.MVPS.ToString());
             }
             return original;
         }
 
-        public string LimitLength(string str,int length)
+        public string LimitLength(string str, int length)
         {
             return str?.Substring(0, Math.Min(str.Length, length));
         }
@@ -551,8 +551,8 @@ namespace CSAuto
             {
                 if (Properties.Settings.Default.runAtStartUp)
                 {
-                    rk.SetValue(appname , executablePath + " "+current.Args);
-                    Log.WriteLine("|MainApp.cs| "+executablePath + " " +current.Args);
+                    rk.SetValue(appname, executablePath + " " + current.Args);
+                    Log.WriteLine("|MainApp.cs| " + executablePath + " " + current.Args);
                 }
                 else
                 {
@@ -609,7 +609,7 @@ namespace CSAuto
                 Icon = new System.Windows.Controls.Image
                 {
                     Source = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location)),
-                    Margin = new Thickness(5,5,0,0)
+                    Margin = new Thickness(5, 5, 0, 0)
                 },
                 Foreground = new SolidColorBrush(ThemeManager.Current.GetTheme($"Dark.{Properties.Settings.Default.currentColor}").PrimaryAccentColor)
             };
@@ -639,11 +639,11 @@ namespace CSAuto
                 };
                 if ((bool)saveFileDialog.ShowDialog())
                 {
-                    File.WriteAllText(saveFileDialog.FileName, current.settings.ToString(),Encoding.UTF8);
+                    File.WriteAllText(saveFileDialog.FileName, current.settings.ToString(), Encoding.UTF8);
                     MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("file_savesucess"), saveFileDialog.FileName), Languages.Strings.ResourceManager.GetString("title_success"), MessageBoxButton.OK, MessageBoxImage.Information);
-                }  
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), Languages.Strings.ResourceManager.GetString("title_error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -696,18 +696,18 @@ namespace CSAuto
         {
             try
             {
-                Directory.CreateDirectory(Log.WorkPath + "\\DEBUG\\DISCORD");
+                Directory.CreateDirectory(Log.WorkPath + "\\debug\\discord");
             }
             catch { }
             RPCClient = new DiscordRpcClient(APIKeys.DISCORD_BOT_ID);
 #if DEBUG
-            File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt").Close();
-            RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Debug_Log.txt",DiscordRPC.Logging.LogLevel.Trace);
+            File.Create(Log.WorkPath + "\\debug\\discord\\Debug_Log.txt").Close();
+            RPCClient.Logger = new FileLogger(Log.WorkPath + "\\debug\\discord\\Debug_Log.txt", LogLevel.Trace);
 #elif !DEBUG
             try
             {
-                File.Create(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt").Close();
-                RPCClient.Logger = new FileLogger(Log.WorkPath + "\\DEBUG\\DISCORD\\Error_Log.txt", DiscordRPC.Logging.LogLevel.Error);
+                File.Create(Log.WorkPath + "\\debug\\discord\\Error_Log.txt").Close();
+                RPCClient.Logger = new FileLogger(Log.WorkPath + "\\debug\\discord\\Error_Log.txt", LogLevel.Error);
             }
             catch { MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_createfiles"), Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning); }
 #endif
@@ -724,7 +724,7 @@ namespace CSAuto
             res[0] = new DiscordRPC.Button() { Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto" };
             for (int i = 1; i < res.Length; i++)
             {
-                res[i] = new DiscordRPC.Button() { Label = discordRPCButtons[i - 1].Label, Url = FormatString(discordRPCButtons[i - 1].Url,gameState) };
+                res[i] = new DiscordRPC.Button() { Label = discordRPCButtons[i - 1].Label, Url = FormatString(discordRPCButtons[i - 1].Url, gameState) };
             }
             return res;
         }
@@ -750,7 +750,7 @@ namespace CSAuto
                     else
                     {
                         Log.WriteLine($"|MainApp.cs| Newer version found ({latestVersion}),current version is {VER}");
-                        MessageBoxResult result = MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("msgbox_newerversion"),latestVersion), Languages.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        MessageBoxResult result = MessageBox.Show(string.Format(Languages.Strings.ResourceManager.GetString("msgbox_newerversion"), latestVersion), Languages.Strings.ResourceManager.GetString("title_update"), MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                         {
                             Log.WriteLine("|MainApp.cs| Launching updater");
@@ -784,7 +784,7 @@ namespace CSAuto
             long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
             long result = ms / 1000;
             int diff = (int)(gameState.Timestamp - result);
-            SendMessageToClients($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true,command:Commands.Bomb);
+            SendMessageToClients($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", onlyTelegram: true, command: Commands.Bomb);
             bombTimerThread = new Thread(() =>
             {
                 for (int seconds = BOMB_SECONDS - diff; seconds >= 0; seconds--)
@@ -881,7 +881,7 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
             }
-            catch(NullReferenceException) { }
+            catch (NullReferenceException) { }
         }
 
         private void AutoPauseResumeMusic()
@@ -903,22 +903,24 @@ namespace CSAuto
                 Music.Resume();
             }
         }
-        private void SendMessageToClients(string message, bool onlyTelegram = false, bool onlyClients = false,Commands command = Commands.None)
+        private void SendMessageToClients(string message, bool onlyTelegram = false, bool onlyClients = false, Commands command = Commands.None)
         {
-            
+
             new Thread(() =>
             {
                 if (Properties.Settings.Default.telegramChatId != "" && !onlyClients)
                     Telegram.SendMessage(message, Properties.Settings.Default.telegramChatId,
                         Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
                         Properties.Settings.Default.customTelegramToken : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")));
-                if (clients != null) {
-                    lock (clients) {
+                if (clients != null)
+                {
+                    lock (clients)
+                    {
                         if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
                             return;
                         try // Try connecting and send the message bytes  
                         {
-                            foreach(TcpClient client in clients)
+                            foreach (TcpClient client in clients)
                             {
                                 try
                                 {
@@ -998,7 +1000,7 @@ namespace CSAuto
                                 AutoAcceptMatch();
                         }
                     }
-                } 
+                }
             }
             catch (Exception ex)
             {
@@ -1110,7 +1112,7 @@ namespace CSAuto
                 if (Properties.Settings.Default.autoCloseCSAuto)
                     Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
 
-                if(File.Exists(bindCfgPath))
+                if (File.Exists(bindCfgPath))
                     File.Delete(bindCfgPath);
 
                 NativeMethods.OptimizeMemory();
@@ -1214,7 +1216,7 @@ namespace CSAuto
         }
         private void AutoAcceptMatch()
         {
-            if(!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
+            if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
             {
                 DXGIcapture.Init();
                 Log.WriteLine("|MainApp.cs| Init DXGI Capture");
@@ -1346,12 +1348,12 @@ namespace CSAuto
                 }
 
                 bitmap = origBitmap.Clone(
-                    new Rectangle() 
-                    { 
-                        X = csResolution.X, 
-                        Y = csResolution.Y, 
-                        Width = csResolution.Width, 
-                        Height = csResolution.Height 
+                    new Rectangle()
+                    {
+                        X = csResolution.X,
+                        Y = csResolution.Y,
+                        Width = csResolution.Width,
+                        Height = csResolution.Height
                     },
                     origBitmap.PixelFormat);
                 NativeMethods.DeleteObject(_handle);
@@ -1363,7 +1365,7 @@ namespace CSAuto
 
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)
         {
-            if(exitCm != null)
+            if (exitCm != null)
                 exitCm.IsOpen = true;
             Activate();
         }
@@ -1382,7 +1384,7 @@ namespace CSAuto
             notifyIcon?.Close();
 
             GameStateListener?.StopGSIServer();
-            
+
             if (steamAPIServer != null && !steamAPIServer.HasExited)
                 steamAPIServer.Kill();
 
@@ -1398,7 +1400,7 @@ namespace CSAuto
 
             if (current.IsPortable)
             {
-                File.WriteAllText(Log.WorkPath+"\\.conf", current.settings.ToString(), Encoding.UTF8);
+                File.WriteAllText(Log.WorkPath + "\\.conf", current.settings.ToString(), Encoding.UTF8);
                 current.settings.DeleteSettings();
             }
 
@@ -1442,7 +1444,7 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification && !current.Restarted)
-                    SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(),FULL_VER),command:Commands.Connected);
+                    SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(), FULL_VER), command: Commands.Connected);
                 if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)

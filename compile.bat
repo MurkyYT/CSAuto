@@ -39,7 +39,8 @@ msbuild CSAuto.sln /t:CSAuto /p:Configuration="Release" /maxcpucount
 @echo ------------------------------------------------------------------
 @echo Compiling the installer...
 ISCC.exe installer.iss
-@echo Compiled the installer
+@if errorlevel 1 echo %ESC%[91mERROR: Error when compiling installer%ESC%[0m && pause && exit
+@echo %ESC%[92mSUCCESS: Compiled the installer%ESC%[0m
 @echo ------------------------------------------------------------------
 @echo Copying the apk...
 echo f | xcopy /s /y src\CSAuto_Mobile\bin\Release\net8.0-android34.0\com.murky.csauto-Signed.apk Output\CSAuto_Android.apk > nul

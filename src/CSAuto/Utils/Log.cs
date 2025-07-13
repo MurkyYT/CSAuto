@@ -19,7 +19,7 @@ namespace Murky.Utils
         private static CSAuto.GUIWindow _debugWind = null;
         private static object _debugWindLock = new object();
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        static string path = strWorkPath + "\\DEBUG\\LOGS\\";
+        static string path = strWorkPath + "\\debug\\logs\\";
         static string lineTemplate = "[%date%] (%caller%) %message%";
         public static string Path { get { return path; } }
         public static string WorkPath { get { return strWorkPath; } }

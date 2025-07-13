@@ -302,9 +302,12 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>rmdir /q /s $(ProjectDir)$(OutDir)resource
-rmdir /q /s $(ProjectDir)$(OutDir)debug
-rmdir /q /s $(ProjectDir)$(OutDir)bin
+    <PreBuildEvent>echo [CSAUTO] Removing resource folder
+rmdir /q /s $(ProjectDir)$(OutDir)resource &gt; nul
+echo [CSAUTO] Removing debug folder
+rmdir /q /s $(ProjectDir)$(OutDir)debug &gt; nul
+echo [CSAUTO] Removing bin folder
+rmdir /q /s $(ProjectDir)$(OutDir)bin &gt; nul
 mkdir $(ProjectDir)$(OutDir)resource
 mkdir $(ProjectDir)$(OutDir)bin
 call $(SolutionDir)Misc\prebuild.bat $(SolutionDir)
@@ -313,9 +316,12 @@ copy $(ProjectDir)resource\.portable $(ProjectDir)$(OutDir)resource\.portable
 call $(SolutionDir)Misc\compinfgen.exe $(SolutionDir)Misc\CompileData.template $(ProjectDir)CompileInfo.cs</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>move $(ProjectDir)$(OutDir)*.dll $(ProjectDir)$(OutDir)bin\
-move $(ProjectDir)$(OutDir)updater.exe $(ProjectDir)$(OutDir)bin\
-move $(ProjectDir)$(OutDir)steamapi.exe $(ProjectDir)$(OutDir)bin\
+    <PostBuildEvent>echo [CSAUTO] Moving dll's to bin folder
+move $(ProjectDir)$(OutDir)*.dll $(ProjectDir)$(OutDir)bin\ &gt; nul
+echo [CSAUTO] Moving updater.exe to bin folder
+move $(ProjectDir)$(OutDir)updater.exe $(ProjectDir)$(OutDir)bin\ &gt; nul
+echo [CSAUTO] Moving steamapi.exe to bin folder
+move $(ProjectDir)$(OutDir)steamapi.exe $(ProjectDir)$(OutDir)bin\ &gt; nul
 call $(SolutionDir)Misc\fldmv.exe $(ProjectDir)$(OutDir) $(ProjectDir)$(OutDir)bin</PostBuildEvent>
   </PropertyGroup>
 </Project>
