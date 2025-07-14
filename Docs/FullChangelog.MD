@@ -22,7 +22,7 @@
 
 ---
 
-Version 2.1.7 changelog
+### Version 2.1.7 changelog
 - Added automatic crash report sending via telegram
 
 ---
