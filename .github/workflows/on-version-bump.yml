@@ -28,9 +28,13 @@ jobs:
       with:
         python-version: "3.12"
     - name: Generate FullChangelog.MD
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: python scripts/full_changelog.py
     - name: Generate version
       if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_version == 'true' || inputs.skip_version == true }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: python scripts/version.py
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
