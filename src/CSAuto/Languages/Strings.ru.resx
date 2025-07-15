@@ -716,4 +716,10 @@
   <data name="language_it" xml:space="preserve">
     <value>Итальянский</value>
   </data>
+  <data name="msgbox_ok" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="msgbox_cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
 </root>

@@ -1530,6 +1530,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string msgbox_cancel {
+            get {
+                return ResourceManager.GetString("msgbox_cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A display that supports HDR has been found, the current settings are not optimized for HDR displays, do you want to optimize the settings?.
         /// </summary>
         public static string msgbox_hdroptimization {
@@ -1553,6 +1562,15 @@ namespace CSAuto.Languages {
         public static string msgbox_newerversion {
             get {
                 return ResourceManager.GetString("msgbox_newerversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string msgbox_ok {
+            get {
+                return ResourceManager.GetString("msgbox_ok", resourceCulture);
             }
         }
         

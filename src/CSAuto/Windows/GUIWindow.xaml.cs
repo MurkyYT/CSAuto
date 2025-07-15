@@ -326,8 +326,14 @@ namespace CSAuto
         public async Task<MessageDialogResult> ShowMessage(string title,
            string message, MessageDialogStyle dialogStyle)
         {
+            var settings = new MetroDialogSettings
+            {
+                AffirmativeButtonText = Languages.Strings.msgbox_ok,
+                NegativeButtonText = Languages.Strings.msgbox_cancel
+            };
+
             return await this.ShowMessageAsync(
-                Languages.Strings.ResourceManager.GetString(title), Languages.Strings.ResourceManager.GetString(message), dialogStyle);
+                Languages.Strings.ResourceManager.GetString(title), Languages.Strings.ResourceManager.GetString(message), dialogStyle, settings);
         }
         private void DarkThemeCheck_Click(object sender, RoutedEventArgs e)
         {

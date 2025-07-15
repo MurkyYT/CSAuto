@@ -716,4 +716,10 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="language_it" xml:space="preserve">
     <value>Italian</value>
   </data>
+  <data name="msgbox_ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="msgbox_cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>
