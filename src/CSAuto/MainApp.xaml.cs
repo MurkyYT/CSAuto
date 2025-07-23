@@ -1112,7 +1112,6 @@ namespace CSAuto
                 serverRunning = false;
                 guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Clear(); });
                 csProcess = null;
-                csProcess.Refresh();
                 inLobby = false;
                 csRunning = false;
 
