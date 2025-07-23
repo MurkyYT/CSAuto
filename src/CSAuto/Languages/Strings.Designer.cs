@@ -1539,6 +1539,24 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred when sending the crash report.
+        /// </summary>
+        public static string msgbox_crashreportsentfail {
+            get {
+                return ResourceManager.GetString("msgbox_crashreportsentfail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crash report has been sent successfully!.
+        /// </summary>
+        public static string msgbox_crashreportsentsuccess {
+            get {
+                return ResourceManager.GetString("msgbox_crashreportsentsuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A display that supports HDR has been found, the current settings are not optimized for HDR displays, do you want to optimize the settings?.
         /// </summary>
         public static string msgbox_hdroptimization {

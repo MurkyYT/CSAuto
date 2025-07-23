@@ -722,4 +722,10 @@
   <data name="msgbox_cancel" xml:space="preserve">
     <value>Отмена</value>
   </data>
+  <data name="msgbox_crashreportsentsuccess" xml:space="preserve">
+    <value>Отчет о сбое был успешно отправлен!</value>
+  </data>
+  <data name="msgbox_crashreportsentfail" xml:space="preserve">
+    <value>При отправке отчета о сбое произошла ошибка</value>
+  </data>
 </root>

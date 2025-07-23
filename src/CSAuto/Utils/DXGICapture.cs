@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Murky.Utils
 {
@@ -19,7 +14,23 @@ namespace Murky.Utils
         private static extern IntPtr UpdateFrame();
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool IsEnabled();
-        public bool Enabled => IsEnabled();
+        public bool Enabled 
+        { 
+            get
+            {
+                lock (this)
+                {
+                    try
+                    {
+                        return IsEnabled();
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            } 
+        }
         public void Init() => InitCapture();
         public IntPtr GetCapture() 
         {

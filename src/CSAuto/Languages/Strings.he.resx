@@ -722,4 +722,10 @@
   <data name="msgbox_cancel" xml:space="preserve">
     <value>ביטול</value>
   </data>
+  <data name="msgbox_crashreportsentsuccess" xml:space="preserve">
+    <value>דוח קריסה נשלח בהצלחה!</value>
+  </data>
+  <data name="msgbox_crashreportsentfail" xml:space="preserve">
+    <value>אירעה שגיאה בעת שליחת דוח ההתרסקות</value>
+  </data>
 </root>

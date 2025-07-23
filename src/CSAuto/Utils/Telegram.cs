@@ -1,8 +1,5 @@
-﻿using CSAuto;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -37,7 +34,7 @@ namespace Murky.Utils
                     .Replace(".", "\\.")
                     .Replace("!", "\\!");
         }
-        public static void SendMessage(string text,string chatID,string token, bool markdown = false)
+        public static bool SendMessage(string text,string chatID,string token, bool markdown = false, bool log = true)
         {
             try
             {
@@ -49,7 +46,9 @@ namespace Murky.Utils
                 {
                     webclient.DownloadString(urlString);
                 }
-                Log.WriteLine($"|Telegram.cs| Sent telegram message \"{text}\"");
+                if(log)
+                    Log.WriteLine($"|Telegram.cs| Sent telegram message \"{text}\"");
+                return true;
             }
             catch (WebException ex)
             {
@@ -61,6 +60,7 @@ namespace Murky.Utils
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
+                return false;
             }
         }
         public static async void SendPhoto(Image photo, string chatID, string token,string caption=null)
@@ -92,6 +92,69 @@ namespace Murky.Utils
                 }
             }
         }
+        public static bool SendTextAsFile(string textContent, string fileName, string chatID, string token, string caption = null)
+        {
+            try
+            {
+                string url = $"https://api.telegram.org/bot{token}/sendDocument";
+
+                var bytes = Encoding.UTF8.GetBytes(textContent);
+                using (var stream = new MemoryStream(bytes))
+                using (var form = new MultipartFormDataContent())
+                {
+                    form.Add(new StringContent(chatID, Encoding.UTF8), "chat_id");
+
+                    if (caption != null)
+                        form.Add(new StringContent(caption, Encoding.UTF8), "caption");
+
+                    form.Add(new StreamContent(stream), "document", fileName);
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var response = client.PostAsync(url, form).GetAwaiter().GetResult();
+                        Log.WriteLine($"|Telegram.cs| Sent text file \"{fileName}\" to \"{chatID}\"");
+                        return response.IsSuccessStatusCode;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static async void SendFile(Stream fileStream, string fileName, string chatID, string token, string caption = null)
+        {
+            try
+            {
+                string url = $"https://api.telegram.org/bot{token}/sendDocument";
+
+                using (var form = new MultipartFormDataContent())
+                {
+                    form.Add(new StringContent(chatID, Encoding.UTF8), "chat_id");
+
+                    if (caption != null)
+                        form.Add(new StringContent(caption, Encoding.UTF8), "caption");
+
+                    form.Add(new StreamContent(fileStream), "document", fileName);
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var response = await client.PostAsync(url, form);
+                        Log.WriteLine($"|Telegram.cs| Sent telegram file \"{fileName}\" to \"{chatID}\"");
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                if (!ex.Message.Contains("(429)") &&
+                    ex.Message != "Unable to connect to the remote server")
+                {
+                    Log.WriteLine($"|Telegram.cs| Error sending file: {ex.Message}");
+                }
+            }
+        }
+
         public static bool CheckToken(string token)
         {
             try

@@ -402,13 +402,18 @@ namespace CSAuto
                 $"Source: {ex.Source}\n" +
                 $"Inner Exception: {ex.InnerException}");
 
-            if(MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-                Telegram.SendMessage(Telegram.EscapeMarkdown($"CSAuto ({MainApp.FULL_VER} - {CompileInfo.Date} - {CompileInfo.Time}) crash report:\n")+"```csharp" +
-                    Telegram.EscapeMarkdown(
-                    $"\r\n{ex.GetType()}: {ex.Message}\n" +
-                    $"StackTrace:{ex.StackTrace}\n" +
-                    $"Source: {ex.Source}\n" +
-                    $"Inner Exception: {ex.InnerException}\r\n") + "```", Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")),true);
+            if (MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                if (Telegram.SendTextAsFile(Log.MemoryLog, "log.txt", 
+                    Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), 
+                    Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")),
+                    $"CSAuto ({MainApp.FULL_VER} - {CompileInfo.Date} - {CompileInfo.Time}) crash report"))
+                {
+                    MessageBox.Show(Languages.Strings.msgbox_crashreportsentsuccess, Languages.Strings.title_success, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                    MessageBox.Show(Languages.Strings.msgbox_crashreportsentfail, Languages.Strings.title_error, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
     }

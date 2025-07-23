@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -238,9 +239,7 @@ namespace CSAuto
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    string finalPath = Log.Path + DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
-                    if (File.Exists(finalPath))
-                        debugBox.Text = File.ReadAllText(finalPath);
+                    debugBox.Text = Log.MemoryLog;
                     ServerIP.Text = $"IP: {main.GetLocalIPAddress()}";
                     GenerateLanguages();
                     if (main.current.AlwaysMaximized)

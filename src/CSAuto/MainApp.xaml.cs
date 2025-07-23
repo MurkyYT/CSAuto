@@ -31,7 +31,6 @@ using Image = System.Drawing.Image;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using ControlzEx.Theming;
-using System.Globalization;
 #endregion
 namespace CSAuto
 {
@@ -43,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.1";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "4";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -1066,19 +1065,24 @@ namespace CSAuto
             lock (csProcessLock)
             {
                 Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
+
                 if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
                     SendMessageToClients(Languages.Strings.ResourceManager.GetString("server_gamecrash"), command: Commands.Crashed);
+
                 if (windowSource.Handle != IntPtr.Zero)
                     NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
+
                 if (RPCClient.IsInitialized)
                 {
                     RPCClient.Deinitialize();
                     Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
+
                 if (gameState.Timestamp != 0)
                 {
                     gameState.UpdateJson(null);
                 }
+
                 if (GameStateListener.ServerRunning)
                 {
                     Log.WriteLine("|MainApp.cs| Stopping GSI Server");
@@ -1086,6 +1090,7 @@ namespace CSAuto
                     //NetConCloseConnection();
                     SendMessageToClients("", onlyClients: true, command: Commands.Clear);
                 }
+
                 if (steamAPIServer != null)
                 {
                     try
@@ -1095,7 +1100,8 @@ namespace CSAuto
                     catch { }
                     steamAPIServer = null;
                 }
-                if (DXGIcapture.Enabled)
+
+                if (!Properties.Settings.Default.oldScreenCaptureWay && DXGIcapture.Enabled)
                 {
                     DXGIcapture.DeInit();
                     Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
@@ -1106,6 +1112,7 @@ namespace CSAuto
                 serverRunning = false;
                 guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Clear(); });
                 csProcess = null;
+                csProcess.Refresh();
                 inLobby = false;
                 csRunning = false;
 

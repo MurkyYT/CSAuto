@@ -13,16 +13,28 @@ namespace Murky.Utils
 {
     class Log
     {
+        private const int MaxMemoryLog = 512;
         public static CSAuto.GUIWindow debugWind { 
             get { lock (_debugWindLock) { return _debugWind; } } 
             set { lock (_debugWindLock) { _debugWind = value; } } }
         private static CSAuto.GUIWindow _debugWind = null;
         private static object _debugWindLock = new object();
+        private static List<string> memoryLog = new List<string>();
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         static string path = strWorkPath + "\\debug\\logs\\";
         static string lineTemplate = "[%date%] (%caller%) %message%";
         public static string Path { get { return path; } }
         public static string WorkPath { get { return strWorkPath; } }
+        public static string MemoryLog 
+        { 
+            get 
+            { 
+                lock(memoryLog) 
+                {
+                    return string.Join(Environment.NewLine, memoryLog); ;
+                }
+            } 
+        }
         public static void VerifyDir()
         {
             try
@@ -50,6 +62,15 @@ namespace Murky.Utils
                 debugWind?.UpdateDebug(lines.ToString());
             }
             Debug.WriteLine(lines);
+
+            lock (memoryLog)
+            {
+                if (memoryLog.Count >= MaxMemoryLog)
+                    memoryLog.RemoveAt(0);
+
+                memoryLog.Add(lines.ToString());
+            }
+
             if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
             {
                 VerifyDir();
@@ -77,7 +98,17 @@ namespace Murky.Utils
             {
                 debugWind?.UpdateDebug(lines.ToString());
             }
+
             Debug.WriteLine(lines);
+
+            lock (memoryLog)
+            {
+                if (memoryLog.Count >= MaxMemoryLog)
+                    memoryLog.RemoveAt(0);
+
+                memoryLog.Add(lines.ToString());
+            }
+
             if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
             {
                 VerifyDir();
@@ -102,6 +133,15 @@ namespace Murky.Utils
                 debugWind?.UpdateDebug(lines.ToString());
             }
             Debug.WriteLine(lines);
+
+            lock (memoryLog)
+            {
+                if (memoryLog.Count >= MaxMemoryLog)
+                    memoryLog.RemoveAt(0);
+
+                memoryLog.Add(lines.ToString());
+            }
+
             string fileName = "Error_Log.txt";
             try
             {
