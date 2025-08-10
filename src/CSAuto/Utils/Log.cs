@@ -31,7 +31,7 @@ namespace Murky.Utils
             { 
                 lock(memoryLog) 
                 {
-                    return string.Join(Environment.NewLine, memoryLog); ;
+                    return string.Join(Environment.NewLine, memoryLog) + Environment.NewLine;
                 }
             } 
         }

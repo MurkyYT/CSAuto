@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.1";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "4";
+        const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
