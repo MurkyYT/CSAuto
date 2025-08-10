@@ -1,3 +1,14 @@
+### Version 2.2.1 changelog
+- Fixed logging crash
+- Fixed auto buy not rebuying armor
+- Auto buy optimizations
+- Auto reload optimizations
+- Some translations fixes and updates
+- Added an indication whether the crash report was sent or not
+- Log now loads even when save logs is disabled
+
+---
+
 ### Version 2.2.0 changelog
 - Added Hebrew translation
 - Added support for RTL languages
