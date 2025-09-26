@@ -29,7 +29,32 @@ namespace CSAuto
     public partial class GUIWindow : MetroWindow
     {
         readonly MainApp main = (MainApp)Application.Current.MainWindow;
-        readonly StringCollection Colors = Properties.Settings.Default.availableColors;
+        readonly string[] Colors =
+        {
+            "Red", 
+            "Green", 
+            "Blue", 
+            "Purple", 
+            "Orange", 
+            "Lime", 
+            "Emerald", 
+            "Teal", 
+            "Cyan", 
+            "Cobalt", 
+            "Indigo", 
+            "Violet",
+            "Pink", 
+            "Magenta", 
+            "Crimson", 
+            "Amber",
+            "Yellow", 
+            "Brown", 
+            "Olive", 
+            "Steel", 
+            "Mauve", 
+            "Taupe", 
+            "Sienna"
+        };
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
         private BuyItem selectedItem = null;
         private CustomBuyItem customSelectedItem = null;
@@ -56,6 +81,14 @@ namespace CSAuto
             if (main.current.RTLLanguage)
             {
                 this.FlowDirection = FlowDirection.RightToLeft;
+            }
+
+            foreach (string color in Colors)
+            {
+                string translated = Languages.Strings.ResourceManager.GetString($"color_{color.ToLower()}");
+                ColorsComboBox.Items.Add(translated ?? color);
+                if(Properties.Settings.Default.currentColor == color)
+                    ColorsComboBox.SelectedIndex = ColorsComboBox.Items.Count - 1;
             }
 
             Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt); });

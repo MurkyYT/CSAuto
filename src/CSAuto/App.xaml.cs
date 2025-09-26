@@ -356,8 +356,6 @@ namespace CSAuto
         {
             foreach (SettingsProperty currentProperty in Settings.Default.Properties)
             {
-                if (currentProperty.Name == "availableColors")
-                    continue;
                 string res = FirstCharToUpper(currentProperty.Name);
                 if (!settings.KeyExists(res))
                     settings.Set(res, Settings.Default[currentProperty.Name]);
@@ -370,8 +368,6 @@ namespace CSAuto
         {
             foreach (SettingsProperty currentProperty in Settings.Default.Properties)
             {
-                if (currentProperty.Name == "availableColors")
-                    continue;
                 string res = FirstCharToUpper(currentProperty.Name);
                 settings.Set(res, Settings.Default[currentProperty.Name]);
             }

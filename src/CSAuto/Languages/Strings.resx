@@ -728,4 +728,73 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="msgbox_crashreportsentfail" xml:space="preserve">
     <value>An error occurred when sending the crash report</value>
   </data>
+  <data name="color_red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="color_green" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="color_blue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="color_purple" xml:space="preserve">
+    <value>Purple</value>
+  </data>
+  <data name="color_orange" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="color_lime" xml:space="preserve">
+    <value>Lime</value>
+  </data>
+  <data name="color_emerald" xml:space="preserve">
+    <value>Emerald</value>
+  </data>
+  <data name="color_teal" xml:space="preserve">
+    <value>Teal</value>
+  </data>
+  <data name="color_cyan" xml:space="preserve">
+    <value>Cyan</value>
+  </data>
+  <data name="color_cobalt" xml:space="preserve">
+    <value>Cobalt</value>
+  </data>
+  <data name="color_indigo" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="color_violet" xml:space="preserve">
+    <value>Violet</value>
+  </data>
+  <data name="color_pink" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="color_magenta" xml:space="preserve">
+    <value>Magenta</value>
+  </data>
+  <data name="color_crimson" xml:space="preserve">
+    <value>Crimson</value>
+  </data>
+  <data name="color_amber" xml:space="preserve">
+    <value>Amber</value>
+  </data>
+  <data name="color_yellow" xml:space="preserve">
+    <value>Yellow</value>
+  </data>
+  <data name="color_brown" xml:space="preserve">
+    <value>Brown</value>
+  </data>
+  <data name="color_olive" xml:space="preserve">
+    <value>Olive</value>
+  </data>
+  <data name="color_steel" xml:space="preserve">
+    <value>Steel</value>
+  </data>
+  <data name="color_mauve" xml:space="preserve">
+    <value>Mauve</value>
+  </data>
+  <data name="color_taupe" xml:space="preserve">
+    <value>Taupe</value>
+  </data>
+  <data name="color_sienna" xml:space="preserve">
+    <value>Sienna</value>
+  </data>
 </root>

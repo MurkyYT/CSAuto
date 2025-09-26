@@ -475,6 +475,213 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amber.
+        /// </summary>
+        public static string color_amber {
+            get {
+                return ResourceManager.GetString("color_amber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blue.
+        /// </summary>
+        public static string color_blue {
+            get {
+                return ResourceManager.GetString("color_blue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brown.
+        /// </summary>
+        public static string color_brown {
+            get {
+                return ResourceManager.GetString("color_brown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cobalt.
+        /// </summary>
+        public static string color_cobalt {
+            get {
+                return ResourceManager.GetString("color_cobalt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crimson.
+        /// </summary>
+        public static string color_crimson {
+            get {
+                return ResourceManager.GetString("color_crimson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cyan.
+        /// </summary>
+        public static string color_cyan {
+            get {
+                return ResourceManager.GetString("color_cyan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emerald.
+        /// </summary>
+        public static string color_emerald {
+            get {
+                return ResourceManager.GetString("color_emerald", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Green.
+        /// </summary>
+        public static string color_green {
+            get {
+                return ResourceManager.GetString("color_green", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indigo.
+        /// </summary>
+        public static string color_indigo {
+            get {
+                return ResourceManager.GetString("color_indigo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lime.
+        /// </summary>
+        public static string color_lime {
+            get {
+                return ResourceManager.GetString("color_lime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magenta.
+        /// </summary>
+        public static string color_magenta {
+            get {
+                return ResourceManager.GetString("color_magenta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mauve.
+        /// </summary>
+        public static string color_mauve {
+            get {
+                return ResourceManager.GetString("color_mauve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Olive.
+        /// </summary>
+        public static string color_olive {
+            get {
+                return ResourceManager.GetString("color_olive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orange.
+        /// </summary>
+        public static string color_orange {
+            get {
+                return ResourceManager.GetString("color_orange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pink.
+        /// </summary>
+        public static string color_pink {
+            get {
+                return ResourceManager.GetString("color_pink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purple.
+        /// </summary>
+        public static string color_purple {
+            get {
+                return ResourceManager.GetString("color_purple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Red.
+        /// </summary>
+        public static string color_red {
+            get {
+                return ResourceManager.GetString("color_red", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sienna.
+        /// </summary>
+        public static string color_sienna {
+            get {
+                return ResourceManager.GetString("color_sienna", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steel.
+        /// </summary>
+        public static string color_steel {
+            get {
+                return ResourceManager.GetString("color_steel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taupe.
+        /// </summary>
+        public static string color_taupe {
+            get {
+                return ResourceManager.GetString("color_taupe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Teal.
+        /// </summary>
+        public static string color_teal {
+            get {
+                return ResourceManager.GetString("color_teal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Violet.
+        /// </summary>
+        public static string color_violet {
+            get {
+                return ResourceManager.GetString("color_violet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yellow.
+        /// </summary>
+        public static string color_yellow {
+            get {
+                return ResourceManager.GetString("color_yellow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Button.
         /// </summary>
         public static string discord_addbutton {

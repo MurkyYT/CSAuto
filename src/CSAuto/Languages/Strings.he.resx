@@ -728,4 +728,73 @@
   <data name="msgbox_crashreportsentfail" xml:space="preserve">
     <value>אירעה שגיאה בעת שליחת דוח ההתרסקות</value>
   </data>
+  <data name="color_red" xml:space="preserve">
+    <value>אדום</value>
+  </data>
+  <data name="color_green" xml:space="preserve">
+    <value>ירוק</value>
+  </data>
+  <data name="color_blue" xml:space="preserve">
+    <value>כחול</value>
+  </data>
+  <data name="color_purple" xml:space="preserve">
+    <value>סגול</value>
+  </data>
+  <data name="color_orange" xml:space="preserve">
+    <value>כתום</value>
+  </data>
+  <data name="color_lime" xml:space="preserve">
+    <value>ליים</value>
+  </data>
+  <data name="color_emerald" xml:space="preserve">
+    <value>אזמרגד</value>
+  </data>
+  <data name="color_teal" xml:space="preserve">
+    <value>כחול-ירוק</value>
+  </data>
+  <data name="color_cyan" xml:space="preserve">
+    <value>כחול ירקרק</value>
+  </data>
+  <data name="color_cobalt" xml:space="preserve">
+    <value>קובלט</value>
+  </data>
+  <data name="color_indigo" xml:space="preserve">
+    <value>אינדיגו</value>
+  </data>
+  <data name="color_violet" xml:space="preserve">
+    <value>ויולט</value>
+  </data>
+  <data name="color_pink" xml:space="preserve">
+    <value>ורוד</value>
+  </data>
+  <data name="color_magenta" xml:space="preserve">
+    <value>מג'נטה</value>
+  </data>
+  <data name="color_crimson" xml:space="preserve">
+    <value>אדום-ארגמני עמוק</value>
+  </data>
+  <data name="color_amber" xml:space="preserve">
+    <value>אמבר</value>
+  </data>
+  <data name="color_yellow" xml:space="preserve">
+    <value>צהוב</value>
+  </data>
+  <data name="color_brown" xml:space="preserve">
+    <value>חום</value>
+  </data>
+  <data name="color_olive" xml:space="preserve">
+    <value>זית</value>
+  </data>
+  <data name="color_steel" xml:space="preserve">
+    <value>פלדה</value>
+  </data>
+  <data name="color_mauve" xml:space="preserve">
+    <value>סגלגל</value>
+  </data>
+  <data name="color_taupe" xml:space="preserve">
+    <value>אפור-חום</value>
+  </data>
+  <data name="color_sienna" xml:space="preserve">
+    <value>חום-אדמדם</value>
+  </data>
 </root>

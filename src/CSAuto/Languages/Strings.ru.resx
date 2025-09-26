@@ -728,4 +728,73 @@
   <data name="msgbox_crashreportsentfail" xml:space="preserve">
     <value>При отправке отчета о сбое произошла ошибка</value>
   </data>
+  <data name="color_red" xml:space="preserve">
+    <value>Красный</value>
+  </data>
+  <data name="color_green" xml:space="preserve">
+    <value>Зелёный</value>
+  </data>
+  <data name="color_blue" xml:space="preserve">
+    <value>Синий</value>
+  </data>
+  <data name="color_purple" xml:space="preserve">
+    <value>Фиолетовый</value>
+  </data>
+  <data name="color_orange" xml:space="preserve">
+    <value>Оранжевый</value>
+  </data>
+  <data name="color_lime" xml:space="preserve">
+    <value>Лайм</value>
+  </data>
+  <data name="color_emerald" xml:space="preserve">
+    <value>Изумрудный</value>
+  </data>
+  <data name="color_teal" xml:space="preserve">
+    <value>Бирюзовый</value>
+  </data>
+  <data name="color_cyan" xml:space="preserve">
+    <value>Голубой</value>
+  </data>
+  <data name="color_cobalt" xml:space="preserve">
+    <value>Кобальтовый</value>
+  </data>
+  <data name="color_indigo" xml:space="preserve">
+    <value>Индиго</value>
+  </data>
+  <data name="color_violet" xml:space="preserve">
+    <value>Виолет</value>
+  </data>
+  <data name="color_pink" xml:space="preserve">
+    <value>Розовый</value>
+  </data>
+  <data name="color_magenta" xml:space="preserve">
+    <value>Пурпурный</value>
+  </data>
+  <data name="color_crimson" xml:space="preserve">
+    <value>Малиновый</value>
+  </data>
+  <data name="color_amber" xml:space="preserve">
+    <value>Янтарный</value>
+  </data>
+  <data name="color_yellow" xml:space="preserve">
+    <value>Жёлтый</value>
+  </data>
+  <data name="color_brown" xml:space="preserve">
+    <value>Коричневый</value>
+  </data>
+  <data name="color_olive" xml:space="preserve">
+    <value>Оливковый</value>
+  </data>
+  <data name="color_steel" xml:space="preserve">
+    <value>Стальной</value>
+  </data>
+  <data name="color_mauve" xml:space="preserve">
+    <value>Розовато-лиловый</value>
+  </data>
+  <data name="color_taupe" xml:space="preserve">
+    <value>Темно-серо-коричневый</value>
+  </data>
+  <data name="color_sienna" xml:space="preserve">
+    <value>Сиенна</value>
+  </data>
 </root>
