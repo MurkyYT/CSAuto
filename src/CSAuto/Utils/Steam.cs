@@ -10,6 +10,21 @@ namespace Murky.Utils
 {
     public static class Steam
     {
+        private static string[] WriteSafeReadAllLines(string path)
+        {
+            using (var csv = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var sr = new StreamReader(csv))
+            {
+                List<string> file = new List<string>();
+                while (!sr.EndOfStream)
+                {
+                    file.Add(sr.ReadLine());
+                }
+
+                return file.ToArray();
+            }
+        }
+
         public const long VALVE_STEAMID64_CONST = 76561197960265728L;
 
         public static bool IsRunning()
@@ -38,7 +53,7 @@ namespace Murky.Utils
                 Path.Combine(steamPath)
             };
 
-            var pathVDF = File.ReadAllLines(pathsFile);
+            var pathVDF = WriteSafeReadAllLines(pathsFile);
             // Okay, this is not a full vdf-parser, but it seems to work pretty much, since the 
             // vdf-grammar is pretty easy. Hopefully it never breaks. I'm too lazy to write a full vdf-parser though. 
             Regex pathRegex = new Regex(@"\""(([^\""]*):\\([^\""]*))\""");
@@ -86,7 +101,7 @@ namespace Murky.Utils
             try
             {
                 string connLogPath = GetSteamPath() + "\\logs\\connection_log.txt";
-                string[] log = File.ReadAllLines(connLogPath);
+                string[] log = WriteSafeReadAllLines(connLogPath);
                 for (int i = log.Length - 1; i >= 0 && steamID3 == 0; i--)
                 {
                     string line = log[i];
@@ -135,7 +150,7 @@ namespace Murky.Utils
             if (steamID3 == 0)
                 return -1;
             string localconfPath = $"{steamPath}\\userdata\\{steamID3}\\config\\localconfig.vdf";
-            string[] localconfFile = File.ReadAllLines(localconfPath);
+            string[] localconfFile = WriteSafeReadAllLines(localconfPath);
             int index = GetAppIDIndex(appID, localconfFile);
             if(index == -1)
                 return -1;
@@ -168,7 +183,7 @@ namespace Murky.Utils
             if (steamID3 == 0)
                 return false;
             string localconfPath = $"{steamPath}\\userdata\\{steamID3}\\config\\localconfig.vdf";
-            string[] localconfFile = File.ReadAllLines(localconfPath);
+            string[] localconfFile = WriteSafeReadAllLines(localconfPath);
             int appIDIndex = GetAppIDIndex(730, localconfFile);
             if (appIDIndex == -1)
                 return false;
