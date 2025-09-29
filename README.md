@@ -11,7 +11,7 @@
 </p>
 <p>
   <img width="auto" src="https://img.shields.io/github/downloads/murkyyt/csauto/total?color=brightgreen&label=Total%20downloads&style=for-the-badge&logo=github" alt="Total Downloads">
-  <img width="auto" src="https://img.shields.io/sourceforge/dt/csauto?style=for-the-badge&logo=sourceforge&logoColor=orange&label=Total%20downloads" alt="Total Downloads">
+  <!--<img width="auto" src="https://img.shields.io/sourceforge/dt/csauto?style=for-the-badge&logo=sourceforge&logoColor=orange&label=Total%20downloads" alt="Total Downloads">-->
 </p>
 <p>
   <a href="https://learn.microsoft.com/en-us/dotnet/csharp"><img width="auto" src="https://img.shields.io/github/languages/top/murkyyt/csauto?logo=csharp&logoColor=green&style=for-the-badge" alt="Language"></a>
