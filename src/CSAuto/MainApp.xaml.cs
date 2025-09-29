@@ -42,16 +42,16 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.2";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
         const string GAMESTATE_PORT = "11523";
         //const string NETCON_PORT = "21823";
         const string TIMEOUT = "5.0";
-        const string BUFFER = "0.1";
+        const string BUFFER = "0.0";
         const string THROTTLE = "0.0";
-        const string HEARTBEAT = "5.0";
+        const string HEARTBEAT = "1.0";
         const string INTEGRATION_FILE = "\"CSAuto Integration v" + VER + "," + DEBUG_REVISION + "\"\r\n{\r\n\"uri\" \"http://localhost:" + GAMESTATE_PORT +
             "\"\r\n\"timeout\" \"" + TIMEOUT + "\"\r\n\"" +
             "buffer\"  \"" + BUFFER + "\"\r\n\"" +
@@ -1410,8 +1410,12 @@ namespace CSAuto
                 current.settings.DeleteSettings();
             }
 
-            if (File.Exists(bindCfgPath))
-                File.Delete(bindCfgPath);
+            try
+            {
+                if (File.Exists(bindCfgPath))
+                    File.Delete(bindCfgPath);
+            }
+            catch { }
         }
         private void CheckForDuplicates()
         {
