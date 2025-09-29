@@ -327,17 +327,27 @@ namespace CSAuto
                 if (!language.Enabled)
                     continue;
 
-                RadioButton rb = new RadioButton() { Content = Languages.Strings.ResourceManager.GetString("language_"+language.LanguageCode), IsChecked = language.LanguageCode == Properties.Settings.Default.currentLanguage };
-                rb.Checked += async (sender, args) =>
-                {
-                    Properties.Settings.Default.currentLanguage = (sender as RadioButton).Tag.ToString();
-                    Properties.Settings.Default.Save();
-                    CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo((sender as RadioButton).Tag.ToString());
-                    await RestartMessageBox();
+                ComboBoxItem item = new ComboBoxItem() 
+                {  
+                    Content = Languages.Strings.ResourceManager.GetString("language_" + language.LanguageCode),
+                    Tag = language.LanguageCode
                 };
-                rb.Tag = language.LanguageCode;
-                languagesStackPanel.Children.Add(rb);
+
+                if (language.LanguageCode == Properties.Settings.Default.currentLanguage) languagesComboBox.SelectedItem = item;
+                if (!string.IsNullOrEmpty(language.OriginalName)) item.Content += $" ({language.OriginalName})";
+
+                languagesComboBox.Items.Add(item);
             }
+
+            languagesComboBox.SelectionChanged += async (sender, args) =>
+            {
+                ComboBoxItem item = languagesComboBox.SelectedItem as ComboBoxItem;
+                Properties.Settings.Default.currentLanguage = item.Tag.ToString();
+                Properties.Settings.Default.Save();
+                CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(item.Tag.ToString());
+                languagesComboBox.SelectedItem = item;
+                await RestartMessageBox();
+            };
         }
         private void StartUpCheck_Click(object sender, RoutedEventArgs e)
         {

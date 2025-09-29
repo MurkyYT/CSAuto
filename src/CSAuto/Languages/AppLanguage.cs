@@ -8,6 +8,7 @@ namespace CSAuto
         public struct Language
         {
             public string LanguageCode;
+            public string OriginalName;
             public bool IsRTL;
             public bool Enabled;
         }
@@ -17,18 +18,21 @@ namespace CSAuto
             new Language() 
             {
                 LanguageCode = "en",
+                OriginalName = "English",
                 IsRTL = false,
                 Enabled = true 
             },
             new Language()
             {
                 LanguageCode = "ru",
+                OriginalName = "Русский",
                 IsRTL = false,
                 Enabled = true
             },
             new Language()
             {
                 LanguageCode = "he",
+                OriginalName = "עברית",
                 IsRTL = true,
                 Enabled = true
             },

@@ -79,8 +79,10 @@
                                 <CheckBox Content="{x:Static p:Strings.menu_autocheckforupdates}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=autoCheckForUpdates}"/>
                                 <CheckBox Content="{x:Static p:Strings.ckbox_oldscreencapture}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldScreenCaptureWay}"/>
                                 <CheckBox Content="{x:Static p:Strings.ckbox_oldmouseinput}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=oldMouseInput}"/>
-                                <TextBlock Text="{x:Static p:Strings.menu_language}" FontSize="20" FontWeight="Bold"/>
-                                <StackPanel x:Name="languagesStackPanel" Orientation="Vertical"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{x:Static p:Strings.menu_language}" FontSize="15" />
+                                    <ComboBox Name="languagesComboBox" Margin="5,0,0,0"/>
+                                </StackPanel>
                             </StackPanel>
                         </mahapps:MetroTabItem>
                         <mahapps:MetroTabItem Padding="5,0,5,0">
