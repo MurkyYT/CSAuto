@@ -221,10 +221,12 @@ namespace CSAuto
                 }
             }
 
-            Settings.Default.PropertyChanged += (sender, _) =>
+            Settings.Default.PropertyChanged += (sender, args) =>
             {
                 Settings.Default.Save();
-                MoveSettings();
+
+                settings.Set(FirstCharToUpper(args.PropertyName), Settings.Default[args.PropertyName]);
+
                 if (IsPortable)
                     File.WriteAllText(Log.WorkPath + "\\.conf", settings.ToString(), Encoding.UTF8);
             };
