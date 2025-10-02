@@ -457,7 +457,21 @@
                             <TextBlock Text="CSAuto" FontSize="48" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="WrapWithOverflow"/>
                             <TextBlock Text="{x:Static p:Strings.text_description}" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" FontSize="24" TextWrapping="WrapWithOverflow"/>
                             <TextBlock HorizontalAlignment="Center" FontSize="20" TextAlignment="Center" TextWrapping="WrapWithOverflow">
-                                <Hyperlink Click="AboutLicense_Click">Copyright (c) 2023, Murky</Hyperlink>
+                                <Hyperlink Click="AboutLicense_Click">
+                                    
+                                    Copyright (c) 2023, Murky
+                                    
+                                    <Hyperlink.Style>
+                                        <Style TargetType="Hyperlink">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Hyperlink.Style>
+                                </Hyperlink>
                             </TextBlock>
                         </StackPanel>
                     </Border>
