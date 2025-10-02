@@ -1,4 +1,5 @@
 ﻿using ControlzEx.Theming;
+using CSAuto.Properties;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
@@ -135,13 +136,8 @@ namespace CSAuto
         {
             main.guiWindow = null;
             Log.debugWind = null;
-            Properties.Settings.Default.Save();
-            main.current.MoveSettings();
-            if (main.current.IsPortable)
-                File.WriteAllText(Log.WorkPath + "\\.conf", main.current.settings.ToString(), Encoding.UTF8);
             GameState.Dispose();
             Close();
-            main.current.buyMenu.Save(main.current.settings);
             NativeMethods.OptimizeMemory();
         }
         void ParseGameState(string JSON)
@@ -468,9 +464,9 @@ namespace CSAuto
 
         private void TelegramTestMessage_Click(object sender, RoutedEventArgs e)
         {
-            Telegram.SendMessage("Test Message!",Properties.Settings.Default.telegramChatId, 
-                Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ? 
-                Properties.Settings.Default.customTelegramToken : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")));
+            Telegram.SendMessage("Test Message!",Settings.Default.telegramChatId, 
+                Telegram.CheckToken(Settings.Default.customTelegramToken) ? 
+                Settings.Default.customTelegramToken : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")));
         }
 
         private void RemoveDiscordButton_Click(object sender, RoutedEventArgs e)
@@ -480,6 +476,9 @@ namespace CSAuto
                 main.discordRPCButtons.Remove(main.discordRPCButtons[DiscordRPCButtonsListView.SelectedIndex]);
                 LoadDiscordButtons();
                 DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
+
+                if (main.current.IsPortable)
+                    File.WriteAllText(Log.WorkPath + "\\.conf", main.current.settings.ToString(), Encoding.UTF8);
             }
         }
 
@@ -502,6 +501,9 @@ namespace CSAuto
             main.discordRPCButtons.Add(res);
             LoadDiscordButtons();
             DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
+
+            if (main.current.IsPortable)
+                File.WriteAllText(Log.WorkPath + "\\.conf", main.current.settings.ToString(), Encoding.UTF8);
         }
 
         private async void DiscordTemplateButton_Click(object sender, RoutedEventArgs e)
@@ -540,6 +542,9 @@ namespace CSAuto
             main.discordRPCButtons.Add(res);
             LoadDiscordButtons();
             DiscordRPCButtonSerializer.Serialize(main.discordRPCButtons);
+
+            if (main.current.IsPortable)
+                File.WriteAllText(Log.WorkPath + "\\.conf", main.current.settings.ToString(), Encoding.UTF8);
         }
 
         private void OpenDiscordServer(object sender, RoutedEventArgs e)
@@ -650,6 +655,8 @@ namespace CSAuto
                 UpdateImage();
             }
             main.current.buyMenu.Save(main.current.settings);
+            if (main.current.IsPortable)
+                File.WriteAllText(Log.WorkPath + "\\.conf", main.current.settings.ToString(), Encoding.UTF8);
         }
 
         private void UpdateImage()

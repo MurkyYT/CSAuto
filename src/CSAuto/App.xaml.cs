@@ -221,6 +221,14 @@ namespace CSAuto
                 }
             }
 
+            Settings.Default.PropertyChanged += (sender, _) =>
+            {
+                Settings.Default.Save();
+                MoveSettings();
+                if (IsPortable)
+                    File.WriteAllText(Log.WorkPath + "\\.conf", settings.ToString(), Encoding.UTF8);
+            };
+
             new MainApp().Show();
             NativeMethods.OptimizeMemory();
         }

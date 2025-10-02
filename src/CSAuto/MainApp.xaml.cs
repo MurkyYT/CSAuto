@@ -1394,19 +1394,12 @@ namespace CSAuto
 
             RPCClient?.Dispose();
 
-            DiscordRPCButtonSerializer.Serialize(discordRPCButtons);
-            Properties.Settings.Default.Save();
-            current.MoveSettings();
-
             serverThread?.Abort();
 
             serverRunning = false;
 
             if (current.IsPortable)
-            {
-                File.WriteAllText(Log.WorkPath + "\\.conf", current.settings.ToString(), Encoding.UTF8);
                 current.settings.DeleteSettings();
-            }
 
             try
             {
