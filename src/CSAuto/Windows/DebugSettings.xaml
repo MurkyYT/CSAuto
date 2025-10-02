@@ -8,6 +8,7 @@
         xmlns:mahapps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
         TitleCharacterCasing="Normal"
+        StateChanged="MetroWindow_StateChanged"
         Title="Debug Settings" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>

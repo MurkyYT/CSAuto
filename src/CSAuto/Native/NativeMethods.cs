@@ -73,15 +73,10 @@ namespace CSAuto
         public static bool BringToFront(IntPtr hWnd)
         {
             if (GetForegroundWindow() == hWnd)
-                return false;
-            bool res = SetForegroundWindow(hWnd);
-            if (GetForegroundWindow() != hWnd)
-            {
-                bool res1 = SwitchToThisWindow(hWnd, true);
-                bool res2 = SetForegroundWindow(hWnd);
-                return res1 && res2;
-            }
-            return res;
+                return true;
+
+            return SetForegroundWindow(hWnd) &&
+                   SwitchToThisWindow(hWnd, true);
         }
         public static CURSORINFO GetCursorInfo()
         {

@@ -75,5 +75,20 @@ namespace CSAuto
             main.UpdateColors();
             Properties.DebugSettings.Default.Save();
         }
+
+        private void MetroWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (!main.current.IsWindows11)
+                return;
+
+            IntPtr hWnd = new WindowInteropHelper(this).EnsureHandle();
+            var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
+
+            var preference = this.WindowState == WindowState.Normal
+                ? NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND
+                : NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DONOTROUND;
+
+            NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
+        }
     }
 }

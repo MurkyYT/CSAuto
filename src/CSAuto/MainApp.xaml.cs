@@ -710,11 +710,8 @@ namespace CSAuto
             }
             catch { MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_createfiles"), Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning); }
 #endif
-            RPCClient.OnReady += (sender, e) =>
-            {
-                Log.WriteLine($"|MainApp.cs| Received Discord RPC Ready! {e.User.Username}");
-            };
             RPCClient.Initialize();
+            Log.WriteLine($"|MainApp.cs| Initialized Discord RPC");
         }
 
         private DiscordRPC.Button[] GetDiscordRPCButtons()
@@ -1013,7 +1010,8 @@ namespace CSAuto
                 if (Properties.Settings.Default.autoFocusOnCS &&
                     Properties.Settings.Default.autoAcceptMatch &&
                     csProcess != null && !csActive && inLobby == true &&
-                    lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH)
+                    lParam == csProcess.MainWindowHandle && wParam == NativeMethods.HSHELL_FLASH
+                    && NativeMethods.GetForegroundWindow() != csProcess.MainWindowHandle)
                 {
                     if (Properties.Settings.Default.focusBackOnOriginalWindow)
                         originalProcess = NativeMethods.GetForegroundProcess();

@@ -29,6 +29,7 @@ namespace CSAuto
     public partial class GUIWindow : MetroWindow
     {
         readonly MainApp main = (MainApp)Application.Current.MainWindow;
+
         readonly string[] Colors =
         {
             "Red", 
@@ -55,13 +56,17 @@ namespace CSAuto
             "Taupe", 
             "Sienna"
         };
+
         readonly GameState GameState = new GameState(Properties.Resources.GAMESTATE_EXAMPLE);
+
         private BuyItem selectedItem = null;
         private CustomBuyItem customSelectedItem = null;
-        bool isCt = true;
+        private bool isCt = true;
+
         public GUIWindow()
         {
             InitializeComponent();
+
             if (main.clients != null)
             {
                 lock (main.clients)
@@ -70,6 +75,7 @@ namespace CSAuto
                         ClientsListBox?.Items.Add(client.Client.RemoteEndPoint);
                 }
             }
+
             if(main.current.IsWindows11)
             {
                 IntPtr hWnd = new WindowInteropHelper(GetWindow(this)).EnsureHandle();
@@ -80,7 +86,7 @@ namespace CSAuto
 
             if (main.current.RTLLanguage)
             {
-                this.FlowDirection = FlowDirection.RightToLeft;
+                FlowDirection = FlowDirection.RightToLeft;
             }
 
             foreach (string color in Colors)
@@ -707,6 +713,21 @@ namespace CSAuto
         private void AboutLicense_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://github.com/MurkyYT/CSAuto/blob/master/LICENSE");
+        }
+
+        private void MetroWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (!main.current.IsWindows11)
+                return;
+
+            IntPtr hWnd = new WindowInteropHelper(this).EnsureHandle();
+            var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
+
+            var preference = WindowState == WindowState.Normal
+                ? NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND
+                : NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DONOTROUND;
+
+            NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
         }
     }
 }

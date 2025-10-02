@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         TitleCharacterCasing="Normal"
         Title="CSAuto Debug Info"
+        StateChanged="MetroWindow_StateChanged"
         Height="450" Width="800">
     <Grid>
         <TextBox x:Name="TextBlock" IsReadOnly="True"/>

@@ -2,8 +2,8 @@
 using Murky.Utils;
 using Murky.Utils.CSGO;
 using System;
-using System.Globalization;
 using System.IO;
+using System.Windows;
 using System.Windows.Interop;
 
 namespace CSAuto
@@ -13,10 +13,12 @@ namespace CSAuto
     /// </summary>
     public partial class DebugInfo : MetroWindow
     {
+        MainApp main;
         public DebugInfo(MainApp main)
         {
             InitializeComponent();
 
+            this.main = main;
             if (main.current.IsWindows11)
             {
                 IntPtr hWnd = new WindowInteropHelper(GetWindow(this)).EnsureHandle();
@@ -66,6 +68,21 @@ namespace CSAuto
                 + $"CS:GO FriendCode: {friendCode}\n"
                 + $"CS:GO Integration Path: \"{main.integrationPath}\"\n"
                 + $"CS:GO LaunchOptions: \"{launchOpt}\"";
+        }
+
+        private void MetroWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (!main.current.IsWindows11)
+                return;
+
+            IntPtr hWnd = new WindowInteropHelper(this).EnsureHandle();
+            var attribute = NativeMethods.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE;
+
+            var preference = WindowState == WindowState.Normal
+                ? NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND
+                : NativeMethods.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DONOTROUND;
+
+            NativeMethods.DwmSetWindowAttribute(hWnd, attribute, ref preference, sizeof(uint));
         }
     }
 }
