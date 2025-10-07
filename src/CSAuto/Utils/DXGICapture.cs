@@ -15,8 +15,8 @@ namespace Murky.Utils
         private static extern IntPtr CaptureScreen(int index);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool IsEnabled();
-        public bool Enabled 
-        { 
+        public bool Enabled
+        {
             get
             {
                 lock (this)
@@ -30,9 +30,18 @@ namespace Murky.Utils
                         return false;
                     }
                 }
-            } 
+            }
         }
-        public void Init() => InitCapture();
+        public void Init() 
+        {
+            if (!Enabled)
+            {
+                lock (this)
+                {
+                    InitCapture();
+                }
+            }
+        }
         public IntPtr GetCapture() 
         {
             lock (this)
@@ -42,9 +51,12 @@ namespace Murky.Utils
         }
         public void DeInit() 
         {
-            lock (this)
+            if (Enabled)
             {
-                DeInitCapture();
+                lock (this)
+                {
+                    DeInitCapture();
+                }
             }
         }
     }
