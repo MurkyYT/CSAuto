@@ -71,7 +71,7 @@ namespace Murky.Utils
                 memoryLog.Add(lines.ToString());
             }
 
-            if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
+            if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App)?.LogArg == true)
             {
                 VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";
@@ -109,7 +109,7 @@ namespace Murky.Utils
                 memoryLog.Add(lines.ToString());
             }
 
-            if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App).LogArg)
+            if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App)?.LogArg == true)
             {
                 VerifyDir();
                 string fileName = DateTime.Now.Day.ToString() + "." + DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString() + "_Log.txt";

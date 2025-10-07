@@ -5,13 +5,14 @@ namespace Murky.Utils
 {
     public class DXGICapture
     {
+        const int DXGICAPTURE_ALL_SCREENS = -1;
         const string dllname = "bin\\DXGICapture.dll";
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool InitCapture();
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DeInitCapture();
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr UpdateFrame();
+        private static extern IntPtr CaptureScreen(int index);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool IsEnabled();
         public bool Enabled 
@@ -36,7 +37,7 @@ namespace Murky.Utils
         {
             lock (this)
             {
-                return Enabled ? UpdateFrame() : IntPtr.Zero;
+                return Enabled ? CaptureScreen(DXGICAPTURE_ALL_SCREENS) : IntPtr.Zero;
             }
         }
         public void DeInit() 

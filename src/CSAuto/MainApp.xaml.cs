@@ -1341,27 +1341,41 @@ namespace CSAuto
             }
             else
             {
-                Bitmap origBitmap = Image.FromHbitmap(_handle);
-
-                if (csResolution.X < 0 || csResolution.Y < 0)
+                try
                 {
-                    Properties.Settings.Default.oldScreenCaptureWay = true;
-                    Properties.Settings.Default.Save();
-                    Log.WriteLine("|MainApp.cs| Changed to old screen capture way because cs window x and y were less then 0 and this is not supported with DXGI capture");
+                    Bitmap origBitmap = Image.FromHbitmap(_handle);
+                    int realX = Math.Max(0, (int)(csResolution.X - SystemParameters.VirtualScreenLeft));
+                    int realY = Math.Max(0, (int)(csResolution.Y - SystemParameters.VirtualScreenTop));
+
+                    int diffX = realX - (int)(csResolution.X - SystemParameters.VirtualScreenLeft);
+                    int diffY = realY - (int)(csResolution.Y - SystemParameters.VirtualScreenTop);
+
+                    int sourceWidth = csResolution.Width - diffX;
+                    int sourceHeight = csResolution.Height - diffY;
+
+                    bitmap = new Bitmap(csResolution.Width, csResolution.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        g.Clear(Color.Transparent);
+
+                        g.DrawImage(origBitmap,
+                            new Rectangle(diffX, diffY, sourceWidth, sourceHeight),
+                            new Rectangle(realX, realY, sourceWidth, sourceHeight),
+                            GraphicsUnit.Pixel);
+                    }
+
+                    NativeMethods.DeleteObject(_handle);
+                    origBitmap.Dispose();
+                }
+                catch (OutOfMemoryException)
+                {
+                    DXGIcapture.DeInit();
+                    Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
+                    DXGIcapture.Init();
+                    Log.WriteLine("|MainApp.cs| Init DXGI Capture");
                     return null;
                 }
-
-                bitmap = origBitmap.Clone(
-                    new Rectangle()
-                    {
-                        X = csResolution.X,
-                        Y = csResolution.Y,
-                        Width = csResolution.Width,
-                        Height = csResolution.Height
-                    },
-                    origBitmap.PixelFormat);
-                NativeMethods.DeleteObject(_handle);
-                origBitmap.Dispose();
             }
 
             return bitmap;
