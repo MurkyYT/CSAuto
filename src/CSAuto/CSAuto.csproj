@@ -102,7 +102,7 @@
     <Compile Include="AutoBuyMenu.cs" />
     <Compile Include="CompileInfo.cs" />
     <Compile Include="Native\DisplayInfo.cs" />
-    <Compile Include="Utils\CSGO\BindCommandSender.cs" />
+    <Compile Include="Utils\CS\BindCommandSender.cs" />
     <Compile Include="Windows\DebugInfo.xaml.cs">
       <DependentUpon>DebugInfo.xaml</DependentUpon>
     </Compile>
@@ -126,7 +126,7 @@
     </Compile>
     <Compile Include="Shared\NetworkTypes.cs" />
     <Compile Include="StreamString.cs" />
-    <Compile Include="Utils\CSGO\ConDump.cs" />
+    <Compile Include="Utils\CS\ConDump.cs" />
     <Compile Include="Utils\DXGICapture.cs" />
     <Compile Include="Utils\Nager.TcpClient\TcpClient.cs" />
     <Compile Include="Utils\Nager.TcpClient\TcpClientConfig.cs" />
@@ -134,10 +134,10 @@
     <Compile Include="Utils\Nager.TcpClient\TcpClientKeepaliveExtension.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\RECT.cs" />
-    <Compile Include="Utils\CSGO\CSGOFriendCode.cs" />
-    <Compile Include="Utils\CSGO\CSGOMap.cs" />
-    <Compile Include="Utils\CSGO\GameStateListener.cs" />
-    <Compile Include="Utils\CSGO\NetCon.cs" />
+    <Compile Include="Utils\CS\CSFriendCode.cs" />
+    <Compile Include="Utils\CS\CSMap.cs" />
+    <Compile Include="Utils\CS\GameStateListener.cs" />
+    <Compile Include="Utils\CS\NetCon.cs" />
     <Compile Include="Utils\Github.cs" />
     <Compile Include="Utils\InputBox.cs" />
     <Compile Include="Utils\RegistrySettings.cs" />
@@ -170,7 +170,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utils\CSGO\GameState.cs" />
+    <Compile Include="Utils\CS\GameState.cs" />
     <Compile Include="Windows\GUIWindow.xaml.cs">
       <DependentUpon>GUIWindow.xaml</DependentUpon>
     </Compile>

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Murky.Utils.CSGO
+namespace Murky.Utils.CS
 {
     public class GameStateListener
     {

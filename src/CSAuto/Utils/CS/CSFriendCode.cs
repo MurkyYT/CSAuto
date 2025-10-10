@@ -7,9 +7,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Murky.Utils.CSGO
+namespace Murky.Utils.CS
 {
-    public static class CSGOFriendCode
+    public static class CSFriendCode
     {
         const string alnum = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         public static string B32(ulong id)

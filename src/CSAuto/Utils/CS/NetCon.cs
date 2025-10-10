@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using TcpClient = Nager.TcpClient.TcpClient;
 
-namespace Murky.Utils.CSGO
+namespace Murky.Utils.CS
 {
     public class NetCon
     {

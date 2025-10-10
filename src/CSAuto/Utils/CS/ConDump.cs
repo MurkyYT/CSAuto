@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Murky.Utils.CSGO
+namespace Murky.Utils.CS
 {
     public static class ConDump
     {

@@ -2,7 +2,7 @@
 using CSAuto.Properties;
 using MdXaml.Plugins;
 using Murky.Utils;
-using Murky.Utils.CSGO;
+using Murky.Utils.CS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

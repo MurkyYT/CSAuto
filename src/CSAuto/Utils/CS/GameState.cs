@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Murky.Utils.CSGO
+namespace Murky.Utils.CS
 {
     public enum BombState
     {

@@ -22,7 +22,7 @@ using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Commands = CSAuto.Shared.NetworkTypes.Commands;
 using Murky.Utils;
-using Murky.Utils.CSGO;
+using Murky.Utils.CS;
 using System.Net.Sockets;
 using System.IO.Pipes;
 using System.Security.Principal;
@@ -172,9 +172,9 @@ namespace CSAuto
                 discordRPCButtons = DiscordRPCButtonSerializer.Deserialize();
                 Application.Current.Exit += Current_Exit;
                 // Try to encode my own steamid to see if its correct
-                if (CSGOFriendCode.Encode("76561198341800115") != "S4N2P-NZFJ")
+                if (CSFriendCode.Encode("76561198341800115") != "S4N2P-NZFJ")
                     throw new Exception("FriendCode Error");
-                new Thread(() => { CSGOMap.LoadMapIcons(); }).Start();
+                new Thread(() => { CSMap.LoadMapIcons(); }).Start();
                 InitializeDiscordRPC();
                 RPCClient.Deinitialize();
                 CheckForDuplicates();
@@ -387,7 +387,7 @@ namespace CSAuto
                 {
                     inLobby = false;
                     Log.WriteLine($"|MainApp.cs| Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
-                    currentMapIcon = CSGOMap.GetMapIcon(gameState.Match.Map);
+                    currentMapIcon = CSMap.GetMapIcon(gameState.Match.Map);
                     if (Properties.Settings.Default.mapNotification)
                         SendMessageToClients(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode), command: Commands.LoadedOnMap);
                     if (DXGIcapture.Enabled)
@@ -517,7 +517,7 @@ namespace CSAuto
             if (gameState.Player != null)
             {
                 return original
-                    .Replace("{FriendCode}", CSGOFriendCode.Encode(gameState.MySteamID))
+                    .Replace("{FriendCode}", CSFriendCode.Encode(gameState.MySteamID))
                     .Replace("{Gamemode}", gameState.Match.Mode.ToString())
                     .Replace("{Map}", gameState.Match.Map)
                     .Replace("{TeamScore}", gameState.Player.Team == Team.CT ? gameState.Match.CTScore.ToString() : gameState.Match.TScore.ToString())

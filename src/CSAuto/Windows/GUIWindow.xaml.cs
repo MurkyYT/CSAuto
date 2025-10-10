@@ -5,7 +5,7 @@ using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
 using Microsoft.Win32;
 using Murky.Utils;
-using Murky.Utils.CSGO;
+using Murky.Utils.CS;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -139,117 +139,6 @@ namespace CSAuto
             GameState.Dispose();
             Close();
             NativeMethods.OptimizeMemory();
-        }
-        void ParseGameState(string JSON)
-        {
-            try
-            {
-                GameState gs = new GameState(JSON);
-                Log.WriteLine("-----------------------------");
-                foreach (PropertyInfo pi in gs.GetType().GetProperties())
-                {
-                    Log.WriteLine(
-                        string.Format("{0} | {1}",
-                                pi.Name,
-                                pi.GetValue(gs, null)
-                            )
-                    );
-                    Type type = pi.PropertyType;
-                    switch (type.ToString())
-                    {
-                        case "Murky.Utils.CSGO.Player":
-                            ParsePlayerGSI(gs, pi);
-                            break;
-                        case "Murky.Utils.CSGO.Match":
-                            ParseMatchGSI(gs, pi);
-                            break;
-                        case "Murky.Utils.CSGO.Round":
-                            ParseRoundGSI(gs, pi);
-                            break;
-                    }
-                    Log.WriteLine("-----------------------------");
-                }
-            }
-            catch
-            {
-                Log.WriteLine("There was an error while parsing the GSI file, check if the file is correct");
-            }
-        }
-
-        private static void ParseRoundGSI(GameState gs, PropertyInfo pi)
-        {
-            foreach (PropertyInfo pi2 in pi.PropertyType.GetProperties())
-            {
-                Log.WriteLine(
-                    string.Format("{0} | {1}",
-                            pi2.Name,
-                            pi2.GetValue(TypeConvertor.ConvertPropertyInfoToOriginalType<Round>(pi, gs), null)
-                        )
-                );
-            }
-        }
-
-        private static void ParseMatchGSI(GameState gs, PropertyInfo pi)
-        {
-            foreach (PropertyInfo pi2 in pi.PropertyType.GetProperties())
-            {
-                Log.WriteLine(
-                    string.Format("{0} | {1}",
-                            pi2.Name,
-                            pi2.GetValue(TypeConvertor.ConvertPropertyInfoToOriginalType<Match>(pi, gs), null)
-                        )
-                );
-            }
-        }
-
-        private static void ParsePlayerGSI(GameState gs, PropertyInfo pi)
-        {
-            Player player = TypeConvertor.ConvertPropertyInfoToOriginalType<Player>(pi, gs);
-            foreach (PropertyInfo pi2 in pi.PropertyType.GetProperties())
-            {
-                Log.WriteLine(
-                    string.Format("{0} | {1}",
-                            pi2.Name,
-                            pi2.GetValue(player, null)
-                        )
-                );
-                Type type = pi2.PropertyType;
-                switch (type.ToString())
-                {
-                    case "Murky.Utils.CSGO.Weapon[]":
-                        ParseWeaponsGSI(player);
-                        break;
-                }
-            }   
-        }
-        private static void ParseWeaponsGSI(Player player)
-        {
-            foreach (Weapon wep in player.Weapons)
-            {
-                foreach (PropertyInfo pi3 in wep.GetType().GetProperties())
-                {
-                    Log.WriteLine(
-                        string.Format("{0} | {1}",
-                                pi3.Name,
-                                pi3.GetValue(wep, null)
-                            )
-                    );
-                }
-                Log.WriteLine("-----------------------------");
-            }
-        }
-
-        private void OpenFile_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "txt files (*.txt)|*.txt",
-                DefaultExt = "txt"
-            };
-            if ((bool)openFileDialog.ShowDialog())
-            {
-                ParseGameState(File.ReadAllText(openFileDialog.FileName));
-            }
         }
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)

@@ -7,13 +7,13 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Murky.Utils.CSGO
+namespace Murky.Utils.CS
 {
-    public static class CSGOMap
+    public static class CSMap
     {
         static readonly Dictionary<string, string> MapIcons = new Dictionary<string, string>();
         readonly static WebClient client = new WebClient();
-        static CSGOMap()
+        static CSMap()
         {
             client.Proxy = null;
             client.Headers.Add(HttpRequestHeader.Host, "developer.valvesoftware.com");

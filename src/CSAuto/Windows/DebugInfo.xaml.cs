@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using Murky.Utils;
-using Murky.Utils.CSGO;
+using Murky.Utils.CS;
 using System;
 using System.IO;
 using System.Windows;
@@ -39,7 +39,7 @@ namespace CSAuto
             string friendCode = "";
             try
             {
-                friendCode = CSGOFriendCode.Encode(id64.ToString());
+                friendCode = CSFriendCode.Encode(id64.ToString());
             }
             catch { }
 

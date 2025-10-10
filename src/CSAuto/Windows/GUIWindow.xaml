@@ -412,8 +412,7 @@
                     <DockPanel Grid.Row ="0" Grid.ColumnSpan="2">
                         <Menu DockPanel.Dock="Top">
                             <MenuItem Header="_File">
-                                <MenuItem x:Name="OpenFile" Header="_Open" Click="OpenFile_Click"/>
-                                <MenuItem x:Name="SaveFile" Header="_Save" Click="SaveFile_Click"/>
+                                <MenuItem x:Name="SaveFile" Header="_Save GSI Output" Click="SaveFile_Click"/>
                             </MenuItem>
                             <MenuItem Header="_Debug settings" Click="DebugSettings_Click"/>
                             <MenuItem Header="Debug _info" Click="DebugInfo_Click"/>
