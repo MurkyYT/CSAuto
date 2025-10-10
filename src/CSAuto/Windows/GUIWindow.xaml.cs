@@ -143,12 +143,12 @@ namespace CSAuto
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-            string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string strWorkPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string fileName = $"{DateTime.Now.Day}.{DateTime.Now.Month}.{DateTime.Now.Year} - {DateTime.Now:HH;mm;ss}.txt";
-            string path = strWorkPath + "/DEBUG/GSI_OUTPUT/"+ fileName;
+            string path = strWorkPath + "\\debug\\GSI\\"+ fileName;
             if (outputBox.Text != "None")
             {
-                Directory.CreateDirectory(strWorkPath + "/DEBUG/GSI_OUTPUT/");
+                Directory.CreateDirectory(strWorkPath + "\\debug\\GSI\\");
                 using (FileStream fs = File.Create(path))
                 {
                     Byte[] title = new UTF8Encoding(true).GetBytes(outputBox.Text);
@@ -194,17 +194,21 @@ namespace CSAuto
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    _ = ShowMessage(Languages.Strings.ResourceManager.GetString("title_error"), Languages.Strings.ResourceManager.GetString("error_loadchangelog"), MessageDialogStyle.Affirmative);
+                    _ = ShowMessage("title_error", "error_loadchangelog", MessageDialogStyle.Affirmative);
                 });
                 return;
             }
+
             // Well MdXaml cant use only 2 spaces to add indetation so replace "  " with "    "
             res = res.Replace("  ", "    ");
+
             Dispatcher.InvokeAsync(() => {
-                TextToFlowDocumentConverter converter = new TextToFlowDocumentConverter();
-                FlowDocument document = (FlowDocument)converter.Convert(res, null, null, null);
+                Markdown markdown = MarkdownStyleHelper.CreateStyledMarkdown();
+
+                FlowDocument document = markdown.Transform(res);
+
                 ChangeLogFlowDocument.Document = document;
-                });
+            });
         }
 
         private void LaunchGitHubSite(object sender, RoutedEventArgs e)
