@@ -111,8 +111,6 @@
       <DependentUpon>DebugSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="DiscordRPCButtonSerializer.cs" />
-    <Compile Include="Exceptions\WriteException.cs" />
-    <Compile Include="Extentions.cs" />
     <Compile Include="Utils\FileLoader.cs" />
     <Compile Include="Languages\AppLanguage.cs" />
     <Compile Include="Languages\Strings.Designer.cs">
@@ -126,7 +124,7 @@
       <DependentUpon>DebugSettings.settings</DependentUpon>
     </Compile>
     <Compile Include="Shared\NetworkTypes.cs" />
-    <Compile Include="StreamString.cs" />
+    <Compile Include="Shared\StreamString.cs" />
     <Compile Include="Utils\CS\ConDump.cs" />
     <Compile Include="Utils\DXGICapture.cs" />
     <Compile Include="Utils\Nager.TcpClient\TcpClient.cs" />
@@ -140,11 +138,9 @@
     <Compile Include="Utils\CS\GameStateListener.cs" />
     <Compile Include="Utils\CS\NetCon.cs" />
     <Compile Include="Utils\Github.cs" />
-    <Compile Include="Utils\InputBox.cs" />
     <Compile Include="Utils\RegistrySettings.cs" />
     <Compile Include="Utils\Music.cs" />
     <Compile Include="Utils\Telegram.cs" />
-    <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\Steam.cs" />
     <Compile Include="Utils\WinVersion.cs" />
     <Resource Include="Resources\RTLResource.xaml">

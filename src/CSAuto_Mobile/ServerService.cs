@@ -187,7 +187,7 @@ namespace CSAuto_Mobile
                             case Commands.GameState:
                                 if (MainActivity.Active)
                                 {
-                                    Murky.Utils.CSGO.GameState gameState = new Murky.Utils.CSGO.GameState(message);
+                                    Murky.Utils.CS.GameState gameState = new(message);
                                     MainActivity.Instance.RunOnUiThread(() =>
                                     {
                                         new Runnable(() =>
