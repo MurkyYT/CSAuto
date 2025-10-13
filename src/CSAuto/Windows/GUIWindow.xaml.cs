@@ -94,7 +94,7 @@ namespace CSAuto
             {
                 string translated = Languages.Strings.ResourceManager.GetString($"color_{color.ToLower()}");
                 ColorsComboBox.Items.Add(translated ?? color);
-                if(Properties.Settings.Default.currentColor == color)
+                if(Settings.Default.currentColor == color)
                     ColorsComboBox.SelectedIndex = ColorsComboBox.Items.Count - 1;
             }
 
@@ -228,7 +228,7 @@ namespace CSAuto
                     Tag = language.LanguageCode
                 };
 
-                if (language.LanguageCode == Properties.Settings.Default.currentLanguage) languagesComboBox.SelectedItem = item;
+                if (language.LanguageCode == Settings.Default.currentLanguage) languagesComboBox.SelectedItem = item;
                 if (!string.IsNullOrEmpty(language.OriginalName)) item.Content += $" ({language.OriginalName})";
 
                 languagesComboBox.Items.Add(item);
@@ -237,8 +237,8 @@ namespace CSAuto
             languagesComboBox.SelectionChanged += async (sender, args) =>
             {
                 ComboBoxItem item = languagesComboBox.SelectedItem as ComboBoxItem;
-                Properties.Settings.Default.currentLanguage = item.Tag.ToString();
-                Properties.Settings.Default.Save();
+                Settings.Default.currentLanguage = item.Tag.ToString();
+                Settings.Default.Save();
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(item.Tag.ToString());
                 languagesComboBox.SelectedItem = item;
                 await RestartMessageBox();
@@ -250,7 +250,7 @@ namespace CSAuto
             string executablePath = Process.GetCurrentProcess().MainModule.FileName;
             using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
             {
-                if (Properties.Settings.Default.runAtStartUp)
+                if (Settings.Default.runAtStartUp)
                 {
                     rk.SetValue(appname, executablePath + " "+main.current.Args);
                 }
@@ -284,21 +284,26 @@ namespace CSAuto
 
         private void ColorsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Properties.Settings.Default.currentColor == Colors[ColorsComboBox.SelectedIndex])
+            if (Settings.Default.currentColor == Colors[ColorsComboBox.SelectedIndex])
                 return;
-            Properties.Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
+            Settings.Default.currentColor = Colors[ColorsComboBox.SelectedIndex];
             UpdateTheme();
         }
 
         private void UpdateTheme()
         {
-            if (Properties.Settings.Default.darkTheme)
+            if (Settings.Default.darkTheme)
                 // Set the application theme to Dark + selected color
-                ThemeManager.Current.ChangeTheme(Application.Current, $"Dark.{Properties.Settings.Default.currentColor}");
+                ThemeManager.Current.ChangeTheme(Application.Current, $"Dark.{Settings.Default.currentColor}");
             else
                 // Set the application theme to Light + selected color
-                ThemeManager.Current.ChangeTheme(Application.Current, $"Light.{Properties.Settings.Default.currentColor}");
+                ThemeManager.Current.ChangeTheme(Application.Current, $"Light.{Settings.Default.currentColor}");
             main.InitializeContextMenu();
+
+            FlowDocument doc = new FlowDocument();
+            doc.Blocks.Add(new Paragraph(new Run("Loading...")));
+
+            ChangeLogFlowDocument.Document = doc;
         }
 
         private void CategoriesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -315,23 +320,23 @@ namespace CSAuto
 
         private void InGameDetailsText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Properties.Settings.Default.inGameDetails = InGameDetailsText.Text;
+            Settings.Default.inGameDetails = InGameDetailsText.Text;
             UpdateDiscordRPCResult(false);
         }
         private void InGameStateText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Properties.Settings.Default.inGameState = InGameStateText.Text;
+            Settings.Default.inGameState = InGameStateText.Text;
             UpdateDiscordRPCResult(false);
         }
         private void LobbyDetailsText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Properties.Settings.Default.lobbyDetails = LobbyDetailsText.Text;
+            Settings.Default.lobbyDetails = LobbyDetailsText.Text;
             UpdateDiscordRPCResult(true);
         }
 
         private void LobbyStateText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Properties.Settings.Default.lobbyState = LobbyStateText.Text;
+            Settings.Default.lobbyState = LobbyStateText.Text;
             UpdateDiscordRPCResult(true);
         }
         private void UpdateDiscordRPCResult(bool lobby)
@@ -340,13 +345,13 @@ namespace CSAuto
                 return;
             if (lobby) 
             {
-                DiscordRpcDetails.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.lobbyDetails, GameState),128);
-                DiscordRpcState.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.lobbyState, GameState),128);
+                DiscordRpcDetails.Text = main.LimitLength(main.FormatString(Settings.Default.lobbyDetails, GameState),128);
+                DiscordRpcState.Text = main.LimitLength(main.FormatString(Settings.Default.lobbyState, GameState),128);
             }
             else
             {
-                DiscordRpcDetails.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.inGameDetails, GameState),128);
-                DiscordRpcState.Text = main.LimitLength(main.FormatString(Properties.Settings.Default.inGameState, GameState),128);
+                DiscordRpcDetails.Text = main.LimitLength(main.FormatString(Settings.Default.inGameDetails, GameState),128);
+                DiscordRpcState.Text = main.LimitLength(main.FormatString(Settings.Default.inGameState, GameState),128);
             }
         }
 
@@ -591,13 +596,13 @@ namespace CSAuto
             Process.Start("https://github.com/MurkyYT/CSAuto/blob/master/Docs/FullChangelog.MD");
         }
 
-        private void debugBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void DebugBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             debugBox.ScrollToEnd();
         }
-        private void debugBox_Loaded(object sender, RoutedEventArgs e)
+        private void DebugBox_Loaded(object sender, RoutedEventArgs e)
         {
-            debugBox_TextChanged(sender, null);
+            DebugBox_TextChanged(sender, null);
         }
 
         private void DebugSettings_Click(object sender, RoutedEventArgs e)
