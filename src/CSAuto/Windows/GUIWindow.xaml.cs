@@ -121,7 +121,7 @@ namespace CSAuto
             Dispatcher.InvokeAsync(() =>
             {
                 outputBox.Text = data;
-                lastRecieveTime.Text = $"Last recieved data from GSI: {DateTime.Now:HH:mm:ss}";
+                lastRecieveTime.Text = $"Last recieved data from GSI: {DateTime.Now:HH:mm:ss.fff}";
             });
         }
         public void UpdateDebug(string data)

@@ -1,118 +1,183 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Murky.Utils.CS
 {
     public class GameStateListener
     {
         private readonly GameState _gameState;
-        private HttpListener _listener;
+        private TcpListener _listener;
         private readonly string GAMESTATE_PORT = "";
-        private bool _serverRunning = false;
-        private readonly AutoResetEvent _waitForConnection = new AutoResetEvent(false);
+        private volatile bool _serverRunning = false;
+        private Thread _listenerThread;
+
         public bool ServerRunning { get { return _serverRunning; } }
         public event EventHandler OnReceive;
+
         public GameStateListener(ref GameState gameState, string port)
         {
             _gameState = gameState;
             GAMESTATE_PORT = port;
         }
+
         public bool StartGSIServer()
         {
             if (_serverRunning)
                 return false;
 
-            _listener = new HttpListener();
-            _listener.Prefixes.Add("http://localhost:" + GAMESTATE_PORT + "/");
-            Thread ListenerThread = new Thread(new ThreadStart(Run));
             try
             {
+                int port = int.Parse(GAMESTATE_PORT);
+                _listener = new TcpListener(IPAddress.Loopback, port);
                 _listener.Start();
+
+                _serverRunning = true;
+                _listenerThread = new Thread(new ThreadStart(Run));
+                _listenerThread.Start();
+
+                Log.WriteLine($"TCP Listener started on port {port}");
+                return true;
             }
-            catch (HttpListenerException)
+            catch (Exception ex)
             {
+                Log.WriteLine($"Failed to start TCP listener: {ex.Message}");
                 return false;
             }
-            _serverRunning = true;
-            ListenerThread.Start();
-            return true;
         }
 
         /// <summary>
-        /// Stops listening for HTTP POST requests
+        /// Stops listening for TCP connections
         /// </summary>
         public void StopGSIServer()
         {
             if (!_serverRunning)
                 return;
+
             _serverRunning = false;
-            _listener.Close();
-            (_listener as IDisposable).Dispose();
+
+            try
+            {
+                _listener?.Stop();
+            }
+            catch { }
+
+            if (_listenerThread != null && _listenerThread.IsAlive)
+            {
+                _listenerThread.Join(TimeSpan.FromSeconds(5));
+            }
         }
 
         private void Run()
         {
             while (_serverRunning)
             {
-                _listener.BeginGetContext(ReceiveGameState, _listener);
-                _waitForConnection.WaitOne();
-                _waitForConnection.Reset();
-            }
-            try
-            {
-                _listener.Stop();
-            }
-            catch (ObjectDisposedException)
-            { /* _listener was already disposed, do nothing */ }
-        }
-        private void ReceiveGameState(IAsyncResult result)
-        {
-            HttpListenerContext context;
-            try
-            {
-                context = _listener.EndGetContext(result);
-            }
-            catch (ObjectDisposedException)
-            {
-                // Listener was Closed due to call of Stop();
-                return;
-            }
-            catch (HttpListenerException)
-            {
-                return;
-            }
-            finally
-            {
-                _waitForConnection.Set();
-            }
-            try
-            {
-                HttpListenerRequest request = context.Request;
-                string JSON;
-
-                using (Stream inputStream = request.InputStream)
+                try
                 {
-                    using (StreamReader sr = new StreamReader(inputStream))
+                    if (_listener.Pending())
                     {
-                        JSON = sr.ReadToEnd();
+                        TcpClient client = _listener.AcceptTcpClient();
+                        Thread clientThread = new Thread(() => HandleClient(client));
+                        clientThread.IsBackground = true;
+                        clientThread.Start();
+                    }
+                    else
+                    {
+                        Thread.Sleep(100);
                     }
                 }
-                using (HttpListenerResponse response = context.Response)
+                catch (SocketException ex)
                 {
-                    response.StatusCode = (int)HttpStatusCode.OK;
-                    response.StatusDescription = "OK";
-                    response.Close();
+                    if (_serverRunning)
+                    {
+                        Log.WriteLine($"Socket error: {ex.Message}");
+                    }
+                    break;
                 }
-                _gameState.UpdateJson(JSON);
-                OnReceive?.Invoke(this, new EventArgs());
+                catch (Exception ex)
+                {
+                    if (_serverRunning)
+                    {
+                        Log.WriteLine($"Error in listener loop: {ex.Message}");
+                    }
+                    break;
+                }
             }
-            catch { }
+        }
+
+        private void HandleClient(TcpClient client)
+        {
+            try
+            {
+                using (client)
+                using (NetworkStream stream = client.GetStream())
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        byte[] chunk = new byte[1024];
+                        int bytesRead;
+
+                        stream.ReadTimeout = 5000;
+
+                        while (stream.DataAvailable)
+                        {
+                            bytesRead = stream.Read(chunk, 0, chunk.Length);
+                            if (bytesRead > 0)
+                            {
+                                ms.Write(chunk, 0, bytesRead);
+                            }
+                        }
+
+                        string receivedData = Encoding.UTF8.GetString(ms.ToArray());
+
+                        if (!string.IsNullOrEmpty(receivedData))
+                        {
+                            string json = ExtractJson(receivedData);
+
+                            if (!string.IsNullOrEmpty(json))
+                            {
+                                _gameState.UpdateJson(json);
+                                OnReceive?.Invoke(this, new EventArgs());
+                            }
+
+                            string response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
+                            byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+                            stream.Write(responseBytes, 0, responseBytes.Length);
+                            stream.Flush();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine($"Error handling GSI client: {ex.Message}");
+            }
+        }
+
+        private string ExtractJson(string rawData)
+        {
+            try
+            {
+                int jsonStart = rawData.IndexOf("\r\n\r\n");
+                if (jsonStart >= 0)
+                {
+                    return rawData.Substring(jsonStart + 4).Trim();
+                }
+
+                if (rawData.TrimStart().StartsWith("{"))
+                {
+                    return rawData.Trim();
+                }
+
+                return rawData;
+            }
+            catch
+            {
+                return rawData;
+            }
         }
     }
 }
