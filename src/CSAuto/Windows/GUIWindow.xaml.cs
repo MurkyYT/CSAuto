@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using Murky.Utils;
 using Murky.Utils.CS;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
@@ -21,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace CSAuto
 {
@@ -199,15 +201,9 @@ namespace CSAuto
                 return;
             }
 
-            // Well MdXaml cant use only 2 spaces to add indetation so replace "  " with "    "
-            res = res.Replace("  ", "    ");
-
-            Dispatcher.InvokeAsync(() => {
-                Markdown markdown = MarkdownStyleHelper.CreateStyledMarkdown();
-
-                FlowDocument document = markdown.Transform(res);
-
-                ChangeLogFlowDocument.Document = document;
+            Dispatcher.InvokeAsync(async () =>
+            {
+                ChangeLogFlowDocument.Document = await MarkdownHelper.GetDocumentAsync(res);
             });
         }
 

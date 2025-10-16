@@ -1,18 +1,101 @@
-﻿using System;
+﻿using MdXaml;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using MdXaml;
+using System.Windows.Threading;
 
 namespace CSAuto
 {
-    public static class MarkdownStyleHelper
+    public static class MarkdownHelper
     {
         /// <summary>
         /// Creates a Markdown instance with GitHub-style formatting using MahApps colors
         /// </summary>
+        public static async Task<FlowDocument> GetDocumentAsync(string text)
+        {
+            // Well MdXaml cant use only 2 spaces to add indetation so replace "  " with "    "
+            text = text.Replace("  ", "    ");
+
+            var codeLinksPattern = @"\[`+([^`\]]+)`+\]\(([^)]+)\)";
+            var codeLinks = new HashSet<string>();
+
+            var matches = System.Text.RegularExpressions.Regex.Matches(text, codeLinksPattern);
+
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                codeLinks.Add(match.Groups[1].Value);
+            }
+
+            text = System.Text.RegularExpressions.Regex.Replace(
+                text,
+                codeLinksPattern,
+                "[$1]($2)"
+            );
+
+            var document = await Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+            {
+                var markdown = CreateStyledMarkdown();
+                var doc = markdown.Transform(text);
+                ApplyCodeStyleToSpecificLinks(doc, codeLinks);
+                return doc;
+            });
+
+            return document;
+        }
+
+        static void ApplyCodeStyleToSpecificLinks(FlowDocument document, HashSet<string> codeLinks)
+        {
+            FindAndStyleHyperlinks(document.Blocks, codeLinks);
+        }
+
+        static void FindAndStyleHyperlinks(IEnumerable<Block> blocks, HashSet<string> codeLinks)
+        {
+            foreach (var block in blocks)
+            {
+                if (block is Paragraph paragraph)
+                {
+                    StyleHyperlinksInInlines(paragraph.Inlines, codeLinks);
+                }
+                else if (block is Section section)
+                {
+                    FindAndStyleHyperlinks(section.Blocks, codeLinks);
+                }
+                else if (block is List list)
+                {
+                    foreach (var listItem in list.ListItems)
+                    {
+                        FindAndStyleHyperlinks(listItem.Blocks, codeLinks);
+                    }
+                }
+            }
+        }
+
+        static void StyleHyperlinksInInlines(InlineCollection inlines, HashSet<string> codeLinks)
+        {
+            foreach (var inline in inlines)
+            {
+                if (inline is Hyperlink hyperlink)
+                {
+                    var text = new TextRange(hyperlink.ContentStart, hyperlink.ContentEnd).Text;
+
+                    if (codeLinks.Contains(text))
+                    {
+                        hyperlink.FontFamily = new FontFamily("Consolas");
+                        hyperlink.FontSize = 13.6;
+                        hyperlink.Background = (Brush)Application.Current.Resources["MahApps.Brushes.Gray8"];
+                    }
+                }
+                else if (inline is Span span)
+                {
+                    StyleHyperlinksInInlines(span.Inlines, codeLinks);
+                }
+            }
+        }
         public static Markdown CreateStyledMarkdown()
         {
             var markdown = new Markdown

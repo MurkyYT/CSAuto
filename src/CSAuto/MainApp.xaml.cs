@@ -40,9 +40,9 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.2.2";
+        public const string VER = "2.2.3";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "";
+        const string DEBUG_REVISION = "1";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -90,6 +90,7 @@ namespace CSAuto
         private string localIp;
         private bool serverRunning = false;
         private DateTime startTimeStamp = DateTime.MinValue;
+        private long lastRpcUpdate = -1;
         #endregion
         #region Members
         RECT csResolution = new RECT();
@@ -355,6 +356,10 @@ namespace CSAuto
                     RPCClient.Deinitialize();
                     Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
+
+                if (lastRpcUpdate == -1)
+                    lastRpcUpdate = gameState.Timestamp;
+
                 Activity? activity = gameState.Player.CurrentActivity;
                 Phase? currentMatchState = gameState.Match.Phase;
                 Phase? currentRoundState = gameState.Round.Phase;
@@ -797,70 +802,21 @@ namespace CSAuto
         {
             try
             {
-                if (csRunning && inGame)
+                if (lastRpcUpdate + 15 <= gameState.Timestamp)
                 {
-                    RPCClient.SetPresence(new RichPresence()
-                    {
-                        Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
-                        State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
-                        Party = new Party() { ID = "", Size = 0, Max = 0 },
-                        Assets = new Assets()
-                        {
-                            LargeImageKey = currentMapIcon ?? "cs2_icon",
-                            LargeImageText = gameState.Match.Map,
-                            SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team.ToString().ToLower(),
-                            SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
-                        },
-                        Timestamps = new Timestamps()
-                        {
-                            Start = startTimeStamp,
-                            End = null
-                        },
-                        Buttons = GetDiscordRPCButtons()
-                    });
-                }
-                else if (csRunning && !inGame)
-                {
-                    if (Properties.Settings.Default.enableLobbyCount)
-                    {
-                        string steamworksRes = GetLobbyInfoFromSteamworks();
-                        string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
-                        string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
-                        string partysize = steamworksRes.Split('/')[0];
-                        RPCClient.SetPresence(new RichPresence()
-                        {
-                            Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                            State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
-                            Party = new Party()
-                            { ID = lobbyid == "0" ? "0" : lobbyid, Max = int.Parse(partyMax), Size = int.Parse(partysize) },
-                            Assets = new Assets()
-                            {
-                                LargeImageKey = "cs2_icon",
-                                LargeImageText = "Menu",
-                                SmallImageKey = null,
-                                SmallImageText = null
-                            },
-                            Timestamps = new Timestamps()
-                            {
-                                Start = startTimeStamp,
-                                End = null
-                            },
-                            Buttons = GetDiscordRPCButtons()
-                        });
-                    }
-                    else
+                    if (csRunning && inGame)
                     {
                         RPCClient.SetPresence(new RichPresence()
                         {
-                            Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                            State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
+                            Details = LimitLength(FormatString(Properties.Settings.Default.inGameDetails, gameState), 128),
+                            State = LimitLength(FormatString(Properties.Settings.Default.inGameState, gameState), 128),
                             Party = new Party() { ID = "", Size = 0, Max = 0 },
                             Assets = new Assets()
                             {
-                                LargeImageKey = "cs2_icon",
-                                LargeImageText = "Menu",
-                                SmallImageKey = null,
-                                SmallImageText = null
+                                LargeImageKey = currentMapIcon ?? "cs2_icon",
+                                LargeImageText = gameState.Match.Map,
+                                SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team.ToString().ToLower(),
+                                SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
                             },
                             Timestamps = new Timestamps()
                             {
@@ -870,11 +826,65 @@ namespace CSAuto
                             Buttons = GetDiscordRPCButtons()
                         });
                     }
-                }
-                else if (RPCClient.IsInitialized && !csRunning)
-                {
-                    RPCClient.Deinitialize();
-                    Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
+                    else if (csRunning && !inGame)
+                    {
+                        if (Properties.Settings.Default.enableLobbyCount)
+                        {
+                            string steamworksRes = GetLobbyInfoFromSteamworks();
+                            string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
+                            string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
+                            string partysize = steamworksRes.Split('/')[0];
+                            RPCClient.SetPresence(new RichPresence()
+                            {
+                                Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                                State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
+                                Party = new Party()
+                                { ID = lobbyid == "0" ? "0" : lobbyid, Max = int.Parse(partyMax), Size = int.Parse(partysize) },
+                                Assets = new Assets()
+                                {
+                                    LargeImageKey = "cs2_icon",
+                                    LargeImageText = "Menu",
+                                    SmallImageKey = null,
+                                    SmallImageText = null
+                                },
+                                Timestamps = new Timestamps()
+                                {
+                                    Start = startTimeStamp,
+                                    End = null
+                                },
+                                Buttons = GetDiscordRPCButtons()
+                            });
+                        }
+                        else
+                        {
+                            RPCClient.SetPresence(new RichPresence()
+                            {
+                                Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                                State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
+                                Party = new Party() { ID = "", Size = 0, Max = 0 },
+                                Assets = new Assets()
+                                {
+                                    LargeImageKey = "cs2_icon",
+                                    LargeImageText = "Menu",
+                                    SmallImageKey = null,
+                                    SmallImageText = null
+                                },
+                                Timestamps = new Timestamps()
+                                {
+                                    Start = startTimeStamp,
+                                    End = null
+                                },
+                                Buttons = GetDiscordRPCButtons()
+                            });
+                        }
+                    }
+                    else if (RPCClient.IsInitialized && !csRunning)
+                    {
+                        RPCClient.Deinitialize();
+                        Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
+                    }
+
+                    lastRpcUpdate = gameState.Timestamp;
                 }
             }
             catch (NullReferenceException) { }
@@ -1112,6 +1122,7 @@ namespace CSAuto
                 csProcess = null;
                 inLobby = false;
                 csRunning = false;
+                lastRpcUpdate = -1;
 
                 if (Properties.Settings.Default.autoCloseCSAuto)
                     Dispatcher.Invoke(() => { Application.Current.Shutdown(); });

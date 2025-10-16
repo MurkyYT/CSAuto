@@ -101,7 +101,7 @@
     </Compile>
     <Compile Include="AutoBuyMenu.cs" />
     <Compile Include="CompileInfo.cs" />
-    <Compile Include="MarkdownStyleHelper.cs" />
+    <Compile Include="MarkdownHelper.cs" />
     <Compile Include="Native\DisplayInfo.cs" />
     <Compile Include="Utils\CS\BindCommandSender.cs" />
     <Compile Include="Windows\DebugInfo.xaml.cs">
