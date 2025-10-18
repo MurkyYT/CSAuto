@@ -95,7 +95,7 @@ namespace Murky.Utils.CS
                             }
                             return result;
                         }
-                        catch { Log.WriteLine($"|CSGOMap.cs| Couldn't load official map icon for '{mapName}'"); }
+                        catch { Log.WriteLine($"|CSMap.cs| Couldn't load official map icon for '{mapName}'"); }
                     }
 
                     if(result == null) 

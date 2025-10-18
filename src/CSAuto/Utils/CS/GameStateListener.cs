@@ -39,12 +39,12 @@ namespace Murky.Utils.CS
                 _listenerThread = new Thread(new ThreadStart(Run));
                 _listenerThread.Start();
 
-                Log.WriteLine($"TCP Listener started on port {port}");
+                Log.WriteLine($"|GameStateListener.cs| TCP Listener started on port {port}");
                 return true;
             }
             catch (Exception ex)
             {
-                Log.WriteLine($"Failed to start TCP listener: {ex.Message}");
+                Log.WriteLine($"|GameStateListener.cs| Failed to start TCP listener: {ex.Message}");
                 return false;
             }
         }
@@ -93,7 +93,7 @@ namespace Murky.Utils.CS
                 {
                     if (_serverRunning)
                     {
-                        Log.WriteLine($"Socket error: {ex.Message}");
+                        Log.WriteLine($"|GameStateListener.cs| Socket error: {ex.Message}");
                     }
                     break;
                 }
@@ -101,7 +101,7 @@ namespace Murky.Utils.CS
                 {
                     if (_serverRunning)
                     {
-                        Log.WriteLine($"Error in listener loop: {ex.Message}");
+                        Log.WriteLine($"|GameStateListener.cs| Error in listener loop: {ex.Message}");
                     }
                     break;
                 }
@@ -137,23 +137,23 @@ namespace Murky.Utils.CS
                         {
                             string json = ExtractJson(receivedData);
 
+                            string response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
+                            byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+                            stream.Write(responseBytes, 0, responseBytes.Length);
+                            stream.Flush();
+
                             if (!string.IsNullOrEmpty(json))
                             {
                                 _gameState.UpdateJson(json);
                                 OnReceive?.Invoke(this, new EventArgs());
                             }
-
-                            string response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
-                            byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-                            stream.Write(responseBytes, 0, responseBytes.Length);
-                            stream.Flush();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.WriteLine($"Error handling GSI client: {ex.Message}");
+                Log.WriteLine($"|GameStateListener.cs| Error handling GSI client: {ex.Message}");
             }
         }
 
