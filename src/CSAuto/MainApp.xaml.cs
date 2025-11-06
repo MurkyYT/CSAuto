@@ -68,6 +68,7 @@ namespace CSAuto
         public List<DiscordRPCButton> discordRPCButtons;
         public Color[] BUTTON_COLORS;
         public readonly App current = Application.Current as App;
+        public readonly DXGICapture DXGIcapture = new DXGICapture();
         public const string ONLINE_BRANCH_NAME = "master";
         public string integrationPath = null;
         public string bindCfgPath = null;
@@ -79,8 +80,6 @@ namespace CSAuto
         readonly DispatcherTimer acceptButtonTimer = new DispatcherTimer();
         readonly GameState gameState = new GameState(null);
         readonly GameStateListener GameStateListener;
-        // Looks like the old way is working now? 20/06/24: Can confirm, indeed works!
-        readonly DXGICapture DXGIcapture = new DXGICapture();
         #endregion
         #region Privates
         private DiscordRpcClient RPCClient;

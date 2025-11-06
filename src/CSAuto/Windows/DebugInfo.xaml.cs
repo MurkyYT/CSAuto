@@ -52,6 +52,70 @@ namespace CSAuto
                 activeButtonColor = $"({main.BUTTON_COLORS[1].R},{main.BUTTON_COLORS[1].G},{main.BUTTON_COLORS[1].B})";
             }
 
+            string dxgiInfo = "";
+
+            if (!Properties.Settings.Default.oldScreenCaptureWay)
+            {
+                bool wasEnabled = main.DXGIcapture.Enabled;
+
+                dxgiInfo += "\n====DXGI info====\n";
+
+                if (!wasEnabled)
+                    main.DXGIcapture.Init();
+
+                int adapterCount = main.DXGIcapture.AdaptersCount;
+                for (int i = 0; i < adapterCount; i++)
+                {
+                    try
+                    {
+                        var desc = main.DXGIcapture.GetAdapterDescription(i);
+                        dxgiInfo += $"Adapter {i}:\n";
+                        dxgiInfo += $"  Description: {desc.Description}\n";
+                        dxgiInfo += $"  VendorId: 0x{desc.VendorId:X}\n";
+                        dxgiInfo += $"  DeviceId: 0x{desc.DeviceId:X}\n";
+                        dxgiInfo += $"  SubSysId: 0x{desc.SubSysId:X}\n";
+                        dxgiInfo += $"  Revision: {desc.Revision}\n";
+
+                        double dedicatedVideoGB = (double)desc.DedicatedVideoMemory / (1024 * 1024 * 1024);
+                        double dedicatedSystemGB = (double)desc.DedicatedSystemMemory / (1024 * 1024 * 1024);
+                        double sharedSystemGB = (double)desc.SharedSystemMemory / (1024 * 1024 * 1024);
+
+                        dxgiInfo += $"  DedicatedVideoMemory: {dedicatedVideoGB:F2} GB\n";
+                        dxgiInfo += $"  DedicatedSystemMemory: {dedicatedSystemGB:F2} GB\n";
+                        dxgiInfo += $"  SharedSystemMemory: {sharedSystemGB:F2} GB\n";
+
+                        dxgiInfo += $"  Flags: 0x{desc.Flags:X}\n";
+                    }
+                    catch (Exception ex)
+                    {
+                        dxgiInfo += $"Adapter {i}: Failed to get description: {ex.Message}\n";
+                    }
+                }
+
+                try
+                {
+                    int outputCount = main.DXGIcapture.OutputsCount;
+                    for (int i = 0; i < outputCount; i++)
+                    {
+                        var outputDesc = main.DXGIcapture.GetOutputDescription(i);
+                        dxgiInfo += $"\nOutput {i}:\n";
+                        dxgiInfo += $"  DeviceName: {outputDesc.DeviceName}\n";
+                        dxgiInfo += $"  DesktopCoordinates: Left={outputDesc.DesktopCoordinates.Left}, Top={outputDesc.DesktopCoordinates.Top}, Right={outputDesc.DesktopCoordinates.Right}, Bottom={outputDesc.DesktopCoordinates.Bottom}\n";
+                        dxgiInfo += $"  AttachedToDesktop: {outputDesc.AttachedToDesktop}\n";
+                        dxgiInfo += $"  Rotation: {outputDesc.Rotation}\n";
+                        dxgiInfo += $"  Monitor Handle: {outputDesc.Monitor}\n";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    dxgiInfo += $"Failed to get outputs: {ex.Message}\n";
+                }
+
+                if (!wasEnabled)
+                    main.DXGIcapture.DeInit();
+            }
+
+
             TextBlock.Text = $"CSAuto Version {MainApp.FULL_VER}\nBuilt at: {CompileInfo.Date} {CompileInfo.Time}\n"
                 + $"\n====App info====\n"
                 + $"IsPortable: {File.Exists(Log.WorkPath + "\\resource\\.portable")}\n"
@@ -60,6 +124,7 @@ namespace CSAuto
                 + $"Active Button Color: {activeButtonColor}\n"
                 + $"Regular Button Color: {regularButtonColor}\n"
                 + $"Settings Path: {DiscordRPCButtonSerializer.Path}\n"
+                + dxgiInfo
                 + $"\n====Steam info====\n"
                 + $"Steam Path: \"{Steam.GetSteamPath()}\"\n"
                 + $"SteamID3: {id3}\n"
