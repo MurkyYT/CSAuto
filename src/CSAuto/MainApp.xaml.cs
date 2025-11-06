@@ -765,7 +765,7 @@ namespace CSAuto
                                 Directory.CreateDirectory(path);
                                 File.Copy(Log.WorkPath + "\\bin\\updater.exe", path + "\\updater.exe");
                                 Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} {(guiWindow == null ? "" : "--show")} --restart\" .portable");
-                                Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+                                Process.GetCurrentProcess().Kill();
                             }
                             catch
                             {
@@ -1619,7 +1619,7 @@ namespace CSAuto
                                 Directory.CreateDirectory(path);
                                 File.Copy(Log.WorkPath + "\\bin\\updater.exe", path + "\\updater.exe");
                                 Process.Start(path + "\\updater.exe", $"{Log.WorkPath} https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip CSAuto.exe \"{current.Args} {(guiWindow == null ? "" : "--show")} --restart\" .portable");
-                                Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+                                Process.GetCurrentProcess().Kill();
                             }
                             catch
                             {
