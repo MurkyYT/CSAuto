@@ -252,8 +252,11 @@ namespace CSAuto
                 }
             }
             catch (Exception ex) { Log.WriteLine($"|MainApp.cs| Error ocurred in server thread\n\t'{ex}'"); serverThread = null; server?.Stop(); server = null; }
-            server?.Stop();
-            server = null;
+            lock (csProcessLock)
+            {
+                server?.Stop();
+                server = null;
+            }
             Log.WriteLine("|MainApp.cs| Stopped server");
         }
         private void DeleteClient(TcpClient client)
@@ -954,9 +957,9 @@ namespace CSAuto
         {
             try
             {
-                if (!csRunning)
+                lock (csProcessLock)
                 {
-                    lock (csProcessLock)
+                    if (!csRunning)
                     {
                         csProcess = NativeMethods.GetProccesByWindowName(GAME_WINDOW_NAME, out bool suc, GAME_CLASS_NAME, GAME_PROCCES_NAME);
                         if (suc)
@@ -991,10 +994,7 @@ namespace CSAuto
                             NativeMethods.OptimizeMemory();
                         }
                     }
-                }
-                else
-                {
-                    lock (csProcessLock)
+                    else
                     {
                         csActive = NativeMethods.IsForegroundProcess((uint)csProcess.Id);
                         if (csActive)
@@ -1236,8 +1236,8 @@ namespace CSAuto
                 DXGIcapture.Init();
                 Log.WriteLine("|MainApp.cs| Init DXGI Capture");
             }
-            if ((DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay && inLobby == true) ||
-                (inLobby == true && Properties.Settings.Default.oldScreenCaptureWay))
+
+            if (inLobby == true && (DXGIcapture.Enabled || Properties.Settings.Default.oldScreenCaptureWay))
             {
                 using (Bitmap bitmap = GetBitmap())
                 {
@@ -1248,8 +1248,8 @@ namespace CSAuto
                     {
                         try
                         {
-                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES");
-                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\DEBUG\\FRAMES\\Frame{frame++}.jpeg", ImageFormat.Jpeg);
+                            Directory.CreateDirectory($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\debug\\frames");
+                            bitmap.Save($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\debug\\frames\\frame{frame++}.jpeg", ImageFormat.Jpeg);
                         }
                         catch { }
                     }
@@ -1313,83 +1313,85 @@ namespace CSAuto
                     }
                 }
             }
-            else if (inLobby == true && !DXGIcapture.Enabled && Properties.Settings.Default.oldScreenCaptureWay)
-            {
-                DXGIcapture.Init();
-                Log.WriteLine("|MainApp.cs| Init DXGI Capture");
-            }
         }
 
         private Bitmap GetBitmap()
         {
-            IntPtr _handle = IntPtr.Zero;
-
-            if (!Properties.Settings.Default.oldScreenCaptureWay)
-            {
-                _handle = DXGIcapture.GetCapture();
-                if (_handle == IntPtr.Zero)
-                {
-                    DXGIcapture.DeInit();
-                    Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
-                    DXGIcapture.Init();
-                    Log.WriteLine("|MainApp.cs| Init DXGI Capture");
-                    return null;
-                }
-            }
-
-            Bitmap bitmap;
             if (Properties.Settings.Default.oldScreenCaptureWay)
             {
-                bitmap = new Bitmap(csResolution.Width, csResolution.Height);
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    g.CopyFromScreen(new Point(
-                        csResolution.Left,
-                        csResolution.Top),
-                        Point.Empty,
-                        new System.Drawing.Size(csResolution.Width, csResolution.Height));
-                }
+                return CaptureUsingOldMethod();
             }
             else
             {
-                try
-                {
-                    Bitmap origBitmap = Image.FromHbitmap(_handle);
-                    int realX = Math.Max(0, (int)(csResolution.X - SystemParameters.VirtualScreenLeft));
-                    int realY = Math.Max(0, (int)(csResolution.Y - SystemParameters.VirtualScreenTop));
+                return CaptureUsingDXGI();
+            }
+        }
 
-                    int diffX = realX - (int)(csResolution.X - SystemParameters.VirtualScreenLeft);
-                    int diffY = realY - (int)(csResolution.Y - SystemParameters.VirtualScreenTop);
+        private Bitmap CaptureUsingOldMethod()
+        {
+            Bitmap bitmap = new Bitmap(csResolution.Width, csResolution.Height);
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.CopyFromScreen(
+                    new Point(csResolution.Left, csResolution.Top),
+                    Point.Empty,
+                    new System.Drawing.Size(csResolution.Width, csResolution.Height));
+            }
+            return bitmap;
+        }
 
-                    int sourceWidth = csResolution.Width - diffX;
-                    int sourceHeight = csResolution.Height - diffY;
+        private Bitmap CaptureUsingDXGI()
+        {
+            IntPtr handle = DXGIcapture.GetCapture();
 
-                    bitmap = new Bitmap(csResolution.Width, csResolution.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                    using (Graphics g = Graphics.FromImage(bitmap))
-                    {
-                        g.Clear(Color.Transparent);
-
-                        g.DrawImage(origBitmap,
-                            new Rectangle(diffX, diffY, sourceWidth, sourceHeight),
-                            new Rectangle(realX, realY, sourceWidth, sourceHeight),
-                            GraphicsUnit.Pixel);
-                    }
-
-                    NativeMethods.DeleteObject(_handle);
-                    origBitmap.Dispose();
-                }
-                catch (OutOfMemoryException)
-                {
-                    DXGIcapture.DeInit();
-                    Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
-                    DXGIcapture.Init();
-                    Log.WriteLine("|MainApp.cs| Init DXGI Capture");
-                    return null;
-                }
+            if (handle == IntPtr.Zero)
+            {
+                ReinitializeDXGI();
+                return null;
             }
 
-            return bitmap;
+            try
+            {
+                Bitmap origBitmap = Image.FromHbitmap(handle);
+
+                int realX = Math.Max(0, (int)(csResolution.X - SystemParameters.VirtualScreenLeft));
+                int realY = Math.Max(0, (int)(csResolution.Y - SystemParameters.VirtualScreenTop));
+                int diffX = realX - (int)(csResolution.X - SystemParameters.VirtualScreenLeft);
+                int diffY = realY - (int)(csResolution.Y - SystemParameters.VirtualScreenTop);
+                int sourceWidth = csResolution.Width - diffX;
+                int sourceHeight = csResolution.Height - diffY;
+
+                Bitmap bitmap = new Bitmap(csResolution.Width, csResolution.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.Clear(Color.Transparent);
+                    g.DrawImage(origBitmap,
+                        new Rectangle(diffX, diffY, sourceWidth, sourceHeight),
+                        new Rectangle(realX, realY, sourceWidth, sourceHeight),
+                        GraphicsUnit.Pixel);
+                }
+                origBitmap.Dispose();
+
+                return bitmap;
+            }
+            catch (OutOfMemoryException)
+            {
+                ReinitializeDXGI();
+                return null;
+            }
+            finally
+            {
+                if (handle != IntPtr.Zero)
+                    NativeMethods.DeleteObject(handle);
+            }
+        }
+
+        private void ReinitializeDXGI()
+        {
+            DXGIcapture.DeInit();
+            Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
+            DXGIcapture.Init();
+            Log.WriteLine("|MainApp.cs| Init DXGI Capture");
         }
 
         private void Notifyicon_RightMouseButtonClick(object sender, NotifyIconLibrary.Events.MouseLocationEventArgs e)

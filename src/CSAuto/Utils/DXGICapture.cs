@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Web.UI.WebControls;
 
 namespace Murky.Utils
 {
@@ -15,6 +16,9 @@ namespace Murky.Utils
         private static extern IntPtr DXGI_CaptureScreen(int index);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool DXGI_IsEnabled();
+
+        [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void DXGI_SetTimeout(uint ms);
         public bool Enabled
         {
             get
@@ -39,6 +43,16 @@ namespace Murky.Utils
                 lock (this)
                 {
                     DXGI_InitCapture();
+                }
+            }
+        }
+        public void SetTimeout(uint ms)
+        {
+            if (!Enabled)
+            {
+                lock (this)
+                {
+                    DXGI_SetTimeout(ms);
                 }
             }
         }
