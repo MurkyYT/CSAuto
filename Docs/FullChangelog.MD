@@ -1,3 +1,12 @@
+### Version 2.2.3 changelog
+- Added 15 seconds check in discord activity update, shouldn't spam discord now
+- Made changelog look and feel better
+- Some DXGI capture improvements
+- Added DXGI debug info
+- Update fixes
+
+---
+
 ### Version 2.2.2 changelog
 - Added translations to colors
 - Made reading files in ```Steam.cs``` use ```FileShare.ReadWrite```, that way it can read the ```SteamID3``` from the log most of the times
