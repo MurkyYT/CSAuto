@@ -1,3 +1,20 @@
+### Version 2.2.2 changelog
+- Added translations to colors
+- Made reading files in ```Steam.cs``` use ```FileShare.ReadWrite```, that way it can read the ```SteamID3``` from the log most of the times
+- Added original language name alongside translated name
+- Changed settings of [```Game State Integration```](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration) in order to get information about the game faster and more reliably
+- Updated third party libraries
+- Fixed broken Windows 11 Rounded corners when window is maximized
+- Switching to CS window only if it is not foreground already
+- Saving settings on every change
+- Updated [DXGICapture library](https://github.com/MurkyYT/DXGICapture) to latest version
+- Fixed DXGICapture not being able to capture game window when not on primary screen
+- Fixed logging crashes
+- Changelog improvements 
+- Latest CS2 Update broke something with GSI, fixed with current version
+
+---
+
 ### Version 2.2.1 changelog
 - Fixed logging crash
 - Fixed auto buy not rebuying armor
