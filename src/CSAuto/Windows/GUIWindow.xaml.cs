@@ -577,7 +577,7 @@ namespace CSAuto
             }
             else
             {
-                File.Create(Log.WorkPath + "\\resource\\.portable");
+                File.WriteAllText(Log.WorkPath + "\\resource\\.portable", string.Empty);
                 await RestartMessageBox();
             }
         }
