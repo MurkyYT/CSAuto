@@ -1,5 +1,157 @@
 [
     {
+        "filtered_body": "### Version 2.2.2 changelog\r\n- Added translations to colors\r\n- Made reading files in ```Steam.cs``` use ```FileShare.ReadWrite```, that way it can read the ```SteamID3``` from the log most of the times\r\n- Added original language name alongside translated name\r\n- Changed settings of [```Game State Integration```](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration) in order to get information about the game faster and more reliably\r\n- Updated third party libraries\r\n- Fixed broken Windows 11 Rounded corners when window is maximized\r\n- Switching to CS window only if it is not foreground already\r\n- Saving settings on every change\r\n- Updated [DXGICapture library](https://github.com/MurkyYT/DXGICapture) to latest version\r\n- Fixed DXGICapture not being able to capture game window when not on primary screen\r\n- Fixed logging crashes\r\n- Changelog improvements \r\n- Latest CS2 Update broke something with GSI, fixed with current version",
+        "url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/250376293",
+        "assets_url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/250376293/assets",
+        "upload_url": "https://uploads.github.com/repos/MurkyYT/CSAuto/releases/250376293/assets{?name,label}",
+        "html_url": "https://github.com/MurkyYT/CSAuto/releases/tag/2.2.2",
+        "id": 250376293,
+        "author": {
+            "login": "MurkyYT",
+            "id": 71258936,
+            "node_id": "MDQ6VXNlcjcxMjU4OTM2",
+            "avatar_url": "https://avatars.githubusercontent.com/u/71258936?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/MurkyYT",
+            "html_url": "https://github.com/MurkyYT",
+            "followers_url": "https://api.github.com/users/MurkyYT/followers",
+            "following_url": "https://api.github.com/users/MurkyYT/following{/other_user}",
+            "gists_url": "https://api.github.com/users/MurkyYT/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/MurkyYT/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/MurkyYT/subscriptions",
+            "organizations_url": "https://api.github.com/users/MurkyYT/orgs",
+            "repos_url": "https://api.github.com/users/MurkyYT/repos",
+            "events_url": "https://api.github.com/users/MurkyYT/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/MurkyYT/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+        },
+        "node_id": "RE_kwDOJVHdiM4O7HBl",
+        "tag_name": "2.2.2",
+        "target_commitish": "master",
+        "name": "2.2.2",
+        "draft": false,
+        "immutable": false,
+        "prerelease": false,
+        "created_at": "2025-10-15T09:03:35Z",
+        "updated_at": "2025-10-15T09:07:48Z",
+        "published_at": "2025-10-15T09:07:48Z",
+        "assets": [
+            {
+                "url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/assets/304504564",
+                "id": 304504564,
+                "node_id": "RA_kwDOJVHdiM4SJl70",
+                "name": "CSAuto_Android.apk",
+                "label": null,
+                "uploader": {
+                    "login": "MurkyYT",
+                    "id": 71258936,
+                    "node_id": "MDQ6VXNlcjcxMjU4OTM2",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/71258936?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/MurkyYT",
+                    "html_url": "https://github.com/MurkyYT",
+                    "followers_url": "https://api.github.com/users/MurkyYT/followers",
+                    "following_url": "https://api.github.com/users/MurkyYT/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/MurkyYT/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/MurkyYT/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/MurkyYT/subscriptions",
+                    "organizations_url": "https://api.github.com/users/MurkyYT/orgs",
+                    "repos_url": "https://api.github.com/users/MurkyYT/repos",
+                    "events_url": "https://api.github.com/users/MurkyYT/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/MurkyYT/received_events",
+                    "type": "User",
+                    "user_view_type": "public",
+                    "site_admin": false
+                },
+                "content_type": "application/vnd.android.package-archive",
+                "state": "uploaded",
+                "size": 15932165,
+                "digest": "sha256:d2bc5b1b835b35c1bc2316dcf8829156ecbbba9158964c039dcb0dec03c9fac0",
+                "download_count": 0,
+                "created_at": "2025-10-15T09:06:32Z",
+                "updated_at": "2025-10-15T09:06:36Z",
+                "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.2/CSAuto_Android.apk"
+            },
+            {
+                "url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/assets/304504586",
+                "id": 304504586,
+                "node_id": "RA_kwDOJVHdiM4SJl8K",
+                "name": "CSAuto_Installer.exe",
+                "label": null,
+                "uploader": {
+                    "login": "MurkyYT",
+                    "id": 71258936,
+                    "node_id": "MDQ6VXNlcjcxMjU4OTM2",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/71258936?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/MurkyYT",
+                    "html_url": "https://github.com/MurkyYT",
+                    "followers_url": "https://api.github.com/users/MurkyYT/followers",
+                    "following_url": "https://api.github.com/users/MurkyYT/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/MurkyYT/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/MurkyYT/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/MurkyYT/subscriptions",
+                    "organizations_url": "https://api.github.com/users/MurkyYT/orgs",
+                    "repos_url": "https://api.github.com/users/MurkyYT/repos",
+                    "events_url": "https://api.github.com/users/MurkyYT/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/MurkyYT/received_events",
+                    "type": "User",
+                    "user_view_type": "public",
+                    "site_admin": false
+                },
+                "content_type": "application/x-msdownload",
+                "state": "uploaded",
+                "size": 3781679,
+                "digest": "sha256:cfdcc37a512f3cf491add378afcbb5f89f5a37d2dde9927592fad0407b0a51ab",
+                "download_count": 0,
+                "created_at": "2025-10-15T09:06:36Z",
+                "updated_at": "2025-10-15T09:06:37Z",
+                "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.2/CSAuto_Installer.exe"
+            },
+            {
+                "url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/assets/304504550",
+                "id": 304504550,
+                "node_id": "RA_kwDOJVHdiM4SJl7m",
+                "name": "CSAuto_Portable.zip",
+                "label": null,
+                "uploader": {
+                    "login": "MurkyYT",
+                    "id": 71258936,
+                    "node_id": "MDQ6VXNlcjcxMjU4OTM2",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/71258936?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/MurkyYT",
+                    "html_url": "https://github.com/MurkyYT",
+                    "followers_url": "https://api.github.com/users/MurkyYT/followers",
+                    "following_url": "https://api.github.com/users/MurkyYT/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/MurkyYT/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/MurkyYT/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/MurkyYT/subscriptions",
+                    "organizations_url": "https://api.github.com/users/MurkyYT/orgs",
+                    "repos_url": "https://api.github.com/users/MurkyYT/repos",
+                    "events_url": "https://api.github.com/users/MurkyYT/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/MurkyYT/received_events",
+                    "type": "User",
+                    "user_view_type": "public",
+                    "site_admin": false
+                },
+                "content_type": "application/x-zip-compressed",
+                "state": "uploaded",
+                "size": 2811264,
+                "digest": "sha256:2aa3841e28c4fafdaa41707e99d32ae4ebfdc6618bef4783bd806b50d44dba24",
+                "download_count": 0,
+                "created_at": "2025-10-15T09:06:29Z",
+                "updated_at": "2025-10-15T09:06:32Z",
+                "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.2/CSAuto_Portable.zip"
+            }
+        ],
+        "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.2.2",
+        "zipball_url": "https://api.github.com/repos/MurkyYT/CSAuto/zipball/2.2.2",
+        "body": "### Version 2.2.2 changelog\r\n- Added translations to colors\r\n- Made reading files in ```Steam.cs``` use ```FileShare.ReadWrite```, that way it can read the ```SteamID3``` from the log most of the times\r\n- Added original language name alongside translated name\r\n- Changed settings of [```Game State Integration```](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration) in order to get information about the game faster and more reliably\r\n- Updated third party libraries\r\n- Fixed broken Windows 11 Rounded corners when window is maximized\r\n- Switching to CS window only if it is not foreground already\r\n- Saving settings on every change\r\n- Updated [DXGICapture library](https://github.com/MurkyYT/DXGICapture) to latest version\r\n- Fixed DXGICapture not being able to capture game window when not on primary screen\r\n- Fixed logging crashes\r\n- Changelog improvements \r\n- Latest CS2 Update broke something with GSI, fixed with current version\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.2.1...2.2.2"
+    },
+    {
         "filtered_body": "### Version 2.2.1 changelog\r\n- Fixed logging crash\r\n- Fixed auto buy not rebuying armor\r\n- Auto buy optimizations\r\n- Auto reload optimizations\r\n- Some translations fixes and updates\r\n- Added an indication whether the crash report was sent or not\r\n- Log now loads even when save logs is disabled",
         "url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/230174943",
         "assets_url": "https://api.github.com/repos/MurkyYT/CSAuto/releases/230174943/assets",
@@ -35,6 +187,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-08-10T08:22:29Z",
+        "updated_at": "2025-08-10T08:24:21Z",
         "published_at": "2025-08-10T08:24:05Z",
         "assets": [
             {
@@ -68,7 +221,7 @@
                 "state": "uploaded",
                 "size": 15932165,
                 "digest": "sha256:a7c8f79f9951b03e3fe530cca4c17ea67a3613be50b7bfc40603407e4a13a186",
-                "download_count": 0,
+                "download_count": 26,
                 "created_at": "2025-08-10T08:23:30Z",
                 "updated_at": "2025-08-10T08:23:32Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.1/CSAuto_Android.apk"
@@ -104,7 +257,7 @@
                 "state": "uploaded",
                 "size": 3775889,
                 "digest": "sha256:f581ac9480e26dd5231da279bd1ae20209eb489f7866e39fbaa59adf25e97824",
-                "download_count": 0,
+                "download_count": 189,
                 "created_at": "2025-08-10T08:23:32Z",
                 "updated_at": "2025-08-10T08:23:33Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.1/CSAuto_Installer.exe"
@@ -140,7 +293,7 @@
                 "state": "uploaded",
                 "size": 2807852,
                 "digest": "sha256:960ca36157b5b7c19222714e4aa254aef148e5c6defb21385e6ee37d6f0d454c",
-                "download_count": 0,
+                "download_count": 47,
                 "created_at": "2025-08-10T08:23:27Z",
                 "updated_at": "2025-08-10T08:23:30Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.1/CSAuto_Portable.zip"
@@ -148,7 +301,7 @@
         ],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.2.1",
         "zipball_url": "https://api.github.com/repos/MurkyYT/CSAuto/zipball/2.2.1",
-        "body": "### Version 2.2.1 changelog\r\n- Fixed logging crash\r\n- Fixed auto buy not rebuying armor\r\n- Auto buy optimizations\r\n- Auto reload optimizations\r\n- Some translations fixes and updates\r\n- Added an indication whether the crash report was sent or not\r\n- Log now loads even when save logs is disabled\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.2.0...2.2.1"
+        "body": "### Version 2.2.1 changelog\r\n- Fixed logging crash\r\n- Fixed auto buy not rebuying armor\r\n- Auto buy optimizations\r\n- Auto reload optimizations\r\n- Some translations fixes and updates\r\n- Added an indication whether the crash report was sent or not\r\n- Log now loads even when save logs is disabled\r\n\r\n**Full Changelog**: https://github.com/MurkyYT/CSAuto/compare/2.2.0...2.2.1\n\n\ud83d\udee1 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:\n  * [`CSAuto_Android.apk`](https://www.virustotal.com/gui/file-analysis/N2I1NWY3NWYwOTQxYWI1NDJlOGY1NGQxODQzZGJlYjE6MTc1NDgxNDI1OQ==/detection)\n  * [`CSAuto_Installer.exe`](https://www.virustotal.com/gui/file-analysis/YTdhNmQxMGIxZjgzMWFlNmVjNTllYmU2YTU0N2Q5MTI6MTc1NDgxNDI2MA==/detection)\n  * [`CSAuto_Portable.zip`](https://www.virustotal.com/gui/file-analysis/OGQwZDcyY2VhNTM3OTE3NTk3MTkwYjgyNmI2NTZhZjg6MTc1NDgxNDI2MQ==/detection)"
     },
     {
         "filtered_body": "### Version 2.2.0 changelog\r\n- Added Hebrew translation\r\n- Added support for RTL languages\r\n- Fixed notifications not being translated\r\n- Little UI fix ups\r\n- Fix with crash reports",
@@ -186,6 +339,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-06-10T09:56:22Z",
+        "updated_at": "2025-06-10T09:58:37Z",
         "published_at": "2025-06-10T09:58:21Z",
         "assets": [
             {
@@ -219,7 +373,7 @@
                 "state": "uploaded",
                 "size": 15932165,
                 "digest": "sha256:104065dce95a02af1e11fa4e0aeff5370deba0b8f92a1e95b9f74affbe72af5f",
-                "download_count": 18,
+                "download_count": 20,
                 "created_at": "2025-06-10T09:58:16Z",
                 "updated_at": "2025-06-10T09:58:18Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.0/CSAuto_Android.apk"
@@ -255,7 +409,7 @@
                 "state": "uploaded",
                 "size": 3781980,
                 "digest": "sha256:f1443a3bbeb4f9549046477aea79e0b490c33fbde35db51b4980845a5deffef0",
-                "download_count": 259,
+                "download_count": 417,
                 "created_at": "2025-06-10T09:58:18Z",
                 "updated_at": "2025-06-10T09:58:19Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.0/CSAuto_Installer.exe"
@@ -291,7 +445,7 @@
                 "state": "uploaded",
                 "size": 2809890,
                 "digest": "sha256:6c3bd8df6beb8474cff65c1f4f0a8a6f02d8e75c95e53d9d05df5fa97e539adb",
-                "download_count": 235,
+                "download_count": 261,
                 "created_at": "2025-06-10T09:58:13Z",
                 "updated_at": "2025-06-10T09:58:16Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.2.0/CSAuto_Portable.zip"
@@ -337,6 +491,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-06-07T11:22:40Z",
+        "updated_at": "2025-06-07T11:24:02Z",
         "published_at": "2025-06-07T11:23:47Z",
         "assets": [
             {
@@ -406,7 +561,7 @@
                 "state": "uploaded",
                 "size": 3778352,
                 "digest": "sha256:5ad4517c7abb2afb5b1f8cb1b9c2d76ad8d812688a8704a82586e42bbdf14339",
-                "download_count": 191,
+                "download_count": 317,
                 "created_at": "2025-06-07T11:23:44Z",
                 "updated_at": "2025-06-07T11:23:45Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.10/CSAuto_Installer.exe"
@@ -442,7 +597,7 @@
                 "state": "uploaded",
                 "size": 2802290,
                 "digest": "sha256:565fd708cfdc3a15c900979f5afa7a2c0800df356f16ba4616553650e130e53d",
-                "download_count": 169,
+                "download_count": 170,
                 "created_at": "2025-06-07T11:23:39Z",
                 "updated_at": "2025-06-07T11:23:41Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.10/CSAuto_Portable.zip"
@@ -488,6 +643,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-06-07T09:41:19Z",
+        "updated_at": "2025-06-07T11:22:15Z",
         "published_at": "2025-06-07T10:49:35Z",
         "assets": [],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.1.9",
@@ -530,6 +686,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-06-07T09:39:34Z",
+        "updated_at": "2025-06-07T10:48:34Z",
         "published_at": "2025-06-07T09:41:07Z",
         "assets": [],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.1.8",
@@ -572,6 +729,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-06-07T09:07:38Z",
+        "updated_at": "2025-07-14T19:09:57Z",
         "published_at": "2025-06-07T09:09:52Z",
         "assets": [],
         "tarball_url": "https://api.github.com/repos/MurkyYT/CSAuto/tarball/2.1.7",
@@ -614,6 +772,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-05-29T16:45:30Z",
+        "updated_at": "2025-05-29T16:48:33Z",
         "published_at": "2025-05-29T16:48:12Z",
         "assets": [
             {
@@ -683,7 +842,7 @@
                 "state": "uploaded",
                 "size": 3777939,
                 "digest": null,
-                "download_count": 190,
+                "download_count": 317,
                 "created_at": "2025-05-29T16:47:48Z",
                 "updated_at": "2025-05-29T16:47:50Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.6/CSAuto_Installer.exe"
@@ -719,7 +878,7 @@
                 "state": "uploaded",
                 "size": 2802028,
                 "digest": null,
-                "download_count": 68,
+                "download_count": 69,
                 "created_at": "2025-05-29T16:47:28Z",
                 "updated_at": "2025-05-29T16:47:39Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.6/CSAuto_Portable.zip"
@@ -765,6 +924,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-04-05T09:19:58Z",
+        "updated_at": "2025-04-05T09:21:46Z",
         "published_at": "2025-04-05T09:21:28Z",
         "assets": [
             {
@@ -834,7 +994,7 @@
                 "state": "uploaded",
                 "size": 3778622,
                 "digest": null,
-                "download_count": 378,
+                "download_count": 504,
                 "created_at": "2025-04-05T09:21:22Z",
                 "updated_at": "2025-04-05T09:21:23Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.5/CSAuto_Installer.exe"
@@ -928,6 +1088,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2025-01-30T19:11:20Z",
+        "updated_at": "2025-01-30T19:13:41Z",
         "published_at": "2025-01-30T19:13:22Z",
         "assets": [
             {
@@ -997,7 +1158,7 @@
                 "state": "uploaded",
                 "size": 3777073,
                 "digest": null,
-                "download_count": 401,
+                "download_count": 412,
                 "created_at": "2025-01-30T19:13:20Z",
                 "updated_at": "2025-01-30T19:13:21Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.1.4/CSAuto_Installer.exe"
@@ -1080,6 +1241,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-09-07T15:40:35Z",
+        "updated_at": "2024-11-14T16:13:25Z",
         "published_at": "2024-11-14T16:12:55Z",
         "assets": [
             {
@@ -1231,6 +1393,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-09-07T15:40:13Z",
+        "updated_at": "2024-09-07T15:41:01Z",
         "published_at": "2024-09-07T15:40:23Z",
         "assets": [
             {
@@ -1382,6 +1545,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-08-05T08:53:59Z",
+        "updated_at": "2024-08-05T08:55:03Z",
         "published_at": "2024-08-05T08:54:25Z",
         "assets": [
             {
@@ -1533,6 +1697,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-05-24T12:17:30Z",
+        "updated_at": "2024-05-24T12:18:31Z",
         "published_at": "2024-05-24T12:17:52Z",
         "assets": [
             {
@@ -1684,6 +1849,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-03-26T18:43:50Z",
+        "updated_at": "2024-03-26T18:53:18Z",
         "published_at": "2024-03-26T18:52:15Z",
         "assets": [
             {
@@ -1835,6 +2001,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-02-15T17:16:30Z",
+        "updated_at": "2024-02-15T17:17:32Z",
         "published_at": "2024-02-15T17:16:57Z",
         "assets": [
             {
@@ -1987,6 +2154,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2024-01-20T11:58:07Z",
+        "updated_at": "2024-01-31T15:03:23Z",
         "published_at": "2024-01-20T12:03:17Z",
         "assets": [
             {
@@ -2138,6 +2306,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-12-13T13:42:15Z",
+        "updated_at": "2023-12-13T13:44:20Z",
         "published_at": "2023-12-13T13:44:01Z",
         "assets": [
             {
@@ -2290,6 +2459,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-11-14T16:09:10Z",
+        "updated_at": "2023-12-09T13:47:19Z",
         "published_at": "2023-11-14T16:10:46Z",
         "assets": [
             {
@@ -2441,6 +2611,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-10-19T09:58:11Z",
+        "updated_at": "2023-10-19T12:42:22Z",
         "published_at": "2023-10-19T10:42:08Z",
         "assets": [
             {
@@ -2592,6 +2763,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-10-18T12:08:23Z",
+        "updated_at": "2023-10-18T12:12:54Z",
         "published_at": "2023-10-18T12:12:17Z",
         "assets": [
             {
@@ -2743,6 +2915,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-10-14T10:29:22Z",
+        "updated_at": "2023-10-14T10:58:25Z",
         "published_at": "2023-10-14T10:34:41Z",
         "assets": [
             {
@@ -2894,6 +3067,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-10-10T09:10:34Z",
+        "updated_at": "2023-10-10T12:18:53Z",
         "published_at": "2023-10-10T09:25:10Z",
         "assets": [
             {
@@ -3045,6 +3219,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-10-08T14:33:20Z",
+        "updated_at": "2023-10-08T14:37:36Z",
         "published_at": "2023-10-08T14:37:03Z",
         "assets": [
             {
@@ -3196,6 +3371,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-10-05T07:07:47Z",
+        "updated_at": "2023-10-05T07:16:54Z",
         "published_at": "2023-10-05T07:16:17Z",
         "assets": [
             {
@@ -3347,6 +3523,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-09-28T02:53:35Z",
+        "updated_at": "2023-09-28T04:09:03Z",
         "published_at": "2023-09-28T02:57:34Z",
         "assets": [
             {
@@ -3499,6 +3676,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-23T07:33:15Z",
+        "updated_at": "2023-09-23T08:09:51Z",
         "published_at": "2023-09-23T07:36:21Z",
         "assets": [
             {
@@ -3650,6 +3828,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-17T16:02:11Z",
+        "updated_at": "2023-09-17T16:07:46Z",
         "published_at": "2023-09-17T16:07:23Z",
         "assets": [
             {
@@ -3802,6 +3981,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-14T12:59:26Z",
+        "updated_at": "2023-09-14T13:39:37Z",
         "published_at": "2023-09-14T13:39:03Z",
         "assets": [
             {
@@ -3953,6 +4133,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-12T14:53:21Z",
+        "updated_at": "2023-09-12T14:54:49Z",
         "published_at": "2023-09-12T14:54:14Z",
         "assets": [
             {
@@ -4104,6 +4285,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-09T05:09:00Z",
+        "updated_at": "2023-09-09T05:12:24Z",
         "published_at": "2023-09-09T05:12:00Z",
         "assets": [
             {
@@ -4255,6 +4437,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-07T16:49:36Z",
+        "updated_at": "2023-09-07T16:58:23Z",
         "published_at": "2023-09-07T16:54:23Z",
         "assets": [
             {
@@ -4406,6 +4589,7 @@
         "immutable": false,
         "prerelease": true,
         "created_at": "2023-09-05T18:51:53Z",
+        "updated_at": "2023-09-05T18:59:17Z",
         "published_at": "2023-09-05T18:53:40Z",
         "assets": [
             {
@@ -4511,7 +4695,7 @@
                 "state": "uploaded",
                 "size": 1641187,
                 "digest": null,
-                "download_count": 9,
+                "download_count": 10,
                 "created_at": "2023-09-05T18:53:10Z",
                 "updated_at": "2023-09-05T18:53:12Z",
                 "browser_download_url": "https://github.com/MurkyYT/CSAuto/releases/download/2.0.0-beta/CSAuto_Portable.zip"
@@ -4557,6 +4741,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-08-16T19:55:05Z",
+        "updated_at": "2024-09-07T09:44:31Z",
         "published_at": "2023-08-16T20:00:33Z",
         "assets": [
             {
@@ -4709,6 +4894,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-08-10T15:23:21Z",
+        "updated_at": "2023-08-12T16:53:06Z",
         "published_at": "2023-08-10T15:24:14Z",
         "assets": [
             {
@@ -4860,6 +5046,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-07-19T18:06:29Z",
+        "updated_at": "2023-07-20T12:04:21Z",
         "published_at": "2023-07-19T18:12:03Z",
         "assets": [
             {
@@ -5012,6 +5199,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-07-14T09:38:26Z",
+        "updated_at": "2023-07-20T11:49:35Z",
         "published_at": "2023-07-14T09:43:01Z",
         "assets": [
             {
@@ -5164,6 +5352,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-07-12T15:16:03Z",
+        "updated_at": "2023-07-20T11:49:28Z",
         "published_at": "2023-07-12T15:30:11Z",
         "assets": [
             {
@@ -5315,6 +5504,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-07-06T12:51:15Z",
+        "updated_at": "2023-07-20T11:49:18Z",
         "published_at": "2023-07-06T12:51:27Z",
         "assets": [
             {
@@ -5430,6 +5620,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-07-02T12:35:22Z",
+        "updated_at": "2023-07-20T11:49:12Z",
         "published_at": "2023-07-02T12:38:28Z",
         "assets": [
             {
@@ -5545,6 +5736,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-06-28T12:48:06Z",
+        "updated_at": "2023-07-20T11:49:07Z",
         "published_at": "2023-06-28T12:51:45Z",
         "assets": [
             {
@@ -5624,6 +5816,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-06-25T11:00:14Z",
+        "updated_at": "2023-07-20T11:49:02Z",
         "published_at": "2023-06-25T11:41:58Z",
         "assets": [
             {
@@ -5703,6 +5896,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-06-22T07:12:28Z",
+        "updated_at": "2023-07-20T11:48:57Z",
         "published_at": "2023-06-22T07:16:30Z",
         "assets": [
             {
@@ -5782,6 +5976,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-06-16T10:07:53Z",
+        "updated_at": "2023-07-20T11:48:48Z",
         "published_at": "2023-06-21T11:06:06Z",
         "assets": [
             {
@@ -5861,6 +6056,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-06-16T10:07:53Z",
+        "updated_at": "2023-07-20T11:48:42Z",
         "published_at": "2023-06-16T10:13:25Z",
         "assets": [
             {
@@ -5940,6 +6136,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-06-15T11:39:45Z",
+        "updated_at": "2023-07-20T11:48:37Z",
         "published_at": "2023-06-15T11:43:20Z",
         "assets": [
             {
@@ -6019,6 +6216,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-05-12T10:51:18Z",
+        "updated_at": "2023-07-20T11:47:52Z",
         "published_at": "2023-05-12T10:52:07Z",
         "assets": [
             {
@@ -6098,6 +6296,7 @@
         "immutable": false,
         "prerelease": false,
         "created_at": "2023-05-11T12:15:27Z",
+        "updated_at": "2023-07-20T11:47:39Z",
         "published_at": "2023-05-11T12:16:51Z",
         "assets": [
             {
