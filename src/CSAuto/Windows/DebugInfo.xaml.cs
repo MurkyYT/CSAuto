@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Interop;
+using Microsoft.Win32;
 
 namespace CSAuto
 {
@@ -115,8 +116,16 @@ namespace CSAuto
                     main.DXGIcapture.DeInit();
             }
 
+            var (windowsVersion, buildNumber, displayVersion) = GetWindowsVersionInfo();
+            string osInfo = $"\n====System info====\n"
+                + $"{windowsVersion}\n"
+                + $"Version {displayVersion} (OS Build {buildNumber})\n"
+                + $"System Type: {(Environment.Is64BitOperatingSystem ? "64-bit operating system, " : "32-bit operating system, ")}{(Environment.Is64BitProcess ? "running as 64-bit" : "running as 32-bit")}\n"
+                + $"Processor Count: {Environment.ProcessorCount} logical processors\n"
+                + $".NET Runtime: {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}\n";
 
-            TextBlock.Text = $"CSAuto Version {MainApp.FULL_VER}\nBuilt at: {CompileInfo.Date} {CompileInfo.Time}\n"
+            TextBlock.Text = $"CSAuto Version {MainApp.FULL_VER} ({CompileInfo.GitHash})\nBuilt at: {CompileInfo.Date} {CompileInfo.Time}\n"
+                + osInfo
                 + $"\n====App info====\n"
                 + $"IsPortable: {File.Exists(Log.WorkPath + "\\resource\\.portable")}\n"
                 + $"Screen Capture Type: {(Properties.Settings.Default.oldScreenCaptureWay ? "Old capture" : "New capture")}\n"
@@ -133,6 +142,39 @@ namespace CSAuto
                 + $"CS:GO FriendCode: {friendCode}\n"
                 + $"CS:GO Integration Path: \"{main.integrationPath}\"\n"
                 + $"CS:GO LaunchOptions: \"{launchOpt}\"";
+        }
+
+        private (string productName, string buildNumber, string displayVersion) GetWindowsVersionInfo()
+        {
+            try
+            {
+                using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+                {
+                    if (key != null)
+                    {
+                        string productName = key.GetValue("ProductName")?.ToString() ?? "Unknown Windows";
+                        string currentBuild = key.GetValue("CurrentBuild")?.ToString() ?? "Unknown";
+                        string ubr = key.GetValue("UBR")?.ToString() ?? "0";
+                        string displayVersion = key.GetValue("DisplayVersion")?.ToString() ??
+                                               key.GetValue("ReleaseId")?.ToString() ?? "Unknown";
+
+                        string buildNumber = $"{currentBuild}.{ubr}";
+
+                        if (int.TryParse(currentBuild, out int build) && build >= 22000)
+                        {
+                            productName = productName.Replace("Windows 10", "Windows 11");
+                        }
+
+                        return (productName, buildNumber, displayVersion);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine($"|DebugInfo.cs| Error reading Windows version from registry: {ex.Message}");
+            }
+
+            return ("Microsoft Windows", Environment.OSVersion.Version.ToString(), "Unknown");
         }
 
         private void MetroWindow_StateChanged(object sender, EventArgs e)

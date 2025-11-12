@@ -4,5 +4,6 @@ namespace CSAuto
     {
         public static string Date = "{date}";
         public static string Time = "{time}";
+		public static string GitHash = "{gitHash}";
     }
 }

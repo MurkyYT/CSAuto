@@ -1360,6 +1360,13 @@ namespace CSAuto
                 int sourceWidth = csResolution.Width - diffX;
                 int sourceHeight = csResolution.Height - diffY;
 
+                if (sourceWidth <= 0 || sourceHeight <= 0 ||
+                        realX >= origBitmap.Width || realY >= origBitmap.Height)
+                {
+                    ReinitializeDXGI();
+                    return null;
+                }
+
                 Bitmap bitmap = new Bitmap(csResolution.Width, csResolution.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
