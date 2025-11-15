@@ -265,21 +265,21 @@ namespace CSAuto
         //    Log.WriteLine($"|MainApp.cs| [SERVER]: Tcp client disconnected {client.Client.RemoteEndPoint}");
         //    guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Remove(client.Client.RemoteEndPoint); });
         //}
-        private async void ReadData(TcpClient client)
-        {
-            byte[] buffer = new byte[4];
-            await client.GetStream().ReadAsync(buffer, 0, 4);
-            int length = BitConverter.ToInt32(buffer, 0);
-            buffer = new byte[length];
-            await client.GetStream().ReadAsync(buffer, 0, length);
-            var sb = new StringBuilder("{ ");
-            foreach (var b in buffer)
-            {
-                sb.Append(b + ", ");
-            }
-            sb.Append("}");
-            Log.WriteLine($"|MainApp.cs| [SERVER]: Received {sb} with length {length} from {client.Client.RemoteEndPoint}");
-        }
+        //private async void ReadData(TcpClient client)
+        //{
+        //    byte[] buffer = new byte[4];
+        //    await client.GetStream().ReadAsync(buffer, 0, 4);
+        //    int length = BitConverter.ToInt32(buffer, 0);
+        //    buffer = new byte[length];
+        //    await client.GetStream().ReadAsync(buffer, 0, length);
+        //    var sb = new StringBuilder("{ ");
+        //    foreach (var b in buffer)
+        //    {
+        //        sb.Append(b + ", ");
+        //    }
+        //    sb.Append("}");
+        //    Log.WriteLine($"|MainApp.cs| [SERVER]: Received {sb} with length {length} from {client.Client.RemoteEndPoint}");
+        //}
 
         public void UpdateColors()
         {
