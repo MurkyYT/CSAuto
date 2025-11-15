@@ -145,18 +145,6 @@ namespace CSAuto.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool mobileAppEnabled {
-            get {
-                return ((bool)(this["mobileAppEnabled"]));
-            }
-            set {
-                this["mobileAppEnabled"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string currentLanguage {
             get {

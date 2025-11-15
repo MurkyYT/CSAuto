@@ -93,7 +93,7 @@
                                 </DataTemplate>
                             </TabItem.HeaderTemplate>
                             <StackPanel Orientation="Vertical" Margin="5.5,6,0,0">
-                                <CheckBox Content="{x:Static p:Strings.menu_mobileappenabled}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mobileAppEnabled}"/>
+                                <!--<CheckBox Content="{x:Static p:Strings.menu_mobileappenabled}" Height="Auto" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=mobileAppEnabled}"/>!-->
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{x:Static p:Strings.inputtitle_telegramid}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"/>
                                     <Button Content="{x:Static p:Strings.inputtext_botlinkbutton}" Click="BotButton_Click" Margin="20,0,0,0"/>
@@ -341,7 +341,7 @@
                     </FlowDocumentScrollViewer>
                 </Grid>
             </mahapps:MetroTabItem>
-            <mahapps:MetroTabItem>
+            <!--<mahapps:MetroTabItem>
                 <TabItem.HeaderTemplate>
                     <ItemContainerTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -376,7 +376,7 @@
                     </StackPanel>
                     <ListBox Grid.Row="1" x:Name="ClientsListBox"/>
                 </Grid>
-            </mahapps:MetroTabItem>
+            </mahapps:MetroTabItem>-->
             <mahapps:MetroTabItem>
                 <TabItem.HeaderTemplate>
                     <ItemContainerTemplate>

@@ -70,14 +70,14 @@ namespace CSAuto
         {
             InitializeComponent();
 
-            if (main.clients != null)
-            {
-                lock (main.clients)
-                {
-                    foreach (var client in main.clients)
-                        ClientsListBox?.Items.Add(client.Client.RemoteEndPoint);
-                }
-            }
+            //if (main.clients != null)
+            //{
+            //    lock (main.clients)
+            //    {
+            //        foreach (var client in main.clients)
+            //            ClientsListBox?.Items.Add(client.Client.RemoteEndPoint);
+            //    }
+            //}
 
             if(main.current.IsWindows11)
             {
@@ -166,7 +166,7 @@ namespace CSAuto
                 Dispatcher.InvokeAsync(() =>
                 {
                     debugBox.Text = Log.MemoryLog;
-                    ServerIP.Text = $"IP: {main.GetLocalIPAddress()}";
+                    //ServerIP.Text = $"IP: {main.GetLocalIPAddress()}";
                     GenerateLanguages();
                     if (main.current.AlwaysMaximized)
                         WindowState = WindowState.Maximized;

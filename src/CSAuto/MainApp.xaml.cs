@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -87,7 +87,7 @@ namespace CSAuto
         private Color BUTTON_COLOR;
         private Color ACTIVE_BUTTON_COLOR;
         private string localIp;
-        private bool serverRunning = false;
+        /*private bool serverRunning = false;*/
         private DateTime startTimeStamp = DateTime.MinValue;
         private long lastRpcUpdate = -1;
         #endregion
@@ -113,11 +113,11 @@ namespace CSAuto
         Thread bombTimerThread = null;
         HwndSource windowSource;
         ContextMenu exitCm;
-        TcpListener server;
+        /*TcpListener server;
         Thread serverThread;
         internal List<TcpClient> clients;
         Dictionary<TcpClient, DateTime> lastKeepAlive;
-        DateTime lastGameStateSend = DateTime.Now;
+        DateTime lastGameStateSend = DateTime.Now;*/
         BindCommandSender commandSender;
         #endregion
         #region ToImageSource
@@ -199,72 +199,72 @@ namespace CSAuto
                 Application.Current.Shutdown();
             }
         }
-        public async void ServerThread()
-        {
-            try
-            {
-                server.Start();
-                Log.WriteLine($"|MainApp.cs| [SERVER]: Started listening at {server.LocalEndpoint}");
-                byte[] keepAliveBuf = BitConverter.GetBytes(1).ToList().Append((byte)Commands.KeepAlive).ToArray();
-                while (serverRunning)
-                {
-                    if (server.Pending())
-                    {
-                        TcpClient client = await server.AcceptTcpClientAsync();
-                        clients.Add(client);
-                        Log.WriteLine($"|MainApp.cs| [SERVER]: Accepted tcp client {client.Client.RemoteEndPoint}");
-                        await client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
-                        lastKeepAlive[client] = DateTime.Now;
-                        guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Add(client.Client.RemoteEndPoint); });
-                    }
-                    if (clients != null)
-                    {
-                        lock (clients)
-                        {
-                            for (int i = clients.Count - 1; i >= 0; i--)
-                            {
-                                TcpClient client = clients[i];
-                                try
-                                {
-                                    if (!client.Connected)
-                                    {
-                                        DeleteClient(client);
-                                        continue;
-                                    }
-                                    if (client.Available > 0)
-                                    {
-                                        ReadData(client);
-                                        continue;
-                                    }
-                                    if (DateTime.Now - lastKeepAlive[client] > TimeSpan.FromSeconds(10))
-                                    {
+        //public async void ServerThread()
+        //{
+        //    try
+        //    {
+        //        server.Start();
+        //        Log.WriteLine($"|MainApp.cs| [SERVER]: Started listening at {server.LocalEndpoint}");
+        //        byte[] keepAliveBuf = BitConverter.GetBytes(1).ToList().Append((byte)Commands.KeepAlive).ToArray();
+        //        while (serverRunning)
+        //        {
+        //            if (server.Pending())
+        //            {
+        //                TcpClient client = await server.AcceptTcpClientAsync();
+        //                clients.Add(client);
+        //                Log.WriteLine($"|MainApp.cs| [SERVER]: Accepted tcp client {client.Client.RemoteEndPoint}");
+        //                await client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
+        //                lastKeepAlive[client] = DateTime.Now;
+        //                guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Add(client.Client.RemoteEndPoint); });
+        //            }
+        //            if (clients != null)
+        //            {
+        //                lock (clients)
+        //                {
+        //                    for (int i = clients.Count - 1; i >= 0; i--)
+        //                    {
+        //                        TcpClient client = clients[i];
+        //                        try
+        //                        {
+        //                            if (!client.Connected)
+        //                            {
+        //                                DeleteClient(client);
+        //                                continue;
+        //                            }
+        //                            if (client.Available > 0)
+        //                            {
+        //                                ReadData(client);
+        //                                continue;
+        //                            }
+        //                            if (DateTime.Now - lastKeepAlive[client] > TimeSpan.FromSeconds(10))
+        //                            {
 
-                                        client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
-                                        lastKeepAlive[client] = DateTime.Now;
-                                    }
-                                }
-                                catch { DeleteClient(client); }
-                            }
-                        }
-                    }
-                    Thread.Sleep(1);
-                }
-            }
-            catch (Exception ex) { Log.WriteLine($"|MainApp.cs| Error ocurred in server thread\n\t'{ex}'"); serverThread = null; server?.Stop(); server = null; }
-            lock (csProcessLock)
-            {
-                server?.Stop();
-                server = null;
-            }
-            Log.WriteLine("|MainApp.cs| Stopped server");
-        }
-        private void DeleteClient(TcpClient client)
-        {
-            clients.Remove(client);
-            lastKeepAlive.Remove(client);
-            Log.WriteLine($"|MainApp.cs| [SERVER]: Tcp client disconnected {client.Client.RemoteEndPoint}");
-            guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Remove(client.Client.RemoteEndPoint); });
-        }
+        //                                client.GetStream().WriteAsync(keepAliveBuf, 0, keepAliveBuf.Length);
+        //                                lastKeepAlive[client] = DateTime.Now;
+        //                            }
+        //                        }
+        //                        catch { DeleteClient(client); }
+        //                    }
+        //                }
+        //            }
+        //            Thread.Sleep(1);
+        //        }
+        //    }
+        //    catch (Exception ex) { Log.WriteLine($"|MainApp.cs| Error ocurred in server thread\n\t'{ex}'"); serverThread = null; server?.Stop(); server = null; }
+        //    lock (csProcessLock)
+        //    {
+        //        server?.Stop();
+        //        server = null;
+        //    }
+        //    Log.WriteLine("|MainApp.cs| Stopped server");
+        //}
+        //private void DeleteClient(TcpClient client)
+        //{
+        //    clients.Remove(client);
+        //    lastKeepAlive.Remove(client);
+        //    Log.WriteLine($"|MainApp.cs| [SERVER]: Tcp client disconnected {client.Client.RemoteEndPoint}");
+        //    guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Remove(client.Client.RemoteEndPoint); });
+        //}
         private async void ReadData(TcpClient client)
         {
             byte[] buffer = new byte[4];
@@ -445,11 +445,11 @@ namespace CSAuto
 
                 UpdateDiscordRPC();
 
-                if (DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
-                {
-                    lastGameStateSend = DateTime.Now;
-                    SendMessageToClients(gameState.JSON, onlyClients: true, command: Commands.GameState);
-                }
+                //if (DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
+                //{
+                //    lastGameStateSend = DateTime.Now;
+                //    SendMessageToClients(gameState.JSON, onlyClients: true, command: Commands.GameState);
+                //}
             }
             catch (Exception ex)
             {
@@ -920,36 +920,37 @@ namespace CSAuto
                     Telegram.SendMessage(message, Properties.Settings.Default.telegramChatId,
                         Telegram.CheckToken(Properties.Settings.Default.customTelegramToken) ?
                         Properties.Settings.Default.customTelegramToken : Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.TELEGRAM_BOT_TOKEN + "==")));
-                if (clients != null)
-                {
-                    lock (clients)
-                    {
-                        if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
-                            return;
-                        try // Try connecting and send the message bytes  
-                        {
-                            foreach (TcpClient client in clients)
-                            {
-                                try
-                                {
-                                    byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-                                    // message + command
-                                    int length = messageBytes.Length + 1;
-                                    byte[] lengthBuf = BitConverter.GetBytes(length);
-                                    byte[] buffer = new byte[4 + length];
-                                    for (int i = 0; i < 4; i++)
-                                        buffer[i] = lengthBuf[i];
-                                    buffer[4] = (byte)command;
-                                    for (int i = 0; i < messageBytes.Length; i++)
-                                        buffer[5 + i] = messageBytes[i];
-                                    client.GetStream().WriteAsync(buffer, 0, buffer.Length);
-                                }
-                                catch { }
-                            }
-                        }
-                        catch (Exception ex) { Log.WriteLine(ex); }
-                    }
-                }
+
+                //if (clients != null)
+                //{
+                //    lock (clients)
+                //    {
+                //        if (Properties.Settings.Default.phoneIpAddress == "" || !Properties.Settings.Default.mobileAppEnabled || onlyTelegram)
+                //            return;
+                //        try // Try connecting and send the message bytes  
+                //        {
+                //            foreach (TcpClient client in clients)
+                //            {
+                //                try
+                //                {
+                //                    byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+                //                    // message + command
+                //                    int length = messageBytes.Length + 1;
+                //                    byte[] lengthBuf = BitConverter.GetBytes(length);
+                //                    byte[] buffer = new byte[4 + length];
+                //                    for (int i = 0; i < 4; i++)
+                //                        buffer[i] = lengthBuf[i];
+                //                    buffer[4] = (byte)command;
+                //                    for (int i = 0; i < messageBytes.Length; i++)
+                //                        buffer[5 + i] = messageBytes[i];
+                //                    client.GetStream().WriteAsync(buffer, 0, buffer.Length);
+                //                }
+                //                catch { }
+                //            }
+                //        }
+                //        catch (Exception ex) { Log.WriteLine(ex); }
+                //    }
+                //}
             }).Start();
         }
         private void TimerCallback(object sender, EventArgs e)
@@ -981,15 +982,15 @@ namespace CSAuto
                                     steamAPIServer = null;
                                 }
                             }
-                            if (server == null)
-                            {
-                                clients = new List<TcpClient>();
-                                lastKeepAlive = new Dictionary<TcpClient, DateTime>();
-                                server = new TcpListener(IPAddress.Any, int.Parse(Properties.Settings.Default.serverPort));
-                                serverRunning = true;
-                                serverThread = new Thread(ServerThread);
-                                serverThread.Start();
-                            }
+                            //if (server == null)
+                            //{
+                            //    clients = new List<TcpClient>();
+                            //    lastKeepAlive = new Dictionary<TcpClient, DateTime>();
+                            //    server = new TcpListener(IPAddress.Any, int.Parse(Properties.Settings.Default.serverPort));
+                            //    serverRunning = true;
+                            //    serverThread = new Thread(ServerThread);
+                            //    serverThread.Start();
+                            //}
                             NativeMethods.OptimizeMemory();
                         }
                     }
@@ -1114,10 +1115,10 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| Deinit DXGI Capture");
                 }
 
-                clients?.Clear();
-                lastKeepAlive?.Clear();
-                serverRunning = false;
-                guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Clear(); });
+                //lastKeepAlive?.Clear();
+                //clients?.Clear();
+                //serverRunning = false;
+                //guiWindow?.Dispatcher.InvokeAsync(() => { guiWindow?.ClientsListBox?.Items.Clear(); });
                 csProcess = null;
                 inLobby = false;
                 csRunning = false;
@@ -1427,9 +1428,9 @@ namespace CSAuto
 
             RPCClient?.Dispose();
 
-            serverThread?.Abort();
+            //serverThread?.Abort();
 
-            serverRunning = false;
+            //serverRunning = false;
 
             if (current.IsPortable)
                 current.settings.DeleteSettings();
