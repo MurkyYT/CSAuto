@@ -120,9 +120,9 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 
 ### Building the app
 
-1. Install Visual Studio 2022 with C# and .NET MAUI (Maybe you will need Xamarin as well).
+1. Install Visual Studio with C# .NET Framework.
 2. Install Inno Setup Compiler.
-3. Clone the repository and open the solution in Visual Studio 2022
+3. Clone the repository and open the solution in Visual Studio
 4. Build the app
 5. If you want the installer you can run the compile.bat
 
