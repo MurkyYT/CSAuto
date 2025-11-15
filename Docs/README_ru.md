@@ -51,7 +51,7 @@
 
 <p align="center">
 <a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Portable.zip"><img src="assets/windows-portable-badge.png" height ="80" alt="Get On Windows (Portable)"></a>
-<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="assets/android-badge.png" height ="80" alt="Get On Android"></a>
+<!--<a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Android.apk"><img src="assets/android-badge.png" height ="80" alt="Get On Android"></a>!-->
 <a href="https://github.com/murkyyt/csauto/releases/latest/download/CSAuto_Installer.exe"><img src="assets/windows-installer-badge.png" height ="80" alt="Get On Windows (Installer)"></a>
 </p>
 
