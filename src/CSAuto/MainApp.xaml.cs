@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -453,7 +453,7 @@ namespace CSAuto
             }
             catch (Exception ex)
             {
-                Log.WriteLine("|MainApp.cs| An error accured while getting GSI Info\n" + ex);
+                Log.WriteLine($"|MainApp.cs| An error accured while getting GSI Info\n{ex}\n{ex.StackTrace}");
             }
         }
 
@@ -846,8 +846,7 @@ namespace CSAuto
                                 {
                                     LargeImageKey = "cs2_icon",
                                     LargeImageText = "Menu",
-                                    SmallImageKey = null,
-                                    SmallImageText = null
+                                    SmallImageKey = "cs2_icon"
                                 },
                                 Timestamps = new Timestamps()
                                 {
@@ -868,8 +867,7 @@ namespace CSAuto
                                 {
                                     LargeImageKey = "cs2_icon",
                                     LargeImageText = "Menu",
-                                    SmallImageKey = null,
-                                    SmallImageText = null
+                                    SmallImageKey = "cs2_icon"
                                 },
                                 Timestamps = new Timestamps()
                                 {
