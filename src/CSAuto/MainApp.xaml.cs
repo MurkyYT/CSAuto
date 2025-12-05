@@ -359,9 +359,6 @@ namespace CSAuto
                     Log.WriteLine("|MainApp.cs| DiscordRpc.Shutdown();");
                 }
 
-                if (lastRpcUpdate == -1)
-                    lastRpcUpdate = gameState.Timestamp;
-
                 Activity? activity = gameState.Player.CurrentActivity;
                 Phase? currentMatchState = gameState.Match.Phase;
                 Phase? currentRoundState = gameState.Round.Phase;
@@ -700,23 +697,11 @@ namespace CSAuto
 
         private void InitializeDiscordRPC()
         {
-            try
+            RPCClient = new DiscordRpcClient(APIKeys.DISCORD_BOT_ID)
             {
-                Directory.CreateDirectory(Log.WorkPath + "\\debug\\discord");
-            }
-            catch { }
-            RPCClient = new DiscordRpcClient(APIKeys.DISCORD_BOT_ID);
-#if DEBUG
-            File.Create(Log.WorkPath + "\\debug\\discord\\Debug_Log.txt").Close();
-            RPCClient.Logger = new FileLogger(Log.WorkPath + "\\debug\\discord\\Debug_Log.txt", LogLevel.Trace);
-#elif !DEBUG
-            try
-            {
-                File.Create(Log.WorkPath + "\\debug\\discord\\Error_Log.txt").Close();
-                RPCClient.Logger = new FileLogger(Log.WorkPath + "\\debug\\discord\\Error_Log.txt", LogLevel.Error);
-            }
-            catch { MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_createfiles"), Languages.Strings.ResourceManager.GetString("title_warning"), MessageBoxButton.OK, MessageBoxImage.Warning); }
-#endif
+                Logger = new UtilsLogger(LogLevel.Warning)
+            };
+
             RPCClient.Initialize();
             Log.WriteLine($"|MainApp.cs| Initialized Discord RPC");
         }
@@ -724,7 +709,7 @@ namespace CSAuto
         private DiscordRPC.Button[] GetDiscordRPCButtons()
         {
             DiscordRPC.Button[] res = new DiscordRPC.Button[1 + discordRPCButtons.Count];
-            res[0] = new DiscordRPC.Button() { Label = "CSAuto", Url = "https://github.com/MurkyYT/CSAuto" };
+            res[0] = new DiscordRPC.Button() { Label = "Get CSAuto", Url = "https://csauto.vercel.app/" };
             for (int i = 1; i < res.Length; i++)
             {
                 res[i] = new DiscordRPC.Button() { Label = discordRPCButtons[i - 1].Label, Url = FormatString(discordRPCButtons[i - 1].Url, gameState) };
@@ -846,7 +831,7 @@ namespace CSAuto
                                 {
                                     LargeImageKey = "cs2_icon",
                                     LargeImageText = "Menu",
-                                    SmallImageKey = "cs2_icon"
+                                    SmallImageKey = "cs2_home"
                                 },
                                 Timestamps = new Timestamps()
                                 {
@@ -867,7 +852,7 @@ namespace CSAuto
                                 {
                                     LargeImageKey = "cs2_icon",
                                     LargeImageText = "Menu",
-                                    SmallImageKey = "cs2_icon"
+                                    SmallImageKey = "cs2_home"
                                 },
                                 Timestamps = new Timestamps()
                                 {
