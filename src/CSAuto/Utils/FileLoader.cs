@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 
 namespace Murky.Utils
@@ -36,7 +37,7 @@ namespace Murky.Utils
             if (magic != FileMagic)
                 return;
 
-            while(fileData.Position != fileData.Length)
+            while (fileData.Position != fileData.Length)
             {
                 string name = "";
                 byte read;
@@ -83,7 +84,15 @@ namespace Murky.Utils
                 return mso;
             }
         }
+        public string[] GetFiles()
+        {
+            return filesData.Keys.ToArray();
+        }
 
+        public bool FileExists(string name)
+        {
+            return filesData.ContainsKey(name);
+        }
         public Stream LoadFile(string name)
         {
             if (!filesData.ContainsKey(name))
@@ -102,7 +111,7 @@ namespace Murky.Utils
             }
 
             MemoryStream memoryStream = new MemoryStream();
-            while(memoryStream.Length < file.Size)
+            while (memoryStream.Length < file.Size)
             {
                 byte[] buffer = new byte[4096];
                 int read = fileData.Read(buffer, 0, buffer.Length);
