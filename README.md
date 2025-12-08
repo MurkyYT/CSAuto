@@ -51,6 +51,8 @@ Or have you ever forgotten to buy armor or defuse kit as ct?
 
 ![discord-menu](Docs/assets/app_discord.png)
 
+![about-menu](Docs/assets/app_about.png)
+
 ## Installation
 
 <p align="center">    

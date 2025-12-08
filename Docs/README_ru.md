@@ -48,6 +48,8 @@
 
 ![discord-menu](assets/app_discord.png)
 
+![about-menu](assets/app_about.png)
+
 ## Установка
 
 <p align="center">
