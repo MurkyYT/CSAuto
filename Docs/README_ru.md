@@ -45,6 +45,7 @@
 ## Скрины
 
 ![right-click-menu](assets/menuimage.png)
+
 ![discord-menu](assets/app_discord.png)
 
 ## Установка
