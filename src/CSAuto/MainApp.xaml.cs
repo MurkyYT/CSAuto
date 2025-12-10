@@ -84,7 +84,6 @@ namespace CSAuto
         private Color BUTTON_COLOR;
         private Color ACTIVE_BUTTON_COLOR;
         private string localIp;
-        /*private bool serverRunning = false;*/
         private DateTime startTimeStamp = DateTime.MinValue;
         private long lastRpcUpdate = -1;
         #endregion
@@ -109,11 +108,6 @@ namespace CSAuto
         Process originalProcess = null;
         HwndSource windowSource;
         ContextMenu exitCm;
-        /*TcpListener server;
-        Thread serverThread;
-        internal List<TcpClient> clients;
-        Dictionary<TcpClient, DateTime> lastKeepAlive;
-        DateTime lastGameStateSend = DateTime.Now;*/
         BindCommandSender commandSender;
         #endregion
         #region ToImageSource
@@ -353,12 +347,6 @@ namespace CSAuto
                 }
 
                 UpdateDiscordRPC();
-
-                //if (DateTime.Now - lastGameStateSend > TimeSpan.FromSeconds(1))
-                //{
-                //    lastGameStateSend = DateTime.Now;
-                //    SendMessageToClients(gameState.JSON, onlyClients: true, command: Commands.GameState);
-                //}
             }
             catch (Exception ex)
             {
@@ -1312,7 +1300,7 @@ namespace CSAuto
                 if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)
-                    throw new DirectoryNotFoundException(Languages.Strings.ResourceManager.GetString("exception_csgonotfound")/*"Couldn't find CS:GO directory"*/);
+                    throw new DirectoryNotFoundException(Languages.Strings.ResourceManager.GetString("exception_csgonotfound"));
                 integrationPath = csgoDir + "game\\csgo\\cfg\\gamestate_integration_csauto.cfg";
                 bindCfgPath = csgoDir + "game\\csgo\\cfg\\csautobindcommandsender.cfg";
                 commandSender = new BindCommandSender(bindCfgPath);
