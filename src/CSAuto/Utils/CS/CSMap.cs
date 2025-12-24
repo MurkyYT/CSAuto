@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Murky.Utils.CS
 {
@@ -21,40 +16,56 @@ namespace Murky.Utils.CS
             client.Headers.Add(HttpRequestHeader.Cookie, "AkamaiEdge=true");
         }
 
-        public static void LoadMapIcons()
+        //public static void LoadMapIcons()
+        //{
+        //    lock (client)
+        //    {
+        //        try
+        //        {
+        //            string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media");
+        //            string[] splt = info.Split(new string[] { "src=\"/w/images/thumb/" }, StringSplitOptions.None);
+        //            for (int i = 1; i < splt.Length; i++)
+        //            {
+        //                string link = splt[i].Split('"')[0];
+        //                try
+        //                {
+        //                    bool isNew = false;
+        //                    string[] imageInfo = link.Split('/');
+        //                    string mapName = imageInfo[2].Split('.')[0];
+        //                    if (mapName.StartsWith("Map_icon_"))
+        //                    {
+        //                        mapName = mapName.Substring("Map_icon_".Length);
+        //                        isNew = true;
+        //                    }
+        //                    mapName = mapName.ToLower();
+        //                    if (IsOfficial(mapName))
+        //                    {
+        //                        if (!isNew && MapIcons.ContainsKey(mapName))
+        //                            continue;
+        //                        string finalLink = $"https://developer.valvesoftware.com/w/images/{imageInfo[0]}/{imageInfo[1]}/{imageInfo[2]}";
+        //                        MapIcons[mapName] = finalLink;
+        //                    }
+        //                }
+        //                catch { }
+        //            }
+        //        }
+        //        catch { }
+        //    }
+        //}
+
+        private static bool RemoteFileExists(string url)
         {
-            lock (client)
+            try
             {
-                try
-                {
-                    string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media");
-                    string[] splt = info.Split(new string[] { "src=\"/w/images/thumb/" }, StringSplitOptions.None);
-                    for (int i = 1; i < splt.Length; i++)
-                    {
-                        string link = splt[i].Split('"')[0];
-                        try
-                        {
-                            bool isNew = false;
-                            string[] imageInfo = link.Split('/');
-                            string mapName = imageInfo[2].Split('.')[0];
-                            if (mapName.StartsWith("Map_icon_"))
-                            {
-                                mapName = mapName.Substring("Map_icon_".Length);
-                                isNew = true;
-                            }
-                            mapName = mapName.ToLower();
-                            if (IsOfficial(mapName))
-                            {
-                                if (!isNew && MapIcons.ContainsKey(mapName))
-                                    continue;
-                                string finalLink = $"https://developer.valvesoftware.com/w/images/{imageInfo[0]}/{imageInfo[1]}/{imageInfo[2]}";
-                                MapIcons[mapName] = finalLink;
-                            }
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                request.Method = "HEAD";
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                response.Close();
+                return (response.StatusCode == HttpStatusCode.OK);
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -81,19 +92,13 @@ namespace Murky.Utils.CS
                     {
                         try
                         {
-                            try
-                            {
-                                string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:map_icon_{mapName}.png");
-                                result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
-                                MapIcons[mapName] = result;
-                            }
-                            catch
-                            {
-                                string info = client.DownloadString($"https://developer.valvesoftware.com/wiki/File:{mapName}.png");
-                                result = $"https://developer.valvesoftware.com/w/images/{info.Split(new string[] { "a href=\"/w/images/" }, StringSplitOptions.None)[1].Split('"')[0]}";
-                                MapIcons[mapName] = result;
-                            }
-                            return result;
+                            string url = $"https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/{mapName}.png";
+                            if(RemoteFileExists(url))
+                                MapIcons[mapName] = url;
+                            else
+                                throw new Exception();
+
+                            return MapIcons[mapName];
                         }
                         catch { Log.WriteLine($"|CSMap.cs| Couldn't load official map icon for '{mapName}'"); }
                     }

@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.4";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "3";
+        const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -164,7 +164,7 @@ namespace CSAuto
                 // Try to encode my own steamid to see if its correct
                 if (CSFriendCode.Encode("76561198341800115") != "S4N2P-NZFJ")
                     throw new Exception("FriendCode Error");
-                new Thread(() => { CSMap.LoadMapIcons(); }).Start();
+                //new Thread(() => { CSMap.LoadMapIcons(); }).Start();
                 InitializeDiscordRPC();
                 RPCClient.Deinitialize();
                 CheckForDuplicates();
@@ -689,8 +689,7 @@ namespace CSAuto
                             },
                             Timestamps = new Timestamps()
                             {
-                                Start = startTimeStamp,
-                                End = null
+                                Start = startTimeStamp
                             },
                             Buttons = GetDiscordRPCButtons()
                         });
@@ -717,8 +716,7 @@ namespace CSAuto
                                 },
                                 Timestamps = new Timestamps()
                                 {
-                                    Start = startTimeStamp,
-                                    End = null
+                                    Start = startTimeStamp
                                 },
                                 Buttons = GetDiscordRPCButtons()
                             });
@@ -738,8 +736,7 @@ namespace CSAuto
                                 },
                                 Timestamps = new Timestamps()
                                 {
-                                    Start = startTimeStamp,
-                                    End = null
+                                    Start = startTimeStamp
                                 },
                                 Buttons = GetDiscordRPCButtons()
                             });
