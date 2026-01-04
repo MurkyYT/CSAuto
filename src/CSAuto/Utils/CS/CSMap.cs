@@ -8,13 +8,6 @@ namespace Murky.Utils.CS
     {
         static readonly Dictionary<string, string> MapIcons = new Dictionary<string, string>();
         readonly static WebClient client = new WebClient();
-        static CSMap()
-        {
-            client.Proxy = null;
-            client.Headers.Add(HttpRequestHeader.Host, "developer.valvesoftware.com");
-            client.Headers.Add(HttpRequestHeader.Accept, "*/*");
-            client.Headers.Add(HttpRequestHeader.Cookie, "AkamaiEdge=true");
-        }
 
         //public static void LoadMapIcons()
         //{
