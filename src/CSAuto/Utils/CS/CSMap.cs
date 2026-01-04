@@ -112,7 +112,7 @@ namespace Murky.Utils.CS
                             splt = info.Split(new string[] { "<img class=\"workshopItemPreviewImage  aspectratio_16x9\" src=\"" }, StringSplitOptions.RemoveEmptyEntries);
                             if (splt.Length > 1)
                             {
-                                result = splt[1].Split('"')[0];
+                                result = splt[1].Split('"')[0].Split(new string[] { "/?" }, StringSplitOptions.None)[0] + "/";
                                 MapIcons[mapName] = result;
                                 return result;
                             }
