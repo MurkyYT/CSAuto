@@ -23,7 +23,10 @@
                      TitleCharacterCasing="Normal">
     <mahapps:MetroWindow.TitleTemplate>
         <DataTemplate>
-            <TextBlock FlowDirection="LeftToRight"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Image Source="/Images/App_Icon.png" Margin="2,2,10,2" 
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                <TextBlock FlowDirection="LeftToRight"
                     Text="{TemplateBinding Content}"
                        TextTrimming="CharacterEllipsis"
                        VerticalAlignment="Center"
@@ -31,6 +34,7 @@
                        HorizontalAlignment="Center"
                        FontSize="{DynamicResource WindowTitleFontSize}"
                        FontFamily="{DynamicResource HeaderFontFamily}"/>
+            </StackPanel>
         </DataTemplate>
     </mahapps:MetroWindow.TitleTemplate>
     <mahapps:MetroWindow.LeftWindowCommands>
