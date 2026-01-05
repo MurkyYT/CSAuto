@@ -107,6 +107,11 @@ namespace Murky.Utils.CS
                 Player.SetWeapons(JSON);
                 IsDead = Player.SteamID != MySteamID;
             }
+            else
+            {
+                Player = new Player();
+                IsDead = true;
+            }
             IsSpectating = CheckIfSpectator();
         }
 
@@ -115,7 +120,10 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"mvps\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            return int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            return int.Parse(commaSplit[0]);
         }
 
         private int GetPlayerDeaths()
@@ -123,7 +131,10 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"deaths\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            return int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            return int.Parse(commaSplit[0]);
         }
 
         private int GetPlayerKills()
@@ -131,16 +142,28 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"kills\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            return int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            return int.Parse(commaSplit[0]);
         }
 
         private string GetPlayerName()
         {
-            string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] playerSplit = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None);
+            if (playerSplit.Length < 2)
+                return null;
+            string[] closeBraceSplit = playerSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return null;
+            string splitStr = closeBraceSplit[0];
             string[] split = splitStr.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            return split[1].Split('"')[0];
+            string[] quoteSplit = split[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            return quoteSplit[0];
         }
 
         private bool HasPlayer()
@@ -158,11 +181,17 @@ namespace Murky.Utils.CS
             string[] splitStrs = _JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
             if (splitStrs.Length < 2)
                 return null;
-            string splitStr = splitStrs[1].Split('}')[0];
+            string[] closeBraceSplit = splitStrs[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return null;
+            string splitStr = closeBraceSplit[0];
             string[] bombStates = splitStr.Split(new string[] { "\"bomb\": \"" }, StringSplitOptions.None);
             if (bombStates.Length < 2)
                 return null;
-            string bombState = bombStates[1].Split('"')[0];
+            string[] quoteSplit = bombStates[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            string bombState = quoteSplit[0];
             switch (bombState)
             {
                 case "planted":
@@ -178,7 +207,13 @@ namespace Murky.Utils.CS
 
         private long GetTimeStamp()
         {
-            string splitStr = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] providerSplit = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None);
+            if (providerSplit.Length < 2)
+                return -1;
+            string[] closeBraceSplit = providerSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return -1;
+            string splitStr = closeBraceSplit[0];
             string[] split = splitStr.Split(new string[] { "\"timestamp\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
@@ -190,8 +225,13 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            string state = split[1].Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
-            return state;
+            string[] nameSplit = split[1].Split(new string[] { "\"name\": \"" }, StringSplitOptions.None);
+            if (nameSplit.Length < 2)
+                return null;
+            string[] quoteSplit = nameSplit[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            return quoteSplit[0];
         }
 
         private int GetTScore()
@@ -199,23 +239,53 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            string splitstr = split[1].Split(new string[] { "\"team_t\": {" }, StringSplitOptions.None)[1].Split('}')[0];
-            return int.Parse(splitstr.Split(new string[] { "\"score\":" }, StringSplitOptions.None)[1].Split(',')[0]);
+            string[] teamSplit = split[1].Split(new string[] { "\"team_t\": {" }, StringSplitOptions.None);
+            if (teamSplit.Length < 2)
+                return -1;
+            string[] closeBraceSplit = teamSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return -1;
+            string splitstr = closeBraceSplit[0];
+            string[] scoreSplit = splitstr.Split(new string[] { "\"score\":" }, StringSplitOptions.None);
+            if (scoreSplit.Length < 2)
+                return -1;
+            string[] commaSplit = scoreSplit[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            return int.Parse(commaSplit[0]);
         }
         private int GetCTScore()
         {
             string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            string splitstr = split[1].Split(new string[] { "\"team_ct\": {" }, StringSplitOptions.None)[1].Split('}')[0];
-            return int.Parse(splitstr.Split(new string[] { "\"score\":" }, StringSplitOptions.None)[1].Split(',')[0]);
+            string[] teamSplit = split[1].Split(new string[] { "\"team_ct\": {" }, StringSplitOptions.None);
+            if (teamSplit.Length < 2)
+                return -1;
+            string[] closeBraceSplit = teamSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return -1;
+            string splitstr = closeBraceSplit[0];
+            string[] scoreSplit = splitstr.Split(new string[] { "\"score\":" }, StringSplitOptions.None);
+            if (scoreSplit.Length < 2)
+                return -1;
+            string[] commaSplit = scoreSplit[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            return int.Parse(commaSplit[0]);
         }
         private Mode? GetMode()
         {
             string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            string state = split[1].Split(new string[] { "\"mode\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+            string[] modeSplit = split[1].Split(new string[] { "\"mode\": \"" }, StringSplitOptions.None);
+            if (modeSplit.Length < 2)
+                return null;
+            string[] quoteSplit = modeSplit[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            string state = quoteSplit[0];
             switch (state)
             {
                 case "competitive":
@@ -243,31 +313,58 @@ namespace Murky.Utils.CS
 
         private string GetSteamID()
         {
-            string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] playerSplit = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None);
+            if (playerSplit.Length < 2)
+                return null;
+            string[] closeBraceSplit = playerSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return null;
+            string splitStr = closeBraceSplit[0];
             string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            return split[1].Split('"')[0];
+            string[] quoteSplit = split[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            return quoteSplit[0];
         }
 
         private string GetMySteamID()
         {
-            string splitStr = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] providerSplit = _JSON.Split(new string[] { "\"provider\": {" }, StringSplitOptions.None);
+            if (providerSplit.Length < 2)
+                return null;
+            string[] closeBraceSplit = providerSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return null;
+            string splitStr = closeBraceSplit[0];
             string[] split = splitStr.Split(new string[] { "\"steamid\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            return split[1].Split('"')[0];
+            string[] quoteSplit = split[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            return quoteSplit[0];
         }
 
         private bool HasDefuseKit()
         {
-            string splitStr = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None)[1].Split('}')[0];
+            string[] playerSplit = _JSON.Split(new string[] { "\"player\": {" }, StringSplitOptions.None);
+            if (playerSplit.Length < 2)
+                return false;
+            string[] closeBraceSplit = playerSplit[1].Split('}');
+            if (closeBraceSplit.Length < 1)
+                return false;
+            string splitStr = closeBraceSplit[0];
             string[] split = splitStr.Split(new string[] { "\"defusekit\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return false;
             try
             {
-                return bool.Parse(split[1].Split(',')[0]);
+                string[] commaSplit = split[1].Split(',');
+                if (commaSplit.Length < 1)
+                    return false;
+                return bool.Parse(commaSplit[0]);
             }
             catch { return false; }
         }
@@ -281,8 +378,13 @@ namespace Murky.Utils.CS
             if (split.Length < 2)
                 return null;
 
-            string state = split[1].Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1];
-            return state.Split('"')[0];
+            string[] stateSplit = split[1].Split(new string[] { "\"state\": \"" }, StringSplitOptions.None);
+            if (stateSplit.Length < 2)
+                return null;
+            string[] quoteSplit = stateSplit[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            return quoteSplit[0];
         }
         private bool GetHelmetState()
         {
@@ -291,7 +393,10 @@ namespace Murky.Utils.CS
                 return false;
             try
             {
-                return bool.Parse(split[1].Split(',')[0]);
+                string[] commaSplit = split[1].Split(',');
+                if (commaSplit.Length < 1)
+                    return false;
+                return bool.Parse(commaSplit[0]);
             }
             catch { return false; }
         }
@@ -301,7 +406,10 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"money\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            return int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            return int.Parse(commaSplit[0]);
         }
 
         private int GetArmor()
@@ -309,7 +417,10 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"armor\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            int armor = int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            int armor = int.Parse(commaSplit[0]);
             return armor;
         }
 
@@ -318,7 +429,10 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"health\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            int health = int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            int health = int.Parse(commaSplit[0]);
             return health;
         }
 
@@ -327,7 +441,10 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"team\": \"" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            string team = split[1].Split('"')[0];
+            string[] quoteSplit = split[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            string team = quoteSplit[0];
             switch (team)
             {
                 case "T":
@@ -341,18 +458,20 @@ namespace Murky.Utils.CS
         private Activity? GetActivity()
         {
             string[] splitted = _JSON.Split(new string[] { "\"activity\": \"" }, StringSplitOptions.None);
-            if (splitted.Length > 1)
+            if (splitted.Length < 2)
+                return null;
+            string[] quoteSplit = splitted[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            string activity = quoteSplit[0];
+            switch (activity)
             {
-                string activity = splitted[1].Split('"')[0];
-                switch (activity)
-                {
-                    case "menu":
-                        return Activity.Menu;
-                    case "textinput":
-                        return Activity.Textinput;
-                    case "playing":
-                        return Activity.Playing;
-                }
+                case "menu":
+                    return Activity.Menu;
+                case "textinput":
+                    return Activity.Textinput;
+                case "playing":
+                    return Activity.Playing;
             }
             return null;
         }
@@ -360,12 +479,14 @@ namespace Murky.Utils.CS
         private int GetRound()
         {
             string[] splitted = _JSON.Split(new string[] { "\"round\": " }, StringSplitOptions.None);
-            if (splitted.Length > 1)
-            {
-                bool succes = int.TryParse(splitted[1].Split(',')[0], out int res);
-                if (succes)
-                    return res;
-            }
+            if (splitted.Length < 2)
+                return -1;
+            string[] commaSplit = splitted[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            bool succes = int.TryParse(commaSplit[0], out int res);
+            if (succes)
+                return res;
             return -1;
         }
         private Phase? GetRoundPhase()
@@ -373,7 +494,13 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"round\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            string state = split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+            string[] phaseSplit = split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None);
+            if (phaseSplit.Length < 2)
+                return null;
+            string[] quoteSplit = phaseSplit[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            string state = quoteSplit[0];
             switch (state)
             {
                 case "live":
@@ -391,7 +518,13 @@ namespace Murky.Utils.CS
             string[] split = _JSON.Split(new string[] { "\"map\": {" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return null;
-            string state = split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+            string[] phaseSplit = split[1].Split(new string[] { "\"phase\": \"" }, StringSplitOptions.None);
+            if (phaseSplit.Length < 2)
+                return null;
+            string[] quoteSplit = phaseSplit[1].Split('"');
+            if (quoteSplit.Length < 1)
+                return null;
+            string state = quoteSplit[0];
             switch (state)
             {
                 case "live":
@@ -410,11 +543,11 @@ namespace Murky.Utils.CS
             Timestamp = 0;
             MySteamID = null;
             _JSON = null;
-            Player.Dispose();
+            Player?.Dispose();
             Player = null;
-            Match.Dispose();
+            Match?.Dispose();
             Match = null;
-            Round.Dispose();
+            Round?.Dispose();
             Round = null;
         }
     }
@@ -490,7 +623,7 @@ namespace Murky.Utils.CS
         }
         public void Dispose()
         {
-            ActiveWeapon.Dispose();
+            ActiveWeapon?.Dispose();
             ActiveWeapon = null;
             Weapons = null;
             CurrentActivity = null;
@@ -504,21 +637,47 @@ namespace Murky.Utils.CS
             Weapons = new Weapon[amountOfWeapons];
             for (int i = 0; i < amountOfWeapons; i++)
             {
-                Weapons[i] = GetWeaponAt(weapons,i);
+                Weapons[i] = GetWeaponAt(weapons, i);
             }
         }
-        private Weapon GetWeaponAt(string weapons,int index)
+        private Weapon GetWeaponAt(string weapons, int index)
         {
             string[] splitted = weapons.Split(new string[] { $"\"weapon_{index}\": {{" }, StringSplitOptions.None);
-            if(splitted.Length > 1)
+            if (splitted.Length > 1)
             {
                 try
                 {
-                    string weapon = splitted[1].Split('}')[0];
-                    string name = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+                    string[] closeBraceSplit = splitted[1].Split('}');
+                    if (closeBraceSplit.Length < 1)
+                        throw new Exception("Invalid weapon format");
+
+                    string weapon = closeBraceSplit[0];
+
+                    string[] nameSplit = weapon.Split(new string[] { "\"name\": \"" }, StringSplitOptions.None);
+                    if (nameSplit.Length < 2)
+                        throw new Exception("Missing weapon name");
+                    string[] nameQuoteSplit = nameSplit[1].Split('"');
+                    if (nameQuoteSplit.Length < 1)
+                        throw new Exception("Invalid weapon name format");
+                    string name = nameQuoteSplit[0];
+
                     string[] typeSplit = weapon.Split(new string[] { "\"type\": \"" }, StringSplitOptions.None);
-                    string type = typeSplit.Length > 1 ? typeSplit[1].Split('"')[0] : "None";
-                    string state = weapon.Split(new string[] { "\"state\": \"" }, StringSplitOptions.None)[1].Split('"')[0];
+                    string type = "None";
+                    if (typeSplit.Length > 1)
+                    {
+                        string[] typeQuoteSplit = typeSplit[1].Split('"');
+                        if (typeQuoteSplit.Length > 0)
+                            type = typeQuoteSplit[0];
+                    }
+
+                    string[] stateSplit = weapon.Split(new string[] { "\"state\": \"" }, StringSplitOptions.None);
+                    if (stateSplit.Length < 2)
+                        throw new Exception("Missing weapon state");
+                    string[] stateQuoteSplit = stateSplit[1].Split('"');
+                    if (stateQuoteSplit.Length < 1)
+                        throw new Exception("Invalid weapon state format");
+                    string state = stateQuoteSplit[0];
+
                     int bullets = GetBullets(weapon);
                     int reserveBullets = GetReserveBullets(weapon);
                     int clipSize = GetClipSize(weapon);
@@ -561,7 +720,10 @@ namespace Murky.Utils.CS
             string[] split = weapon.Split(new string[] { "\"ammo_clip_max\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            int bullets = int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            int bullets = int.Parse(commaSplit[0]);
             return bullets;
         }
 
@@ -572,7 +734,10 @@ namespace Murky.Utils.CS
             string[] split = weapon.Split(new string[] { "\"ammo_reserve\": " }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            int bullets = int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            int bullets = int.Parse(commaSplit[0]);
             return bullets;
         }
 
@@ -583,7 +748,10 @@ namespace Murky.Utils.CS
             string[] split = weapon.Split(new string[] { "\"ammo_clip\":" }, StringSplitOptions.None);
             if (split.Length < 2)
                 return -1;
-            int bullets = int.Parse(split[1].Split(',')[0]);
+            string[] commaSplit = split[1].Split(',');
+            if (commaSplit.Length < 1)
+                return -1;
+            int bullets = int.Parse(commaSplit[0]);
             return bullets;
         }
         private WeaponState? GetStateOfWeapon(string state)
@@ -638,12 +806,13 @@ namespace Murky.Utils.CS
         private string GetWeapons(string jSON)
         {
             string[] splitted = jSON.Split(new string[] { "\"weapons\": {" }, StringSplitOptions.None);
-            if (splitted.Length > 1)
-            {
-                string weapons = splitted[1].Split(new string[] { "},\r\n\t\t\"match_stats\": {" }, StringSplitOptions.None)[0];
-                return weapons;
-            }
-            return null;
+            if (splitted.Length < 2)
+                return null;
+            string[] weaponsSplit = splitted[1].Split(new string[] { "},\r\n\t\t\"match_stats\": {" }, StringSplitOptions.None);
+            if (weaponsSplit.Length < 1)
+                return null;
+            string weapons = weaponsSplit[0];
+            return weapons;
         }
     }
 }

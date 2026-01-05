@@ -153,7 +153,7 @@ namespace Murky.Utils.CS
             }
             catch (Exception ex)
             {
-                Log.WriteLine($"|GameStateListener.cs| Error handling GSI client: {ex.Message}");
+                Log.WriteLine($"|GameStateListener.cs| Error handling GSI client: {ex}\n{_gameState.JSON}");
             }
         }
 

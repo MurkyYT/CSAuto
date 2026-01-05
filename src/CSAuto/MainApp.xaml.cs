@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.5";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -684,8 +684,8 @@ namespace CSAuto
                             {
                                 LargeImageKey = currentMapIcon ?? "cs2_icon",
                                 LargeImageText = gameState.Match.Map,
-                                SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team.ToString().ToLower(),
-                                SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
+                                SmallImageKey = gameState.IsSpectating ? "gotv_icon" : gameState.IsDead ? "spectator" : gameState.Player.Team != null ? gameState.Player.Team.ToString().ToLower() : "spectator",
+                                SmallImageText = gameState.IsSpectating ? "Watching CSTV" : gameState.IsDead || gameState.Player.Team == null ? "Spectating" : gameState.Player.Team == Team.T ? "Terrorist" : "Counter-Terrorist"
                             },
                             Timestamps = new Timestamps()
                             {
