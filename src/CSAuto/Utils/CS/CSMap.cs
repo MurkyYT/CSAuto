@@ -8,44 +8,6 @@ namespace Murky.Utils.CS
     {
         static readonly Dictionary<string, string> MapIcons = new Dictionary<string, string>();
         readonly static WebClient client = new WebClient();
-
-        //public static void LoadMapIcons()
-        //{
-        //    lock (client)
-        //    {
-        //        try
-        //        {
-        //            string info = client.DownloadString("https://developer.valvesoftware.com/wiki/Counter-Strike_2/Maps#/media");
-        //            string[] splt = info.Split(new string[] { "src=\"/w/images/thumb/" }, StringSplitOptions.None);
-        //            for (int i = 1; i < splt.Length; i++)
-        //            {
-        //                string link = splt[i].Split('"')[0];
-        //                try
-        //                {
-        //                    bool isNew = false;
-        //                    string[] imageInfo = link.Split('/');
-        //                    string mapName = imageInfo[2].Split('.')[0];
-        //                    if (mapName.StartsWith("Map_icon_"))
-        //                    {
-        //                        mapName = mapName.Substring("Map_icon_".Length);
-        //                        isNew = true;
-        //                    }
-        //                    mapName = mapName.ToLower();
-        //                    if (IsOfficial(mapName))
-        //                    {
-        //                        if (!isNew && MapIcons.ContainsKey(mapName))
-        //                            continue;
-        //                        string finalLink = $"https://developer.valvesoftware.com/w/images/{imageInfo[0]}/{imageInfo[1]}/{imageInfo[2]}";
-        //                        MapIcons[mapName] = finalLink;
-        //                    }
-        //                }
-        //                catch { }
-        //            }
-        //        }
-        //        catch { }
-        //    }
-        //}
-
         private static bool RemoteFileExists(string url)
         {
             try

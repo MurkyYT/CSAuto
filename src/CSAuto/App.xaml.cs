@@ -33,13 +33,14 @@ namespace CSAuto
         public RegistrySettings settings = new RegistrySettings();
 
         private bool crashed;
+        private static FileLoader dllLoader = new FileLoader(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\bin\\dlls.mpf");
         private string languageName = null;
         protected override void OnStartup(StartupEventArgs e)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AppendPrivatePath("bin");
-            RealStartup(e); 
+            RealStartup(e);
         }
         void RealStartup(StartupEventArgs e)
         {
@@ -67,7 +68,7 @@ namespace CSAuto
                 IsPortable = true;
             ParseArgs(e);
 
-            if (didCleanOld)
+            if (didCleanOld || File.Exists(Path.Combine(Log.WorkPath, "bin\\ControlzEx.dll")))
             {
                 Process.Start(Log.WorkPath + "\\bin\\updater.exe", "--cleanup \"" + Args + " --restart\"");
                 App.Current.Shutdown();
@@ -174,10 +175,10 @@ namespace CSAuto
                 else
                     RTLLanguage = false;
             }
-            catch 
-            { 
-                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en"); 
-                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en");  
+            catch
+            {
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en");
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
                 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en");
                 Settings.Default.currentLanguage = "en";
@@ -203,13 +204,13 @@ namespace CSAuto
                 {
                     Source = new Uri("pack://application:,,,/Resources/RoundedResources.xaml", UriKind.RelativeOrAbsolute)
                 });
-            if(!Settings.Default.oldScreenCaptureWay && Native.DisplayInfo.HasHDREnabledDisplay() && 
+            if (!Settings.Default.oldScreenCaptureWay && Native.DisplayInfo.HasHDREnabledDisplay() &&
                 (!settings.KeyExists("OptimizeForHDR") || !settings["OptimizeForHDR"] == false))
             {
                 Log.WriteLine("|App.cs| CSAuto not optimized for HDR, asking user to optimize");
-                if (MessageBox.Show(Languages.Strings.msgbox_hdroptimization, 
-                    Languages.Strings.title_optimization, MessageBoxButton.YesNo, 
-                    MessageBoxImage.Question) == MessageBoxResult.Yes) 
+                if (MessageBox.Show(Languages.Strings.msgbox_hdroptimization,
+                    Languages.Strings.title_optimization, MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     Settings.Default.oldScreenCaptureWay = true;
                     Settings.Default.Save();
@@ -241,16 +242,29 @@ namespace CSAuto
             string probingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\bin";
             AssemblyName assyName = new AssemblyName(args.Name);
 
-            string newPath = Path.Combine(probingPath, assyName.Name);
-            if (!newPath.EndsWith(".dll"))
+            string assemblyName = assyName.Name;
+
+            if (!assemblyName.EndsWith(".dll"))
+                assemblyName += ".dll";
+
+            if (dllLoader.FileExists(assemblyName))
             {
-                newPath += ".dll";
+                Stream file = dllLoader.LoadFile(assemblyName);
+                byte[] buf = new byte[file.Length];
+                file.Position = 0;
+                file.Read(buf, 0, buf.Length);
+
+                return Assembly.Load(buf);
             }
+
+            string newPath = Path.Combine(probingPath, assemblyName);
+
             if (File.Exists(newPath))
             {
                 Assembly assy = Assembly.LoadFile(newPath);
                 return assy;
             }
+
             return null;
         }
         private void ParseArgs(StartupEventArgs e)
@@ -322,7 +336,7 @@ namespace CSAuto
             }
             if (settings.KeyExists("AutoBuyDefuseKit"))
             {
-                if(settings["AutoBuyDefuseKit"])
+                if (settings["AutoBuyDefuseKit"])
                     buyMenu.GetItem(AutoBuyMenu.NAMES.DefuseKit, true).SetEnabled(true);
                 settings.Delete("AutoBuyDefuseKit");
             }
@@ -410,8 +424,8 @@ namespace CSAuto
 
             if (MessageBox.Show(Languages.Strings.ResourceManager.GetString("error_appcrashed"), Languages.Strings.ResourceManager.GetString("title_error") + $" ({frame.GetMethod().Name})", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
             {
-                if (Telegram.SendTextAsFile(Log.MemoryLog, "log.txt", 
-                    Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")), 
+                if (Telegram.SendTextAsFile(Log.MemoryLog, "log.txt",
+                    Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_CHAT_ID + "==")),
                     Encoding.UTF8.GetString(Convert.FromBase64String(APIKeys.REPORT_BOT_TOKEN + "==")),
                     $"CSAuto ({MainApp.FULL_VER} - {CompileInfo.Date} - {CompileInfo.Time}) crash report"))
                 {

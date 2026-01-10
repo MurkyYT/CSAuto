@@ -313,6 +313,8 @@ echo [CSAUTO] Moving updater.exe to bin folder
 move $(ProjectDir)$(OutDir)updater.exe $(ProjectDir)$(OutDir)bin\ &gt; nul
 echo [CSAUTO] Moving steamapi.exe to bin folder
 move $(ProjectDir)$(OutDir)steamapi.exe $(ProjectDir)$(OutDir)bin\ &gt; nul
-call $(SolutionDir)Misc\fldmv.exe $(ProjectDir)$(OutDir) $(ProjectDir)$(OutDir)bin</PostBuildEvent>
+call $(SolutionDir)Misc\filepack.exe $(ProjectDir)$(OutDir)bin\ $(ProjectDir)$(OutDir)bin\dlls.mpf DXGICapture.dll,steam_api.dll,Steamworks.NET.dll,updater.exe,steamapi.exe
+call $(SolutionDir)Misc\fldmv.exe $(ProjectDir)$(OutDir) $(ProjectDir)$(OutDir)bin
+call $(SolutionDir)Misc\postbuild.bat $(ProjectDir)$(OutDir)bin\ DXGICapture.dll steam_api.dll Steamworks.NET.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>

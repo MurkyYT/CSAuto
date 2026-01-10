@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.5";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "2";
+        const string DEBUG_REVISION = "3";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -298,6 +298,7 @@ namespace CSAuto
                     inLobby = false;
                     Log.WriteLine($"|MainApp.cs| Player loaded on map {gameState.Match.Map} in mode {gameState.Match.Mode}");
                     currentMapIcon = CSMap.GetMapIcon(gameState.Match.Map);
+                    Log.WriteLine($"|MainApp.cs| Current Map Icon is: {currentMapIcon}");
                     if (Properties.Settings.Default.mapNotification)
                         SendMessageToTelegram(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode), command: Commands.LoadedOnMap);
                     if (DXGIcapture.Enabled)
