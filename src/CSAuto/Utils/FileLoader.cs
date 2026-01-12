@@ -124,6 +124,8 @@ namespace Murky.Utils
 
             fileData.Dispose();
 
+            memoryStream.Position = 0;
+
             return memoryStream;
         }
 
@@ -160,6 +162,8 @@ namespace Murky.Utils
                 }
 
                 cachedFiles[name] = memoryStream;
+
+                memoryStream.Position = 0;
 
                 files.Add(memoryStream);
             }

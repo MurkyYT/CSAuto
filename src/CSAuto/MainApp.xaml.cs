@@ -419,27 +419,35 @@ namespace CSAuto
         //}
         public string FormatString(string original, GameState gameState)
         {
-            if (gameState.Player != null)
-            {
-                return original
-                    .Replace("{FriendCode}", CSFriendCode.Encode(gameState.MySteamID))
-                    .Replace("{Gamemode}", gameState.Match.Mode.ToString())
-                    .Replace("{Map}", gameState.Match.Map)
-                    .Replace("{TeamScore}", gameState.Player.Team == Team.CT ? gameState.Match.CTScore.ToString() : gameState.Match.TScore.ToString())
-                    .Replace("{MyTeam}", gameState.Player.Team == null ? Team.T.ToString() : gameState.Player.Team.ToString())
-                    .Replace("{RoundState}", gameState.Match.Phase == Phase.Warmup ? "Warmup" : gameState.Round.Phase.ToString())
-                    .Replace("{MatchState}", gameState.Match.Phase.ToString())
-                    .Replace("{EnemyScore}", gameState.Player.Team == Team.CT ? gameState.Match.TScore.ToString() : gameState.Match.CTScore.ToString())
-                    .Replace("{EnemyTeam}", gameState.Player.Team == Team.CT ? Team.T.ToString() : Team.CT.ToString())
-                    .Replace("{TScore}", gameState.Match.TScore.ToString())
-                    .Replace("{CTScore}", gameState.Match.CTScore.ToString())
-                    .Replace("{SteamID}", gameState.MySteamID)
-                    .Replace("{Name}", gameState.Player.Name)
-                    .Replace("{Kills}", gameState.Player.Kills.ToString())
-                    .Replace("{Deaths}", gameState.Player.Deaths.ToString())
-                    .Replace("{MVPS}", gameState.Player.MVPS.ToString());
-            }
-            return original;
+            if (gameState.Player.MVPS == -1 && original.Contains("{MVPS}"))
+                return string.Empty;
+
+            if (gameState.Player.Deaths == -1 && original.Contains("{Deaths}"))
+                return string.Empty;
+
+            if (gameState.Player.Kills == -1 && original.Contains("{Kills}"))
+                return string.Empty;
+
+            if (gameState.Player.Name == null && original.Contains("{Name}"))
+                return string.Empty;
+
+            return original
+                .Replace("{FriendCode}", CSFriendCode.Encode(gameState.MySteamID))
+                .Replace("{SteamID}", gameState.MySteamID)
+                .Replace("{Gamemode}", gameState.Match.Mode.ToString())
+                .Replace("{Map}", gameState.Match.Map)
+                .Replace("{RoundState}", gameState.Match.Phase == Phase.Warmup ? "Warmup" : gameState.Round.Phase.ToString())
+                .Replace("{MatchState}", gameState.Match.Phase.ToString())
+                .Replace("{TScore}", gameState.Match.TScore.ToString())
+                .Replace("{CTScore}", gameState.Match.CTScore.ToString())
+                .Replace("{MyTeam}", gameState.Player.Team == null ? string.Empty : gameState.Player.Team.ToString())
+                .Replace("{EnemyScore}", gameState.Player.Team == Team.CT ? gameState.Match.TScore.ToString() : gameState.Match.CTScore.ToString())
+                .Replace("{EnemyTeam}", gameState.Player.Team == null ? string.Empty : gameState.Player.Team == Team.CT ? Team.T.ToString() : Team.CT.ToString())
+                .Replace("{TeamScore}", gameState.Player.Team == Team.CT ? gameState.Match.CTScore.ToString() : gameState.Match.TScore.ToString())
+                .Replace("{Name}", gameState.Player.Name)
+                .Replace("{Kills}", gameState.Player.Kills.ToString())
+                .Replace("{Deaths}", gameState.Player.Deaths.ToString())
+                .Replace("{MVPS}", gameState.Player.MVPS.ToString());
         }
 
         public string LimitLength(string str, int length)

@@ -249,12 +249,8 @@ namespace CSAuto
 
             if (dllLoader.FileExists(assemblyName))
             {
-                Stream file = dllLoader.LoadFile(assemblyName);
-                byte[] buf = new byte[file.Length];
-                file.Position = 0;
-                file.Read(buf, 0, buf.Length);
-
-                return Assembly.Load(buf);
+                MemoryStream file = dllLoader.LoadFile(assemblyName) as MemoryStream;
+                return Assembly.Load(file.ToArray());
             }
 
             string newPath = Path.Combine(probingPath, assemblyName);

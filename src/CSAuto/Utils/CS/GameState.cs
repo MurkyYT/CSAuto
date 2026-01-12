@@ -87,31 +87,23 @@ namespace Murky.Utils.CS
                 CurrentRound = GetRound(),
                 Bombstate = GetRoundBombState()
             };
-            if (HasPlayer())
+            Player = new Player()
             {
-                Player = new Player()
-                {
-                    Name = GetPlayerName(),
-                    CurrentActivity = GetActivity(),
-                    SteamID = GetSteamID(),
-                    Team = GetTeam(),
-                    Health = GetHealth(),
-                    Armor = GetArmor(),
-                    Money = GetMoney(),
-                    Kills = GetPlayerKills(),
-                    Deaths = GetPlayerDeaths(),
-                    MVPS = GetPlayerMVPS(),
-                    HasHelmet = GetHelmetState(),
-                    HasDefuseKit = HasDefuseKit()
-                };
-                Player.SetWeapons(JSON);
-                IsDead = Player.SteamID != MySteamID;
-            }
-            else
-            {
-                Player = new Player();
-                IsDead = true;
-            }
+                Name = GetPlayerName(),
+                CurrentActivity = GetActivity(),
+                SteamID = GetSteamID(),
+                Team = GetTeam(),
+                Health = GetHealth(),
+                Armor = GetArmor(),
+                Money = GetMoney(),
+                Kills = GetPlayerKills(),
+                Deaths = GetPlayerDeaths(),
+                MVPS = GetPlayerMVPS(),
+                HasHelmet = GetHelmetState(),
+                HasDefuseKit = HasDefuseKit()
+            };
+            Player.SetWeapons(JSON);
+            IsDead = Player.SteamID != MySteamID;
             IsSpectating = CheckIfSpectator();
         }
 

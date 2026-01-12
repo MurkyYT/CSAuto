@@ -2,8 +2,8 @@ namespace CSAuto
 {
     public static class CompileInfo
     {
-        public static string Date = "11/01/26";
-        public static string Time = "01:07:09";
-		public static string GitHash = "f235170";
+        public static string Date = "12/01/26";
+        public static string Time = "12:32:02";
+		public static string GitHash = "c463972";
     }
 }
