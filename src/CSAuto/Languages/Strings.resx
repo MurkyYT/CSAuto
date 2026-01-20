@@ -797,4 +797,7 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="color_sienna" xml:space="preserve">
     <value>Sienna</value>
   </data>
+  <data name="discord_mapname" xml:space="preserve">
+    <value>{MapName} - Display name of current map</value>
+  </data>
 </root>

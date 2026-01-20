@@ -422,6 +422,10 @@
                             <TextBlock Text="{x:Static p:Strings.discord_deaths}"/>
                             <TextBlock Text="{x:Static p:Strings.discord_mvps}"/>
                         </StackPanel>
+                        <StackPanel Orientation="Vertical"
+                            Margin="10,0,0,0">
+                            <TextBlock Text="{x:Static p:Strings.discord_mapname}"/>
+                        </StackPanel>
                     </StackPanel>
                     <TextBlock Text="{x:Static p:Strings.discord_result}"
                             HorizontalAlignment="Center"/>

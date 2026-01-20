@@ -797,4 +797,7 @@
   <data name="color_sienna" xml:space="preserve">
     <value>Сиенна</value>
   </data>
+  <data name="discord_mapname" xml:space="preserve">
+    <value>{MapName} - Отображаемое название текущей карты</value>
+  </data>
 </root>

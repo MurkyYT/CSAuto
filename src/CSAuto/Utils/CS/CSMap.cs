@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace Murky.Utils.CS
 {
     public static class CSMap
     {
         static readonly Dictionary<string, string> MapIcons = new Dictionary<string, string>();
+        static readonly Dictionary<string, string> MapDisplayNames = new Dictionary<string, string>();
         readonly static WebClient client = new WebClient();
         private static bool RemoteFileExists(string url)
         {
@@ -48,7 +51,7 @@ namespace Murky.Utils.CS
                         try
                         {
                             string url = $"https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/{mapName}.png";
-                            if(RemoteFileExists(url))
+                            if (RemoteFileExists(url))
                                 MapIcons[mapName] = url;
                             else
                                 throw new Exception();
@@ -58,8 +61,8 @@ namespace Murky.Utils.CS
                         catch { Log.WriteLine($"|CSMap.cs| Couldn't load official map icon for '{mapName}'"); }
                     }
 
-                    if(result == null) 
-                    { 
+                    if (result == null)
+                    {
                         string info = client.DownloadString($"https://steamcommunity.com/workshop/browse/?appid=730&searchtext={mapName}");
                         string[] splt = info.Split(new string[] { "<div class=\"workshopBrowseItems\">" }, StringSplitOptions.RemoveEmptyEntries);
                         if (splt.Length > 1)
@@ -79,6 +82,27 @@ namespace Murky.Utils.CS
                 {
                     return null;
                 }
+            }
+        }
+
+        public static string GetDisplayName(string map)
+        {
+            lock (client)
+            {
+                if (MapDisplayNames.ContainsKey(map))
+                    return MapDisplayNames[map];
+
+                string info = client.DownloadString($"https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/refs/heads/main/data/available.json");
+
+                JObject json = (JObject)JObject.Parse(info)["maps"];
+
+                string result = map;
+
+                if (json.ContainsKey(map))
+                    result = json[map]["display_name"].ToString();
+
+                MapDisplayNames[map] = result;
+                return result;
             }
         }
     }
