@@ -176,14 +176,14 @@ namespace CSAuto
             { NAMES.Smoke,new object[] { "weapon_smokegrenade", 300 } },
             { NAMES.Decoy,new object[] { "weapon_decoy", 50 } },
             { NAMES.Nova,new object[] { "weapon_nova", 1050 } },
-            { NAMES.MP7,new object[] { "weapon_mp7", 1500 } },
+            { NAMES.MP7,new object[] { "weapon_mp7", 1400 } },
             { NAMES.Negev,new object[] { "weapon_negev", 1700 } },
             { NAMES.MAG7,new object[] { "weapon_mag7", 1300 } },
-            { NAMES.PPBizon,new object[] { "weapon_bizon", 1400 } },
+            { NAMES.PPBizon,new object[] { "weapon_bizon", 1300 } },
             { NAMES.UMP45,new object[] { "weapon_ump45", 1200 } },
             { NAMES.M249,new object[] { "weapon_m249", 5200 } },
             { NAMES.XM1014,new object[] { "weapon_xm1014", 2000 } },
-            { NAMES.MP5SD,new object[] { "weapon_mp5sd", 1500 } },
+            { NAMES.MP5SD,new object[] { "weapon_mp5sd", 1400 } },
             { NAMES.P90,new object[] { "weapon_p90", 2350 } },
             { NAMES.MP9,new object[] { "weapon_mp9", 1250 } }
         };

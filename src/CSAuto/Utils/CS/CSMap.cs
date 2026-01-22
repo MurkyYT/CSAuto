@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace Murky.Utils.CS
 {
@@ -89,20 +88,24 @@ namespace Murky.Utils.CS
         {
             lock (client)
             {
-                if (MapDisplayNames.ContainsKey(map))
-                    return MapDisplayNames[map];
+                try
+                {
+                    if (MapDisplayNames.ContainsKey(map))
+                        return MapDisplayNames[map];
 
-                string info = client.DownloadString($"https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/refs/heads/main/data/available.json");
+                    string info = client.DownloadString($"https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/refs/heads/main/data/available.json");
 
-                JObject json = (JObject)JObject.Parse(info)["maps"];
+                    JObject json = (JObject)JObject.Parse(info)["maps"];
 
-                string result = map;
+                    string result = map;
 
-                if (json.ContainsKey(map))
-                    result = json[map]["display_name"].ToString();
+                    if (json.ContainsKey(map))
+                        result = json[map]["display_name"].ToString();
 
-                MapDisplayNames[map] = result;
-                return result;
+                    MapDisplayNames[map] = result;
+                    return result;
+                }
+                catch { return map; }
             }
         }
     }
