@@ -1,3 +1,14 @@
+### Version 2.2.4 changelog
+- Fixed a race condition with portable settings
+- Some DXGI edge cases fixes
+- Added more debug information
+- Decided to remove the mobile app entirely as it wasn't really used and mostly broken 
+- Discord RPC fixes
+- Some UI changes
+- Map Icons fixes, using [cs2-map-icons](https://github.com/MurkyYT/cs2-map-icons)
+
+---
+
 ### Version 2.2.3 changelog
 - Added 15 seconds check in discord activity update, shouldn't spam discord now
 - Made changelog look and feel better
