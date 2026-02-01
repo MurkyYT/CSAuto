@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Windows.Media.Control;
 
 namespace Murky.Utils
@@ -47,14 +48,20 @@ namespace Murky.Utils
 
             return mediaProperties?.Artist ?? string.Empty;
         }
-        public static bool IsPlaying()
+        public static async Task<bool> IsPlaying()
         {
-            var sessionManager = GlobalSystemMediaTransportControlsSessionManager.RequestAsync()?.GetResults();
-            var session = sessionManager?.GetCurrentSession();
-            if (session == null)
+            try
+            {
+                var sessionManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+                var session = sessionManager?.GetCurrentSession();
+                if (session == null)
+                    return false;
+                return session.GetPlaybackInfo().PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing;
+            }
+            catch
+            {
                 return false;
-
-            return session.GetPlaybackInfo().PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing;
+            }
         }
     }
 }

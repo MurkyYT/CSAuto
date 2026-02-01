@@ -339,9 +339,9 @@ namespace CSAuto
 
                 if (csActive && !gameState.IsSpectating)
                 {
-                    if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu && csActive)
+                    if (Properties.Settings.Default.autoReload && lastActivity != Activity.Menu)
                         TryToAutoReload();
-                    if (lastActivity == Activity.Playing && csActive && Properties.Settings.Default.autoBuyEnabled && autoBuy)
+                    if (lastActivity == Activity.Playing && Properties.Settings.Default.autoBuyEnabled && autoBuy)
                         AutoBuy();
                     if (Properties.Settings.Default.autoPausePlaySpotify)
                         AutoPauseResumeMusic();
@@ -706,51 +706,27 @@ namespace CSAuto
                     }
                     else if (csRunning && !inGame)
                     {
+                        Party party;
                         if (Properties.Settings.Default.enableLobbyCount)
                         {
                             string steamworksRes = GetLobbyInfoFromSteamworks();
                             string lobbyid = steamworksRes.Split('(')[1].Split(')')[0];
                             string partyMax = steamworksRes.Split('/')[1].Split('(')[0];
                             string partysize = steamworksRes.Split('/')[0];
-                            RPCClient.SetPresence(new RichPresence()
-                            {
-                                Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                                State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
-                                Party = new Party()
-                                { ID = lobbyid == "0" ? "0" : lobbyid, Max = int.Parse(partyMax), Size = int.Parse(partysize) },
-                                Assets = new Assets()
-                                {
-                                    LargeImageKey = "cs2_icon",
-                                    LargeImageText = "Menu",
-                                    SmallImageKey = "cs2_home"
-                                },
-                                Timestamps = new Timestamps()
-                                {
-                                    Start = startTimeStamp
-                                },
-                                Buttons = GetDiscordRPCButtons()
-                            });
+                            party = new Party() { ID = lobbyid == "0" ? "0" : lobbyid, Max = int.Parse(partyMax), Size = int.Parse(partysize) };
                         }
                         else
+                            party = new Party() { ID = "", Size = 0, Max = 0 };
+
+                        RPCClient.SetPresence(new RichPresence()
                         {
-                            RPCClient.SetPresence(new RichPresence()
-                            {
-                                Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
-                                State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
-                                Party = new Party() { ID = "", Size = 0, Max = 0 },
-                                Assets = new Assets()
-                                {
-                                    LargeImageKey = "cs2_icon",
-                                    LargeImageText = "Menu",
-                                    SmallImageKey = "cs2_home"
-                                },
-                                Timestamps = new Timestamps()
-                                {
-                                    Start = startTimeStamp
-                                },
-                                Buttons = GetDiscordRPCButtons()
-                            });
-                        }
+                            Details = LimitLength(FormatString(Properties.Settings.Default.lobbyDetails, gameState), 128),
+                            State = LimitLength(FormatString(Properties.Settings.Default.lobbyState, gameState), 128),
+                            Party = party,
+                            Assets = new Assets() { LargeImageKey = "cs2_icon", LargeImageText = "Menu", SmallImageKey = "cs2_home" },
+                            Timestamps = new Timestamps() { Start = startTimeStamp },
+                            Buttons = GetDiscordRPCButtons()
+                        });
                     }
                     else if (RPCClient.IsInitialized && !csRunning)
                     {
@@ -766,23 +742,23 @@ namespace CSAuto
 
         private void AutoPauseResumeMusic()
         {
-            if (gameState.Player.CurrentActivity == Activity.Playing)
+            bool shouldPause = gameState.Player.CurrentActivity == Activity.Playing
+                && gameState.Player.Health > 0
+                && gameState.Player.SteamID == gameState.MySteamID;
+
+            bool shouldResume = !shouldPause && gameState.Player.CurrentActivity != Activity.Textinput;
+
+            if (shouldPause || shouldResume)
             {
-                if (gameState.Player.Health > 0 && gameState.Player.SteamID == gameState.MySteamID)
-                {
+                bool isPlaying = Music.IsPlaying().GetAwaiter().GetResult();
+
+                if (shouldPause && isPlaying)
                     Music.Pause();
-                }
-                else if (gameState.Player.SteamID != gameState.MySteamID ||
-                    (gameState.Player.Health <= 0 && gameState.Player.SteamID == gameState.MySteamID))
-                {
+                else if (shouldResume && !isPlaying)
                     Music.Resume();
-                }
-            }
-            else if (gameState.Player.CurrentActivity != Activity.Textinput)
-            {
-                Music.Resume();
             }
         }
+
         private void SendMessageToTelegram(string message, Commands command = Commands.None)
         {
             new Thread(() =>
@@ -817,11 +793,23 @@ namespace CSAuto
 
                             if (steamAPIServer == null && Properties.Settings.Default.enableLobbyCount)
                             {
-                                steamAPIServer = new Process() { StartInfo = { FileName = $"{Log.WorkPath}\\bin\\steamapi.exe" } };
-                                if (!steamAPIServer.Start() || !File.Exists($"{Log.WorkPath}\\bin\\steamapi.exe"))
+                                string steamAPIPath = $"{Log.WorkPath}\\bin\\steamapi.exe";
+                                if (!File.Exists(steamAPIPath))
                                 {
-                                    Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe'");
-                                    steamAPIServer = null;
+                                    Log.WriteLine("|MainApp.cs| Couldn't launch 'steamapi.exe', file not found");
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        steamAPIServer = new Process() { StartInfo = { FileName = steamAPIPath } };
+                                        steamAPIServer.Start();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Log.WriteLine($"|MainApp.cs| Couldn't launch 'steamapi.exe' - {ex.Message}");
+                                        steamAPIServer = null;
+                                    }
                                 }
                             }
                             NativeMethods.OptimizeMemory();
@@ -867,25 +855,27 @@ namespace CSAuto
         private string GetLobbyInfoFromSteamworks()
         {
             string res = "0/0(0)";
-            if (Properties.Settings.Default.steamAPIkey == "" || Properties.Settings.Default.steamAPIkey == null)
-                return res;
-            var pipeClient =
-                    new NamedPipeClientStream(".", "csautopipe",
-                        PipeDirection.InOut, PipeOptions.None,
-                        TokenImpersonationLevel.Impersonation);
-            pipeClient.Connect();
 
-            var ss = new StreamString(pipeClient);
-            if (ss.ReadString() == "I am the one true server!")
+            if (string.IsNullOrEmpty(Properties.Settings.Default.steamAPIkey))
+                return res;
+
+            using (var pipeClient = new NamedPipeClientStream(".", "csautopipe",
+                 PipeDirection.InOut, PipeOptions.None,
+                 TokenImpersonationLevel.Impersonation))
             {
-                ss.WriteString(GetLobbyID());
-                res = ss.ReadString();
+                pipeClient.Connect();
+
+                var ss = new StreamString(pipeClient);
+                if (ss.ReadString() == "I am the one true server!")
+                {
+                    ss.WriteString(GetLobbyID());
+                    res = ss.ReadString();
+                }
+                else
+                {
+                    Log.WriteLine("|MainApp.cs| Server could not be verified.");
+                }
             }
-            else
-            {
-                Log.WriteLine("|MainApp.cs| Server could not be verified.");
-            }
-            pipeClient.Close();
             return res;
         }
 
@@ -992,37 +982,37 @@ namespace CSAuto
             catch { return; }
         }
 
-        private void LeftMouseDown(int x, int y)
+        private void LeftMouseDown()
         {
             if (Properties.Settings.Default.oldMouseInput)
             {
                 Log.WriteLine("|MainApp.cs| Sending mouse down with mouse_event");
                 NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTDOWN,
-                            x,
-                            y,
+                            0,
+                            0,
                             0, 0);
             }
             else
             {
                 Log.WriteLine("|MainApp.cs| Sending mouse down with SendInput");
-                Input.LMouseDown(x, y);
+                Input.LMouseDown();
             }
         }
 
-        private void LeftMouseUp(int x, int y)
+        private void LeftMouseUp()
         {
             if (Properties.Settings.Default.oldMouseInput)
             {
                 Log.WriteLine("|MainApp.cs| Sending mouse up with mouse_event");
                 NativeMethods.mouse_event(NativeMethods.MOUSEEVENTF_LEFTUP,
-                        x,
-                        y,
+                        0,
+                        0,
                         0, 0);
             }
             else
             {
                 Log.WriteLine("|MainApp.cs| Sending mouse up with SendInput");
-                Input.LMouseUp(x, y);
+                Input.LMouseUp();
             }
         }
 
@@ -1052,9 +1042,9 @@ namespace CSAuto
         {
             NativeMethods.SetCursorPos(xpos, ypos);
             Thread.Sleep(100);
-            LeftMouseDown(xpos, ypos);
+            LeftMouseDown();
             Thread.Sleep(50);
-            LeftMouseUp(xpos, ypos);
+            LeftMouseUp();
             Log.WriteLine($"|MainApp.cs| Left clicked at X:{xpos} Y:{ypos}");
         }
         private void AutoAcceptMatch()
@@ -1092,28 +1082,24 @@ namespace CSAuto
                                 System.Windows.Media.Color.FromArgb(pixelColor.A, pixelColor.R, pixelColor.G, pixelColor.B)
                             );
                     }
-                    bool found = false;
                     int count = 0;
                     int yStart = bitmap.Height - 1;
                     int xMiddle = csResolution.Width / 2;
-                    for (int y = yStart; y >= 0 && !found; y--)
+                    for (int y = yStart; y >= 0; y--)
                     {
                         Color pixelColor = bitmap.GetPixel(xMiddle, y);
                         if (pixelColor == BUTTON_COLOR || pixelColor == ACTIVE_BUTTON_COLOR)
                         {
+                            count++;
                             if (count >= MIN_AMOUNT_OF_PIXELS_TO_ACCEPT) /*
                                         * just in case the program finds the 0:20 timer tick
                                         * didnt happen for a while but can happen still
                                         * happend while trying to create a while loop to search for button
                                         */
                             {
-                                var clickpoint = new Point(
-                                    csResolution.X + xMiddle,
-                                    y);
-                                int X = clickpoint.X;
-                                int Y = clickpoint.Y;
+                                int X = csResolution.X + xMiddle;
+                                int Y = csResolution.Y + y;
                                 Log.WriteLine($"|MainApp.cs| Found accept button at X:{X} Y:{Y} Color:{pixelColor}", caller: "AutoAcceptMatch");
-                                found = true;
                                 if (Properties.DebugSettings.Default.pressAcceptButton)
                                 {
                                     LeftMouseClick(X, Y);
@@ -1139,9 +1125,14 @@ namespace CSAuto
                                         }
                                     }
                                 }
+                                else
+                                    NativeMethods.SetCursorPos(X, Y);
+
+                                break;
                             }
-                            count++;
                         }
+                        else
+                            count = 0;
                     }
                 }
             }
@@ -1175,43 +1166,40 @@ namespace CSAuto
         private Bitmap CaptureUsingDXGI()
         {
             IntPtr handle = DXGIcapture.GetCapture();
-
             if (handle == IntPtr.Zero)
             {
                 ReinitializeDXGI();
                 return null;
             }
-
             try
             {
-                Bitmap origBitmap = Image.FromHbitmap(handle);
-
-                int realX = Math.Max(0, (int)(csResolution.X - SystemParameters.VirtualScreenLeft));
-                int realY = Math.Max(0, (int)(csResolution.Y - SystemParameters.VirtualScreenTop));
-                int diffX = realX - (int)(csResolution.X - SystemParameters.VirtualScreenLeft);
-                int diffY = realY - (int)(csResolution.Y - SystemParameters.VirtualScreenTop);
-                int sourceWidth = csResolution.Width - diffX;
-                int sourceHeight = csResolution.Height - diffY;
-
-                if (sourceWidth <= 0 || sourceHeight <= 0 ||
-                        realX >= origBitmap.Width || realY >= origBitmap.Height)
+                using (Bitmap origBitmap = Image.FromHbitmap(handle))
                 {
-                    ReinitializeDXGI();
-                    return null;
-                }
+                    int realX = Math.Max(0, (int)(csResolution.X - SystemParameters.VirtualScreenLeft));
+                    int realY = Math.Max(0, (int)(csResolution.Y - SystemParameters.VirtualScreenTop));
+                    int diffX = realX - (int)(csResolution.X - SystemParameters.VirtualScreenLeft);
+                    int diffY = realY - (int)(csResolution.Y - SystemParameters.VirtualScreenTop);
+                    int sourceWidth = csResolution.Width - diffX;
+                    int sourceHeight = csResolution.Height - diffY;
 
-                Bitmap bitmap = new Bitmap(csResolution.Width, csResolution.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    g.Clear(Color.Transparent);
-                    g.DrawImage(origBitmap,
-                        new Rectangle(diffX, diffY, sourceWidth, sourceHeight),
-                        new Rectangle(realX, realY, sourceWidth, sourceHeight),
-                        GraphicsUnit.Pixel);
-                }
-                origBitmap.Dispose();
+                    if (sourceWidth <= 0 || sourceHeight <= 0 ||
+                            realX >= origBitmap.Width || realY >= origBitmap.Height)
+                    {
+                        ReinitializeDXGI();
+                        return null;
+                    }
 
-                return bitmap;
+                    Bitmap bitmap = new Bitmap(csResolution.Width, csResolution.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        g.Clear(Color.Transparent);
+                        g.DrawImage(origBitmap,
+                            new Rectangle(diffX, diffY, sourceWidth, sourceHeight),
+                            new Rectangle(realX, realY, sourceWidth, sourceHeight),
+                            GraphicsUnit.Pixel);
+                    }
+                    return bitmap;
+                }
             }
             catch (OutOfMemoryException)
             {
@@ -1273,14 +1261,12 @@ namespace CSAuto
         private void CheckForDuplicates()
         {
             var currentProcess = Process.GetCurrentProcess();
-            var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
-            if (duplicates.Any())
+            var duplicates = Process.GetProcessesByName(currentProcess.ProcessName)
+                .Where(o => o.Id != currentProcess.Id).ToList();
+            foreach (var dupl in duplicates)
             {
-                duplicates.ToList().ForEach(dupl =>
-                {
-                    if (dupl != null && !dupl.HasExited)
-                        dupl.Kill();
-                });
+                if (!dupl.HasExited)
+                    dupl.Kill();
             }
         }
         public string GetLocalIPAddress()

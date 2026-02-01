@@ -432,6 +432,24 @@ namespace Murky.Utils
 
             SendInput(1, mi, Marshal.SizeOf(mi[0]));
         }
+        public static void LMouseUp()
+        {
+            NativeInput[] mi = new NativeInput[1];
+            mi[0].type = (int)InputType.Mouse;
+            mi[0].u = new InputUnion
+            {
+                mi = new MouseInput
+                {
+                    dx = 0,
+                    dy = 0,
+                    dwFlags = NativeMethods.MOUSEEVENTF_LEFTUP,
+                    dwExtraInfo = GetMessageExtraInfo()
+                }
+            };
+
+            SendInput(1, mi, Marshal.SizeOf(mi[0]));
+        }
+
         public static void LMouseDown(int dx, int dy)
         {
             NativeInput[] mi = new NativeInput[1];
@@ -443,6 +461,24 @@ namespace Murky.Utils
                     dx = dx,
                     dy = dy,
                     dwFlags = NativeMethods.MOUSEEVENTF_LEFTDOWN | NativeMethods.MOUSEEVENTF_ABSOLUTE,
+                    dwExtraInfo = GetMessageExtraInfo()
+                }
+            };
+
+            SendInput(1, mi, Marshal.SizeOf(mi[0]));
+        }
+
+        public static void LMouseDown()
+        {
+            NativeInput[] mi = new NativeInput[1];
+            mi[0].type = (int)InputType.Mouse;
+            mi[0].u = new InputUnion
+            {
+                mi = new MouseInput
+                {
+                    dx = 0,
+                    dy = 0,
+                    dwFlags = NativeMethods.MOUSEEVENTF_LEFTDOWN,
                     dwExtraInfo = GetMessageExtraInfo()
                 }
             };
