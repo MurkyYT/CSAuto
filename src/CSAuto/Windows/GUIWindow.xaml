@@ -750,12 +750,17 @@
                             VerticalScrollBarVisibility="Auto"
                             TextChanged="DebugBox_TextChanged"
                             Loaded="DebugBox_Loaded"/>
-                    <TextBlock x:Name="DebugPixelColor"
-                            Text="Pixel Color at (x,y): res"
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            VerticalAlignment="Bottom"
-                            Margin="0,0,0,15"/>
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,0,15">
+                        <TextBlock x:Name="DebugPixelColor"
+                            Text="Pixel Color at (x,y): res"/>
+                        <Border BorderThickness="1" BorderBrush="Black" Margin="4,0,0,0">
+                            <Border x:Name="DebugPixelColorValue" Width="16" Height="16" Background="White"/>
+                        </Border>
+                    </StackPanel>
                     <TextBlock Text="Latest Captured Frame:"
                             Grid.Row="1"
                             Grid.Column="2"
