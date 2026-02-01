@@ -1276,7 +1276,11 @@ namespace CSAuto
             var duplicates = Process.GetProcessesByName(currentProcess.ProcessName).Where(o => o.Id != currentProcess.Id);
             if (duplicates.Any())
             {
-                duplicates.ToList().ForEach(dupl => dupl.Kill());
+                duplicates.ToList().ForEach(dupl =>
+                {
+                    if (dupl != null && !dupl.HasExited)
+                        dupl.Kill();
+                });
             }
         }
         public string GetLocalIPAddress()

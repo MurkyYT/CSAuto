@@ -757,9 +757,7 @@
                                 Margin="0,0,0,15">
                         <TextBlock x:Name="DebugPixelColor"
                             Text="Pixel Color at (x,y): res"/>
-                        <Border BorderThickness="1" BorderBrush="Black" Margin="4,0,0,0">
-                            <Border x:Name="DebugPixelColorValue" Width="16" Height="16" Background="White"/>
-                        </Border>
+                        <Border x:Name="DebugPixelColorValue" Width="16" Height="16" Background="White" BorderThickness="1" BorderBrush="Black" Margin="4,0,0,0"/>
                     </StackPanel>
                     <TextBlock Text="Latest Captured Frame:"
                             Grid.Row="1"
