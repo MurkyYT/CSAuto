@@ -800,4 +800,10 @@
   <data name="discord_mapname" xml:space="preserve">
     <value>{MapName} - שם תצוגה של המפה הנוכחית</value>
   </data>
+  <data name="error_killprocess" xml:space="preserve">
+    <value>הגישה נדחתה בעת ניסיון לסגור תהליך כפול של CSAuto (PID: {0}). אנא סגור אותו ידנית או הפעל את CSAuto כמנהל.</value>
+  </data>
+  <data name="error_killprocessgeneral" xml:space="preserve">
+    <value>נכשל בסגירת תהליך כפול: {0}</value>
+  </data>
 </root>

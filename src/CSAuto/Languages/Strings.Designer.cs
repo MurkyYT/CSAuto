@@ -952,6 +952,24 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access denied when trying to kill duplicate CSAuto process (PID: {0}). Please close it manually or run CSAuto as administrator..
+        /// </summary>
+        public static string error_killprocess {
+            get {
+                return ResourceManager.GetString("error_killprocess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to kill duplicate process: {0}.
+        /// </summary>
+        public static string error_killprocessgeneral {
+            get {
+                return ResourceManager.GetString("error_killprocessgeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t load the changelog, please check your internet connection.
         /// </summary>
         public static string error_loadchangelog {

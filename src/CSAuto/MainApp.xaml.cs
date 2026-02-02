@@ -42,7 +42,7 @@ namespace CSAuto
         #region Constants
         public const string VER = "2.2.6";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
-        const string DEBUG_REVISION = "1";
+        const string DEBUG_REVISION = "2";
         const string GAME_PROCCES_NAME = "cs2";
         const string GAME_WINDOW_NAME = "Counter-Strike 2";
         const string GAME_CLASS_NAME = "SDL_app";
@@ -1265,8 +1265,30 @@ namespace CSAuto
                 .Where(o => o.Id != currentProcess.Id).ToList();
             foreach (var dupl in duplicates)
             {
-                if (!dupl.HasExited)
-                    dupl.Kill();
+                try
+                {
+                    if (!dupl.HasExited)
+                        dupl.Kill();
+                }
+                catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 5) // ERROR_ACCESS_DENIED
+                {
+                    MessageBox.Show(
+                        string.Format(Languages.Strings.ResourceManager.GetString("error_killprocess"), dupl.Id),
+                        Languages.Strings.ResourceManager.GetString("title_warning"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    Log.WriteLine($"|MainApp.cs| Access denied killing duplicate process (PID: {dupl.Id})");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        string.Format(Languages.Strings.ResourceManager.GetString("error_killprocessgeneral"), ex.Message),
+                        Languages.Strings.ResourceManager.GetString("title_error"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    Log.Error($"|MainApp.cs| Error killing duplicate process (PID: {dupl.Id}): {ex}");
+                    Process.GetCurrentProcess().Kill();
+                }
             }
         }
         public string GetLocalIPAddress()

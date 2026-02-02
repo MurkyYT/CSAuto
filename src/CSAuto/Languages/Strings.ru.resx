@@ -800,4 +800,10 @@
   <data name="discord_mapname" xml:space="preserve">
     <value>{MapName} - Отображаемое название текущей карты</value>
   </data>
+  <data name="error_killprocess" xml:space="preserve">
+    <value>Доступ запрещен при попытке закрыть дубликат процесса CSAuto (PID: {0}). Пожалуйста, закройте его вручную или запустите CSAuto от имени администратора.</value>
+  </data>
+  <data name="error_killprocessgeneral" xml:space="preserve">
+    <value>Не удалось закрыть дубликат процесса: {0}</value>
+  </data>
 </root>

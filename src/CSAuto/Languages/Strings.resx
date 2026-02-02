@@ -800,4 +800,10 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="discord_mapname" xml:space="preserve">
     <value>{MapName} - Display name of current map</value>
   </data>
+  <data name="error_killprocess" xml:space="preserve">
+    <value>Access denied when trying to kill duplicate CSAuto process (PID: {0}). Please close it manually or run CSAuto as administrator.</value>
+  </data>
+  <data name="error_killprocessgeneral" xml:space="preserve">
+    <value>Failed to kill duplicate process: {0}</value>
+  </data>
 </root>
