@@ -20,7 +20,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
-using Commands = CSAuto.Shared.NetworkTypes.Commands;
 using Murky.Utils;
 using Murky.Utils.CS;
 using System.Net.Sockets;
@@ -279,17 +278,17 @@ namespace CSAuto
                 //}
                 if (bombState == null && currentBombState == BombState.Planted && Properties.Settings.Default.bombNotification)
                 {
-                    SendMessageToTelegram($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})", command: Commands.Bomb);
+                    SendMessageToTelegram($"{Languages.Strings.ResourceManager.GetString("server_bombplanted")} ({DateTime.Now})");
                 }
                 if (bombState == BombState.Planted && currentBombState != BombState.Planted && Properties.Settings.Default.bombNotification)
                 {
                     switch (currentBombState)
                     {
                         case BombState.Defused:
-                            SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_bombdefuse"), command: Commands.Bomb);
+                            SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_bombdefuse"));
                             break;
                         case BombState.Exploded:
-                            SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_bombexplode"), command: Commands.Bomb);
+                            SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_bombexplode"));
                             break;
                     }
                 }
@@ -300,7 +299,7 @@ namespace CSAuto
                     currentMapIcon = CSMap.GetMapIcon(gameState.Match.Map);
                     Log.WriteLine($"|MainApp.cs| Current Map Icon is: {currentMapIcon}");
                     if (Properties.Settings.Default.mapNotification)
-                        SendMessageToTelegram(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode), command: Commands.LoadedOnMap);
+                        SendMessageToTelegram(string.Format(Languages.Strings.ResourceManager.GetString("server_loadedmap"), gameState.Match.Map, gameState.Match.Mode));
                     if (DXGIcapture.Enabled)
                     {
                         DXGIcapture.DeInit();
@@ -316,7 +315,7 @@ namespace CSAuto
                     Log.WriteLine($"|MainApp.cs| Player is back in main menu");
                     if (Properties.Settings.Default.lobbyNotification)
                     {
-                        SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_loadedlobby"), command: Commands.LoadedInLobby);
+                        SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_loadedlobby"));
                     }
                     if (!DXGIcapture.Enabled && !Properties.Settings.Default.oldScreenCaptureWay)
                     {
@@ -759,7 +758,7 @@ namespace CSAuto
             }
         }
 
-        private void SendMessageToTelegram(string message, Commands command = Commands.None)
+        private void SendMessageToTelegram(string message)
         {
             new Thread(() =>
             {
@@ -898,7 +897,7 @@ namespace CSAuto
                 Log.WriteLine($"|MainApp.cs| CS Exit Code: {csProcess.ExitCode}");
 
                 if (csProcess.ExitCode != 0 && Properties.Settings.Default.crashedNotification)
-                    SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_gamecrash"), command: Commands.Crashed);
+                    SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_gamecrash"));
 
                 if (windowSource.Handle != IntPtr.Zero)
                     NativeMethods.DeregisterShellHookWindow(windowSource.Handle);
@@ -1104,7 +1103,7 @@ namespace CSAuto
                                 {
                                     LeftMouseClick(X, Y);
                                     if (Properties.Settings.Default.acceptedNotification)
-                                        SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_acceptmatch"), command: Commands.AcceptedMatch);
+                                        SendMessageToTelegram(Languages.Strings.ResourceManager.GetString("server_acceptmatch"));
                                     if (acceptButtonTimer.IsEnabled)
                                         acceptButtonTimer.Stop();
                                     if (Properties.Settings.Default.sendAcceptImage && Properties.Settings.Default.telegramChatId != "")
@@ -1319,7 +1318,7 @@ namespace CSAuto
                     AutoCheckUpdate();
 #endif
                 if (Properties.Settings.Default.connectedNotification && !current.Restarted)
-                    SendMessageToTelegram(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(), FULL_VER), command: Commands.Connected);
+                    SendMessageToTelegram(string.Format(Languages.Strings.ResourceManager.GetString("server_computeronline"), Environment.MachineName, GetLocalIPAddress(), FULL_VER));
                 if (current.StartWindow)
                     Notifyicon_LeftMouseButtonDoubleClick(null, null);
                 if (csgoDir == null)

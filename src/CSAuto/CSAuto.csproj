@@ -124,7 +124,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>DebugSettings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Shared\NetworkTypes.cs" />
     <Compile Include="Shared\StreamString.cs" />
     <Compile Include="Utils\CS\ConDump.cs" />
     <Compile Include="Utils\DXGICapture.cs" />
