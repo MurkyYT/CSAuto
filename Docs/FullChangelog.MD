@@ -1,3 +1,12 @@
+### Version 2.2.5 changelog
+- Fixes with workshop map icons
+- Fixes with game state parsing
+- Fixes with discord activity
+- Compressed dll's
+- Update prices according to [latest update](https://store.steampowered.com/news/app/730/view/511855214544814590)
+
+---
+
 ### Version 2.2.4 changelog
 - Fixed a race condition with portable settings
 - Some DXGI edge cases fixes
