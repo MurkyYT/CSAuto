@@ -1,3 +1,11 @@
+### Version 2.2.6 changelog
+- Added debug color preview
+- Fixed crash associated with CheckForDuplicates
+- Fixed mouse click coordinates not accounting for window position offset
+- Fixed pixel count not resetting on non-matching pixels in accept button scan
+
+---
+
 ### Version 2.2.5 changelog
 - Fixes with workshop map icons
 - Fixes with game state parsing
