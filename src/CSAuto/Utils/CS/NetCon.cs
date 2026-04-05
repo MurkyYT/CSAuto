@@ -38,7 +38,7 @@ namespace Murky.Utils.CS
             string data = Encoding.UTF8.GetString(receivedData);
             if (data.Contains("vport 0] connected") && data.Contains("SDR server steamid"))
                 MatchFound?.Invoke(this, new EventArgs());
-            Log.debugWind?.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); }));
+            //Log.debugWind?.Dispatcher.Invoke(new Action(() => { Log.debugWind.csConsoleOutput.Text += data; Log.debugWind.csConsoleOutput.ScrollToEnd(); }));
         }
         public void SendCommand(string command)
         {

@@ -1791,6 +1791,15 @@ namespace CSAuto.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required library package is missing: {0}.
+        /// </summary>
+        public static string msgbox_dlls_missing {
+            get {
+                return ResourceManager.GetString("msgbox_dlls_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A display that supports HDR has been found, the current settings are not optimized for HDR displays, do you want to optimize the settings?.
         /// </summary>
         public static string msgbox_hdroptimization {

@@ -60,6 +60,12 @@ namespace CSAuto
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+            if(!e.Handled)
+            {
+                int newValue = int.Parse(((TextBox)sender).Text + e.Text);
+                if(newValue < 0 || newValue > 255)
+                    e.Handled = true;
+            }
         }
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)

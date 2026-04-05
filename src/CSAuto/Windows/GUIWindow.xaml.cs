@@ -103,6 +103,11 @@ namespace CSAuto
             Dispatcher.InvokeAsync(() => { AutoBuyImage.Source = main.current.buyMenu.GetImage(isCt); });
             PortableModeCheck.IsChecked = File.Exists(Log.WorkPath + "\\resource\\.portable");
             Title += $" {MainApp.FULL_VER}";
+
+            Log.LogUpdated += (logLine) =>
+            {
+                UpdateDebug(logLine);
+            };
         }
         private async Task RestartMessageBox()
         {
@@ -137,7 +142,6 @@ namespace CSAuto
         private void GUIWindow_Closed(object sender, EventArgs e)
         {
             main.guiWindow = null;
-            Log.debugWind = null;
             GameState.Dispose();
             Close();
             NativeMethods.OptimizeMemory();

@@ -14,15 +14,17 @@ namespace Murky.Utils
     class Log
     {
         private const int MaxMemoryLog = 512;
-        public static CSAuto.GUIWindow debugWind { 
-            get { lock (_debugWindLock) { return _debugWind; } } 
-            set { lock (_debugWindLock) { _debugWind = value; } } }
-        private static CSAuto.GUIWindow _debugWind = null;
-        private static object _debugWindLock = new object();
+        //public static CSAuto.GUIWindow debugWind { 
+        //    get { lock (_debugWindLock) { return _debugWind; } } 
+        //    set { lock (_debugWindLock) { _debugWind = value; } } }
+        //private static CSAuto.GUIWindow _debugWind = null;
+        //private static object _debugWindLock = new object();
         private static List<string> memoryLog = new List<string>();
         static string strWorkPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         static string path = strWorkPath + "\\debug\\logs\\";
         static string lineTemplate = "[%date%] (%caller%) %message%";
+
+        public static event Action<string> LogUpdated;
         public static string Path { get { return path; } }
         public static string WorkPath { get { return strWorkPath; } }
         public static string MemoryLog 
@@ -47,6 +49,12 @@ namespace Murky.Utils
             }
             catch {  }
         }
+
+        private static void OnLogUpdated(string logLine)
+        {
+            LogUpdated?.Invoke(logLine);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Write(object lines, string level = "Info", string caller = "")
         {
@@ -57,10 +65,6 @@ namespace Murky.Utils
                 Replace("%level%", level).
                 Replace("%caller%", caller == "" ? frm.GetMethod().Name : caller).
                 Replace("%message%", lines.ToString()).ToString();
-            lock (_debugWindLock)
-            {
-                debugWind?.UpdateDebug(lines.ToString());
-            }
             Debug.WriteLine(lines);
 
             lock (memoryLog)
@@ -70,6 +74,8 @@ namespace Murky.Utils
 
                 memoryLog.Add(lines.ToString());
             }
+
+            OnLogUpdated(lines.ToString());
 
             if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App)?.LogArg == true)
             {
@@ -94,10 +100,6 @@ namespace Murky.Utils
                 Replace("%level%", level).
                 Replace("%caller%", caller == "" ? frm.GetMethod().Name : caller).
                 Replace("%message%", lines.ToString()).ToString();
-            lock (_debugWindLock)
-            {
-                debugWind?.UpdateDebug(lines.ToString());
-            }
 
             Debug.WriteLine(lines);
 
@@ -108,6 +110,8 @@ namespace Murky.Utils
 
                 memoryLog.Add(lines.ToString());
             }
+
+            OnLogUpdated(lines.ToString());
 
             if (CSAuto.Properties.Settings.Default.saveLogs || (Application.Current as CSAuto.App)?.LogArg == true)
             {
@@ -128,10 +132,6 @@ namespace Murky.Utils
             if (lines == null)
                 lines = "";
             lines = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} CRITICAL - {lines}";
-            lock (_debugWindLock)
-            {
-                debugWind?.UpdateDebug(lines.ToString());
-            }
             Debug.WriteLine(lines);
 
             lock (memoryLog)
@@ -141,6 +141,8 @@ namespace Murky.Utils
 
                 memoryLog.Add(lines.ToString());
             }
+
+            OnLogUpdated(lines.ToString());
 
             string fileName = "Error_Log.txt";
             try

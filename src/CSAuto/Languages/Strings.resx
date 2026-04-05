@@ -806,4 +806,7 @@ Try to download the latest version from github, if it didn't help create a bug r
   <data name="error_killprocessgeneral" xml:space="preserve">
     <value>Failed to kill duplicate process: {0}</value>
   </data>
+  <data name="msgbox_dlls_missing" xml:space="preserve">
+    <value>Required library package is missing: {0}</value>
+  </data>
 </root>

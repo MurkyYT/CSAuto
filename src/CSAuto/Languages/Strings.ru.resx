@@ -806,4 +806,7 @@
   <data name="error_killprocessgeneral" xml:space="preserve">
     <value>Не удалось закрыть дубликат процесса: {0}</value>
   </data>
+  <data name="msgbox_dlls_missing" xml:space="preserve">
+    <value>Отсутствует необходимый пакет библиотек: {0}</value>
+  </data>
 </root>

@@ -806,4 +806,7 @@
   <data name="error_killprocessgeneral" xml:space="preserve">
     <value>נכשל בסגירת תהליך כפול: {0}</value>
   </data>
+  <data name="msgbox_dlls_missing" xml:space="preserve">
+    <value>חבילת הספריות הנדרשת חסרה: {0}</value>
+  </data>
 </root>

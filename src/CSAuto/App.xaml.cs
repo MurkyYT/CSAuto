@@ -33,19 +33,42 @@ namespace CSAuto
         public RegistrySettings settings = new RegistrySettings();
 
         private bool crashed;
-        private static FileLoader dllLoader = new FileLoader(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\bin\\dlls.mpf");
+        private static FileLoader dllLoader;
         private string languageName = null;
         protected override void OnStartup(StartupEventArgs e)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AppendPrivatePath("bin");
+
+            string dllPath = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "bin",
+                    "dlls.mpf"
+                );
+
+            if (!File.Exists(dllPath))
+            {
+                MessageBox.Show(
+                    string.Format(Languages.Strings.msgbox_dlls_missing, "dlls.mpf"),
+                    Languages.Strings.title_error,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+
+                Current.Shutdown();
+                return;
+            }
+
+            dllLoader = new FileLoader(dllPath);
             RealStartup(e);
         }
         void RealStartup(StartupEventArgs e)
         {
             string[] files = Directory.GetFiles(Log.WorkPath, "*.dll");
             bool didCleanOld = files.Length > 0;
+            // Force mahapps dll to be loaded
+            var type = typeof(MahApps.Metro.Controls.MetroWindow);
             Current.Resources.MergedDictionaries.Add(new ResourceDictionary
             {
                 Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute)
@@ -238,7 +261,6 @@ namespace CSAuto
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-
             string probingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\bin";
             AssemblyName assyName = new AssemblyName(args.Name);
 
@@ -246,10 +268,16 @@ namespace CSAuto
 
             if (!assemblyName.EndsWith(".dll"))
                 assemblyName += ".dll";
+            if(dllLoader == null)
+            {
+                Log.WriteLine("|App.cs| DLL Loader is null, cannot load assembly: " + assemblyName);
+                return null;
+            }
 
             if (dllLoader.FileExists(assemblyName))
             {
                 MemoryStream file = dllLoader.LoadFile(assemblyName) as MemoryStream;
+                Log.WriteLine($"|App.cs| Loading embedded assembly: {assemblyName}");
                 return Assembly.Load(file.ToArray());
             }
 
@@ -258,7 +286,21 @@ namespace CSAuto
             if (File.Exists(newPath))
             {
                 Assembly assy = Assembly.LoadFile(newPath);
+                Log.WriteLine($"|App.cs| Loading assembly from bin folder: {assemblyName}");
                 return assy;
+            }
+
+            string culture = assyName.CultureInfo?.TwoLetterISOLanguageName;
+
+            if (!string.IsNullOrEmpty(culture) && !culture.Equals("en", StringComparison.OrdinalIgnoreCase))
+            {
+                string localizationPath = Path.Combine(probingPath, culture, assemblyName);
+
+                if (File.Exists(localizationPath))
+                {
+                    Log.WriteLine($"|App.cs| Loading localization assembly: {assemblyName} ({culture})");
+                    return Assembly.LoadFile(localizationPath);
+                }
             }
 
             return null;
