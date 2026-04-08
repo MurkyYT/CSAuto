@@ -1,3 +1,10 @@
+### Version 2.2.7 changelog
+- Fixed debug color settings maximum value to be capped at 255
+- Added error message if `dlls.mpf` is missing
+- Added logging for loaded DLLs
+
+---
+
 ### Version 2.2.6 changelog
 - Added debug color preview
 - Fixed crash associated with CheckForDuplicates
