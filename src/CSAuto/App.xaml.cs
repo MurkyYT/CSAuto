@@ -69,6 +69,7 @@ namespace CSAuto
             bool didCleanOld = files.Length > 0;
             // Force mahapps dll to be loaded
             var type = typeof(MahApps.Metro.Controls.MetroWindow);
+            Log.WriteLine("|App.cs| Forcing MahApps.Metro to load by referencing a type from it: " + type.FullName);
             Current.Resources.MergedDictionaries.Add(new ResourceDictionary
             {
                 Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute)
