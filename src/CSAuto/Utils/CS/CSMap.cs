@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace Murky.Utils.CS
@@ -26,16 +27,14 @@ namespace Murky.Utils.CS
             }
         }
 
+        private static readonly string[] OfficialPrefixes = { "de_", "dz_", "gd_", "cs_", "ar_", "rush_" };
+
         public static bool IsOfficial(string mapName)
         {
-            string mapExtention = mapName.ToLower().Substring(0, 3);
-            return
-                mapExtention == "de_" ||
-                mapExtention == "dz_" ||
-                mapExtention == "gd_" ||
-                mapExtention == "cs_" ||
-                mapExtention == "ar_";
+            string map = mapName.ToLower();
+            return OfficialPrefixes.Any(prefix => map.StartsWith(prefix));
         }
+
         public static string GetMapIcon(string mapName)
         {
             lock (client)

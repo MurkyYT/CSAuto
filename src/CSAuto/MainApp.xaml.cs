@@ -39,7 +39,7 @@ namespace CSAuto
     public partial class MainApp : Window
     {
         #region Constants
-        public const string VER = "2.2.7";
+        public const string VER = "2.2.8";
         public const string FULL_VER = VER + (DEBUG_REVISION == "" ? "" : " REV " + DEBUG_REVISION);
         const string DEBUG_REVISION = "";
         const string GAME_PROCCES_NAME = "cs2";
@@ -941,13 +941,13 @@ namespace CSAuto
                 csRunning = false;
                 lastRpcUpdate = -1;
 
-                if (Properties.Settings.Default.autoCloseCSAuto)
-                    Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
-
                 if (File.Exists(bindCfgPath))
                     File.Delete(bindCfgPath);
 
                 NativeMethods.OptimizeMemory();
+
+                if (Properties.Settings.Default.autoCloseCSAuto)
+                    Dispatcher.InvokeAsync(() => { Application.Current.Shutdown(); });
             }
         }
         private void TryToAutoReload()
