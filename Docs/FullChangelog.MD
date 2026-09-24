@@ -1,3 +1,8 @@
+### Version 2.2.8 changelog
+- Small fix to add ability to show new [rush mode](https://www.counter-strike.net/newsentry/711161056325533826) maps
+
+---
+
 ### Version 2.2.7 changelog
 - Fixed debug color settings maximum value to be capped at 255
 - Added error message if `dlls.mpf` is missing
