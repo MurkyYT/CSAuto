@@ -10,9 +10,9 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@v7
         - name: Github Releases To Discord
-          uses: SethCohen/github-releases-to-discord@v1.13.1
+          uses: SethCohen/github-releases-to-discord@v1.20.0
           with:
             webhook_url: ${{ secrets.WEBHOOK_URL }}
             color: "2105893"
@@ -24,11 +24,10 @@ jobs:
             footer_timestamp: true
             reduce_headings: true
         - name: VirusTotal Scan
-          uses: crazy-max/ghaction-virustotal@v3
+          uses: crazy-max/ghaction-virustotal@v5
           with:
             vt_api_key: ${{ secrets.VT_API_KEY }}
             update_release_body: true
             files: |
               .exe$
               .zip$
-              .apk$

@@ -22,25 +22,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v3
+    - uses: actions/checkout@v7
+    - name: "Setup UV"
+      uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
       with:
-        python-version: "3.12"
+        python-version: "3.14"
     - name: Generate FullChangelog.MD
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: python scripts/full_changelog.py
+      run: uv run scripts/full_changelog.py
     - name: Generate version
       if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_version == 'true' || inputs.skip_version == true }}
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: python scripts/version.py
+      run: uv run scripts/version.py
     - name: Commit changes
-      uses: EndBug/add-and-commit@v9
+      uses: EndBug/add-and-commit@v11
       with:
         add: 'Docs Data'
         message: 'chore(ci): update full changelog and version'
         default_author: github_actions
         push: true
-        new_branch: 'master'
